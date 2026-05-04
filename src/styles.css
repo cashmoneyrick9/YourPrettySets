@@ -194,6 +194,11 @@ h1 {
   scroll-snap-type: x mandatory;
 }
 
+.product-carousel:focus-visible {
+  outline: 3px solid #0a6866;
+  outline-offset: 6px;
+}
+
 .product-card {
   background: #ffffff;
   border: 1px solid rgba(217, 79, 124, 0.16);

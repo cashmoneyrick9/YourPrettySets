@@ -8,6 +8,10 @@ describe("ProductCarousel", () => {
     render(<ProductCarousel title="New Arrivals" products={newArrivals} />);
 
     expect(screen.getByRole("heading", { name: "New Arrivals" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "New Arrivals product carousel" })).toHaveAttribute(
+      "tabIndex",
+      "0"
+    );
     expect(screen.getAllByRole("article").length).toBe(newArrivals.length);
   });
 });
