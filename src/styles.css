@@ -35,7 +35,7 @@ a {
 }
 
 .brand-mark {
-  color: #d94f7c;
+  color: #a82f57;
   font-size: 1.35rem;
   font-weight: 800;
 }
@@ -62,7 +62,7 @@ a {
 }
 
 .eyebrow {
-  color: #118a88;
+  color: #0a6866;
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0;
@@ -88,7 +88,7 @@ h1 {
 
 .primary-button {
   align-items: center;
-  background: #ff6f61;
+  background: #a92f4f;
   border-radius: 999px;
   color: #fff;
   display: inline-flex;
@@ -252,7 +252,7 @@ h1 {
 }
 
 .product-card p {
-  color: #d94f7c;
+  color: #a82f57;
   font-weight: 900;
 }
 
@@ -300,7 +300,7 @@ h1 {
 }
 
 .kit-feature svg {
-  color: #ff6f61;
+  color: #a92f4f;
   height: 32px;
   width: 32px;
 }
@@ -332,7 +332,7 @@ h1 {
 }
 
 .kit-list svg {
-  color: #118a88;
+  color: #0a6866;
   flex: 0 0 auto;
   height: 18px;
   width: 18px;
@@ -390,7 +390,7 @@ h1 {
 }
 
 .review-grid figcaption {
-  color: #118a88;
+  color: #0a6866;
   font-size: 0.9rem;
   font-weight: 900;
 }
