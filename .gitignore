@@ -23,6 +23,7 @@ pnpm-debug.log*
 .DS_Store
 .vscode/
 .idea/
+.codex/
 
 # Test and cache output
 coverage/
