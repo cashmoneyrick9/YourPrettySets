@@ -457,3 +457,103 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 360px) {
+  .brand-header {
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .brand-mark {
+    font-size: 1.2rem;
+  }
+
+  .brand-header nav {
+    gap: 9px 11px;
+  }
+
+  .brand-header nav a {
+    font-size: 0.84rem;
+  }
+
+  .hero-section {
+    gap: 24px;
+    min-height: auto;
+    padding: 34px 14px 42px;
+  }
+
+  h1 {
+    font-size: 2.28rem;
+    line-height: 1;
+  }
+
+  .hero-copy,
+  .section-heading {
+    gap: 14px;
+  }
+
+  .hero-copy p,
+  .hero-shell p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .hero-product-spread {
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .nail-tile {
+    font-size: 0.74rem;
+    min-height: 104px;
+  }
+
+  .section-block {
+    padding: 40px 14px;
+  }
+
+  .section-heading h2 {
+    font-size: 1.72rem;
+    line-height: 1.12;
+  }
+
+  .product-carousel {
+    gap: 14px;
+    grid-auto-columns: minmax(206px, 252px);
+  }
+
+  .product-art {
+    padding: 14px;
+  }
+
+  .product-card__body {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .collection-card {
+    min-height: 76px;
+    padding: 14px;
+  }
+
+  .kit-feature,
+  .review-grid figure {
+    padding: 18px;
+  }
+
+  .steps-list li {
+    min-height: 96px;
+    padding: 16px;
+  }
+
+  .faq-list a {
+    padding: 16px;
+  }
+
+  .site-footer {
+    gap: 10px 12px;
+    justify-content: flex-start;
+    padding: 26px 14px;
+  }
+}
