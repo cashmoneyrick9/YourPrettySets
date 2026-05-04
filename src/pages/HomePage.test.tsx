@@ -1,6 +1,10 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import { HomePage } from "./HomePage";
+
+afterEach(() => {
+  cleanup();
+});
 
 describe("HomePage", () => {
   it("renders every approved Home section", () => {
@@ -16,5 +20,13 @@ describe("HomePage", () => {
     expect(screen.getByRole("heading", { name: "How it works" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Pretty notes from future customers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
+  });
+
+  it("links FAQ teaser questions to the future FAQ page", () => {
+    render(<HomePage />);
+
+    expect(screen.getByRole("link", { name: "What comes with each set?" })).toHaveAttribute("href", "/faq");
+    expect(screen.getByRole("link", { name: "How long do press-ons last?" })).toHaveAttribute("href", "/faq");
+    expect(screen.getByRole("link", { name: "Can I reuse them?" })).toHaveAttribute("href", "/faq");
   });
 });

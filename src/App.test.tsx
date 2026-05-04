@@ -1,6 +1,10 @@
-import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import App from "./App";
+
+afterEach(() => {
+  cleanup();
+});
 
 describe("App", () => {
   it("renders the YourPrettySets home experience", () => {
@@ -13,5 +17,17 @@ describe("App", () => {
       })
     ).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Art on Miniature Canvases" })).toBeInTheDocument();
+  });
+
+  it("includes footer placeholders for contact, social, and policies", () => {
+    render(<App />);
+
+    const footer = within(screen.getByRole("contentinfo"));
+
+    expect(footer.getByRole("link", { name: "Contact placeholder" })).toBeInTheDocument();
+    expect(footer.getByRole("link", { name: "Instagram placeholder" })).toBeInTheDocument();
+    expect(footer.getByRole("link", { name: "Shipping policy placeholder" })).toBeInTheDocument();
+    expect(footer.getByRole("link", { name: "Returns policy placeholder" })).toBeInTheDocument();
+    expect(footer.getByRole("link", { name: "Privacy policy placeholder" })).toBeInTheDocument();
   });
 });

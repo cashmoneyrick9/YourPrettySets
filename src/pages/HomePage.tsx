@@ -89,7 +89,7 @@ export function HomePage() {
         </div>
         <div className="faq-list">
           {faqs.map((faq) => (
-            <a key={faq} href="#faq">
+            <a key={faq} href="/faq">
               {faq}
             </a>
           ))}

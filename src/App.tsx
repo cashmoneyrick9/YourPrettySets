@@ -13,6 +13,9 @@ function App() {
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact placeholder</a>
         <a href="#instagram">Instagram placeholder</a>
+        <a href="/shipping">Shipping policy placeholder</a>
+        <a href="/returns">Returns policy placeholder</a>
+        <a href="/privacy">Privacy policy placeholder</a>
       </footer>
     </div>
   );
