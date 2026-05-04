@@ -99,6 +99,71 @@ h1 {
   width: fit-content;
 }
 
+.hero-section {
+  display: grid;
+  gap: clamp(28px, 5vw, 64px);
+  grid-template-columns: minmax(0, 0.95fr) minmax(280px, 1.05fr);
+  min-height: 72vh;
+  padding: clamp(42px, 7vw, 88px) clamp(18px, 4vw, 56px) clamp(36px, 6vw, 72px);
+}
+
+.hero-copy {
+  align-self: center;
+  display: grid;
+  gap: 20px;
+}
+
+.hero-copy p {
+  font-size: 1.08rem;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 640px;
+}
+
+.hero-product-spread {
+  align-self: center;
+  aspect-ratio: 1 / 1;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 111, 97, 0.32), transparent 24%),
+    radial-gradient(circle at 82% 24%, rgba(98, 210, 190, 0.34), transparent 25%),
+    radial-gradient(circle at 56% 78%, rgba(246, 216, 92, 0.42), transparent 22%),
+    #ffffff;
+  border: 1px solid rgba(217, 79, 124, 0.14);
+  border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(93, 48, 67, 0.12);
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: clamp(18px, 4vw, 42px);
+}
+
+.nail-tile {
+  align-items: center;
+  border-radius: 999px 999px 42px 42px;
+  color: #392a31;
+  display: flex;
+  font-size: 0.8rem;
+  font-weight: 900;
+  justify-content: center;
+  min-height: 128px;
+}
+
+.nail-tile--coral {
+  background: #ff9b8a;
+}
+
+.nail-tile--mint {
+  background: #b7efd8;
+}
+
+.nail-tile--sky {
+  background: #bde8ff;
+}
+
+.nail-tile--peach {
+  background: #ffd7a8;
+}
+
 .section-block {
   padding: clamp(48px, 7vw, 86px) clamp(18px, 4vw, 56px);
 }
@@ -273,6 +338,89 @@ h1 {
   width: 18px;
 }
 
+.steps-section {
+  background: #fff6ed;
+}
+
+.steps-list {
+  counter-reset: steps;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 0;
+}
+
+.steps-list li {
+  background: #ffffff;
+  border-radius: 8px;
+  font-weight: 800;
+  line-height: 1.35;
+  min-height: 120px;
+  padding: 18px;
+}
+
+.reviews-section {
+  background: #fffaf8;
+}
+
+.review-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 auto;
+  max-width: 1180px;
+}
+
+.review-grid figure {
+  background: #ffffff;
+  border: 1px solid rgba(217, 79, 124, 0.16);
+  border-radius: 8px;
+  margin: 0;
+  padding: 22px;
+}
+
+.review-grid blockquote {
+  font-size: 1.02rem;
+  font-weight: 800;
+  line-height: 1.45;
+  margin: 0 0 18px;
+}
+
+.review-grid figcaption {
+  color: #118a88;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.faq-list {
+  display: grid;
+  gap: 12px;
+  margin: 0 auto;
+  max-width: 920px;
+}
+
+.faq-list a {
+  background: #ffffff;
+  border: 1px solid rgba(17, 138, 136, 0.16);
+  border-radius: 8px;
+  font-weight: 900;
+  padding: 18px;
+}
+
+.site-footer {
+  align-items: center;
+  background: #2f2630;
+  color: #fffaf8;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  padding: 30px clamp(18px, 4vw, 56px);
+}
+
 @media (max-width: 720px) {
   .brand-header {
     align-items: flex-start;
@@ -281,6 +429,17 @@ h1 {
 
   .brand-header nav {
     justify-content: flex-start;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+  }
+
+  .steps-list,
+  .review-grid {
+    grid-template-columns: 1fr;
   }
 }
 

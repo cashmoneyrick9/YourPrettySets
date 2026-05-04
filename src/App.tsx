@@ -1,32 +1,19 @@
-const navItems = ["Home", "Shop Collections", "How It Works", "FAQ", "Bag"];
+import { BrandHeader } from "./components/BrandHeader";
+import { HomePage } from "./pages/HomePage";
 
 function App() {
   return (
     <div className="site-shell">
-      <header className="brand-header">
-        <a className="brand-mark" href="#home" aria-label="YourPrettySets home">
-          YourPrettySets
-        </a>
-        <nav aria-label="Primary navigation">
-          {navItems.map((item) => (
-            <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}>
-              {item}
-            </a>
-          ))}
-        </nav>
-      </header>
-      <main id="home">
-        <section className="hero-shell">
-          <p className="eyebrow">Handmade ready-to-wear press-ons</p>
-          <h1>Art on Miniature Canvases</h1>
-          <p>
-            Pretty sets made for everyday style, special plans, and salon-looking moments at home.
-          </p>
-          <a className="primary-button" href="#shop-collections">
-            Shop ready-to-wear
-          </a>
-        </section>
-      </main>
+      <BrandHeader />
+      <HomePage />
+      <footer className="site-footer">
+        <a href="#home">Home</a>
+        <a href="#shop-collections">Shop Collections</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact placeholder</a>
+        <a href="#instagram">Instagram placeholder</a>
+      </footer>
     </div>
   );
 }
