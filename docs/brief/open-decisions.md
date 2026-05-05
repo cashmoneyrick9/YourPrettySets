@@ -21,6 +21,24 @@ Direction: playful handwriting.
 
 Final logo design will be shaped later with CEO input.
 
+## Mobile Header Direction
+
+The current header is functional but not final. The CEO selected the current header area as the next thing to improve.
+
+Known feedback:
+
+- The current mobile header feels like a basic development nav.
+- The brand name does not yet feel designed.
+- The nav wraps awkwardly, especially with `Bag` dropping to its own line.
+- Generated visual mockups for "brand-pretty" and "clean beauty brand" directions were rejected.
+- Avoid overly cute, template-like, decorative, or fake handwritten beauty-brand treatments.
+
+Next recommended discussion:
+
+- Start from the real current header, not from more generated fantasy mockups.
+- Clarify whether the main problem is layout, logo/brand text, or overall vibe.
+- Improve the header directly and conservatively once the CEO chooses a direction.
+
 ## Exact Color Palette
 
 Direction is spring/summer colorful with pinks, corals, peaches, greens, blues, yellows, white, and small shimmer/gold touches.

@@ -22,6 +22,7 @@ The current goal is not a public launch MVP. The current goal is a structured br
 - [shared-components.md](shared-components.md) - components agents should keep consistent.
 - [page-home.md](page-home.md) - Home page section-by-section build brief.
 - [open-decisions.md](open-decisions.md) - unresolved decisions that should not block the first prototype.
+- [session-handoff.md](session-handoff.md) - latest build state, CEO feedback, and next recommended work.
 
 ## Agent Rules
 
@@ -30,3 +31,9 @@ The current goal is not a public launch MVP. The current goal is a structured br
 - Pull products from the central product data source once the app exists.
 - Keep placeholders easy to replace with real products, photos, and copy later.
 - If a choice is listed in `open-decisions.md`, do not solve it permanently without CEO approval.
+
+## Current Build State
+
+The Home page foundation exists as a Vite React TypeScript app. It has central placeholder product data, shared Home components, a long-scroll Home page, responsive CSS including 320px rules, and passing test/build/audit checks.
+
+The next likely work item is improving the mobile header. Do not treat the existing header as final.
