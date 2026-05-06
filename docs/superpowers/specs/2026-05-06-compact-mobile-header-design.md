@@ -4,7 +4,13 @@
 
 Approved for specification by the CEO on 2026-05-06.
 
-Implementation has not started.
+Implemented on branch `codex/compact-mobile-header`.
+
+Verification passed:
+
+- `npm test`
+- `npm run build`
+- `npm audit --audit-level=moderate`
 
 ## Purpose
 

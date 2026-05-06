@@ -8,6 +8,8 @@
 
 **Tech Stack:** Vite, React, TypeScript, CSS, Vitest, React Testing Library, lucide-react.
 
+**Implementation Status:** Completed on branch `codex/compact-mobile-header`.
+
 ---
 
 ## Source Docs
@@ -39,7 +41,7 @@ Follow:
 
 - Modify: `src/components/BrandHeader.test.tsx`
 
-- [ ] **Step 1: Replace the current header test with tests for desktop nav, mobile actions, and menu expansion**
+- [x] **Step 1: Replace the current header test with tests for desktop nav, mobile actions, and menu expansion**
 
 Replace the full file with:
 
@@ -91,7 +93,7 @@ describe("BrandHeader", () => {
 });
 ```
 
-- [ ] **Step 2: Run the focused test and confirm it fails**
+- [x] **Step 2: Run the focused test and confirm it fails**
 
 Run:
 
@@ -101,7 +103,7 @@ npm test -- src/components/BrandHeader.test.tsx
 
 Expected: FAIL because `Open menu`, `Shop`, `View bag`, and `Mobile navigation` do not exist yet.
 
-- [ ] **Step 3: Commit the failing test**
+- [x] **Step 3: Commit the failing test**
 
 ```bash
 git add src/components/BrandHeader.test.tsx
@@ -114,7 +116,7 @@ git commit -m "test: cover compact mobile header behavior"
 
 - Modify: `src/components/BrandHeader.tsx`
 
-- [ ] **Step 1: Replace `BrandHeader.tsx` with desktop nav plus mobile actions**
+- [x] **Step 1: Replace `BrandHeader.tsx` with desktop nav plus mobile actions**
 
 Replace the full file with:
 
@@ -184,7 +186,7 @@ export function BrandHeader() {
 }
 ```
 
-- [ ] **Step 2: Run the focused test**
+- [x] **Step 2: Run the focused test**
 
 Run:
 
@@ -194,7 +196,7 @@ npm test -- src/components/BrandHeader.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 3: Commit the passing component behavior**
+- [x] **Step 3: Commit the passing component behavior**
 
 ```bash
 git add src/components/BrandHeader.tsx src/components/BrandHeader.test.tsx
@@ -208,7 +210,7 @@ git commit -m "feat: add compact mobile header actions"
 - Modify: `src/styles.css`
 - Modify: `src/styles-responsive.test.ts`
 
-- [ ] **Step 1: Update the responsive CSS test**
+- [x] **Step 1: Update the responsive CSS test**
 
 Replace `src/styles-responsive.test.ts` with:
 
@@ -238,7 +240,7 @@ describe("small mobile responsive CSS", () => {
 });
 ```
 
-- [ ] **Step 2: Run the responsive CSS test and confirm it fails**
+- [x] **Step 2: Run the responsive CSS test and confirm it fails**
 
 Run:
 
@@ -248,7 +250,7 @@ npm test -- src/styles-responsive.test.ts
 
 Expected: FAIL because the new compact header class rules do not exist yet.
 
-- [ ] **Step 3: Replace the base header CSS block near the top of `src/styles.css`**
+- [x] **Step 3: Replace the base header CSS block near the top of `src/styles.css`**
 
 Replace the current `.brand-header`, `.brand-mark`, `.brand-header nav`, and `.brand-header nav a` rules with:
 
@@ -350,7 +352,7 @@ Replace the current `.brand-header`, `.brand-mark`, `.brand-header nav`, and `.b
 }
 ```
 
-- [ ] **Step 4: Replace the current `@media (max-width: 720px)` header rules**
+- [x] **Step 4: Replace the current `@media (max-width: 720px)` header rules**
 
 Replace the old block:
 
@@ -397,7 +399,7 @@ with:
 }
 ```
 
-- [ ] **Step 5: Replace only the header-specific rules inside `@media (max-width: 360px)`**
+- [x] **Step 5: Replace only the header-specific rules inside `@media (max-width: 360px)`**
 
 Inside the existing `@media (max-width: 360px)` block, replace the current header selectors:
 
@@ -454,7 +456,7 @@ with:
   }
 ```
 
-- [ ] **Step 6: Run focused tests**
+- [x] **Step 6: Run focused tests**
 
 Run:
 
@@ -464,7 +466,7 @@ npm test -- src/components/BrandHeader.test.tsx src/styles-responsive.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 7: Commit responsive styling**
+- [x] **Step 7: Commit responsive styling**
 
 ```bash
 git add src/styles.css src/styles-responsive.test.ts
@@ -477,7 +479,7 @@ git commit -m "style: tighten mobile header layout"
 
 - Modify: `docs/brief/session-handoff.md`
 
-- [ ] **Step 1: Update the handoff with the compact header decision**
+- [x] **Step 1: Update the handoff with the compact header decision**
 
 In `docs/brief/session-handoff.md`, update `Last updated` to `2026-05-06` and revise the header discussion section to say:
 
@@ -502,7 +504,7 @@ The design spec is saved at:
 
 Also update `Suggested Next Agent Flow` so the next step says to verify the implemented compact mobile header instead of continuing header brainstorming.
 
-- [ ] **Step 2: Run full verification**
+- [x] **Step 2: Run full verification**
 
 Run:
 
@@ -520,7 +522,7 @@ Expected:
 - `npm audit --audit-level=moderate`: reports 0 vulnerabilities.
 - `git status --short`: shows only the intended handoff file changed before the final commit.
 
-- [ ] **Step 3: Commit handoff update**
+- [x] **Step 3: Commit handoff update**
 
 ```bash
 git add docs/brief/session-handoff.md
