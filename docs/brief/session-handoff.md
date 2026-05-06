@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-05
+Last updated: 2026-05-06
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -69,50 +69,20 @@ Established preferences:
 
 ## Latest Discussion: Header
 
-The CEO selected the mobile header area as the next section to improve.
+The CEO selected the mobile header layout as the next improvement area.
 
-Current screenshot issue:
+Confirmed direction:
 
-- Header shows `YourPrettySets`, then nav links `Home`, `Shop Collections`, `How It Works`, `FAQ`, and `Bag`.
-- On mobile, the nav wraps and `Bag` drops to its own line.
-- The header looks functional but not brand-polished.
+- Use a compact mobile ecommerce header.
+- Keep `YourPrettySets` visible as a text brand mark for now.
+- Show compact mobile actions for menu, `Shop`, and bag.
+- Put secondary links inside a simple menu panel.
+- Do not redesign the logo yet.
+- Do not use overly decorative boutique details.
 
-Explored directions:
+The design spec is saved at:
 
-- Brand-pretty header with centered logo/nav.
-- Shopping-clear header with Shop and Bag emphasized.
-- Balanced mobile ecommerce header.
-- Additional generated mockups for decorative boutique and restrained beauty-brand directions.
-
-CEO reaction:
-
-- They chose "Option 1: Brand Prettiness" conceptually at first.
-- After seeing more generated mockups, they said they hated all of them.
-- The likely issue is that generated mockups felt too fake, decorative, or template-like.
-
-Do not continue generating more header mockups by default. The better next step is to work from the actual current header and identify what specifically needs improvement.
-
-Recommended next question:
-
-> What do you hate most right now: the layout, the logo/brand text, or the overall vibe?
-
-## Current Header Design Constraint
-
-Improve the current header conservatively:
-
-- Do not make it overly decorative.
-- Do not add scallops, hearts, dots, or cupcake-like boutique details.
-- Do not over-index on fake handwritten-logo energy.
-- Keep the header usable at 320px.
-- Avoid `Bag` wrapping awkwardly to its own line.
-- Keep the brand visible and more intentional.
-
-Potential directions to discuss, without committing:
-
-- A cleaner two-row version of the current header.
-- Brand name on its own line with a compact nav row.
-- A restrained mobile header with logo, menu, and bag, plus a simple shop entry.
-- A desktop/mobile split where desktop keeps nav and mobile gets a cleaner compact header.
+- `docs/superpowers/specs/2026-05-06-compact-mobile-header-design.md`
 
 ## Open Product/Site Decisions
 
@@ -132,8 +102,8 @@ Still open:
 
 1. Read `docs/brief/README.md`, `docs/brief/brand.md`, `docs/brief/page-home.md`, `docs/brief/open-decisions.md`, and this file.
 2. Inspect the current header in `src/components/BrandHeader.tsx` and `src/styles.css`.
-3. Continue brainstorming the header only until the CEO approves a specific direction.
-4. If implementation is approved, write/update a small plan before editing code.
+3. Verify the implemented compact mobile header against the approved design direction.
+4. If more implementation is approved, write/update a small plan before editing code.
 5. Use test-driven changes where possible.
 6. Verify with `npm test`, `npm run build`, `npm audit --audit-level=moderate`, and `git status --short`.
 
