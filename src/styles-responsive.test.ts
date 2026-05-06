@@ -19,5 +19,6 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("@media (max-width: 720px)");
     expect(styles).toContain(".brand-header__desktop-nav {\n    display: none;");
     expect(styles).toContain(".brand-header__mobile-actions {\n    display: flex;");
+    expect(styles).toContain(".brand-header__mobile-menu {\n    display: grid;");
   });
 });
