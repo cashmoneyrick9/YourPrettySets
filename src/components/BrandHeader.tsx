@@ -1,14 +1,59 @@
-const navItems = ["Home", "Shop Collections", "How It Works", "FAQ", "Bag"];
+import { Menu, ShoppingBag, X } from "lucide-react";
+import { useState } from "react";
+
+const desktopNavItems = ["Home", "Shop Collections", "How It Works", "FAQ", "Bag"];
+const mobileMenuItems = ["Home", "Shop Collections", "How It Works", "FAQ"];
+
+function hrefFor(item: string) {
+  return `#${item.toLowerCase().replace(/\s+/g, "-")}`;
+}
 
 export function BrandHeader() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <header className="brand-header">
-      <a className="brand-mark" href="#home" aria-label="YourPrettySets home">
-        YourPrettySets
-      </a>
-      <nav aria-label="Primary navigation">
-        {navItems.map((item) => (
-          <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}>
+      <div className="brand-header__bar">
+        <a className="brand-mark" href="#home" aria-label="YourPrettySets home">
+          YourPrettySets
+        </a>
+
+        <nav className="brand-header__desktop-nav" aria-label="Primary navigation">
+          {desktopNavItems.map((item) => (
+            <a key={item} href={hrefFor(item)}>
+              {item}
+            </a>
+          ))}
+        </nav>
+
+        <div className="brand-header__mobile-actions" aria-label="Mobile header actions">
+          <button
+            className="brand-header__icon-button"
+            type="button"
+            aria-controls="mobile-navigation"
+            aria-expanded={isMenuOpen}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setIsMenuOpen((current) => !current)}
+          >
+            {isMenuOpen ? <X aria-hidden="true" size={18} /> : <Menu aria-hidden="true" size={18} />}
+          </button>
+          <a className="brand-header__shop-link" href="#shop-collections">
+            Shop
+          </a>
+          <a className="brand-header__icon-button" href="#bag" aria-label="View bag">
+            <ShoppingBag aria-hidden="true" size={18} />
+          </a>
+        </div>
+      </div>
+
+      <nav
+        id="mobile-navigation"
+        className="brand-header__mobile-menu"
+        aria-label="Mobile navigation"
+        hidden={!isMenuOpen}
+      >
+        {mobileMenuItems.map((item) => (
+          <a key={item} href={hrefFor(item)} onClick={() => setIsMenuOpen(false)}>
             {item}
           </a>
         ))}
