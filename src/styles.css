@@ -171,71 +171,114 @@ h1 {
 .hero-section {
   display: grid;
   gap: clamp(28px, 5vw, 64px);
-  grid-template-columns: minmax(0, 0.95fr) minmax(280px, 1.05fr);
+  grid-template-areas: "hero";
+  grid-template-columns: minmax(0, 1fr);
   min-height: 72vh;
   padding: clamp(42px, 7vw, 88px) clamp(18px, 4vw, 56px) clamp(36px, 6vw, 72px);
 }
 
 .hero-copy {
-  align-self: center;
+  align-self: end;
+  color: #fffaf8;
   display: grid;
-  gap: 20px;
+  gap: 14px;
+  grid-area: hero;
+  max-width: 560px;
+  padding: clamp(22px, 5vw, 46px);
+  z-index: 1;
+}
+
+.hero-copy .eyebrow,
+.hero-copy h1 {
+  color: inherit;
 }
 
 .hero-copy p {
-  font-size: 1.08rem;
-  line-height: 1.7;
+  font-size: 1rem;
+  line-height: 1.45;
   margin: 0;
-  max-width: 640px;
+  max-width: 480px;
 }
 
 .hero-photo {
-  align-self: center;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 16 / 10;
   background:
-    radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.76), transparent 16%),
-    radial-gradient(circle at 82% 22%, rgba(255, 186, 146, 0.36), transparent 24%),
-    linear-gradient(150deg, rgba(255, 216, 226, 0.92), rgba(255, 246, 237, 0.72) 46%, rgba(185, 236, 218, 0.68)),
-    #ffffff;
+    linear-gradient(180deg, rgba(47, 38, 48, 0.08) 0%, rgba(47, 38, 48, 0.12) 45%, rgba(47, 38, 48, 0.78) 100%),
+    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.72), transparent 16%),
+    radial-gradient(circle at 76% 24%, rgba(255, 188, 151, 0.42), transparent 22%),
+    linear-gradient(145deg, #f2bea9 0%, #f6d5c7 42%, #ad7d6e 100%);
   border: 1px solid rgba(217, 79, 124, 0.14);
   border-radius: 8px;
   box-shadow: 0 30px 80px rgba(93, 48, 67, 0.12);
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-area: hero;
+  min-height: 520px;
   overflow: hidden;
-  padding: clamp(22px, 5vw, 46px);
+  position: relative;
+}
+
+.hero-photo::before {
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(255, 239, 226, 0.98), rgba(228, 173, 143, 0.94) 62%, rgba(167, 111, 91, 0.7) 100%);
+  border-radius: 46% 54% 42% 58%;
+  content: "";
+  height: 74%;
+  left: 16%;
+  position: absolute;
+  top: 8%;
+  transform: rotate(-12deg);
+  width: 72%;
+}
+
+.hero-photo__hand {
+  bottom: 21%;
+  display: flex;
+  gap: clamp(8px, 2vw, 20px);
+  justify-content: center;
+  left: 12%;
+  position: absolute;
+  right: 12%;
+  transform: rotate(-13deg);
+}
+
+.hero-photo__finger {
+  background: linear-gradient(180deg, #f9d9c5, #d69b78);
+  border-radius: 999px 999px 34px 34px;
+  box-shadow: inset 8px 0 16px rgba(255, 255, 255, 0.22);
+  display: flex;
+  justify-content: center;
+  min-height: clamp(180px, 24vw, 280px);
+  padding-top: 10px;
+  width: clamp(38px, 7vw, 78px);
+}
+
+.hero-photo__finger--one,
+.hero-photo__finger--four {
+  margin-top: 26px;
+}
+
+.hero-photo__finger--three {
+  margin-top: -12px;
 }
 
 .hero-photo__nail {
-  align-self: end;
-  background: linear-gradient(180deg, #ffd9df, #f19a93);
-  border-radius: 999px 999px 48px 48px;
-  box-shadow: inset 0 10px 18px rgba(255, 255, 255, 0.42);
-  min-height: clamp(120px, 22vw, 220px);
-}
-
-.hero-photo__nail--one {
-  min-height: clamp(96px, 18vw, 180px);
+  background: linear-gradient(180deg, #ffe6e7, #d9576e 70%, #b83255);
+  border-radius: 999px 999px 18px 18px;
+  box-shadow: inset 0 7px 10px rgba(255, 255, 255, 0.54);
+  display: block;
+  min-height: clamp(56px, 8vw, 96px);
+  width: 72%;
 }
 
 .hero-photo__nail--two {
-  background: linear-gradient(180deg, #ffe7d1, #f5a58b);
-  min-height: clamp(132px, 23vw, 232px);
+  background: linear-gradient(180deg, #fff0e3, #ef8d72 70%, #c75559);
 }
 
 .hero-photo__nail--three {
-  background: linear-gradient(180deg, #ffe2ed, #d94f7c);
-  min-height: clamp(152px, 25vw, 252px);
+  background: linear-gradient(180deg, #ffe3ef, #db5b8a 70%, #a82f57);
 }
 
 .hero-photo__nail--four {
-  background: linear-gradient(180deg, #fff0d9, #ee9a83);
-  min-height: clamp(126px, 22vw, 216px);
-}
-
-.hero-photo__nail--five {
-  min-height: clamp(88px, 17vw, 170px);
+  background: linear-gradient(180deg, #fff3d9, #ef9a72 70%, #bf5d4e);
 }
 
 .section-block {
@@ -335,26 +378,70 @@ h1 {
   font-weight: 900;
 }
 
+.collection-heading {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+}
+
+.collection-heading__link {
+  color: #a82f57;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
 .collection-grid {
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 0 auto;
   max-width: 1180px;
 }
 
 .collection-card {
-  align-items: center;
-  background: #ffffff;
-  border: 1px solid rgba(17, 138, 136, 0.18);
+  background: #ffd6c9;
+  border: 1px solid rgba(217, 79, 124, 0.14);
   border-radius: 8px;
-  color: #2f554d;
-  display: flex;
+  color: #392a31;
+  display: grid;
+  gap: 10px;
   font-weight: 900;
+  min-height: 132px;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.collection-card--date-night {
+  background: #ffd9e3;
+}
+
+.collection-card--vacation {
+  background: #cbeee3;
+}
+
+.collection-card__visual {
+  align-items: end;
+  display: flex;
+  gap: 5px;
   justify-content: center;
-  min-height: 92px;
-  padding: 18px;
-  text-align: center;
+  min-height: 76px;
+}
+
+.collection-card__nail {
+  background: linear-gradient(180deg, #fff1e9, #ef816b);
+  border-radius: 999px 999px 14px 14px;
+  box-shadow: inset 0 6px 8px rgba(255, 255, 255, 0.42);
+  display: block;
+  min-height: 58px;
+  width: 22px;
+}
+
+.collection-card__nail--two {
+  min-height: 70px;
+}
+
+.collection-card__nail--three {
+  min-height: 50px;
 }
 
 .kit-section {
@@ -539,7 +626,7 @@ h1 {
 
 @media (max-width: 860px) {
   .hero-section {
-    grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .review-grid {
@@ -589,43 +676,73 @@ h1 {
   }
 
   .hero-section {
-    gap: 24px;
     min-height: auto;
-    padding: 34px 14px 42px;
+    padding: 10px 12px 0;
   }
 
   h1 {
-    font-size: 2.28rem;
+    font-size: 2.05rem;
     line-height: 1;
   }
 
-  .hero-copy,
-  .section-heading {
-    gap: 14px;
+  .hero-copy {
+    gap: 10px;
+    padding: 18px;
+  }
+
+  .hero-copy .eyebrow {
+    font-size: 0.66rem;
   }
 
   .hero-copy p,
   .hero-shell p {
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
+  .hero-copy .primary-button {
+    min-height: 42px;
+    padding: 0 18px;
   }
 
   .hero-photo {
+    aspect-ratio: 0.88;
+    min-height: 0;
+  }
+
+  .hero-photo::before {
+    height: 64%;
+    left: 2%;
+    top: 7%;
+    width: 96%;
+  }
+
+  .hero-photo__hand {
+    bottom: 30%;
     gap: 7px;
-    padding: 18px;
+    left: 5%;
+    right: 5%;
   }
 
   .hero-photo__nail,
   .hero-photo__nail--one,
   .hero-photo__nail--two,
   .hero-photo__nail--three,
-  .hero-photo__nail--four,
-  .hero-photo__nail--five {
+  .hero-photo__nail--four {
     min-height: 42px;
+  }
+
+  .hero-photo__finger {
+    min-height: 118px;
+    width: 38px;
   }
 
   .section-block {
     padding: 40px 14px;
+  }
+
+  .section-heading {
+    gap: 14px;
   }
 
   .section-heading h2 {
@@ -649,21 +766,48 @@ h1 {
   }
 
   .collection-card {
-    min-height: 76px;
-    padding: 14px;
+    min-height: 112px;
+    padding: 8px;
+  }
+
+  .collection-card__visual {
+    min-height: 68px;
+  }
+
+  .collection-card__nail {
+    min-height: 45px;
+    width: 17px;
+  }
+
+  .collection-card__nail--two {
+    min-height: 56px;
+  }
+
+  .collection-card__nail--three {
+    min-height: 40px;
   }
 
   .confidence-section {
-    padding-block: 26px;
+    background: transparent;
+    margin-top: -18px;
+    padding: 0 12px 26px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .confidence-section .section-heading {
+    display: none;
   }
 
   .confidence-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
   }
 
   .confidence-list li {
+    box-shadow: 0 12px 24px rgba(93, 48, 67, 0.1);
     font-size: 0.78rem;
-    min-height: 54px;
+    min-height: 52px;
     padding: 10px 8px;
     text-align: center;
   }
