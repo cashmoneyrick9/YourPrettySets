@@ -1,4 +1,5 @@
 import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { HomePage } from "./HomePage";
 
@@ -18,10 +19,10 @@ describe("HomePage", () => {
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "#shop-collections");
     expect(screen.getByText("Pick your set")).toBeInTheDocument();
-    expect(screen.getByText("Choose your wear")).toBeInTheDocument();
-    expect(screen.getByText("Press on pretty")).toBeInTheDocument();
-    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(3);
-    expect(document.querySelector(".confidence-card__arrow")).toBeInTheDocument();
+    expect(screen.getByText("Find the look you want")).toBeInTheDocument();
+    expect(screen.queryByText("Choose your wear")).not.toBeInTheDocument();
+    expect(screen.queryByText("Press on pretty")).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(1);
     expect(document.querySelectorAll(".confidence-dots__dot")).toHaveLength(3);
     expect(screen.queryByText(/size/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/sizing kit/i)).not.toBeInTheDocument();
@@ -35,6 +36,21 @@ describe("HomePage", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Pretty notes from future customers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
+  });
+
+  it("switches the step carousel with arrows", async () => {
+    const user = userEvent.setup();
+    render(<HomePage />);
+
+    await user.click(screen.getByRole("button", { name: "Next step" }));
+
+    expect(screen.getByText("Choose your wear")).toBeInTheDocument();
+    expect(screen.getByText("Glue or tabs")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Previous step" }));
+
+    expect(screen.getByText("Pick your set")).toBeInTheDocument();
+    expect(screen.getByText("Find the look you want")).toBeInTheDocument();
   });
 
   it("links FAQ teaser questions to the future FAQ page", () => {
