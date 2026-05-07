@@ -14,7 +14,9 @@ describe("HomePage", () => {
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
     const confidence = screen.getByRole("heading", { name: "Ready in three steps" });
     const collections = screen.getByRole("heading", { name: "Browse by the plan, mood, or moment." });
-    const newArrivals = screen.getByRole("heading", { name: "New Arrivals" });
+    const weeklySet = screen.getByRole("heading", { name: "This week's set" });
+    const shopMore = screen.getByRole("heading", { name: "Shop more" });
+    const included = screen.getByRole("heading", { name: "Everything needed to apply and care for your set." });
 
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "#shop-collections");
@@ -29,11 +31,21 @@ describe("HomePage", () => {
 
     expect(hero.compareDocumentPosition(confidence) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(confidence.compareDocumentPosition(collections) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(collections.compareDocumentPosition(newArrivals) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Featured Sets" })).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "Everything needed to apply and care for your set." })
-    ).toBeInTheDocument();
+    expect(collections.compareDocumentPosition(weeklySet) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(weeklySet.compareDocumentPosition(shopMore) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(shopMore.compareDocumentPosition(included) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "New Arrivals" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Featured Sets" })).not.toBeInTheDocument();
+    expect(screen.getByText("Blush Crush")).toBeInTheDocument();
+    expect(screen.getByText("Soft pink, ready for everyday plans.")).toBeInTheDocument();
+    expect(screen.getByText("1 of 4")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Shop this set" })).toHaveAttribute("href", "#product-blush-crush");
+    expect(screen.getByRole("link", { name: "Browse all new sets" })).toHaveAttribute("href", "#shop-more");
+    expect(document.querySelector(".weekly-set__peek")).toBeInTheDocument();
+    expect(screen.getByText("Golden Hour")).toBeInTheDocument();
+    expect(screen.getByText("Vacation Crush")).toBeInTheDocument();
+    expect(screen.getByText("Soft Serve")).toBeInTheDocument();
+    expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Pretty notes from future customers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
   });
