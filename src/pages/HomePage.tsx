@@ -1,12 +1,13 @@
+import { useState } from "react";
 import { CollectionFilters } from "../components/CollectionFilters";
 import { KitContents } from "../components/KitContents";
 import { ProductCarousel } from "../components/ProductCarousel";
 import { featuredProducts, newArrivals } from "../data/products";
 
 const confidenceSteps = [
-  { label: "Pick your set", visual: "set" },
-  { label: "Choose your wear", visual: "wear" },
-  { label: "Press on pretty", visual: "press" }
+  { label: "Pick your set", helper: "Find the look you want", visual: "set" },
+  { label: "Choose your wear", helper: "Glue or tabs", visual: "wear" },
+  { label: "Press on pretty", helper: "Ready in minutes", visual: "press" }
 ];
 
 const reviews = [
@@ -27,6 +28,15 @@ const reviews = [
 const faqs = ["What comes with each set?", "How long do press-ons last?", "Can I reuse them?"];
 
 export function HomePage() {
+  const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const activeStep = confidenceSteps[activeStepIndex];
+  const showPreviousStep = () => {
+    setActiveStepIndex((current) => (current === 0 ? confidenceSteps.length - 1 : current - 1));
+  };
+  const showNextStep = () => {
+    setActiveStepIndex((current) => (current === confidenceSteps.length - 1 ? 0 : current + 1));
+  };
+
   return (
     <main id="home">
       <section className="hero-section">
@@ -61,27 +71,37 @@ export function HomePage() {
           <p className="eyebrow">Ready to wear</p>
           <h2>Ready in three steps</h2>
         </div>
-        <ol className="confidence-list">
-          {confidenceSteps.map((step, index) => (
-            <li className={`confidence-card confidence-card--${step.visual}`} key={step.label}>
+        <div className="confidence-carousel" aria-live="polite">
+          <button className="confidence-carousel__button" type="button" onClick={showPreviousStep} aria-label="Previous step">
+            ‹
+          </button>
+          <article className={`confidence-card confidence-card--${activeStep.visual}`}>
               <span className="confidence-card__visual" aria-hidden="true">
                 <span className="confidence-card__nail confidence-card__nail--one" />
                 <span className="confidence-card__nail confidence-card__nail--two" />
                 <span className="confidence-card__nail confidence-card__nail--three" />
+                <span className="confidence-card__nail confidence-card__nail--four" />
               </span>
-              <span className="confidence-card__label">{step.label}</span>
-              {index === confidenceSteps.length - 1 ? (
-                <span className="confidence-card__arrow" aria-hidden="true">
-                  ›
-                </span>
-              ) : null}
-            </li>
+            <span className="confidence-card__copy">
+              <strong className="confidence-card__label">{activeStep.label}</strong>
+              <span className="confidence-card__helper">{activeStep.helper}</span>
+            </span>
+          </article>
+          <button className="confidence-carousel__button" type="button" onClick={showNextStep} aria-label="Next step">
+            ›
+          </button>
+        </div>
+        <div className="confidence-dots" aria-label="Step carousel controls">
+          {confidenceSteps.map((step, index) => (
+            <button
+              aria-label={`Show ${step.label}`}
+              aria-pressed={index === activeStepIndex}
+              className={`confidence-dots__dot${index === activeStepIndex ? " confidence-dots__dot--active" : ""}`}
+              key={step.label}
+              onClick={() => setActiveStepIndex(index)}
+              type="button"
+            />
           ))}
-        </ol>
-        <div className="confidence-dots" aria-hidden="true">
-          <span className="confidence-dots__dot confidence-dots__dot--active" />
-          <span className="confidence-dots__dot" />
-          <span className="confidence-dots__dot" />
         </div>
       </section>
 
