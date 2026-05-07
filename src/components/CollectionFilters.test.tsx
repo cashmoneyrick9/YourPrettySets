@@ -14,5 +14,6 @@ describe("CollectionFilters", () => {
     expect(screen.queryByRole("link", { name: "New Arrivals" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Bridal" })).not.toBeInTheDocument();
     expect(document.querySelectorAll(".collection-card__visual")).toHaveLength(3);
+    expect(document.querySelectorAll(".collection-card__nail")).toHaveLength(15);
   });
 });

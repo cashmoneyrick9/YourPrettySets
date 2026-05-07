@@ -20,6 +20,9 @@ describe("HomePage", () => {
     expect(screen.getByText("Pick your set")).toBeInTheDocument();
     expect(screen.getByText("Choose your wear")).toBeInTheDocument();
     expect(screen.getByText("Press on pretty")).toBeInTheDocument();
+    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(3);
+    expect(document.querySelector(".confidence-card__arrow")).toBeInTheDocument();
+    expect(document.querySelectorAll(".confidence-dots__dot")).toHaveLength(3);
     expect(screen.queryByText(/size/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/sizing kit/i)).not.toBeInTheDocument();
 
