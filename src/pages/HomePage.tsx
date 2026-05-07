@@ -26,6 +26,22 @@ export function HomePage() {
   return (
     <main id="home">
       <section className="hero-section">
+        <div className="hero-photo" aria-label="Glossy pink press-on nail set on a soft spring vanity">
+          <div className="hero-photo__hand" aria-hidden="true">
+            <span className="hero-photo__finger hero-photo__finger--one">
+              <span className="hero-photo__nail hero-photo__nail--one" />
+            </span>
+            <span className="hero-photo__finger hero-photo__finger--two">
+              <span className="hero-photo__nail hero-photo__nail--two" />
+            </span>
+            <span className="hero-photo__finger hero-photo__finger--three">
+              <span className="hero-photo__nail hero-photo__nail--three" />
+            </span>
+            <span className="hero-photo__finger hero-photo__finger--four">
+              <span className="hero-photo__nail hero-photo__nail--four" />
+            </span>
+          </div>
+        </div>
         <div className="hero-copy">
           <p className="eyebrow">Handmade ready-to-wear press-ons</p>
           <h1>Ready-to-wear sets for pretty plans</h1>
@@ -33,13 +49,6 @@ export function HomePage() {
           <a className="primary-button" href="#shop-collections">
             Shop sets
           </a>
-        </div>
-        <div className="hero-photo" aria-label="Glossy pink press-on nail set on a soft spring vanity">
-          <span className="hero-photo__nail hero-photo__nail--one" />
-          <span className="hero-photo__nail hero-photo__nail--two" />
-          <span className="hero-photo__nail hero-photo__nail--three" />
-          <span className="hero-photo__nail hero-photo__nail--four" />
-          <span className="hero-photo__nail hero-photo__nail--five" />
         </div>
       </section>
 
@@ -57,7 +66,9 @@ export function HomePage() {
 
       <CollectionFilters />
       <ProductCarousel eyebrow="Fresh sets" title="New Arrivals" products={newArrivals} />
-      <ProductCarousel eyebrow="Customer moodboard" title="Featured Sets" products={featuredProducts} />
+      <div id="featured-sets">
+        <ProductCarousel eyebrow="Customer moodboard" title="Featured Sets" products={featuredProducts} />
+      </div>
       <KitContents />
 
       <section className="section-block reviews-section">
