@@ -3,7 +3,11 @@ import { KitContents } from "../components/KitContents";
 import { ProductCarousel } from "../components/ProductCarousel";
 import { featuredProducts, newArrivals } from "../data/products";
 
-const confidenceSteps = ["Pick your set", "Choose your wear", "Press on pretty"];
+const confidenceSteps = [
+  { label: "Pick your set", visual: "set" },
+  { label: "Choose your wear", visual: "wear" },
+  { label: "Press on pretty", visual: "press" }
+];
 
 const reviews = [
   {
@@ -58,10 +62,27 @@ export function HomePage() {
           <h2>Ready in three steps</h2>
         </div>
         <ol className="confidence-list">
-          {confidenceSteps.map((step) => (
-            <li key={step}>{step}</li>
+          {confidenceSteps.map((step, index) => (
+            <li className={`confidence-card confidence-card--${step.visual}`} key={step.label}>
+              <span className="confidence-card__visual" aria-hidden="true">
+                <span className="confidence-card__nail confidence-card__nail--one" />
+                <span className="confidence-card__nail confidence-card__nail--two" />
+                <span className="confidence-card__nail confidence-card__nail--three" />
+              </span>
+              <span className="confidence-card__label">{step.label}</span>
+              {index === confidenceSteps.length - 1 ? (
+                <span className="confidence-card__arrow" aria-hidden="true">
+                  ›
+                </span>
+              ) : null}
+            </li>
           ))}
         </ol>
+        <div className="confidence-dots" aria-hidden="true">
+          <span className="confidence-dots__dot confidence-dots__dot--active" />
+          <span className="confidence-dots__dot" />
+          <span className="confidence-dots__dot" />
+        </div>
       </section>
 
       <CollectionFilters />

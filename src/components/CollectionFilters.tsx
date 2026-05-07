@@ -27,6 +27,8 @@ export function CollectionFilters() {
               <span className="collection-card__nail collection-card__nail--one" />
               <span className="collection-card__nail collection-card__nail--two" />
               <span className="collection-card__nail collection-card__nail--three" />
+              <span className="collection-card__nail collection-card__nail--four" />
+              <span className="collection-card__nail collection-card__nail--five" />
             </span>
             <span>{collection}</span>
           </a>
