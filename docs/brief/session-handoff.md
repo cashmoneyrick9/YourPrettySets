@@ -136,6 +136,18 @@ Follow-up correction:
 - The correction spec is saved at `docs/superpowers/specs/2026-05-07-mobile-home-mockup-fidelity-design.md`.
 - The correction plan is saved at `docs/superpowers/plans/2026-05-07-mobile-home-mockup-fidelity.md`.
 
+Second inspiration fidelity pass:
+
+- The CEO compared the current page against two inspiration screenshots and noted that the UX still did not match closely enough.
+- The main missing pieces were real-photo feeling, softer/smaller hero hierarchy, visual step cards, denser spacing, compact Collections heading, and fuller nail-set visuals in tiles.
+- The latest pass keeps code-native temporary visuals but moves closer to the inspiration by:
+  - reducing mobile hero headline/body dominance
+  - tightening top-section vertical rhythm
+  - turning the three-step row into visual carousel-style cards with dots and an arrow cue
+  - making Collections feel more like a compact shop module
+  - rendering five nail shapes per collection tile instead of three abstract marks
+- The pass is documented at `docs/superpowers/specs/2026-05-07-home-inspo-ux-fidelity-design.md` and `docs/superpowers/plans/2026-05-07-home-inspo-ux-fidelity.md`.
+
 ## Open Product/Site Decisions
 
 Still open:
