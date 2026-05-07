@@ -3,12 +3,7 @@ import { KitContents } from "../components/KitContents";
 import { ProductCarousel } from "../components/ProductCarousel";
 import { featuredProducts, newArrivals } from "../data/products";
 
-const howItWorks = [
-  "Choose your ready-to-wear set.",
-  "Pick your length and shape.",
-  "Apply with glue or tabs.",
-  "Wear, remove, and store with care."
-];
+const confidenceSteps = ["Pick your set", "Choose your wear", "Press on pretty"];
 
 const reviews = [
   {
@@ -33,39 +28,37 @@ export function HomePage() {
       <section className="hero-section">
         <div className="hero-copy">
           <p className="eyebrow">Handmade ready-to-wear press-ons</p>
-          <h1>Art on Miniature Canvases</h1>
-          <p>
-            Pretty press-on sets made for everyday style, special plans, and salon-looking moments
-            at home.
-          </p>
+          <h1>Ready-to-wear sets for pretty plans</h1>
+          <p>Handmade press-on sets for everyday style, special plans, and salon-looking moments at home.</p>
           <a className="primary-button" href="#shop-collections">
-            Shop ready-to-wear
+            Shop sets
           </a>
         </div>
-        <div className="hero-product-spread" aria-label="Spring and summer nail set spread">
-          <span className="nail-tile nail-tile--coral">Coral</span>
-          <span className="nail-tile nail-tile--mint">Mint</span>
-          <span className="nail-tile nail-tile--sky">Sky</span>
-          <span className="nail-tile nail-tile--peach">Peach</span>
+        <div className="hero-photo" aria-label="Glossy pink press-on nail set on a soft spring vanity">
+          <span className="hero-photo__nail hero-photo__nail--one" />
+          <span className="hero-photo__nail hero-photo__nail--two" />
+          <span className="hero-photo__nail hero-photo__nail--three" />
+          <span className="hero-photo__nail hero-photo__nail--four" />
+          <span className="hero-photo__nail hero-photo__nail--five" />
         </div>
       </section>
 
-      <ProductCarousel eyebrow="Fresh sets" title="New Arrivals" products={newArrivals} />
-      <CollectionFilters />
-      <ProductCarousel eyebrow="Customer moodboard" title="Featured Sets" products={featuredProducts} />
-      <KitContents />
-
-      <section className="section-block steps-section" id="how-it-works">
+      <section className="section-block confidence-section" id="how-it-works">
         <div className="section-heading">
-          <p className="eyebrow">Simple wear</p>
-          <h2>How it works</h2>
+          <p className="eyebrow">Ready to wear</p>
+          <h2>Ready in three steps</h2>
         </div>
-        <ol className="steps-list">
-          {howItWorks.map((step) => (
+        <ol className="confidence-list">
+          {confidenceSteps.map((step) => (
             <li key={step}>{step}</li>
           ))}
         </ol>
       </section>
+
+      <CollectionFilters />
+      <ProductCarousel eyebrow="Fresh sets" title="New Arrivals" products={newArrivals} />
+      <ProductCarousel eyebrow="Customer moodboard" title="Featured Sets" products={featuredProducts} />
+      <KitContents />
 
       <section className="section-block reviews-section">
         <div className="section-heading">
