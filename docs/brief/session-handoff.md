@@ -40,6 +40,7 @@ Implemented:
   - slim confidence strip follows the hero
   - collections appear before New Arrivals
   - sizing-kit language is intentionally excluded for now
+  - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
 
 Latest known verification before handoff:
 
@@ -126,6 +127,14 @@ The design spec is saved at:
 The implementation plan is saved at:
 
 - `docs/superpowers/plans/2026-05-07-mobile-home-shopping-path.md`
+
+Follow-up correction:
+
+- The first implementation matched the section order but not the mockup UX closely enough.
+- A second mockup-fidelity pass was approved to make the mobile hero feel like one image-led panel, not a split layout.
+- Collections are now intentionally reduced at the top of the Home page to `Everyday`, `Date Night`, and `Vacation`, with `See all` linking down to Featured Sets.
+- The correction spec is saved at `docs/superpowers/specs/2026-05-07-mobile-home-mockup-fidelity-design.md`.
+- The correction plan is saved at `docs/superpowers/plans/2026-05-07-mobile-home-mockup-fidelity.md`.
 
 ## Open Product/Site Decisions
 
