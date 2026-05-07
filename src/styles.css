@@ -522,61 +522,86 @@ h1 {
   margin-bottom: 14px;
 }
 
-.confidence-list {
-  display: grid;
+.confidence-carousel {
+  align-items: center;
+  background: #fff0ee;
+  border: 1px solid rgba(217, 79, 124, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(93, 48, 67, 0.08);
+  display: flex;
   gap: 10px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  list-style: none;
   margin: 0 auto;
-  max-width: 920px;
-  padding: 0;
+  max-width: 760px;
+  padding: 10px;
 }
 
-.confidence-list li {
+.confidence-carousel__button {
+  align-items: center;
   background: #ffffff;
-  border: 1px solid rgba(217, 79, 124, 0.14);
-  border-radius: 8px;
+  border: 1px solid rgba(168, 47, 87, 0.16);
+  border-radius: 999px;
   color: #392a31;
-  font-size: 0.95rem;
-  font-weight: 900;
-  line-height: 1.2;
-  min-height: 62px;
-  padding: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 1.45rem;
+  font-weight: 800;
+  height: 34px;
+  justify-content: center;
+  line-height: 1;
+  width: 34px;
+}
+
+.confidence-carousel__button:focus-visible,
+.confidence-dots__dot:focus-visible {
+  outline: 3px solid #0a6866;
+  outline-offset: 3px;
 }
 
 .confidence-card {
   align-items: center;
   display: grid;
-  gap: 8px;
-  grid-template-columns: auto minmax(0, 1fr);
+  flex: 1 1 auto;
+  gap: 16px;
+  grid-template-columns: minmax(92px, 0.75fr) minmax(0, 1fr);
+  min-width: 0;
   position: relative;
 }
 
 .confidence-card__visual {
   align-items: end;
   display: flex;
-  gap: 3px;
+  gap: 5px;
+  justify-content: center;
+  min-height: 76px;
 }
 
 .confidence-card__nail {
   background: linear-gradient(180deg, #fff0e8, #ef8c77);
-  border-radius: 999px 999px 8px 8px;
+  border-radius: 999px 999px 12px 12px;
+  box-shadow: inset 0 6px 9px rgba(255, 255, 255, 0.44);
   display: block;
-  min-height: 28px;
-  width: 10px;
+  min-height: 58px;
+  width: 20px;
 }
 
 .confidence-card__nail--two {
-  min-height: 34px;
+  min-height: 70px;
 }
 
 .confidence-card__nail--three {
-  min-height: 24px;
+  background: linear-gradient(180deg, #ffe2e8, #d9576e);
+  min-height: 64px;
+}
+
+.confidence-card__nail--four {
+  min-height: 52px;
 }
 
 .confidence-card--wear .confidence-card__nail {
-  background: linear-gradient(180deg, #fff7f3, #f3b1a5);
-  width: 8px;
+  background: linear-gradient(180deg, #fff8f4, #f3b1a5);
+  width: 16px;
 }
 
 .confidence-card--press .confidence-card__nail {
@@ -584,29 +609,39 @@ h1 {
   transform: rotate(18deg);
 }
 
-.confidence-card__label {
+.confidence-card__copy {
+  display: grid;
+  gap: 4px;
   min-width: 0;
 }
 
-.confidence-card__arrow {
-  color: #a82f57;
-  font-size: 1.15rem;
-  line-height: 1;
-  position: absolute;
-  right: 8px;
+.confidence-card__label {
+  font-size: 1rem;
+  line-height: 1.1;
+  min-width: 0;
+}
+
+.confidence-card__helper {
+  color: #392a31;
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.25;
 }
 
 .confidence-dots {
   display: flex;
-  gap: 4px;
+  gap: 5px;
   justify-content: center;
-  margin-top: 8px;
+  margin-top: 9px;
 }
 
 .confidence-dots__dot {
   background: rgba(168, 47, 87, 0.24);
+  border: 0;
   border-radius: 999px;
+  cursor: pointer;
   height: 5px;
+  padding: 0;
   width: 5px;
 }
 
@@ -893,43 +928,49 @@ h1 {
     display: none;
   }
 
-  .confidence-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    max-width: none;
+  .confidence-carousel {
+    gap: 8px;
+    padding: 8px;
   }
 
-  .confidence-list li {
-    box-shadow: 0 12px 24px rgba(93, 48, 67, 0.1);
-    font-size: 0.72rem;
-    min-height: 58px;
-    padding: 8px 10px;
-    text-align: left;
+  .confidence-carousel__button {
+    font-size: 1.22rem;
+    height: 30px;
+    width: 30px;
   }
 
   .confidence-card {
-    gap: 6px;
-    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 10px;
+    grid-template-columns: minmax(76px, 0.72fr) minmax(0, 1fr);
   }
 
   .confidence-card__visual {
-    justify-content: center;
+    min-height: 60px;
   }
 
   .confidence-card__nail {
-    min-height: 24px;
-    width: 7px;
+    min-height: 44px;
+    width: 14px;
   }
 
   .confidence-card__nail--two {
-    min-height: 30px;
+    min-height: 54px;
   }
 
   .confidence-card__nail--three {
-    min-height: 21px;
+    min-height: 50px;
   }
 
-  .confidence-card__arrow {
-    right: 5px;
+  .confidence-card__nail--four {
+    min-height: 40px;
+  }
+
+  .confidence-card__label {
+    font-size: 0.88rem;
+  }
+
+  .confidence-card__helper {
+    font-size: 0.72rem;
   }
 
   .kit-feature,
