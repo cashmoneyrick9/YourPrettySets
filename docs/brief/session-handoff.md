@@ -148,6 +148,15 @@ Second inspiration fidelity pass:
   - rendering five nail shapes per collection tile instead of three abstract marks
 - The pass is documented at `docs/superpowers/specs/2026-05-07-home-inspo-ux-fidelity-design.md` and `docs/superpowers/plans/2026-05-07-home-inspo-ux-fidelity.md`.
 
+Latest carousel decision:
+
+- The CEO selected the single explainer-card carousel mockup for the step section.
+- The Home page now shows one step card at a time with a visual, title, short explainer text, previous/next arrows, and dot buttons.
+- Current step copy:
+  - `Pick your set` / `Find the look you want`
+  - `Choose your wear` / `Glue or tabs`
+  - `Press on pretty` / `Ready in minutes`
+
 ## Open Product/Site Decisions
 
 Still open:
