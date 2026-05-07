@@ -38,16 +38,18 @@ Implemented:
 - Mobile Home page shopping path:
   - hero leads with product/lifestyle visual treatment and a direct `Shop sets` CTA
   - slim confidence strip follows the hero
-  - collections appear before New Arrivals
+  - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
   - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
+  - weekly-set flow replaces duplicate `New Arrivals` and `Featured Sets` sections with `This week's set` and `Shop more`
 
 Latest known verification before handoff:
 
-- `npm test`: 9 files, 16 tests passed.
+- `npm test`: 18 files, 34 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
-- Git working tree was clean after commit `dec6bd1 docs: mark compact header implementation complete`.
+- Headless Brave mobile screenshots were captured at 319px wide for the Home top and weekly-set sections.
+- Git working tree was clean except unrelated untracked `.claude/` after local merge to `main`.
 
 ## Important Commits
 
@@ -156,6 +158,16 @@ Latest carousel decision:
   - `Pick your set` / `Find the look you want`
   - `Choose your wear` / `Glue or tabs`
   - `Press on pretty` / `Ready in minutes`
+
+Latest weekly-set flow decision:
+
+- The CEO liked the full-page direction that removes duplicate `New Arrivals` and `Featured Sets` sections.
+- The Home page now moves from Collections into a featured `This week's set` module, then a compact `Shop more` row, then What's included.
+- `This week's set` uses `Blush Crush` as the lead product, includes `1 of 4`, a `Shop this set` CTA, `Browse all new sets`, and a visible next-card peek so the carousel intent is clearer.
+- `Shop more` shows a short product row instead of repeating another full carousel section.
+- Product tiles no longer show visible `Clean background placeholder...` copy; they use code-native nail-set visuals until real product photography exists.
+- The design spec is saved at `docs/superpowers/specs/2026-05-07-weekly-set-home-flow-design.md`.
+- The implementation plan is saved at `docs/superpowers/plans/2026-05-07-weekly-set-home-flow.md`.
 
 ## Open Product/Site Decisions
 

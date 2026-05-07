@@ -16,21 +16,21 @@
 - Modify: `src/pages/HomePage.test.tsx`
 - Modify: `src/components/ProductCard.test.tsx`
 
-- [ ] Add tests that assert Collections are followed by `This week's set`, then `Shop more`, then `What's included`.
-- [ ] Assert `New Arrivals` and `Featured Sets` no longer render on the Home page.
-- [ ] Assert the weekly feature includes `1 of 4`, `Shop this set`, `Browse all new sets`, and a next-product peek.
-- [ ] Assert product image areas no longer render placeholder text.
-- [ ] Run focused tests and confirm they fail before implementation.
+- [x] Add tests that assert Collections are followed by `This week's set`, then `Shop more`, then `What's included`.
+- [x] Assert `New Arrivals` and `Featured Sets` no longer render on the Home page.
+- [x] Assert the weekly feature includes `1 of 4`, `Shop this set`, `Browse all new sets`, and a next-product peek.
+- [x] Assert product image areas no longer render placeholder text.
+- [x] Run focused tests and confirm they fail before implementation.
 
 ### Task 2: Implement Home Markup
 
 **Files:**
 - Modify: `src/pages/HomePage.tsx`
 
-- [ ] Add weekly feature data derived from existing products.
-- [ ] Replace the two product carousels with `This week's set` and `Shop more`.
-- [ ] Keep `KitContents` after product shopping.
-- [ ] Run focused tests and confirm Home page behavior passes.
+- [x] Add weekly feature data derived from existing products.
+- [x] Replace the two product carousels with `This week's set` and `Shop more`.
+- [x] Keep `KitContents` after product shopping.
+- [x] Run focused tests and confirm Home page behavior passes.
 
 ### Task 3: Remove Placeholder Product Art Text
 
@@ -38,18 +38,18 @@
 - Modify: `src/components/ProductCard.tsx`
 - Modify: `src/styles.css`
 
-- [ ] Remove visible placeholder copy from product art.
-- [ ] Add code-native nail-set visual spans for product cards.
-- [ ] Style weekly feature and shop-more cards to look closer to the mockup.
-- [ ] Run focused product/home/style tests.
+- [x] Remove visible placeholder copy from product art.
+- [x] Add code-native nail-set visual spans for product cards.
+- [x] Style weekly feature and shop-more cards to look closer to the mockup.
+- [x] Run focused product/home/style tests.
 
 ### Task 4: Handoff And Verification
 
 **Files:**
 - Modify: `docs/brief/session-handoff.md`
 
-- [ ] Record the weekly-set flow decision.
-- [ ] Run `npm test`, `npm run build`, `npm audit --audit-level=moderate`, and `git status --short --branch`.
+- [x] Record the weekly-set flow decision.
+- [x] Run `npm test`, `npm run build`, `npm audit --audit-level=moderate`, and `git status --short --branch`.
 - [ ] Merge locally to `main` after verification.
 
 ---

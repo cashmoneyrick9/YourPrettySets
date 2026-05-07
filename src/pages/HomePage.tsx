@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { CollectionFilters } from "../components/CollectionFilters";
 import { KitContents } from "../components/KitContents";
-import { ProductCarousel } from "../components/ProductCarousel";
-import { featuredProducts, newArrivals } from "../data/products";
+import { ProductCard } from "../components/ProductCard";
+import { products } from "../data/products";
 
 const confidenceSteps = [
   { label: "Pick your set", helper: "Find the look you want", visual: "set" },
@@ -26,6 +26,13 @@ const reviews = [
 ];
 
 const faqs = ["What comes with each set?", "How long do press-ons last?", "Can I reuse them?"];
+
+const weeklyProducts = products.filter((product) => product.collections.includes("New Arrivals")).slice(0, 4);
+const weeklyProduct = weeklyProducts[0];
+const peekProduct = weeklyProducts[1];
+const shopMoreProducts = products.filter((product) =>
+  ["golden-hour", "vacation-crush", "soft-serve"].includes(product.id)
+);
 
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
@@ -106,10 +113,62 @@ export function HomePage() {
       </section>
 
       <CollectionFilters />
-      <ProductCarousel eyebrow="Fresh sets" title="New Arrivals" products={newArrivals} />
-      <div id="featured-sets">
-        <ProductCarousel eyebrow="Customer moodboard" title="Featured Sets" products={featuredProducts} />
-      </div>
+      <section className="section-block weekly-set-section" id="this-weeks-set">
+        <div className="section-heading weekly-set-heading">
+          <div>
+            <p className="eyebrow">Curated this week</p>
+            <h2>This week's set</h2>
+          </div>
+          <span className="weekly-set-count">1 of {weeklyProducts.length}</span>
+        </div>
+        <div className="weekly-set-layout">
+          <article className="weekly-set-card" id={`product-${weeklyProduct.slug}`}>
+            <div className={`weekly-set-art product-art product-art--${weeklyProduct.detailTier}`} aria-label={weeklyProduct.images.clean}>
+              <span className="product-art__nail product-art__nail--one" />
+              <span className="product-art__nail product-art__nail--two" />
+              <span className="product-art__nail product-art__nail--three" />
+              <span className="product-art__nail product-art__nail--four" />
+              <span className="product-art__nail product-art__nail--five" />
+            </div>
+            <div className="weekly-set-card__body">
+              <div>
+                <h3>{weeklyProduct.name}</h3>
+                <p>Soft pink, ready for everyday plans.</p>
+              </div>
+              <strong>${weeklyProduct.price}</strong>
+            </div>
+            <div className="weekly-set-card__actions">
+              <a className="primary-button" href={`#product-${weeklyProduct.slug}`}>
+                Shop this set
+              </a>
+              <a className="weekly-set-card__link" href="#shop-more">
+                Browse all new sets
+              </a>
+            </div>
+          </article>
+          <div className="weekly-set__peek" aria-label={`Next set preview: ${peekProduct.name}`}>
+            <div className={`product-art product-art--${peekProduct.detailTier}`} aria-hidden="true">
+              <span className="product-art__nail product-art__nail--one" />
+              <span className="product-art__nail product-art__nail--two" />
+              <span className="product-art__nail product-art__nail--three" />
+            </div>
+            <span className="weekly-set__peek-arrow" aria-hidden="true">
+              ›
+            </span>
+          </div>
+        </div>
+      </section>
+      <section className="section-block shop-more-section" id="shop-more">
+        <div className="section-heading">
+          <p className="eyebrow">More to shop</p>
+          <h2>Shop more</h2>
+        </div>
+        <div className="shop-more-grid">
+          {shopMoreProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
       <KitContents />
 
       <section className="section-block reviews-section">
