@@ -9,10 +9,15 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".product-carousel");
     expect(styles).toContain("grid-auto-columns: minmax(206px, 252px)");
     expect(styles).toContain(".hero-photo");
+    expect(styles).toContain("grid-template-areas: \"hero\"");
+    expect(styles).toContain(".hero-copy");
+    expect(styles).toContain("z-index: 1");
     expect(styles).toContain(".confidence-list");
+    expect(styles).toContain("margin-top: -18px");
     expect(styles).toContain("grid-template-columns: repeat(3, minmax(0, 1fr))");
     expect(styles).toContain(".hero-photo__nail");
     expect(styles).toContain("min-height: 42px");
+    expect(styles).toContain(".collection-card__visual");
   });
 
   it("includes compact mobile header rules that hide the desktop nav", () => {

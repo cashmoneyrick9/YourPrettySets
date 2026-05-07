@@ -1,15 +1,18 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { collectionLabels } from "../data/products";
 import { CollectionFilters } from "./CollectionFilters";
 
 describe("CollectionFilters", () => {
-  it("renders every visible collection except New Arrivals as a link", () => {
+  it("renders the approved top shopping paths as visual collection tiles", () => {
     render(<CollectionFilters />);
 
-    for (const collection of collectionLabels.filter((label) => label !== "New Arrivals")) {
+    for (const collection of ["Everyday", "Date Night", "Vacation"]) {
       expect(screen.getByRole("link", { name: collection })).toBeInTheDocument();
     }
+
+    expect(screen.getByRole("link", { name: "See all" })).toHaveAttribute("href", "#featured-sets");
     expect(screen.queryByRole("link", { name: "New Arrivals" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Bridal" })).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".collection-card__visual")).toHaveLength(3);
   });
 });
