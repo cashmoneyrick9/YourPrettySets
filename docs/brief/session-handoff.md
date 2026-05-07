@@ -43,13 +43,14 @@ Implemented:
   - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
   - weekly-set flow replaces duplicate `New Arrivals` and `Featured Sets` sections with `This week's set` and `Shop more`
   - What's included now uses a compact kit summary and grouped accordion rows instead of a long vertical item list
+  - reviews now use a compact trust-chip row, single featured review carousel, product thumbnail/detail, dots, and a `See more reviews` link
 
 Latest known verification before handoff:
 
-- `npm test`: 18 files, 35 tests passed.
+- `npm test`: 18 files, 36 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
-- Headless Brave mobile screenshots were captured at 319px wide for the Home top, weekly-set, and What's included sections.
+- Headless Brave mobile screenshots were captured at 319px wide for the Home top, weekly-set, What's included, and review sections.
 - Git working tree was clean except unrelated untracked `.claude/` after the latest local `main` commit.
 
 ## Important Commits
@@ -181,6 +182,18 @@ Latest What's included decision:
   - `In the set` open by default, with only one group open at a time
   - a secondary `See care tips` link to `#faq`
 - The goal was UX structure, not final UI polish.
+
+Latest reviews decision:
+
+- The CEO selected pieces from review mockups: five-star row, quote card, customer label, small product thumbnail/detail, arrows, dots, and `See more reviews`.
+- The Home page review section now uses:
+  - eyebrow `Customer notes`
+  - heading `Pretty notes from customers`
+  - trust chips: `Easy fit`, `Photo-ready`, `Beginner friendly`
+  - one featured review card with a partial next-card peek
+  - previous/next buttons and dot controls
+  - product detail attached to the active quote
+- This is a UX foundation only; final UI polish remains open.
 
 ## Open Product/Site Decisions
 

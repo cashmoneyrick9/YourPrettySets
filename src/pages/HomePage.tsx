@@ -12,19 +12,29 @@ const confidenceSteps = [
 
 const reviews = [
   {
+    detail: "Oval · Short",
+    product: "Date Night",
     quote: "The set looked dressed up without feeling hard to wear.",
-    name: "Everyday customer"
+    name: "Everyday customer",
+    tier: "mid"
   },
   {
+    detail: "Almond · Medium",
+    product: "Golden Hour",
     quote: "Pretty enough for photos, practical enough for the week.",
-    name: "Beauty shopper"
+    name: "Beauty shopper",
+    tier: "detailed"
   },
   {
+    detail: "Round · Short",
+    product: "Blush Crush",
     quote: "The 24-nail set made finding a fit feel less stressful.",
-    name: "First-time press-on buyer"
+    name: "First-time press-on buyer",
+    tier: "simple"
   }
 ];
 
+const reviewChips = ["Easy fit", "Photo-ready", "Beginner friendly"];
 const faqs = ["What comes with each set?", "How long do press-ons last?", "Can I reuse them?"];
 
 const weeklyProducts = products.filter((product) => product.collections.includes("New Arrivals")).slice(0, 4);
@@ -36,12 +46,21 @@ const shopMoreProducts = products.filter((product) =>
 
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const [activeReviewIndex, setActiveReviewIndex] = useState(0);
   const activeStep = confidenceSteps[activeStepIndex];
+  const activeReview = reviews[activeReviewIndex];
+  const nextReview = reviews[(activeReviewIndex + 1) % reviews.length];
   const showPreviousStep = () => {
     setActiveStepIndex((current) => (current === 0 ? confidenceSteps.length - 1 : current - 1));
   };
   const showNextStep = () => {
     setActiveStepIndex((current) => (current === confidenceSteps.length - 1 ? 0 : current + 1));
+  };
+  const showPreviousReview = () => {
+    setActiveReviewIndex((current) => (current === 0 ? reviews.length - 1 : current - 1));
+  };
+  const showNextReview = () => {
+    setActiveReviewIndex((current) => (current === reviews.length - 1 ? 0 : current + 1));
   };
 
   return (
@@ -171,19 +190,65 @@ export function HomePage() {
       </section>
       <KitContents />
 
-      <section className="section-block reviews-section">
+      <section className="section-block reviews-section" id="reviews">
         <div className="section-heading">
-          <p className="eyebrow">Placeholder reviews</p>
-          <h2>Pretty notes from future customers</h2>
+          <p className="eyebrow">Customer notes</p>
+          <h2>Pretty notes from customers</h2>
         </div>
-        <div className="review-grid">
-          {reviews.map((review) => (
-            <figure key={review.quote}>
-              <blockquote>{review.quote}</blockquote>
-              <figcaption>{review.name}</figcaption>
-            </figure>
+        <div className="review-proof-row" aria-label="Review highlights">
+          {reviewChips.map((chip) => (
+            <span key={chip}>{chip}</span>
           ))}
         </div>
+        <div className="review-carousel">
+          <button className="review-carousel__button" type="button" onClick={showPreviousReview} aria-label="Previous review">
+            ‹
+          </button>
+          <figure className="review-card">
+            <div className="review-card__stars" aria-label="5 out of 5 stars">
+              ★★★★★
+            </div>
+            <blockquote>{activeReview.quote}</blockquote>
+            <figcaption>{activeReview.name}</figcaption>
+            <div className="review-product">
+              <span className={`review-product__art review-product__art--${activeReview.tier}`} aria-hidden="true">
+                <span className="review-product__nail review-product__nail--one" />
+                <span className="review-product__nail review-product__nail--two" />
+                <span className="review-product__nail review-product__nail--three" />
+              </span>
+              <span>
+                <strong>{activeReview.product}</strong>
+                <small>{activeReview.detail}</small>
+              </span>
+            </div>
+          </figure>
+          <div className="review-card review-card--peek" aria-hidden="true">
+            <span className="review-card__stars">★★★★★</span>
+            <span className={`review-product__art review-product__art--${nextReview.tier}`}>
+              <span className="review-product__nail review-product__nail--one" />
+              <span className="review-product__nail review-product__nail--two" />
+              <span className="review-product__nail review-product__nail--three" />
+            </span>
+          </div>
+          <button className="review-carousel__button review-carousel__button--next" type="button" onClick={showNextReview} aria-label="Next review">
+            ›
+          </button>
+        </div>
+        <div className="review-dots" aria-label="Review carousel controls">
+          {reviews.map((review, index) => (
+            <button
+              aria-label={`Show review from ${review.name}`}
+              aria-pressed={index === activeReviewIndex}
+              className={`review-dots__dot${index === activeReviewIndex ? " review-dots__dot--active" : ""}`}
+              key={review.name}
+              onClick={() => setActiveReviewIndex(index)}
+              type="button"
+            />
+          ))}
+        </div>
+        <a className="review-more-link" href="#reviews">
+          See more reviews <span aria-hidden="true">›</span>
+        </a>
       </section>
 
       <section className="section-block faq-teaser" id="faq">

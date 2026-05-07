@@ -46,8 +46,30 @@ describe("HomePage", () => {
     expect(screen.getByText("Vacation Crush")).toBeInTheDocument();
     expect(screen.getByText("Soft Serve")).toBeInTheDocument();
     expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Pretty notes from future customers" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Pretty notes from customers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
+  });
+
+  it("shows the review carousel foundation", async () => {
+    const user = userEvent.setup();
+    render(<HomePage />);
+
+    expect(screen.getByText("Customer notes")).toBeInTheDocument();
+    expect(screen.getByText("Easy fit")).toBeInTheDocument();
+    expect(screen.getByText("Photo-ready")).toBeInTheDocument();
+    expect(screen.getByText("Beginner friendly")).toBeInTheDocument();
+    expect(screen.getByText("The set looked dressed up without feeling hard to wear.")).toBeInTheDocument();
+    expect(screen.getByText("Everyday customer")).toBeInTheDocument();
+    expect(screen.getAllByText("Date Night").length).toBeGreaterThan(0);
+    expect(screen.getByText("Oval · Short")).toBeInTheDocument();
+    expect(document.querySelectorAll(".review-dots__dot")).toHaveLength(3);
+    expect(screen.getByRole("link", { name: "See more reviews" })).toHaveAttribute("href", "#reviews");
+
+    await user.click(screen.getByRole("button", { name: "Next review" }));
+
+    expect(screen.getByText("Pretty enough for photos, practical enough for the week.")).toBeInTheDocument();
+    expect(screen.getByText("Beauty shopper")).toBeInTheDocument();
+    expect(screen.getAllByText("Golden Hour").length).toBeGreaterThan(0);
   });
 
   it("switches the step carousel with arrows", async () => {
