@@ -16,7 +16,7 @@ describe("App", () => {
         name: "Shop Collections"
       })
     ).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Art on Miniature Canvases" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" })).toBeInTheDocument();
   });
 
   it("includes footer placeholders for contact, social, and policies", () => {

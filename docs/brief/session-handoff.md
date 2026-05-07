@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-06
+Last updated: 2026-05-07
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -35,6 +35,11 @@ Implemented:
   - full desktop nav is hidden on mobile
   - mobile menu opens/closes through a simple panel
 - Regression test for 320px mobile CSS rules.
+- Mobile Home page shopping path:
+  - hero leads with product/lifestyle visual treatment and a direct `Shop sets` CTA
+  - slim confidence strip follows the hero
+  - collections appear before New Arrivals
+  - sizing-kit language is intentionally excluded for now
 
 Latest known verification before handoff:
 
@@ -96,6 +101,31 @@ Latest CEO review:
 - The menu panel can be polished later during a broader UI pass.
 - The later UI pass should make the menu feel less big/blocky and less plain/dev-like.
 - Do not reopen the header UX implementation unless the CEO asks; the current priority was fixing usability.
+
+## Latest Discussion: Mobile Home Shopping Path
+
+The CEO approved moving the mobile Home page toward a more shoppable opening sequence.
+
+Confirmed direction:
+
+- Use a photo-led hero direction instead of the old four placeholder nail tiles.
+- Keep the hero CTA direct: `Shop sets`.
+- Do not force a traditional "How it works" section yet.
+- Do not mention sizing kits because sizing kits are not part of the current product flow.
+- Use a slim three-step confidence strip:
+  - `Pick your set`
+  - `Choose your wear`
+  - `Press on pretty`
+- Put Collections before New Arrivals so customers can choose a mood or occasion before individual products.
+- Keep New Arrivals directly after Collections as the first product shopping section.
+
+The design spec is saved at:
+
+- `docs/superpowers/specs/2026-05-07-mobile-home-shopping-path-design.md`
+
+The implementation plan is saved at:
+
+- `docs/superpowers/plans/2026-05-07-mobile-home-shopping-path.md`
 
 ## Open Product/Site Decisions
 
