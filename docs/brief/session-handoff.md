@@ -42,14 +42,15 @@ Implemented:
   - sizing-kit language is intentionally excluded for now
   - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
   - weekly-set flow replaces duplicate `New Arrivals` and `Featured Sets` sections with `This week's set` and `Shop more`
+  - What's included now uses a compact kit summary and grouped accordion rows instead of a long vertical item list
 
 Latest known verification before handoff:
 
-- `npm test`: 18 files, 34 tests passed.
+- `npm test`: 18 files, 35 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
-- Headless Brave mobile screenshots were captured at 319px wide for the Home top and weekly-set sections.
-- Git working tree was clean except unrelated untracked `.claude/` after local merge to `main`.
+- Headless Brave mobile screenshots were captured at 319px wide for the Home top, weekly-set, and What's included sections.
+- Git working tree was clean except unrelated untracked `.claude/` after the latest local `main` commit.
 
 ## Important Commits
 
@@ -168,6 +169,18 @@ Latest weekly-set flow decision:
 - Product tiles no longer show visible `Clean background placeholder...` copy; they use code-native nail-set visuals until real product photography exists.
 - The design spec is saved at `docs/superpowers/specs/2026-05-07-weekly-set-home-flow-design.md`.
 - The implementation plan is saved at `docs/superpowers/plans/2026-05-07-weekly-set-home-flow.md`.
+
+Latest What's included decision:
+
+- The CEO liked the accordion-style kit UX direction but noted the mockup UI could be fixed later.
+- The section now uses:
+  - heading `Everything ready for your set.`
+  - summary message `24 nails plus the tools to apply, wear, and store them.`
+  - a code-native kit flat-lay visual
+  - three grouped accordion rows: `In the set`, `For application`, and `For aftercare`
+  - `In the set` open by default, with only one group open at a time
+  - a secondary `See care tips` link to `#faq`
+- The goal was UX structure, not final UI polish.
 
 ## Open Product/Site Decisions
 

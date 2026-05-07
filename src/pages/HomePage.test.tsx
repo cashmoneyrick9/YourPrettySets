@@ -16,7 +16,7 @@ describe("HomePage", () => {
     const collections = screen.getByRole("heading", { name: "Browse by the plan, mood, or moment." });
     const weeklySet = screen.getByRole("heading", { name: "This week's set" });
     const shopMore = screen.getByRole("heading", { name: "Shop more" });
-    const included = screen.getByRole("heading", { name: "Everything needed to apply and care for your set." });
+    const included = screen.getByRole("heading", { name: "Everything ready for your set." });
 
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "#shop-collections");
