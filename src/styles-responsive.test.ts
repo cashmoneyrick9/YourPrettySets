@@ -8,8 +8,11 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("@media (max-width: 360px)");
     expect(styles).toContain(".product-carousel");
     expect(styles).toContain("grid-auto-columns: minmax(206px, 252px)");
-    expect(styles).toContain(".nail-tile");
-    expect(styles).toContain("min-height: 104px");
+    expect(styles).toContain(".hero-photo");
+    expect(styles).toContain(".confidence-list");
+    expect(styles).toContain("grid-template-columns: repeat(3, minmax(0, 1fr))");
+    expect(styles).toContain(".hero-photo__nail");
+    expect(styles).toContain("min-height: 42px");
   });
 
   it("includes compact mobile header rules that hide the desktop nav", () => {

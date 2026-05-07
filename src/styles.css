@@ -189,48 +189,53 @@ h1 {
   max-width: 640px;
 }
 
-.hero-product-spread {
+.hero-photo {
   align-self: center;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   background:
-    radial-gradient(circle at 20% 20%, rgba(255, 111, 97, 0.32), transparent 24%),
-    radial-gradient(circle at 82% 24%, rgba(98, 210, 190, 0.34), transparent 25%),
-    radial-gradient(circle at 56% 78%, rgba(246, 216, 92, 0.42), transparent 22%),
+    radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.76), transparent 16%),
+    radial-gradient(circle at 82% 22%, rgba(255, 186, 146, 0.36), transparent 24%),
+    linear-gradient(150deg, rgba(255, 216, 226, 0.92), rgba(255, 246, 237, 0.72) 46%, rgba(185, 236, 218, 0.68)),
     #ffffff;
   border: 1px solid rgba(217, 79, 124, 0.14);
   border-radius: 8px;
   box-shadow: 0 30px 80px rgba(93, 48, 67, 0.12);
   display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  padding: clamp(18px, 4vw, 42px);
+  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  overflow: hidden;
+  padding: clamp(22px, 5vw, 46px);
 }
 
-.nail-tile {
-  align-items: center;
-  border-radius: 999px 999px 42px 42px;
-  color: #392a31;
-  display: flex;
-  font-size: 0.8rem;
-  font-weight: 900;
-  justify-content: center;
-  min-height: 128px;
+.hero-photo__nail {
+  align-self: end;
+  background: linear-gradient(180deg, #ffd9df, #f19a93);
+  border-radius: 999px 999px 48px 48px;
+  box-shadow: inset 0 10px 18px rgba(255, 255, 255, 0.42);
+  min-height: clamp(120px, 22vw, 220px);
 }
 
-.nail-tile--coral {
-  background: #ff9b8a;
+.hero-photo__nail--one {
+  min-height: clamp(96px, 18vw, 180px);
 }
 
-.nail-tile--mint {
-  background: #b7efd8;
+.hero-photo__nail--two {
+  background: linear-gradient(180deg, #ffe7d1, #f5a58b);
+  min-height: clamp(132px, 23vw, 232px);
 }
 
-.nail-tile--sky {
-  background: #bde8ff;
+.hero-photo__nail--three {
+  background: linear-gradient(180deg, #ffe2ed, #d94f7c);
+  min-height: clamp(152px, 25vw, 252px);
 }
 
-.nail-tile--peach {
-  background: #ffd7a8;
+.hero-photo__nail--four {
+  background: linear-gradient(180deg, #fff0d9, #ee9a83);
+  min-height: clamp(126px, 22vw, 216px);
+}
+
+.hero-photo__nail--five {
+  min-height: clamp(88px, 17vw, 170px);
 }
 
 .section-block {
@@ -412,28 +417,35 @@ h1 {
   width: 18px;
 }
 
-.steps-section {
+.confidence-section {
   background: #fff6ed;
+  padding-block: clamp(24px, 4vw, 42px);
 }
 
-.steps-list {
-  counter-reset: steps;
+.confidence-section .section-heading {
+  margin-bottom: 14px;
+}
+
+.confidence-list {
   display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
   margin: 0 auto;
-  max-width: 1180px;
+  max-width: 920px;
   padding: 0;
 }
 
-.steps-list li {
+.confidence-list li {
   background: #ffffff;
+  border: 1px solid rgba(217, 79, 124, 0.14);
   border-radius: 8px;
-  font-weight: 800;
-  line-height: 1.35;
-  min-height: 120px;
-  padding: 18px;
+  color: #392a31;
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1.2;
+  min-height: 62px;
+  padding: 14px;
 }
 
 .reviews-section {
@@ -530,7 +542,6 @@ h1 {
     grid-template-columns: 1fr;
   }
 
-  .steps-list,
   .review-grid {
     grid-template-columns: 1fr;
   }
@@ -599,14 +610,18 @@ h1 {
     line-height: 1.6;
   }
 
-  .hero-product-spread {
-    gap: 10px;
-    padding: 14px;
+  .hero-photo {
+    gap: 7px;
+    padding: 18px;
   }
 
-  .nail-tile {
-    font-size: 0.74rem;
-    min-height: 104px;
+  .hero-photo__nail,
+  .hero-photo__nail--one,
+  .hero-photo__nail--two,
+  .hero-photo__nail--three,
+  .hero-photo__nail--four,
+  .hero-photo__nail--five {
+    min-height: 42px;
   }
 
   .section-block {
@@ -638,14 +653,24 @@ h1 {
     padding: 14px;
   }
 
+  .confidence-section {
+    padding-block: 26px;
+  }
+
+  .confidence-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .confidence-list li {
+    font-size: 0.78rem;
+    min-height: 54px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+
   .kit-feature,
   .review-grid figure {
     padding: 18px;
-  }
-
-  .steps-list li {
-    min-height: 96px;
-    padding: 16px;
   }
 
   .faq-list a {
