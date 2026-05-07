@@ -181,10 +181,10 @@ h1 {
   align-self: end;
   color: #fffaf8;
   display: grid;
-  gap: 14px;
+  gap: 10px;
   grid-area: hero;
-  max-width: 560px;
-  padding: clamp(22px, 5vw, 46px);
+  max-width: 500px;
+  padding: clamp(20px, 4vw, 36px);
   z-index: 1;
 }
 
@@ -194,10 +194,10 @@ h1 {
 }
 
 .hero-copy p {
-  font-size: 1rem;
-  line-height: 1.45;
+  font-size: 0.96rem;
+  line-height: 1.4;
   margin: 0;
-  max-width: 480px;
+  max-width: 430px;
 }
 
 .hero-photo {
@@ -382,6 +382,7 @@ h1 {
   align-items: end;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 16px;
 }
 
 .collection-heading__link {
@@ -392,7 +393,7 @@ h1 {
 
 .collection-grid {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 0 auto;
   max-width: 1180px;
@@ -404,9 +405,9 @@ h1 {
   border-radius: 8px;
   color: #392a31;
   display: grid;
-  gap: 10px;
+  gap: 8px;
   font-weight: 900;
-  min-height: 132px;
+  min-height: 136px;
   overflow: hidden;
   padding: 10px;
 }
@@ -422,9 +423,9 @@ h1 {
 .collection-card__visual {
   align-items: end;
   display: flex;
-  gap: 5px;
+  gap: 4px;
   justify-content: center;
-  min-height: 76px;
+  min-height: 82px;
 }
 
 .collection-card__nail {
@@ -433,7 +434,7 @@ h1 {
   box-shadow: inset 0 6px 8px rgba(255, 255, 255, 0.42);
   display: block;
   min-height: 58px;
-  width: 22px;
+  width: 17px;
 }
 
 .collection-card__nail--two {
@@ -442,6 +443,14 @@ h1 {
 
 .collection-card__nail--three {
   min-height: 50px;
+}
+
+.collection-card__nail--four {
+  min-height: 66px;
+}
+
+.collection-card__nail--five {
+  min-height: 54px;
 }
 
 .kit-section {
@@ -533,6 +542,77 @@ h1 {
   line-height: 1.2;
   min-height: 62px;
   padding: 14px;
+}
+
+.confidence-card {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto minmax(0, 1fr);
+  position: relative;
+}
+
+.confidence-card__visual {
+  align-items: end;
+  display: flex;
+  gap: 3px;
+}
+
+.confidence-card__nail {
+  background: linear-gradient(180deg, #fff0e8, #ef8c77);
+  border-radius: 999px 999px 8px 8px;
+  display: block;
+  min-height: 28px;
+  width: 10px;
+}
+
+.confidence-card__nail--two {
+  min-height: 34px;
+}
+
+.confidence-card__nail--three {
+  min-height: 24px;
+}
+
+.confidence-card--wear .confidence-card__nail {
+  background: linear-gradient(180deg, #fff7f3, #f3b1a5);
+  width: 8px;
+}
+
+.confidence-card--press .confidence-card__nail {
+  background: linear-gradient(180deg, #ffe5e7, #d9576e);
+  transform: rotate(18deg);
+}
+
+.confidence-card__label {
+  min-width: 0;
+}
+
+.confidence-card__arrow {
+  color: #a82f57;
+  font-size: 1.15rem;
+  line-height: 1;
+  position: absolute;
+  right: 8px;
+}
+
+.confidence-dots {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.confidence-dots__dot {
+  background: rgba(168, 47, 87, 0.24);
+  border-radius: 999px;
+  height: 5px;
+  width: 5px;
+}
+
+.confidence-dots__dot--active {
+  background: #a82f57;
+  width: 11px;
 }
 
 .reviews-section {
@@ -677,17 +757,17 @@ h1 {
 
   .hero-section {
     min-height: auto;
-    padding: 10px 12px 0;
+    padding: 8px 12px 0;
   }
 
   h1 {
-    font-size: 2.05rem;
+    font-size: 1.58rem;
     line-height: 1;
   }
 
   .hero-copy {
-    gap: 10px;
-    padding: 18px;
+    gap: 8px;
+    padding: 18px 18px 20px;
   }
 
   .hero-copy .eyebrow {
@@ -696,17 +776,18 @@ h1 {
 
   .hero-copy p,
   .hero-shell p {
-    font-size: 0.86rem;
-    line-height: 1.45;
+    font-size: 0.78rem;
+    line-height: 1.42;
   }
 
   .hero-copy .primary-button {
-    min-height: 42px;
-    padding: 0 18px;
+    font-size: 0.86rem;
+    min-height: 38px;
+    padding: 0 16px;
   }
 
   .hero-photo {
-    aspect-ratio: 0.88;
+    aspect-ratio: 0.98;
     min-height: 0;
   }
 
@@ -718,7 +799,7 @@ h1 {
   }
 
   .hero-photo__hand {
-    bottom: 30%;
+    bottom: 34%;
     gap: 7px;
     left: 5%;
     right: 5%;
@@ -733,12 +814,16 @@ h1 {
   }
 
   .hero-photo__finger {
-    min-height: 118px;
-    width: 38px;
+    min-height: 112px;
+    width: 36px;
   }
 
   .section-block {
     padding: 40px 14px;
+  }
+
+  .collection-section {
+    padding-top: 28px;
   }
 
   .section-heading {
@@ -746,7 +831,7 @@ h1 {
   }
 
   .section-heading h2 {
-    font-size: 1.72rem;
+    font-size: 1.42rem;
     line-height: 1.12;
   }
 
@@ -766,31 +851,40 @@ h1 {
   }
 
   .collection-card {
-    min-height: 112px;
+    font-size: 0.88rem;
+    min-height: 106px;
     padding: 8px;
   }
 
   .collection-card__visual {
-    min-height: 68px;
+    min-height: 62px;
   }
 
   .collection-card__nail {
-    min-height: 45px;
-    width: 17px;
+    min-height: 42px;
+    width: 13px;
   }
 
   .collection-card__nail--two {
-    min-height: 56px;
+    min-height: 50px;
   }
 
   .collection-card__nail--three {
+    min-height: 38px;
+  }
+
+  .collection-card__nail--four {
+    min-height: 48px;
+  }
+
+  .collection-card__nail--five {
     min-height: 40px;
   }
 
   .confidence-section {
     background: transparent;
     margin-top: 0;
-    padding: 8px 12px 26px;
+    padding: 10px 12px 18px;
     position: relative;
     z-index: 2;
   }
@@ -806,10 +900,36 @@ h1 {
 
   .confidence-list li {
     box-shadow: 0 12px 24px rgba(93, 48, 67, 0.1);
-    font-size: 0.78rem;
-    min-height: 52px;
-    padding: 10px 8px;
-    text-align: center;
+    font-size: 0.72rem;
+    min-height: 58px;
+    padding: 8px 10px;
+    text-align: left;
+  }
+
+  .confidence-card {
+    gap: 6px;
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+
+  .confidence-card__visual {
+    justify-content: center;
+  }
+
+  .confidence-card__nail {
+    min-height: 24px;
+    width: 7px;
+  }
+
+  .confidence-card__nail--two {
+    min-height: 30px;
+  }
+
+  .confidence-card__nail--three {
+    min-height: 21px;
+  }
+
+  .confidence-card__arrow {
+    right: 5px;
   }
 
   .kit-feature,
