@@ -50,7 +50,7 @@
 
 - [x] Record the weekly-set flow decision.
 - [x] Run `npm test`, `npm run build`, `npm audit --audit-level=moderate`, and `git status --short --branch`.
-- [ ] Merge locally to `main` after verification.
+- [x] Merge locally to `main` after verification.
 
 ---
 
