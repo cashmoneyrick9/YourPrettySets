@@ -11,6 +11,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--hero-overlay-bottom");
     expect(styles).toContain(".brand-header--at-top");
     expect(styles).toContain(".brand-header--scrolled");
+    expect(styles).toContain("border-radius: 8px;");
     expect(styles).toContain("position: fixed;");
     expect(styles).toContain("backdrop-filter: blur(14px);");
     expect(styles).toContain("background-image: url(\"/assets/hero-s3-summer.png\")");
@@ -29,6 +30,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("grid-column: 2;");
     expect(styles).toContain("font-size: 1.08rem;");
     expect(styles).toContain("font-family: var(--font-cta);");
+    expect(styles).toContain(".brand-header--scrolled .brand-header__icon-button");
+    expect(styles).toContain("background: transparent;");
   });
 
   it("includes dedicated layout tightening for 320px screens", () => {

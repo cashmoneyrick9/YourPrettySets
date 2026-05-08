@@ -62,8 +62,13 @@ a {
 .brand-header--scrolled {
   backdrop-filter: blur(14px);
   background: rgba(173, 186, 133, 0.94);
+  border-radius: 8px;
   box-shadow: 0 12px 30px rgba(53, 95, 80, 0.14);
-  color: var(--color-sage-deep);
+  color: #8f315a;
+  left: 2px;
+  overflow: hidden;
+  right: 2px;
+  top: 2px;
 }
 
 .brand-header__bar {
@@ -124,11 +129,21 @@ a {
   box-shadow: 0 8px 22px rgba(42, 37, 40, 0.08);
 }
 
-.brand-header--scrolled .brand-header__icon-button,
 .brand-header--scrolled .brand-header__shop-link {
   background: rgba(255, 253, 249, 0.92);
   border-color: rgba(53, 95, 80, 0.18);
   box-shadow: none;
+}
+
+.brand-header--scrolled .brand-header__icon-button {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: #ffffff;
+}
+
+.brand-header--scrolled .brand-header__shop-link {
+  color: var(--color-sage-deep);
 }
 
 .brand-header--at-top .brand-header__icon-button {
