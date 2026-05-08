@@ -66,7 +66,8 @@ Latest known verification before handoff:
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
-- Browser verification at `http://localhost:5173/` confirmed the S3 hero image renders, the header is transparent at the top, the header switches to a sage/pistachio accent after scrolling, the mobile menu still opens/closes, and the `Shop` anchor lands below the fixed header.
+- Browser verification at `http://localhost:5173/` confirmed the S3 hero image renders, the header is transparent at the top, the 319px mobile header keeps the larger brand mark clear of the `Shop` pill, the header switches to a rounded sage/pistachio accent after scrolling, the scrolled menu/bag icons are outline-only, CTA typography is softer, and the hero divider is a thin split line with a tiny sparkle.
+- The browser was last left at `http://localhost:5173/#shop-collections` after CTA navigation review.
 - Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
@@ -100,6 +101,12 @@ Latest known verification before handoff:
 - `cf8d825` - Style S3 header and hero
 - `9c8782e` - Polish S3 hero sizing and anchors
 - `01a43d3` - Refine S3 hero fidelity
+- `ef26a39` - Align S3 hero with approved mockup
+- `423953a` - Tune S3 sage accent color
+- `45d00bc` - Fix mobile header brand overlap
+- `33cc27f` - Soften S3 CTA typography
+- `4ffe5f6` - Fix scrolled S3 header styling
+- `81d2ce1` - Refine hero sparkle divider
 
 ## CEO Feedback And Preferences
 
@@ -293,7 +300,15 @@ Implemented scope:
 - Replaced the code-native hero hand illustration with the image-backed S3 hero treatment.
 - Added CSS protections for fixed-header anchor jumps and tablet/desktop hero height.
 - Added regression coverage for header scroll state and S3 header/hero CSS rules.
-- Follow-up fidelity correction made the mobile hero image full-bleed behind the transparent header, refined the temporary brand mark and accent values, and added the small divider above the CTA.
+- Follow-up fidelity corrections made the mobile hero image full-bleed behind the transparent header, refined the temporary brand mark and accent values, moved the green accent to `#adba85`, protected the larger mobile brand mark from the `Shop` pill, softened CTA typography, rounded the scrolled sage header, kept scrolled menu/bag icons outline-only, and replaced the heavy divider with a thin split line and tiny sparkle.
+
+Current CEO review state:
+
+- The first viewport is still in visual polish mode, not final branding mode.
+- The CEO has been judging mockup fidelity at mobile width around 319px.
+- The temporary text logo is intentionally still not final, but the current larger serif mark is preferred over the earlier heavier sans mark.
+- The green accent should stay closer to dusty olive sage `#adba85`, not the minty `#cce7ca` family.
+- If the next agent continues UI polish, start by asking what section or visual detail the CEO wants to judge next rather than reopening already-approved behavior.
 
 ## Open Product/Site Decisions
 
