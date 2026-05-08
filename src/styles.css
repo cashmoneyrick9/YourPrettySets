@@ -21,6 +21,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-padding-top: 84px;
+}
+
 body {
   margin: 0;
   min-width: 0;
@@ -235,7 +239,9 @@ h1 {
   border-radius: 10px;
   content: "";
   grid-area: hero;
+  justify-self: center;
   pointer-events: none;
+  width: min(100%, 460px);
   z-index: 1;
 }
 
@@ -245,9 +251,11 @@ h1 {
   display: grid;
   gap: 10px;
   grid-area: hero;
+  justify-self: center;
   max-width: 510px;
   padding: clamp(20px, 5vw, 38px);
   text-shadow: 0 2px 18px rgba(42, 37, 40, 0.24);
+  width: min(100%, 460px);
   z-index: 2;
 }
 
@@ -285,9 +293,12 @@ h1 {
   border-radius: 10px;
   box-shadow: 0 24px 70px rgba(53, 95, 80, 0.18);
   grid-area: hero;
+  justify-self: center;
+  max-height: min(650px, calc(94vh - 108px));
   min-height: min(650px, calc(94vh - 108px));
   overflow: hidden;
   position: relative;
+  width: min(100%, 460px);
 }
 
 .hero-photo__hand {
@@ -1783,7 +1794,9 @@ h1 {
   .hero-photo {
     aspect-ratio: 9 / 14;
     background-position: center top;
+    max-height: none;
     min-height: calc(92vh - 94px);
+    width: 100%;
   }
 
   .section-block {

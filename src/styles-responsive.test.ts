@@ -17,6 +17,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(
       "padding: clamp(88px, 18vw, 132px) clamp(14px, 4vw, 56px) clamp(20px, 5vw, 56px)",
     );
+    expect(styles).toContain("scroll-padding-top: 84px");
+    expect(styles).toContain("justify-self: center");
+    expect(styles).toContain("max-height: min(650px, calc(94vh - 108px))");
+    expect(styles).toContain("width: min(100%, 460px)");
   });
 
   it("includes dedicated layout tightening for 320px screens", () => {
