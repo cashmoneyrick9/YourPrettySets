@@ -44,13 +44,14 @@ Implemented:
   - weekly-set flow replaces duplicate `New Arrivals` and `Featured Sets` sections with `This week's set` and `Shop more`
   - What's included now uses a compact kit summary and grouped accordion rows instead of a long vertical item list
   - reviews now use a compact trust-chip row, single featured review carousel, product thumbnail/detail, dots, and a `See more reviews` link
+  - FAQ now uses a beginner help strip, accordion answers, a care-tips cue, and a contact CTA
 
 Latest known verification before handoff:
 
 - `npm test`: 18 files, 36 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
-- Headless Brave mobile screenshots were captured at 319px wide for the Home top, weekly-set, What's included, and review sections.
+- Headless Brave mobile screenshots were captured at 319px wide for the Home top, weekly-set, What's included, review, and FAQ sections.
 - Git working tree was clean except unrelated untracked `.claude/` after the latest local `main` commit.
 
 ## Important Commits
@@ -193,6 +194,18 @@ Latest reviews decision:
   - one featured review card with a partial next-card peek
   - previous/next buttons and dot controls
   - product detail attached to the active quote
+- This is a UX foundation only; final UI polish remains open.
+
+Latest FAQ decision:
+
+- The CEO liked the Option C FAQ structure and wanted the contact CTA from Option B.
+- The Home page FAQ now uses:
+  - eyebrow `FAQ`
+  - heading `Quick answers`
+  - `Care tips` link
+  - helper strip `New to press-ons? Start here.`
+  - three accordion questions, with the first answer open by default
+  - bottom CTA `Still unsure? Contact us`, linking to the footer contact area
 - This is a UX foundation only; final UI polish remains open.
 
 ## Open Product/Site Decisions

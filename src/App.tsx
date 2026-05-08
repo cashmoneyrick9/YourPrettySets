@@ -6,7 +6,7 @@ function App() {
     <div className="site-shell">
       <BrandHeader />
       <HomePage />
-      <footer className="site-footer">
+      <footer className="site-footer" id="contact">
         <a href="#home">Home</a>
         <a href="#shop-collections">Shop Collections</a>
         <a href="#how-it-works">How It Works</a>

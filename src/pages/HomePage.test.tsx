@@ -87,11 +87,23 @@ describe("HomePage", () => {
     expect(screen.getByText("Find the look you want")).toBeInTheDocument();
   });
 
-  it("links FAQ teaser questions to the future FAQ page", () => {
+  it("renders the FAQ help strip, accordion, and contact CTA", async () => {
+    const user = userEvent.setup();
     render(<HomePage />);
 
-    expect(screen.getByRole("link", { name: "What comes with each set?" })).toHaveAttribute("href", "/faq");
-    expect(screen.getByRole("link", { name: "How long do press-ons last?" })).toHaveAttribute("href", "/faq");
-    expect(screen.getByRole("link", { name: "Can I reuse them?" })).toHaveAttribute("href", "/faq");
+    expect(screen.getByText("New to press-ons? Start here.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Care tips" })).toHaveAttribute("href", "#faq");
+    expect(screen.getByRole("button", { name: /What comes with each set?/i })).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByText("Each set includes 24 nails, adhesive tabs, nail glue, a nail file, cuticle pusher, alcohol wipe, application card, and storage.")
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /How long do press-ons last?/i })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("link", { name: "Contact us" })).toHaveAttribute("href", "#contact");
+
+    await user.click(screen.getByRole("button", { name: /Can I reuse them?/i }));
+
+    expect(screen.getByRole("button", { name: /What comes with each set?/i })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: /Can I reuse them?/i })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Yes, with careful removal and storage between wears.")).toBeInTheDocument();
   });
 });

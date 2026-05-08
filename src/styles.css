@@ -1309,19 +1309,132 @@ h1 {
   width: fit-content;
 }
 
-.faq-list {
-  display: grid;
-  gap: 12px;
-  margin: 0 auto;
-  max-width: 920px;
+.faq-teaser {
+  background: #fffaf8;
 }
 
-.faq-list a {
+.faq-teaser .section-heading {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+}
+
+.faq-care-link {
+  border: 1px solid rgba(10, 104, 102, 0.18);
+  border-radius: 999px;
+  color: #0a6866;
+  flex: 0 0 auto;
+  font-size: 0.82rem;
+  font-weight: 900;
+  padding: 8px 12px;
+}
+
+.faq-start-strip {
+  align-items: center;
+  background: #effcf7;
+  border: 1px solid rgba(10, 104, 102, 0.12);
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  margin: 0 auto 14px;
+  max-width: 760px;
+  padding: 14px;
+}
+
+.faq-start-strip span {
+  align-items: center;
+  background: #ffffff;
+  border-radius: 999px;
+  color: #0a6866;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-weight: 900;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+}
+
+.faq-start-strip p {
+  color: #2f2630;
+  font-weight: 900;
+  margin: 0;
+}
+
+.faq-list {
+  display: grid;
+  gap: 10px;
+  margin: 0 auto;
+  max-width: 760px;
+}
+
+.faq-item {
   background: #ffffff;
   border: 1px solid rgba(17, 138, 136, 0.16);
   border-radius: 8px;
+  overflow: hidden;
+}
+
+.faq-item__button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: #2f2630;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
   font-weight: 900;
+  gap: 14px;
+  justify-content: space-between;
   padding: 18px;
+  text-align: left;
+  width: 100%;
+}
+
+.faq-item__button span:last-child {
+  color: #0a6866;
+  flex: 0 0 auto;
+  font-size: 1.1rem;
+  transition: transform 160ms ease;
+}
+
+.faq-item--open .faq-item__button span:last-child {
+  transform: rotate(180deg);
+}
+
+.faq-item__answer {
+  border-top: 1px solid rgba(17, 138, 136, 0.1);
+  color: #5d414d;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  margin: 0;
+  padding: 0 18px 18px;
+}
+
+.faq-contact-cta {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 16px auto 0;
+}
+
+.faq-contact-cta span {
+  color: #5d414d;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.faq-contact-cta a {
+  color: #a82f57;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.faq-care-link:focus-visible,
+.faq-item__button:focus-visible,
+.faq-contact-cta a:focus-visible {
+  outline: 3px solid #0a6866;
+  outline-offset: 3px;
 }
 
 .site-footer {

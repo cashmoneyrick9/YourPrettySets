@@ -35,7 +35,20 @@ const reviews = [
 ];
 
 const reviewChips = ["Easy fit", "Photo-ready", "Beginner friendly"];
-const faqs = ["What comes with each set?", "How long do press-ons last?", "Can I reuse them?"];
+const faqs = [
+  {
+    answer: "Each set includes 24 nails, adhesive tabs, nail glue, a nail file, cuticle pusher, alcohol wipe, application card, and storage.",
+    question: "What comes with each set?"
+  },
+  {
+    answer: "Wear time depends on prep and adhesive choice. Tabs are best for short wear, while glue is better for longer plans.",
+    question: "How long do press-ons last?"
+  },
+  {
+    answer: "Yes, with careful removal and storage between wears.",
+    question: "Can I reuse them?"
+  }
+];
 
 const weeklyProducts = products.filter((product) => product.collections.includes("New Arrivals")).slice(0, 4);
 const weeklyProduct = weeklyProducts[0];
@@ -47,6 +60,7 @@ const shopMoreProducts = products.filter((product) =>
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
+  const [activeFaqIndex, setActiveFaqIndex] = useState(0);
   const activeStep = confidenceSteps[activeStepIndex];
   const activeReview = reviews[activeReviewIndex];
   const nextReview = reviews[(activeReviewIndex + 1) % reviews.length];
@@ -253,15 +267,47 @@ export function HomePage() {
 
       <section className="section-block faq-teaser" id="faq">
         <div className="section-heading">
-          <p className="eyebrow">FAQ</p>
-          <h2>Quick answers</h2>
+          <div>
+            <p className="eyebrow">FAQ</p>
+            <h2>Quick answers</h2>
+          </div>
+          <a className="faq-care-link" href="#faq">
+            Care tips
+          </a>
+        </div>
+        <div className="faq-start-strip">
+          <span aria-hidden="true">?</span>
+          <p>New to press-ons? Start here.</p>
         </div>
         <div className="faq-list">
-          {faqs.map((faq) => (
-            <a key={faq} href="/faq">
-              {faq}
-            </a>
-          ))}
+          {faqs.map((faq, index) => {
+            const isOpen = activeFaqIndex === index;
+            const panelId = `faq-answer-${index}`;
+
+            return (
+              <article className={`faq-item${isOpen ? " faq-item--open" : ""}`} key={faq.question}>
+                <button
+                  aria-controls={panelId}
+                  aria-expanded={isOpen}
+                  className="faq-item__button"
+                  onClick={() => setActiveFaqIndex(index)}
+                  type="button"
+                >
+                  <span>{faq.question}</span>
+                  <span aria-hidden="true">⌄</span>
+                </button>
+                {isOpen && (
+                  <p className="faq-item__answer" id={panelId}>
+                    {faq.answer}
+                  </p>
+                )}
+              </article>
+            );
+          })}
+        </div>
+        <div className="faq-contact-cta">
+          <span>Still unsure?</span>
+          <a href="#contact">Contact us</a>
         </div>
       </section>
     </main>
