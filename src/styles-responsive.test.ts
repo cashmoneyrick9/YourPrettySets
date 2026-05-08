@@ -6,6 +6,7 @@ const styles = readFileSync("src/styles.css", "utf-8");
 describe("small mobile responsive CSS", () => {
   it("includes the locked S3 header and hero visual rules", () => {
     expect(styles).toContain("--color-sage-accent");
+    expect(styles).toContain("--color-sage-accent: #adba85;");
     expect(styles).toContain("--hero-overlay-bottom");
     expect(styles).toContain(".brand-header--at-top");
     expect(styles).toContain(".brand-header--scrolled");

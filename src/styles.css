@@ -7,7 +7,7 @@
   text-rendering: optimizeLegibility;
   --color-ink: #2a2528;
   --color-berry: #9b3b66;
-  --color-sage-accent: #c8e6c6;
+  --color-sage-accent: #adba85;
   --color-sage-deep: #2f6258;
   --color-mint: #d9f0e5;
   --color-lilac: #e7ddf5;
@@ -60,7 +60,7 @@ a {
 
 .brand-header--scrolled {
   backdrop-filter: blur(14px);
-  background: rgba(200, 230, 198, 0.94);
+  background: rgba(173, 186, 133, 0.94);
   box-shadow: 0 12px 30px rgba(53, 95, 80, 0.14);
   color: var(--color-sage-deep);
 }
@@ -138,7 +138,7 @@ a {
 }
 
 .brand-header--at-top .brand-header__shop-link {
-  background: rgba(182, 205, 143, 0.92);
+  background: rgba(173, 186, 133, 0.92);
   border-color: rgba(255, 255, 255, 0.42);
   box-shadow: 0 8px 22px rgba(125, 105, 95, 0.12);
   color: #ffffff;

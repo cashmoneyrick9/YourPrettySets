@@ -40,6 +40,7 @@ Implemented:
   - S3 header/hero UI pass adds the real `public/assets/hero-s3-summer.png` background, transparent-at-top header, sage/pistachio scrolled header, and fixed-header anchor offset
   - S3 fidelity correction makes the mobile hero background full-bleed from the top under the transparent header, softens the temporary brand mark, refines the sage/berry accents, and adds the small divider before the hero CTA
   - latest mockup-alignment pass centers the mobile brand mark over the full hero image, keeps menu/Shop/bag on one row, removes the heavy dark hero overlay, and uses the softer berry serif headline treatment from the approved direction
+  - accent correction moves the green from the minty `#cce7ca` family toward the inspo's dustier `#adba85`
   - slim confidence strip follows the hero
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
