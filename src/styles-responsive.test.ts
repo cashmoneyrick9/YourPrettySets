@@ -25,6 +25,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("padding: 0;");
     expect(styles).toContain("border-radius: 0;");
     expect(styles).toContain("grid-template-columns: 38px minmax(0, 1fr) auto 38px;");
+    expect(styles).toContain("grid-column: 2;");
+    expect(styles).toContain("font-size: 1.08rem;");
   });
 
   it("includes dedicated layout tightening for 320px screens", () => {

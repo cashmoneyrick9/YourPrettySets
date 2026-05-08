@@ -1668,8 +1668,8 @@ h1 {
   }
 
   .brand-mark {
-    font-size: 1.05rem;
-    grid-column: 1 / -1;
+    font-size: 1.16rem;
+    grid-column: 2;
     grid-row: 1;
     justify-self: center;
     min-width: 0;
@@ -1819,7 +1819,7 @@ h1 {
   }
 
   .brand-mark {
-    font-size: 0.95rem;
+    font-size: 1.08rem;
   }
 
   .brand-header__mobile-actions {
