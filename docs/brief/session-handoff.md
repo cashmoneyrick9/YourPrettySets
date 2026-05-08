@@ -25,7 +25,7 @@ Implemented:
   - `CollectionFilters`
   - `KitContents`
 - Long-scroll Home page in `src/pages/HomePage.tsx`.
-- Footer placeholders for navigation, contact, Instagram, shipping, returns, and privacy.
+- Accordion footer with grouped shop/help/policy/social links.
 - Responsive CSS, including a dedicated `@media (max-width: 360px)` layer for 320px screens.
 - Accessibility improvements:
   - stronger contrast for key text/buttons
@@ -52,7 +52,8 @@ Latest known verification before handoff:
 - `npm test`: 18 files, 36 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
-- Headless Brave mobile screenshots were captured at 319px wide for the Home top, weekly-set, What's included, review, and FAQ sections.
+- `git diff --check`: passed.
+- Browser verification at `http://localhost:5173/#contact` confirmed the standalone footer `Contact us` button is removed.
 - Git working tree was clean except unrelated untracked `.claude/` after the latest local `main` commit.
 
 ## Important Commits
@@ -68,6 +69,12 @@ Latest known verification before handoff:
 - `9a570d3` - Improve carousel keyboard access
 - `a5ad744` - Optimize home page for 320px screens
 - `dec6bd1` - Complete compact mobile header implementation
+- `49fe905` - Build weekly set home flow
+- `9c10732` - Build kit contents accordion
+- `bb70650` - Build review carousel foundation
+- `84dc479` - Build FAQ accordion foundation
+- `6d14f94` - Build accordion footer foundation
+- `937d495` - Remove standalone footer contact CTA
 
 ## CEO Feedback And Preferences
 
@@ -238,22 +245,22 @@ Still open:
 ## Suggested Next Agent Flow
 
 1. Read `docs/brief/README.md`, `docs/brief/brand.md`, `docs/brief/page-home.md`, `docs/brief/open-decisions.md`, and this file.
-2. Inspect the current header in `src/components/BrandHeader.tsx` and `src/styles.css`.
-3. Verify the implemented compact mobile header against the approved design direction.
-4. If more implementation is approved, write/update a small plan before editing code.
+2. Inspect the current Home page in `src/pages/HomePage.tsx`, `src/components/`, and `src/styles.css`.
+3. Start from the current mobile UX foundation; avoid reopening final branding, logo, photography, checkout, or policy copy unless the CEO asks.
+4. If more implementation is approved, keep changes section-scoped and update this handoff before ending the chat.
 5. Use test-driven changes where possible.
-6. Verify with `npm test`, `npm run build`, `npm audit --audit-level=moderate`, and `git status --short`.
+6. Verify with `npm test`, `npm run build`, `npm audit --audit-level=moderate`, `git diff --check`, and `git status --short`.
 
 ## Dev Server Note
 
-The Home page was previously served at:
+The Home page is currently being reviewed at:
 
 ```text
-http://127.0.0.1:5175/
+http://localhost:5173/
 ```
 
 If the server is not running in a future chat, start it with:
 
 ```bash
-npm run dev -- --host 127.0.0.1 --port 5175
+npm run dev -- --host 0.0.0.0
 ```
