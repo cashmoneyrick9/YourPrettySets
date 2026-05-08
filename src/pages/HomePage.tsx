@@ -63,8 +63,11 @@ export function HomePage() {
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
   const activeStep = confidenceSteps[activeStepIndex];
   const activeWeeklyProduct = weeklyProducts[activeWeeklyIndex];
+  const nextWeeklyProduct = weeklyProducts[(activeWeeklyIndex + 1) % weeklyProducts.length];
   const activeReview = reviews[activeReviewIndex];
   const activeShopMoreProduct = shopMoreProducts[activeShopMoreIndex];
+  const nextShopMoreProduct = shopMoreProducts[(activeShopMoreIndex + 1) % shopMoreProducts.length];
+  const visibleShopMoreProducts = [activeShopMoreProduct, nextShopMoreProduct];
   const nextReview = reviews[(activeReviewIndex + 1) % reviews.length];
   const showPreviousStep = () => {
     setActiveStepIndex((current) => (current === 0 ? confidenceSteps.length - 1 : current - 1));
@@ -203,13 +206,19 @@ export function HomePage() {
               </a>
             </div>
           </article>
-          <button
-            aria-label="Next weekly set"
-            className="weekly-set-carousel__button"
-            onClick={showNextWeeklySet}
-            type="button"
-          >
-            ›
+          <button aria-label="Next weekly set" className="weekly-set__peek" onClick={showNextWeeklySet} type="button">
+            <span className="weekly-set__peek-copy">
+              <span className="weekly-set__peek-label">Up next</span>
+              <span className="weekly-set__peek-name">{nextWeeklyProduct.name}</span>
+            </span>
+            <span className={`product-art product-art--${nextWeeklyProduct.detailTier}`} aria-hidden="true">
+              <span className="product-art__nail product-art__nail--one" />
+              <span className="product-art__nail product-art__nail--two" />
+              <span className="product-art__nail product-art__nail--three" />
+            </span>
+            <span className="weekly-set__peek-arrow" aria-hidden="true">
+              ›
+            </span>
           </button>
         </div>
       </section>
@@ -232,8 +241,17 @@ export function HomePage() {
           >
             ‹
           </button>
-          <div className="shop-more-carousel__card">
-            <ProductCard product={activeShopMoreProduct} />
+          <div className="shop-more-carousel__viewport">
+            <div className="shop-more-carousel__track">
+              {visibleShopMoreProducts.map((product, index) => (
+                <div
+                  className={`shop-more-carousel__card${index === 0 ? " shop-more-carousel__card--active" : ""}`}
+                  key={product.id}
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
           </div>
           <button
             aria-label="Next shop more product"

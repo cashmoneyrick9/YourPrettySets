@@ -41,10 +41,9 @@ describe("HomePage", () => {
     expect(screen.getByText("1 of 4")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop this set" })).toHaveAttribute("href", "#product-blush-crush");
     expect(screen.getByRole("link", { name: "Browse all new sets" })).toHaveAttribute("href", "#shop-more");
-    expect(document.querySelector(".weekly-set__peek")).not.toBeInTheDocument();
-    expect(screen.getByText("Golden Hour")).toBeInTheDocument();
-    expect(screen.queryByText("Vacation Crush")).not.toBeInTheDocument();
-    expect(screen.queryByText("Soft Serve")).not.toBeInTheDocument();
+    expect(document.querySelector(".weekly-set__peek")).toBeInTheDocument();
+    expect(screen.getByText("Up next")).toBeInTheDocument();
+    expect(screen.getAllByText("Golden Hour").length).toBeGreaterThan(0);
     expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Pretty notes from customers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
@@ -58,6 +57,7 @@ describe("HomePage", () => {
     expect(weeklySet).toBeInTheDocument();
     expect(screen.getByText("1 of 4")).toBeInTheDocument();
     expect(within(weeklySet as HTMLElement).getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
+    expect(within(document.querySelector(".weekly-set__peek") as HTMLElement).getByText("Golden Hour")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Next weekly set" }));
 
@@ -65,21 +65,26 @@ describe("HomePage", () => {
     expect(screen.getByText("2 of 4")).toBeInTheDocument();
     expect(within(updatedWeeklySet as HTMLElement).getByRole("heading", { name: "Golden Hour" })).toBeInTheDocument();
     expect(within(updatedWeeklySet as HTMLElement).getByRole("link", { name: "Shop this set" })).toHaveAttribute("href", "#product-golden-hour");
+    expect(within(document.querySelector(".weekly-set__peek") as HTMLElement).getByText("Vacation Crush")).toBeInTheDocument();
   });
 
-  it("lets shoppers move through the Shop more product images with visible controls", async () => {
+  it("lets shoppers browse Shop more as a two-card product carousel", async () => {
     const user = userEvent.setup();
     render(<HomePage />);
+    const shopMoreSection = document.querySelector("#shop-more");
 
     expect(screen.getByText("1 of 3")).toBeInTheDocument();
-    expect(screen.getByText("Golden Hour")).toBeInTheDocument();
-    expect(screen.queryByText("Vacation Crush")).not.toBeInTheDocument();
+    expect(within(shopMoreSection as HTMLElement).getByText("Golden Hour")).toBeInTheDocument();
+    expect(within(shopMoreSection as HTMLElement).getByText("Vacation Crush")).toBeInTheDocument();
+    expect(within(shopMoreSection as HTMLElement).queryByText("Soft Serve")).not.toBeInTheDocument();
+    expect((shopMoreSection as HTMLElement).querySelectorAll(".shop-more-carousel__card .product-card")).toHaveLength(2);
 
     await user.click(screen.getByRole("button", { name: "Next shop more product" }));
 
     expect(screen.getByText("2 of 3")).toBeInTheDocument();
-    expect(screen.getByText("Vacation Crush")).toBeInTheDocument();
-    expect(screen.queryByText("Golden Hour")).not.toBeInTheDocument();
+    expect(within(shopMoreSection as HTMLElement).getByText("Vacation Crush")).toBeInTheDocument();
+    expect(within(shopMoreSection as HTMLElement).getByText("Soft Serve")).toBeInTheDocument();
+    expect(within(shopMoreSection as HTMLElement).queryByText("Golden Hour")).not.toBeInTheDocument();
   });
 
   it("shows the review carousel foundation", async () => {

@@ -446,10 +446,10 @@ h1 {
 }
 
 .weekly-set-layout {
-  align-items: center;
+  align-items: stretch;
   display: grid;
   gap: 10px;
-  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  grid-template-columns: 36px minmax(0, 1fr) minmax(88px, 0.22fr);
   margin-inline: auto;
   max-width: 1040px;
   overflow: hidden;
@@ -535,6 +535,70 @@ h1 {
   font-weight: 900;
 }
 
+.weekly-set__peek {
+  align-content: center;
+  background: #fff3f0;
+  border: 1px solid rgba(217, 79, 124, 0.12);
+  border-radius: 8px;
+  color: #392a31;
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: 8px;
+  justify-items: center;
+  min-width: 0;
+  overflow: hidden;
+  padding: 10px;
+  text-align: center;
+}
+
+.weekly-set__peek .product-art {
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  gap: 5px;
+  min-height: 0;
+  padding: 10px 6px;
+  width: min(112px, 100%);
+}
+
+.weekly-set__peek .product-art__nail {
+  min-height: 58px;
+  width: 17px;
+}
+
+.weekly-set__peek-copy {
+  display: grid;
+  gap: 3px;
+  justify-items: center;
+  min-width: 0;
+}
+
+.weekly-set__peek-label,
+.weekly-set__peek-name {
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.weekly-set__peek-label {
+  color: #a82f57;
+  text-transform: uppercase;
+}
+
+.weekly-set__peek-arrow {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(168, 47, 87, 0.18);
+  border-radius: 999px;
+  color: #a82f57;
+  display: inline-flex;
+  font-size: 1.25rem;
+  font-weight: 900;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+}
+
 .shop-more-section {
   padding-top: clamp(28px, 4vw, 48px);
 }
@@ -559,11 +623,26 @@ h1 {
   gap: 10px;
   grid-template-columns: 36px minmax(0, 1fr) 36px;
   margin-inline: auto;
-  max-width: 360px;
+  max-width: 560px;
+}
+
+.shop-more-carousel__viewport {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.shop-more-carousel__track {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .shop-more-carousel__card {
   min-width: 0;
+}
+
+.shop-more-carousel__card:not(.shop-more-carousel__card--active) {
+  opacity: 0.82;
 }
 
 .shop-more-carousel__button {
@@ -1022,6 +1101,7 @@ h1 {
 }
 
 .weekly-set-carousel__button:focus-visible,
+.weekly-set__peek:focus-visible,
 .shop-more-carousel__button:focus-visible,
 .confidence-carousel__button:focus-visible,
 .confidence-dots__dot:focus-visible {
@@ -1595,8 +1675,11 @@ h1 {
 
 @media (max-width: 760px) {
   .weekly-set-layout {
-    gap: 8px;
-    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    gap: 6px;
+    grid-template-areas:
+      "card card"
+      "previous peek";
+    grid-template-columns: 38px minmax(0, 1fr);
   }
 
   .weekly-set-heading {
@@ -1605,12 +1688,52 @@ h1 {
   }
 
   .weekly-set-card {
+    grid-area: card;
     grid-template-columns: 1fr;
   }
 
   .weekly-set-carousel__button {
-    align-self: start;
-    margin-top: clamp(82px, 28vw, 112px);
+    align-self: stretch;
+    grid-area: previous;
+    height: auto;
+    margin-top: 0;
+  }
+
+  .weekly-set__peek {
+    align-items: center;
+    grid-area: peek;
+    grid-template-columns: minmax(0, 1fr) 54px 32px;
+    gap: 7px;
+    justify-items: start;
+    padding: 8px 6px;
+    text-align: left;
+  }
+
+  .weekly-set__peek-copy {
+    justify-items: start;
+  }
+
+  .weekly-set__peek .product-art {
+    gap: 4px;
+    padding: 8px 4px;
+  }
+
+  .weekly-set__peek .product-art__nail {
+    min-height: 46px;
+    width: 13px;
+  }
+
+  .weekly-set__peek-label,
+  .weekly-set__peek-name {
+    font-size: 0.68rem;
+  }
+
+  .weekly-set__peek-label {
+    display: block;
+  }
+
+  .weekly-set__peek-name {
+    display: block;
   }
 
   .weekly-set-art {
@@ -1820,13 +1943,21 @@ h1 {
 
   .weekly-set-layout {
     gap: 6px;
-    grid-template-columns: 32px minmax(0, 1fr) 32px;
+    grid-template-columns: 36px minmax(0, 1fr);
   }
 
   .weekly-set-carousel__button {
-    height: 32px;
-    margin-top: 92px;
-    width: 32px;
+    height: 30px;
+    width: 30px;
+  }
+
+  .weekly-set__peek {
+    padding-inline: 4px;
+  }
+
+  .weekly-set__peek-arrow {
+    height: 28px;
+    width: 28px;
   }
 
   .weekly-set-card__body h3 {
@@ -1838,8 +1969,12 @@ h1 {
   }
 
   .shop-more-carousel {
+    gap: 6px;
+    grid-template-columns: 30px minmax(0, 1fr) 30px;
+  }
+
+  .shop-more-carousel__track {
     gap: 8px;
-    grid-template-columns: 34px minmax(0, 1fr) 34px;
   }
 
   .collection-card {
