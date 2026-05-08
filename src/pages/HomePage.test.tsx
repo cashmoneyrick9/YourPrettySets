@@ -38,16 +38,31 @@ describe("HomePage", () => {
     expect(screen.queryByRole("heading", { name: "Featured Sets" })).not.toBeInTheDocument();
     expect(screen.getByText("Blush Crush")).toBeInTheDocument();
     expect(screen.getByText("Soft pink, ready for everyday plans.")).toBeInTheDocument();
-    expect(screen.getByText("1 of 4")).toBeInTheDocument();
+    expect(screen.queryByText("1 of 4")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop this set" })).toHaveAttribute("href", "#product-blush-crush");
     expect(screen.getByRole("link", { name: "Browse all new sets" })).toHaveAttribute("href", "#shop-more");
-    expect(document.querySelector(".weekly-set__peek")).toBeInTheDocument();
+    expect(document.querySelector(".weekly-set__peek")).not.toBeInTheDocument();
     expect(screen.getByText("Golden Hour")).toBeInTheDocument();
-    expect(screen.getByText("Vacation Crush")).toBeInTheDocument();
-    expect(screen.getByText("Soft Serve")).toBeInTheDocument();
+    expect(screen.queryByText("Vacation Crush")).not.toBeInTheDocument();
+    expect(screen.queryByText("Soft Serve")).not.toBeInTheDocument();
     expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Pretty notes from customers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
+  });
+
+  it("lets shoppers move through the Shop more product images with visible controls", async () => {
+    const user = userEvent.setup();
+    render(<HomePage />);
+
+    expect(screen.getByText("1 of 3")).toBeInTheDocument();
+    expect(screen.getByText("Golden Hour")).toBeInTheDocument();
+    expect(screen.queryByText("Vacation Crush")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Next shop more product" }));
+
+    expect(screen.getByText("2 of 3")).toBeInTheDocument();
+    expect(screen.getByText("Vacation Crush")).toBeInTheDocument();
+    expect(screen.queryByText("Golden Hour")).not.toBeInTheDocument();
   });
 
   it("shows the review carousel foundation", async () => {
@@ -91,7 +106,7 @@ describe("HomePage", () => {
     const user = userEvent.setup();
     render(<HomePage />);
 
-    expect(screen.getByText("New to press-ons? Start here.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "New to press-ons? Start here." })).toHaveAttribute("href", "#how-it-works");
     expect(screen.getByRole("link", { name: "Care tips" })).toHaveAttribute("href", "#faq");
     expect(screen.getByRole("button", { name: /What comes with each set?/i })).toHaveAttribute("aria-expanded", "true");
     expect(

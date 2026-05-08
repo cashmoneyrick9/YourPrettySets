@@ -27,6 +27,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".review-proof-row {\n    flex-wrap: wrap;");
     expect(styles).toContain(".collection-section {\n    padding-bottom: 24px;");
     expect(styles).toContain(".weekly-set-section {\n    padding-top: 24px;");
+    expect(styles).toContain(".review-carousel {\n    gap: 8px;");
+    expect(styles).toContain(".review-card--peek {\n    display: none;");
+    expect(styles).toContain("position: static;");
     expect(styles).toContain("font-size: 1.58rem");
     expect(styles).toContain("padding: 10px 12px 18px");
   });

@@ -437,18 +437,11 @@ h1 {
   justify-content: space-between;
 }
 
-.weekly-set-count {
-  color: #a82f57;
-  font-size: 0.88rem;
-  font-weight: 900;
-  white-space: nowrap;
-}
-
 .weekly-set-layout {
   align-items: stretch;
   display: grid;
   gap: 12px;
-  grid-template-columns: minmax(0, 1fr) minmax(64px, 0.24fr);
+  grid-template-columns: minmax(0, 1fr);
   margin-inline: auto;
   max-width: 980px;
   overflow: hidden;
@@ -517,49 +510,52 @@ h1 {
   font-weight: 900;
 }
 
-.weekly-set__peek {
-  align-content: center;
-  background: #fff3f0;
-  border: 1px solid rgba(217, 79, 124, 0.12);
-  border-radius: 8px;
-  display: grid;
-  gap: 10px;
-  justify-items: center;
-  min-width: 0;
-  overflow: hidden;
-  padding: 12px;
-}
-
-.weekly-set__peek .product-art {
-  aspect-ratio: 3 / 4;
-  border-radius: 8px;
-  gap: 5px;
-  min-height: 0;
-  padding: 10px 6px;
-  width: 112px;
-}
-
-.weekly-set__peek .product-art__nail {
-  min-height: 58px;
-  width: 17px;
-}
-
-.weekly-set__peek-arrow {
-  align-items: center;
-  background: #ffffff;
-  border: 1px solid rgba(168, 47, 87, 0.18);
-  border-radius: 999px;
-  color: #a82f57;
-  display: inline-flex;
-  font-size: 1.25rem;
-  font-weight: 900;
-  height: 34px;
-  justify-content: center;
-  width: 34px;
-}
-
 .shop-more-section {
   padding-top: clamp(28px, 4vw, 48px);
+}
+
+.shop-more-heading {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+}
+
+.shop-more-count {
+  color: #a82f57;
+  flex: 0 0 auto;
+  font-size: 0.88rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.shop-more-carousel {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  margin-inline: auto;
+  max-width: 360px;
+}
+
+.shop-more-carousel__card {
+  min-width: 0;
+}
+
+.shop-more-carousel__button {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(168, 47, 87, 0.16);
+  border-radius: 999px;
+  color: #392a31;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 1.35rem;
+  font-weight: 900;
+  height: 36px;
+  justify-content: center;
+  line-height: 1;
+  width: 36px;
 }
 
 .shop-more-grid {
@@ -1125,11 +1121,10 @@ h1 {
 .review-carousel {
   align-items: center;
   display: grid;
-  gap: 12px;
-  grid-template-columns: minmax(0, 1fr) minmax(58px, 0.2fr);
+  gap: 8px;
+  grid-template-columns: 34px minmax(0, 1fr) minmax(48px, 0.2fr) 34px;
   margin: 0 auto;
   max-width: 760px;
-  position: relative;
 }
 
 .review-card {
@@ -1265,17 +1260,8 @@ h1 {
   height: 34px;
   justify-content: center;
   line-height: 1;
-  left: 0;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  position: static;
   width: 34px;
-  z-index: 1;
-}
-
-.review-carousel__button--next {
-  left: auto;
-  right: 42px;
 }
 
 .review-carousel__button:focus-visible,
@@ -1344,11 +1330,13 @@ h1 {
   background: #effcf7;
   border: 1px solid rgba(10, 104, 102, 0.12);
   border-radius: 8px;
+  color: inherit;
   display: flex;
   gap: 12px;
   margin: 0 auto 14px;
   max-width: 760px;
   padding: 14px;
+  text-decoration: none;
 }
 
 .faq-start-strip span {
@@ -1441,6 +1429,7 @@ h1 {
 }
 
 .faq-care-link:focus-visible,
+.faq-start-strip:focus-visible,
 .faq-item__button:focus-visible,
 .faq-contact-cta a:focus-visible {
   outline: 3px solid #0a6866;
@@ -1580,7 +1569,7 @@ h1 {
 @media (max-width: 760px) {
   .weekly-set-layout {
     gap: 8px;
-    grid-template-columns: minmax(0, 1fr) 48px;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .weekly-set-heading {
@@ -1624,20 +1613,6 @@ h1 {
 
   .weekly-set-card__link {
     text-align: center;
-  }
-
-  .weekly-set__peek {
-    padding: 8px 0;
-  }
-
-  .weekly-set__peek .product-art {
-    transform: translateX(-24px);
-    width: 82px;
-  }
-
-  .weekly-set__peek-arrow {
-    height: 30px;
-    width: 30px;
   }
 
   .shop-more-grid {
@@ -1812,7 +1787,7 @@ h1 {
   }
 
   .weekly-set-layout {
-    grid-template-columns: minmax(0, 1fr) 42px;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .weekly-set-card__body h3 {
@@ -1823,9 +1798,9 @@ h1 {
     min-height: 42px;
   }
 
-  .weekly-set__peek .product-art {
-    transform: translateX(-28px);
-    width: 76px;
+  .shop-more-carousel {
+    gap: 8px;
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
   }
 
   .collection-card {
@@ -1925,6 +1900,15 @@ h1 {
     flex-wrap: wrap;
     overflow-x: visible;
     padding-bottom: 10px;
+  }
+
+  .review-carousel {
+    gap: 8px;
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+  }
+
+  .review-card--peek {
+    display: none;
   }
 
   .kit-summary__copy p {

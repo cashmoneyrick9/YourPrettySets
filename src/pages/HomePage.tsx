@@ -52,7 +52,6 @@ const faqs = [
 
 const weeklyProducts = products.filter((product) => product.collections.includes("New Arrivals")).slice(0, 4);
 const weeklyProduct = weeklyProducts[0];
-const peekProduct = weeklyProducts[1];
 const shopMoreProducts = products.filter((product) =>
   ["golden-hour", "vacation-crush", "soft-serve"].includes(product.id)
 );
@@ -60,9 +59,11 @@ const shopMoreProducts = products.filter((product) =>
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
+  const [activeShopMoreIndex, setActiveShopMoreIndex] = useState(0);
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
   const activeStep = confidenceSteps[activeStepIndex];
   const activeReview = reviews[activeReviewIndex];
+  const activeShopMoreProduct = shopMoreProducts[activeShopMoreIndex];
   const nextReview = reviews[(activeReviewIndex + 1) % reviews.length];
   const showPreviousStep = () => {
     setActiveStepIndex((current) => (current === 0 ? confidenceSteps.length - 1 : current - 1));
@@ -75,6 +76,12 @@ export function HomePage() {
   };
   const showNextReview = () => {
     setActiveReviewIndex((current) => (current === reviews.length - 1 ? 0 : current + 1));
+  };
+  const showPreviousShopMoreProduct = () => {
+    setActiveShopMoreIndex((current) => (current === 0 ? shopMoreProducts.length - 1 : current - 1));
+  };
+  const showNextShopMoreProduct = () => {
+    setActiveShopMoreIndex((current) => (current === shopMoreProducts.length - 1 ? 0 : current + 1));
   };
 
   return (
@@ -152,7 +159,6 @@ export function HomePage() {
             <p className="eyebrow">Curated this week</p>
             <h2>This week's set</h2>
           </div>
-          <span className="weekly-set-count">1 of {weeklyProducts.length}</span>
         </div>
         <div className="weekly-set-layout">
           <article className="weekly-set-card" id={`product-${weeklyProduct.slug}`}>
@@ -179,27 +185,38 @@ export function HomePage() {
               </a>
             </div>
           </article>
-          <div className="weekly-set__peek" aria-label={`Next set preview: ${peekProduct.name}`}>
-            <div className={`product-art product-art--${peekProduct.detailTier}`} aria-hidden="true">
-              <span className="product-art__nail product-art__nail--one" />
-              <span className="product-art__nail product-art__nail--two" />
-              <span className="product-art__nail product-art__nail--three" />
-            </div>
-            <span className="weekly-set__peek-arrow" aria-hidden="true">
-              ›
-            </span>
-          </div>
         </div>
       </section>
       <section className="section-block shop-more-section" id="shop-more">
-        <div className="section-heading">
-          <p className="eyebrow">More to shop</p>
-          <h2>Shop more</h2>
+        <div className="section-heading shop-more-heading">
+          <div>
+            <p className="eyebrow">More to shop</p>
+            <h2>Shop more</h2>
+          </div>
+          <span className="shop-more-count">
+            {activeShopMoreIndex + 1} of {shopMoreProducts.length}
+          </span>
         </div>
-        <div className="shop-more-grid">
-          {shopMoreProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+        <div className="shop-more-carousel" aria-live="polite">
+          <button
+            aria-label="Previous shop more product"
+            className="shop-more-carousel__button"
+            onClick={showPreviousShopMoreProduct}
+            type="button"
+          >
+            ‹
+          </button>
+          <div className="shop-more-carousel__card">
+            <ProductCard product={activeShopMoreProduct} />
+          </div>
+          <button
+            aria-label="Next shop more product"
+            className="shop-more-carousel__button"
+            onClick={showNextShopMoreProduct}
+            type="button"
+          >
+            ›
+          </button>
         </div>
       </section>
       <KitContents />
@@ -275,10 +292,10 @@ export function HomePage() {
             Care tips
           </a>
         </div>
-        <div className="faq-start-strip">
+        <a className="faq-start-strip" href="#how-it-works">
           <span aria-hidden="true">?</span>
           <p>New to press-ons? Start here.</p>
-        </div>
+        </a>
         <div className="faq-list">
           {faqs.map((faq, index) => {
             const isOpen = activeFaqIndex === index;

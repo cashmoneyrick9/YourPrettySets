@@ -48,14 +48,15 @@ Implemented:
   - footer now uses a compact brand intro, grouped accordion links, and tiny legal text instead of placeholder link piles
   - Home UX bug pass fixed broken or incomplete prototype destinations, including collection `See all`, bag, review, and footer policy links
   - mobile overflow polish hides native row scrollbars, lets review trust chips wrap, and tightens the collection-to-weekly-set spacing on very small screens
+  - review follow-up removed the fake weekly-set carousel peek/count, added real `Shop more` product arrows, spaced review arrows away from the card, and made the FAQ start strip an in-page CTA link
 
 Latest known verification before handoff:
 
-- `npm test`: 10 files, 20 tests passed.
+- `npm test`: 10 files, 21 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
-- Browser verification at `http://localhost:5173/` confirmed `See all` lands on `Shop more`, bag/review/footer policy links stay in-page, review chips wrap, and mobile row scrollbar tracks are hidden.
+- Browser verification at `http://localhost:5173/` confirmed the weekly set no longer has a fake carousel peek, `Shop more` arrows rotate products, review arrows no longer collide with the quote card, and the FAQ start strip is a link to `#how-it-works`.
 - Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
@@ -241,6 +242,11 @@ Latest UX bug pass:
   - `See all` should target the real `Shop more` area instead of removed `Featured Sets`.
   - bag, review, and footer policy links should stay inside the current prototype instead of pointing to missing checkout, review, or policy routes.
   - small-screen row scrollbars and clipped review chips should be cleaned up before the full UI pass.
+- Review follow-up:
+  - remove fake carousel affordances instead of implying unavailable interaction
+  - make `Shop more` image browsing explicit through previous/next buttons
+  - give review carousel arrows their own space outside the card
+  - make the FAQ `New to press-ons? Start here.` strip behave like a CTA
 
 ## Open Product/Site Decisions
 
