@@ -1,10 +1,20 @@
 :root {
   color: #2a2528;
-  background: #fffaf8;
+  background: #fffdf9;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  --color-ink: #2a2528;
+  --color-berry: #8f315a;
+  --color-sage-accent: #b9d8b6;
+  --color-sage-deep: #355f50;
+  --color-mint: #d9f0e5;
+  --color-lilac: #e7ddf5;
+  --color-sorbet: #f5b7c8;
+  --color-butter: #f7dc86;
+  --color-cream: #fffdf9;
+  --hero-overlay-bottom: rgba(49, 38, 45, 0.66);
 }
 
 * {
@@ -14,7 +24,7 @@
 body {
   margin: 0;
   min-width: 0;
-  background: #fffaf8;
+  background: var(--color-cream);
 }
 
 a {
@@ -27,22 +37,48 @@ a {
 }
 
 .brand-header {
-  padding: 18px clamp(18px, 4vw, 56px);
+  left: 0;
+  padding: 12px clamp(14px, 4vw, 44px);
+  position: fixed;
+  right: 0;
+  top: 0;
+  transition:
+    background 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+  z-index: 20;
+}
+
+.brand-header--at-top {
+  background: linear-gradient(180deg, rgba(36, 30, 34, 0.34), rgba(36, 30, 34, 0));
+  color: #ffffff;
+}
+
+.brand-header--scrolled {
+  backdrop-filter: blur(14px);
+  background: rgba(185, 216, 182, 0.94);
+  box-shadow: 0 12px 30px rgba(53, 95, 80, 0.14);
+  color: var(--color-sage-deep);
 }
 
 .brand-header__bar {
   align-items: center;
   display: flex;
-  gap: 24px;
+  gap: 18px;
   justify-content: space-between;
 }
 
 .brand-mark {
-  color: #a82f57;
+  color: inherit;
   flex: 0 0 auto;
-  font-size: 1.35rem;
-  font-weight: 800;
+  font-size: 1.12rem;
+  font-weight: 900;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.18);
   white-space: nowrap;
+}
+
+.brand-header--scrolled .brand-mark {
+  text-shadow: none;
 }
 
 .brand-header__desktop-nav {
@@ -53,9 +89,9 @@ a {
 }
 
 .brand-header__desktop-nav a {
-  color: #55424a;
+  color: inherit;
   font-size: 0.92rem;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .brand-header__mobile-actions {
@@ -68,16 +104,24 @@ a {
 .brand-header__icon-button,
 .brand-header__shop-link {
   align-items: center;
-  background: #ffffff;
-  border: 1px solid rgba(168, 47, 87, 0.22);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.52);
   border-radius: 999px;
-  color: #a82f57;
+  color: var(--color-sage-deep);
   display: inline-flex;
   font: inherit;
-  font-size: 0.86rem;
-  font-weight: 800;
+  font-size: 0.84rem;
+  font-weight: 900;
   justify-content: center;
   min-height: 38px;
+  box-shadow: 0 8px 22px rgba(42, 37, 40, 0.1);
+}
+
+.brand-header--scrolled .brand-header__icon-button,
+.brand-header--scrolled .brand-header__shop-link {
+  background: rgba(255, 253, 249, 0.92);
+  border-color: rgba(53, 95, 80, 0.18);
+  box-shadow: none;
 }
 
 .brand-header__icon-button {
@@ -87,17 +131,17 @@ a {
 }
 
 .brand-header__shop-link {
-  padding: 0 14px;
+  padding: 0 15px;
 }
 
 .brand-header__mobile-menu {
-  background: #ffffff;
-  border: 1px solid rgba(168, 47, 87, 0.14);
+  background: rgba(255, 253, 249, 0.96);
+  border: 1px solid rgba(53, 95, 80, 0.16);
   border-radius: 8px;
-  box-shadow: 0 18px 38px rgba(93, 48, 67, 0.1);
+  box-shadow: 0 18px 38px rgba(53, 95, 80, 0.16);
   display: none;
   gap: 4px;
-  margin-top: 12px;
+  margin-top: 10px;
   padding: 8px;
 }
 
@@ -107,9 +151,9 @@ a {
 
 .brand-header__mobile-menu a {
   border-radius: 6px;
-  color: #55424a;
+  color: var(--color-sage-deep);
   font-size: 0.94rem;
-  font-weight: 800;
+  font-weight: 850;
   padding: 10px 12px;
 }
 
@@ -118,8 +162,16 @@ a {
 .brand-header__mobile-menu a:focus-visible,
 .brand-mark:focus-visible,
 .brand-header__desktop-nav a:focus-visible {
-  outline: 3px solid #0a6866;
+  outline: 3px solid #ffffff;
   outline-offset: 3px;
+}
+
+.brand-header--scrolled .brand-header__icon-button:focus-visible,
+.brand-header--scrolled .brand-header__shop-link:focus-visible,
+.brand-header--scrolled .brand-header__mobile-menu a:focus-visible,
+.brand-header--scrolled .brand-mark:focus-visible,
+.brand-header--scrolled .brand-header__desktop-nav a:focus-visible {
+  outline-color: var(--color-berry);
 }
 
 .hero-shell {
@@ -157,7 +209,7 @@ h1 {
 
 .primary-button {
   align-items: center;
-  background: #a92f4f;
+  background: var(--color-berry);
   border-radius: 999px;
   color: #fff;
   display: inline-flex;
@@ -170,22 +222,33 @@ h1 {
 
 .hero-section {
   display: grid;
-  gap: clamp(28px, 5vw, 64px);
   grid-template-areas: "hero";
   grid-template-columns: minmax(0, 1fr);
-  min-height: 72vh;
-  padding: clamp(42px, 7vw, 88px) clamp(18px, 4vw, 56px) clamp(36px, 6vw, 72px);
+  min-height: min(760px, 94vh);
+  padding: clamp(88px, 18vw, 132px) clamp(14px, 4vw, 56px) clamp(20px, 5vw, 56px);
+  position: relative;
+}
+
+.hero-section::after {
+  background:
+    linear-gradient(180deg, rgba(42, 37, 40, 0.06) 0%, rgba(42, 37, 40, 0.18) 46%, var(--hero-overlay-bottom) 100%);
+  border-radius: 10px;
+  content: "";
+  grid-area: hero;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .hero-copy {
   align-self: end;
-  color: #fffaf8;
+  color: #ffffff;
   display: grid;
   gap: 10px;
   grid-area: hero;
-  max-width: 500px;
-  padding: clamp(20px, 4vw, 36px);
-  z-index: 1;
+  max-width: 510px;
+  padding: clamp(20px, 5vw, 38px);
+  text-shadow: 0 2px 18px rgba(42, 37, 40, 0.24);
+  z-index: 2;
 }
 
 .hero-copy .eyebrow,
@@ -193,92 +256,42 @@ h1 {
   color: inherit;
 }
 
+.hero-copy h1 {
+  font-size: clamp(2.25rem, 10vw, 5.2rem);
+  line-height: 0.98;
+  max-width: 620px;
+}
+
 .hero-copy p {
-  font-size: 0.96rem;
-  line-height: 1.4;
+  font-size: 0.98rem;
+  line-height: 1.45;
   margin: 0;
-  max-width: 430px;
+  max-width: 420px;
+}
+
+.hero-copy .primary-button {
+  background: var(--color-sage-accent);
+  color: var(--color-sage-deep);
+  box-shadow: 0 14px 30px rgba(53, 95, 80, 0.2);
 }
 
 .hero-photo {
-  aspect-ratio: 16 / 10;
-  background:
-    linear-gradient(180deg, rgba(47, 38, 48, 0.08) 0%, rgba(47, 38, 48, 0.12) 45%, rgba(47, 38, 48, 0.78) 100%),
-    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.72), transparent 16%),
-    radial-gradient(circle at 76% 24%, rgba(255, 188, 151, 0.42), transparent 22%),
-    linear-gradient(145deg, #f2bea9 0%, #f6d5c7 42%, #ad7d6e 100%);
-  border: 1px solid rgba(217, 79, 124, 0.14);
-  border-radius: 8px;
-  box-shadow: 0 30px 80px rgba(93, 48, 67, 0.12);
+  aspect-ratio: 9 / 14;
+  background-color: var(--color-mint);
+  background-image: url("/assets/hero-s3-summer.png");
+  background-position: center;
+  background-size: cover;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  box-shadow: 0 24px 70px rgba(53, 95, 80, 0.18);
   grid-area: hero;
-  min-height: 520px;
+  min-height: min(650px, calc(94vh - 108px));
   overflow: hidden;
   position: relative;
 }
 
-.hero-photo::before {
-  background:
-    radial-gradient(ellipse at 50% 20%, rgba(255, 239, 226, 0.98), rgba(228, 173, 143, 0.94) 62%, rgba(167, 111, 91, 0.7) 100%);
-  border-radius: 46% 54% 42% 58%;
-  content: "";
-  height: 74%;
-  left: 16%;
-  position: absolute;
-  top: 8%;
-  transform: rotate(-12deg);
-  width: 72%;
-}
-
 .hero-photo__hand {
-  bottom: 21%;
-  display: flex;
-  gap: clamp(8px, 2vw, 20px);
-  justify-content: center;
-  left: 12%;
-  position: absolute;
-  right: 12%;
-  transform: rotate(-13deg);
-}
-
-.hero-photo__finger {
-  background: linear-gradient(180deg, #f9d9c5, #d69b78);
-  border-radius: 999px 999px 34px 34px;
-  box-shadow: inset 8px 0 16px rgba(255, 255, 255, 0.22);
-  display: flex;
-  justify-content: center;
-  min-height: clamp(180px, 24vw, 280px);
-  padding-top: 10px;
-  width: clamp(38px, 7vw, 78px);
-}
-
-.hero-photo__finger--one,
-.hero-photo__finger--four {
-  margin-top: 26px;
-}
-
-.hero-photo__finger--three {
-  margin-top: -12px;
-}
-
-.hero-photo__nail {
-  background: linear-gradient(180deg, #ffe6e7, #d9576e 70%, #b83255);
-  border-radius: 999px 999px 18px 18px;
-  box-shadow: inset 0 7px 10px rgba(255, 255, 255, 0.54);
-  display: block;
-  min-height: clamp(56px, 8vw, 96px);
-  width: 72%;
-}
-
-.hero-photo__nail--two {
-  background: linear-gradient(180deg, #fff0e3, #ef8d72 70%, #c75559);
-}
-
-.hero-photo__nail--three {
-  background: linear-gradient(180deg, #ffe3ef, #db5b8a 70%, #a82f57);
-}
-
-.hero-photo__nail--four {
-  background: linear-gradient(180deg, #fff3d9, #ef9a72 70%, #bf5d4e);
+  display: none;
 }
 
 .section-block {
@@ -1601,16 +1614,15 @@ h1 {
 
 @media (max-width: 720px) {
   .brand-header {
-    padding: 14px clamp(14px, 4vw, 22px);
+    padding: 10px 14px;
   }
 
   .brand-header__bar {
-    gap: 12px;
+    gap: 10px;
   }
 
   .brand-mark {
-    flex: 1 1 auto;
-    font-size: 1.12rem;
+    font-size: 1rem;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1734,8 +1746,9 @@ h1 {
   }
 
   .hero-section {
-    min-height: auto;
-    padding: 8px 12px 0;
+    grid-template-areas: "hero";
+    min-height: 92vh;
+    padding: 76px 10px 18px;
   }
 
   h1 {
@@ -1745,55 +1758,32 @@ h1 {
 
   .hero-copy {
     gap: 8px;
-    padding: 18px 18px 20px;
+    padding: 16px;
+  }
+
+  .hero-copy h1 {
+    font-size: 2rem;
+    line-height: 1;
   }
 
   .hero-copy .eyebrow {
-    font-size: 0.66rem;
+    font-size: 0.67rem;
   }
 
   .hero-copy p,
   .hero-shell p {
-    font-size: 0.78rem;
-    line-height: 1.42;
+    font-size: 0.86rem;
   }
 
   .hero-copy .primary-button {
-    font-size: 0.86rem;
-    min-height: 38px;
-    padding: 0 16px;
+    min-height: 42px;
+    padding: 0 17px;
   }
 
   .hero-photo {
-    aspect-ratio: 0.98;
-    min-height: 0;
-  }
-
-  .hero-photo::before {
-    height: 64%;
-    left: 2%;
-    top: 7%;
-    width: 96%;
-  }
-
-  .hero-photo__hand {
-    bottom: 34%;
-    gap: 7px;
-    left: 5%;
-    right: 5%;
-  }
-
-  .hero-photo__nail,
-  .hero-photo__nail--one,
-  .hero-photo__nail--two,
-  .hero-photo__nail--three,
-  .hero-photo__nail--four {
-    min-height: 42px;
-  }
-
-  .hero-photo__finger {
-    min-height: 112px;
-    width: 36px;
+    aspect-ratio: 9 / 14;
+    background-position: center top;
+    min-height: calc(92vh - 94px);
   }
 
   .section-block {

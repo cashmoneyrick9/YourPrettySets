@@ -14,7 +14,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("background-image: url(\"/assets/hero-s3-summer.png\")");
     expect(styles).toContain(".hero-photo__hand {\n  display: none;");
     expect(styles).toContain(".hero-section::after");
-    expect(styles).toContain("padding-top: clamp(88px, 18vw, 132px)");
+    expect(styles).toContain(
+      "padding: clamp(88px, 18vw, 132px) clamp(14px, 4vw, 56px) clamp(20px, 5vw, 56px)",
+    );
   });
 
   it("includes dedicated layout tightening for 320px screens", () => {
