@@ -4,6 +4,19 @@ import { describe, expect, it } from "vitest";
 const styles = readFileSync("src/styles.css", "utf-8");
 
 describe("small mobile responsive CSS", () => {
+  it("includes the locked S3 header and hero visual rules", () => {
+    expect(styles).toContain("--color-sage-accent");
+    expect(styles).toContain("--hero-overlay-bottom");
+    expect(styles).toContain(".brand-header--at-top");
+    expect(styles).toContain(".brand-header--scrolled");
+    expect(styles).toContain("position: fixed;");
+    expect(styles).toContain("backdrop-filter: blur(14px);");
+    expect(styles).toContain("background-image: url(\"/assets/hero-s3-summer.png\")");
+    expect(styles).toContain(".hero-photo__hand {\n  display: none;");
+    expect(styles).toContain(".hero-section::after");
+    expect(styles).toContain("padding-top: clamp(88px, 18vw, 132px)");
+  });
+
   it("includes dedicated layout tightening for 320px screens", () => {
     expect(styles).toContain("@media (max-width: 360px)");
     expect(styles).toContain(".product-carousel");
@@ -17,8 +30,6 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("margin-top: 0");
     expect(styles).not.toContain("margin-top: -18px");
     expect(styles).toContain("grid-template-columns: minmax(76px, 0.72fr) minmax(0, 1fr)");
-    expect(styles).toContain(".hero-photo__nail");
-    expect(styles).toContain("min-height: 42px");
     expect(styles).toContain(".collection-card__visual");
     expect(styles).toContain(".confidence-card__visual");
     expect(styles).toContain(".confidence-dots");
