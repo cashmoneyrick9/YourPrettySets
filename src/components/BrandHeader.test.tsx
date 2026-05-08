@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrandHeader } from "./BrandHeader";
@@ -45,5 +45,35 @@ describe("BrandHeader", () => {
     for (const label of ["Home", "Shop Collections", "How It Works", "FAQ"]) {
       expect(within(mobileNav).getByRole("link", { name: label })).toBeInTheDocument();
     }
+  });
+
+  it("switches from transparent top state to accent scrolled state", async () => {
+    render(<BrandHeader />);
+
+    const header = screen.getByRole("banner");
+
+    expect(header).toHaveClass("brand-header--at-top");
+    expect(header).not.toHaveClass("brand-header--scrolled");
+
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 48
+    });
+    window.dispatchEvent(new Event("scroll"));
+
+    await waitFor(() => {
+      expect(header).toHaveClass("brand-header--scrolled");
+    });
+    expect(header).not.toHaveClass("brand-header--at-top");
+
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 0
+    });
+    window.dispatchEvent(new Event("scroll"));
+
+    await waitFor(() => {
+      expect(header).toHaveClass("brand-header--at-top");
+    });
   });
 });
