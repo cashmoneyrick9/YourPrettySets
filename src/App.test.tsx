@@ -1,4 +1,5 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import App from "./App";
 
@@ -10,7 +11,7 @@ describe("App", () => {
   it("renders the YourPrettySets home experience", () => {
     render(<App />);
 
-    expect(screen.getByText("YourPrettySets")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "YourPrettySets home" })).toBeInTheDocument();
     expect(
       within(screen.getByRole("navigation", { name: "Primary navigation" })).getByRole("link", {
         name: "Shop Collections"
@@ -19,15 +20,25 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" })).toBeInTheDocument();
   });
 
-  it("includes footer placeholders for contact, social, and policies", () => {
+  it("groups footer links into a mobile-friendly accordion", async () => {
+    const user = userEvent.setup();
     render(<App />);
 
     const footer = within(screen.getByRole("contentinfo"));
+    const shopGroup = footer.getByRole("button", { name: /Shop/i });
+    const helpGroup = footer.getByRole("button", { name: /Help/i });
 
-    expect(footer.getByRole("link", { name: "Contact placeholder" })).toBeInTheDocument();
-    expect(footer.getByRole("link", { name: "Instagram placeholder" })).toBeInTheDocument();
-    expect(footer.getByRole("link", { name: "Shipping policy placeholder" })).toBeInTheDocument();
-    expect(footer.getByRole("link", { name: "Returns policy placeholder" })).toBeInTheDocument();
-    expect(footer.getByRole("link", { name: "Privacy policy placeholder" })).toBeInTheDocument();
+    expect(footer.getByText("Ready-to-wear press-ons, packed with care.")).toBeInTheDocument();
+    expect(footer.getByRole("link", { name: "Contact us" })).toBeInTheDocument();
+    expect(shopGroup).toHaveAttribute("aria-expanded", "true");
+    expect(footer.getByRole("link", { name: "Collections" })).toHaveAttribute("href", "#shop-collections");
+    expect(footer.queryByRole("link", { name: "Care tips" })).not.toBeInTheDocument();
+
+    await user.click(helpGroup);
+
+    expect(shopGroup).toHaveAttribute("aria-expanded", "false");
+    expect(helpGroup).toHaveAttribute("aria-expanded", "true");
+    expect(footer.getByRole("link", { name: "Care tips" })).toHaveAttribute("href", "#faq");
+    expect(footer.queryByRole("link", { name: "Collections" })).not.toBeInTheDocument();
   });
 });

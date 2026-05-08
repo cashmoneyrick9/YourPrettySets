@@ -45,6 +45,7 @@ Implemented:
   - What's included now uses a compact kit summary and grouped accordion rows instead of a long vertical item list
   - reviews now use a compact trust-chip row, single featured review carousel, product thumbnail/detail, dots, and a `See more reviews` link
   - FAQ now uses a beginner help strip, accordion answers, a care-tips cue, and a contact CTA
+  - footer now uses a compact brand intro, visible contact CTA, grouped accordion links, and tiny legal text instead of placeholder link piles
 
 Latest known verification before handoff:
 
@@ -206,6 +207,18 @@ Latest FAQ decision:
   - helper strip `New to press-ons? Start here.`
   - three accordion questions, with the first answer open by default
   - bottom CTA `Still unsure? Contact us`, linking to the footer contact area
+- This is a UX foundation only; final UI polish remains open.
+
+Latest footer decision:
+
+- The CEO rejected the first footer mockups, then selected the accordion-footer direction from a second set.
+- The footer now uses:
+  - brand line `YourPrettySets`
+  - reassurance copy `Ready-to-wear press-ons, packed with care.`
+  - visible `Contact us` CTA
+  - accordion groups: `Shop`, `Help`, `Policies`, and `Social`
+  - `Shop` open by default, with only one group open at a time
+  - small copyright text
 - This is a UX foundation only; final UI polish remains open.
 
 ## Open Product/Site Decisions
