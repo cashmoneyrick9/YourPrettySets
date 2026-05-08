@@ -1,5 +1,5 @@
 import { Menu, ShoppingBag, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const desktopNavItems = ["Home", "Shop Collections", "How It Works", "FAQ", "Bag"];
 const mobileMenuItems = ["Home", "Shop Collections", "How It Works", "FAQ"];
@@ -10,9 +10,23 @@ function hrefFor(item: string) {
 
 export function BrandHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const syncHeaderState = () => {
+      setIsScrolled(window.scrollY > 8);
+    };
+
+    syncHeaderState();
+    window.addEventListener("scroll", syncHeaderState, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", syncHeaderState);
+    };
+  }, []);
 
   return (
-    <header className="brand-header">
+    <header className={`brand-header ${isScrolled ? "brand-header--scrolled" : "brand-header--at-top"}`}>
       <div className="brand-header__bar">
         <a className="brand-mark" href="#home" aria-label="YourPrettySets home">
           YourPrettySets
