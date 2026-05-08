@@ -34,6 +34,12 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("padding: 10px 12px 18px");
   });
 
+  it("does not force tiny mobile viewports wider than the screen", () => {
+    expect(styles).not.toContain("min-width: 320px");
+    expect(styles).toContain("min-width: 0");
+    expect(styles).toContain(".site-footer {\n    padding: 26px 14px 24px;");
+  });
+
   it("includes compact mobile header rules that hide the desktop nav", () => {
     expect(styles).toContain(".brand-header__mobile-actions");
     expect(styles).toContain(".brand-header__desktop-nav");

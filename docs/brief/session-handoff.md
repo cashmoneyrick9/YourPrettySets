@@ -50,10 +50,11 @@ Implemented:
   - mobile overflow polish hides native row scrollbars, lets review trust chips wrap, and tightens the collection-to-weekly-set spacing on very small screens
   - review follow-up replaced the fake weekly-set peek with a real product-backed weekly carousel, added real `Shop more` product arrows, spaced review arrows away from the card, and made the FAQ start strip an in-page CTA link
   - carousel regression cleanup removed the unwanted weekly `Up next` CTA module, kept the weekly carousel as real product slides with simple controls and dots, and kept `Shop more` browsing two product cards at a time
+  - narrow footer overflow cleanup removed the global 320px body minimum so 319px-class in-app browser widths do not clip the footer or show a horizontal scrollbar
 
 Latest known verification before handoff:
 
-- `npm test`: 10 files, 22 tests passed.
+- `npm test`: 10 files, 23 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
