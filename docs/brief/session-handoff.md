@@ -37,6 +37,7 @@ Implemented:
 - Regression test for 320px mobile CSS rules.
 - Mobile Home page shopping path:
   - hero leads with product/lifestyle visual treatment and a direct `Shop sets` CTA
+  - S3 header/hero UI pass adds the real `public/assets/hero-s3-summer.png` background, transparent-at-top header, sage/pistachio scrolled header, and fixed-header anchor offset
   - slim confidence strip follows the hero
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
@@ -54,11 +55,11 @@ Implemented:
 
 Latest known verification before handoff:
 
-- `npm test`: 10 files, 23 tests passed.
+- `npm test`: 10 files, 25 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
-- Browser verification at `http://localhost:5173/` confirmed the weekly set is a real carousel without the unwanted `Up next` module, `Shop more` arrows rotate a two-card product view, review arrows no longer collide with the quote card, the FAQ start strip is a link to `#how-it-works`, and the footer no longer clips at 319px-class browser widths.
+- Browser verification at `http://localhost:5173/` confirmed the S3 hero image renders, the header is transparent at the top, the header switches to a sage/pistachio accent after scrolling, the mobile menu still opens/closes, and the `Shop` anchor lands below the fixed header.
 - Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
@@ -86,6 +87,11 @@ Latest known verification before handoff:
 - `00afc7c` - Restore richer home carousels
 - `24efa30` - Remove weekly up-next module
 - `341fe95` - Fix narrow footer overflow
+- `643319f` - Add S3 header hero implementation plan
+- `f7947ea` - Add S3 summer hero asset
+- `a20aef3` - Add transparent header scroll state
+- `cf8d825` - Style S3 header and hero
+- `9c8782e` - Polish S3 hero sizing and anchors
 
 ## CEO Feedback And Preferences
 
@@ -259,6 +265,26 @@ Latest UX bug pass:
   - do not collapse `Shop more` back to one generic card
   - do not reopen checkout, final product photography, final logo, or policy/legal copy unless asked
   - use the current Home page as the working surface, but expect substantial visual refinement section by section
+
+## Latest Discussion: S3 Header And Hero UI
+
+The CEO locked S3 as the direction for the first-viewport UI pass after imagegen exploration.
+
+Confirmed direction:
+
+- Use the B-style header/hero structure, not the later P1 tabletop direction.
+- Use a summer sorbet garden feel anchored by pistachio/sage, with soft strawberry-sorbet, lilac, mint, warm white, and small golden warmth.
+- Header behavior: transparent at the top of the page, then sage/pistachio accent surface after scrolling away from the top.
+- Hero direction: real generated background asset at `public/assets/hero-s3-summer.png`, with the current direct `Shop sets` CTA.
+- Product-card visuals, checkout, final logo, final photography, footer, and policy wording remain open and should not be reopened unless the CEO asks.
+
+Implemented scope:
+
+- Added the generated S3 hero background as a project asset.
+- Added scroll-state behavior to `BrandHeader`.
+- Replaced the code-native hero hand illustration with the image-backed S3 hero treatment.
+- Added CSS protections for fixed-header anchor jumps and tablet/desktop hero height.
+- Added regression coverage for header scroll state and S3 header/hero CSS rules.
 
 ## Open Product/Site Decisions
 
