@@ -446,13 +446,20 @@ h1 {
 }
 
 .weekly-set-layout {
-  align-items: stretch;
+  align-items: center;
   display: grid;
-  gap: 10px;
-  grid-template-columns: 36px minmax(0, 1fr) minmax(88px, 0.22fr);
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr);
   margin-inline: auto;
-  max-width: 1040px;
+  max-width: 980px;
   overflow: hidden;
+}
+
+.weekly-set-controls {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 }
 
 .weekly-set-carousel__button {
@@ -470,6 +477,26 @@ h1 {
   justify-content: center;
   line-height: 1;
   width: 36px;
+}
+
+.weekly-set-dots {
+  align-items: center;
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+}
+
+.weekly-set-dots__dot {
+  background: #e5b6c1;
+  border-radius: 999px;
+  display: block;
+  height: 7px;
+  width: 7px;
+}
+
+.weekly-set-dots__dot--active {
+  background: #a82f57;
+  width: 18px;
 }
 
 .weekly-set-card {
@@ -533,70 +560,6 @@ h1 {
   color: #a82f57;
   font-size: 0.92rem;
   font-weight: 900;
-}
-
-.weekly-set__peek {
-  align-content: center;
-  background: #fff3f0;
-  border: 1px solid rgba(217, 79, 124, 0.12);
-  border-radius: 8px;
-  color: #392a31;
-  cursor: pointer;
-  display: grid;
-  font: inherit;
-  gap: 8px;
-  justify-items: center;
-  min-width: 0;
-  overflow: hidden;
-  padding: 10px;
-  text-align: center;
-}
-
-.weekly-set__peek .product-art {
-  aspect-ratio: 3 / 4;
-  border-radius: 8px;
-  gap: 5px;
-  min-height: 0;
-  padding: 10px 6px;
-  width: min(112px, 100%);
-}
-
-.weekly-set__peek .product-art__nail {
-  min-height: 58px;
-  width: 17px;
-}
-
-.weekly-set__peek-copy {
-  display: grid;
-  gap: 3px;
-  justify-items: center;
-  min-width: 0;
-}
-
-.weekly-set__peek-label,
-.weekly-set__peek-name {
-  font-size: 0.78rem;
-  font-weight: 900;
-  line-height: 1.1;
-}
-
-.weekly-set__peek-label {
-  color: #a82f57;
-  text-transform: uppercase;
-}
-
-.weekly-set__peek-arrow {
-  align-items: center;
-  background: #ffffff;
-  border: 1px solid rgba(168, 47, 87, 0.18);
-  border-radius: 999px;
-  color: #a82f57;
-  display: inline-flex;
-  font-size: 1.25rem;
-  font-weight: 900;
-  height: 32px;
-  justify-content: center;
-  width: 32px;
 }
 
 .shop-more-section {
@@ -1101,7 +1064,6 @@ h1 {
 }
 
 .weekly-set-carousel__button:focus-visible,
-.weekly-set__peek:focus-visible,
 .shop-more-carousel__button:focus-visible,
 .confidence-carousel__button:focus-visible,
 .confidence-dots__dot:focus-visible {
@@ -1676,10 +1638,7 @@ h1 {
 @media (max-width: 760px) {
   .weekly-set-layout {
     gap: 6px;
-    grid-template-areas:
-      "card card"
-      "previous peek";
-    grid-template-columns: 38px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .weekly-set-heading {
@@ -1688,52 +1647,7 @@ h1 {
   }
 
   .weekly-set-card {
-    grid-area: card;
     grid-template-columns: 1fr;
-  }
-
-  .weekly-set-carousel__button {
-    align-self: stretch;
-    grid-area: previous;
-    height: auto;
-    margin-top: 0;
-  }
-
-  .weekly-set__peek {
-    align-items: center;
-    grid-area: peek;
-    grid-template-columns: minmax(0, 1fr) 54px 32px;
-    gap: 7px;
-    justify-items: start;
-    padding: 8px 6px;
-    text-align: left;
-  }
-
-  .weekly-set__peek-copy {
-    justify-items: start;
-  }
-
-  .weekly-set__peek .product-art {
-    gap: 4px;
-    padding: 8px 4px;
-  }
-
-  .weekly-set__peek .product-art__nail {
-    min-height: 46px;
-    width: 13px;
-  }
-
-  .weekly-set__peek-label,
-  .weekly-set__peek-name {
-    font-size: 0.68rem;
-  }
-
-  .weekly-set__peek-label {
-    display: block;
-  }
-
-  .weekly-set__peek-name {
-    display: block;
   }
 
   .weekly-set-art {
@@ -1942,22 +1856,12 @@ h1 {
   }
 
   .weekly-set-layout {
-    gap: 6px;
-    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 8px;
   }
 
   .weekly-set-carousel__button {
     height: 30px;
     width: 30px;
-  }
-
-  .weekly-set__peek {
-    padding-inline: 4px;
-  }
-
-  .weekly-set__peek-arrow {
-    height: 28px;
-    width: 28px;
   }
 
   .weekly-set-card__body h3 {

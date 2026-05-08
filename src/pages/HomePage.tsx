@@ -63,7 +63,6 @@ export function HomePage() {
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
   const activeStep = confidenceSteps[activeStepIndex];
   const activeWeeklyProduct = weeklyProducts[activeWeeklyIndex];
-  const nextWeeklyProduct = weeklyProducts[(activeWeeklyIndex + 1) % weeklyProducts.length];
   const activeReview = reviews[activeReviewIndex];
   const activeShopMoreProduct = shopMoreProducts[activeShopMoreIndex];
   const nextShopMoreProduct = shopMoreProducts[(activeShopMoreIndex + 1) % shopMoreProducts.length];
@@ -174,14 +173,6 @@ export function HomePage() {
           </span>
         </div>
         <div className="weekly-set-layout" aria-live="polite">
-          <button
-            aria-label="Previous weekly set"
-            className="weekly-set-carousel__button"
-            onClick={showPreviousWeeklySet}
-            type="button"
-          >
-            ‹
-          </button>
           <article className="weekly-set-card" id={`product-${activeWeeklyProduct.slug}`}>
             <div className={`weekly-set-art product-art product-art--${activeWeeklyProduct.detailTier}`} aria-label={activeWeeklyProduct.images.clean}>
               <span className="product-art__nail product-art__nail--one" />
@@ -206,20 +197,32 @@ export function HomePage() {
               </a>
             </div>
           </article>
-          <button aria-label="Next weekly set" className="weekly-set__peek" onClick={showNextWeeklySet} type="button">
-            <span className="weekly-set__peek-copy">
-              <span className="weekly-set__peek-label">Up next</span>
-              <span className="weekly-set__peek-name">{nextWeeklyProduct.name}</span>
-            </span>
-            <span className={`product-art product-art--${nextWeeklyProduct.detailTier}`} aria-hidden="true">
-              <span className="product-art__nail product-art__nail--one" />
-              <span className="product-art__nail product-art__nail--two" />
-              <span className="product-art__nail product-art__nail--three" />
-            </span>
-            <span className="weekly-set__peek-arrow" aria-hidden="true">
+          <div className="weekly-set-controls" aria-label="Weekly set carousel controls">
+            <button
+              aria-label="Previous weekly set"
+              className="weekly-set-carousel__button"
+              onClick={showPreviousWeeklySet}
+              type="button"
+            >
+              ‹
+            </button>
+            <div className="weekly-set-dots" aria-hidden="true">
+              {weeklyProducts.map((product, index) => (
+                <span
+                  className={`weekly-set-dots__dot${index === activeWeeklyIndex ? " weekly-set-dots__dot--active" : ""}`}
+                  key={product.id}
+                />
+              ))}
+            </div>
+            <button
+              aria-label="Next weekly set"
+              className="weekly-set-carousel__button"
+              onClick={showNextWeeklySet}
+              type="button"
+            >
               ›
-            </span>
-          </button>
+            </button>
+          </div>
         </div>
       </section>
       <section className="section-block shop-more-section" id="shop-more">
