@@ -574,6 +574,16 @@ h1 {
   scroll-snap-type: x mandatory;
 }
 
+.shop-more-grid,
+.review-proof-row {
+  scrollbar-width: none;
+}
+
+.shop-more-grid::-webkit-scrollbar,
+.review-proof-row::-webkit-scrollbar {
+  display: none;
+}
+
 .collection-heading {
   align-items: end;
   display: flex;
@@ -1747,7 +1757,12 @@ h1 {
   }
 
   .collection-section {
+    padding-bottom: 24px;
     padding-top: 28px;
+  }
+
+  .weekly-set-section {
+    padding-top: 24px;
   }
 
   .section-heading {
@@ -1904,6 +1919,12 @@ h1 {
   .kit-summary,
   .review-card {
     padding: 18px;
+  }
+
+  .review-proof-row {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    padding-bottom: 10px;
   }
 
   .kit-summary__copy p {

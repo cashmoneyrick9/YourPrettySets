@@ -17,6 +17,7 @@
 - Modify `src/components/SiteFooter.tsx`: keep policy labels visible but route them to the current FAQ/contact support path instead of missing pages.
 - Modify `src/pages/HomePage.tsx`: change `See more reviews` from a circular `#reviews` link to the current support/contact path.
 - Modify `src/styles.css`: hide native horizontal scrollbars, allow review chips to wrap, prevent carousel/page overflow artifacts, and tighten mobile spacing before `This week's set`.
+- Modify `vite.config.ts`: exclude unrelated `.claude/**` worktree files from Vitest discovery so verification only covers the real repo source.
 - Modify existing tests in `src/components/*.test.tsx`, `src/pages/HomePage.test.tsx`, and `src/styles-responsive.test.ts`.
 - Modify `docs/brief/session-handoff.md` after implementation.
 
@@ -168,6 +169,7 @@ Expected: PASS.
 **Files:**
 - Modify: `src/styles.css`
 - Modify: `src/styles-responsive.test.ts`
+- Modify: `vite.config.ts`
 
 - [ ] **Step 1: Write responsive CSS regression expectations**
 
@@ -224,6 +226,12 @@ Inside `@media (max-width: 360px)`, add or update:
   overflow-x: visible;
   padding-bottom: 10px;
 }
+```
+
+In `vite.config.ts`, keep Vitest from discovering stale tests under unrelated local worktrees:
+
+```ts
+exclude: ["**/node_modules/**", "**/dist/**", "**/.claude/**"],
 ```
 
 - [ ] **Step 4: Run responsive test**

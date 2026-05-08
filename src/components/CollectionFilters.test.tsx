@@ -10,7 +10,7 @@ describe("CollectionFilters", () => {
       expect(screen.getByRole("link", { name: collection })).toBeInTheDocument();
     }
 
-    expect(screen.getByRole("link", { name: "See all" })).toHaveAttribute("href", "#featured-sets");
+    expect(screen.getByRole("link", { name: "See all" })).toHaveAttribute("href", "#shop-more");
     expect(screen.queryByRole("link", { name: "New Arrivals" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Bridal" })).not.toBeInTheDocument();
     expect(document.querySelectorAll(".collection-card__visual")).toHaveLength(3);

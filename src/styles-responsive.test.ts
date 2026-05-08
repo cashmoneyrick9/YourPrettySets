@@ -22,9 +22,13 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-card__visual");
     expect(styles).toContain(".confidence-card__visual");
     expect(styles).toContain(".confidence-dots");
+    expect(styles).toContain("scrollbar-width: none");
+    expect(styles).toContain(".shop-more-grid::-webkit-scrollbar");
+    expect(styles).toContain(".review-proof-row {\n    flex-wrap: wrap;");
+    expect(styles).toContain(".collection-section {\n    padding-bottom: 24px;");
+    expect(styles).toContain(".weekly-set-section {\n    padding-top: 24px;");
     expect(styles).toContain("font-size: 1.58rem");
     expect(styles).toContain("padding: 10px 12px 18px");
-    expect(styles).toContain(".collection-section {\n    padding-top: 28px;");
   });
 
   it("includes compact mobile header rules that hide the desktop nav", () => {

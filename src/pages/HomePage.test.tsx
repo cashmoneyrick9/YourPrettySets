@@ -63,7 +63,7 @@ describe("HomePage", () => {
     expect(screen.getAllByText("Date Night").length).toBeGreaterThan(0);
     expect(screen.getByText("Oval · Short")).toBeInTheDocument();
     expect(document.querySelectorAll(".review-dots__dot")).toHaveLength(3);
-    expect(screen.getByRole("link", { name: "See more reviews" })).toHaveAttribute("href", "#reviews");
+    expect(screen.getByRole("link", { name: "See more reviews" })).toHaveAttribute("href", "#contact");
 
     await user.click(screen.getByRole("button", { name: "Next review" }));
 

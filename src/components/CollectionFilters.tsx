@@ -12,7 +12,7 @@ export function CollectionFilters() {
           <p className="eyebrow">Collections</p>
           <h2>Browse by the plan, mood, or moment.</h2>
         </div>
-        <a className="collection-heading__link" href="#featured-sets">
+        <a className="collection-heading__link" href="#shop-more">
           See all
         </a>
       </div>

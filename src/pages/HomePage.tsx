@@ -260,7 +260,7 @@ export function HomePage() {
             />
           ))}
         </div>
-        <a className="review-more-link" href="#reviews">
+        <a className="review-more-link" href="#contact">
           See more reviews <span aria-hidden="true">›</span>
         </a>
       </section>

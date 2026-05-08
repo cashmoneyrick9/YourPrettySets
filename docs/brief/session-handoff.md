@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-07
+Last updated: 2026-05-08
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -46,15 +46,17 @@ Implemented:
   - reviews now use a compact trust-chip row, single featured review carousel, product thumbnail/detail, dots, and a `See more reviews` link
   - FAQ now uses a beginner help strip, accordion answers, a care-tips cue, and a contact CTA
   - footer now uses a compact brand intro, grouped accordion links, and tiny legal text instead of placeholder link piles
+  - Home UX bug pass fixed broken or incomplete prototype destinations, including collection `See all`, bag, review, and footer policy links
+  - mobile overflow polish hides native row scrollbars, lets review trust chips wrap, and tightens the collection-to-weekly-set spacing on very small screens
 
 Latest known verification before handoff:
 
-- `npm test`: 18 files, 36 tests passed.
+- `npm test`: 10 files, 20 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
-- Browser verification at `http://localhost:5173/#contact` confirmed the standalone footer `Contact us` button is removed.
-- Git working tree was clean except unrelated untracked `.claude/` after the latest local `main` commit.
+- Browser verification at `http://localhost:5173/` confirmed `See all` lands on `Shop more`, bag/review/footer policy links stay in-page, review chips wrap, and mobile row scrollbar tracks are hidden.
+- Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
 
@@ -227,6 +229,18 @@ Latest footer decision:
   - `Shop` open by default, with only one group open at a time
   - small copyright text
 - This is a UX foundation only; final UI polish remains open.
+
+Latest UX bug pass:
+
+- The CEO approved fixing UX bugs and incomplete builds before the later full UI pass.
+- The approved design and implementation plan are saved at:
+  - `docs/superpowers/specs/2026-05-08-home-ux-bug-pass-design.md`
+  - `docs/superpowers/plans/2026-05-08-home-ux-bug-pass.md`
+- This pass is limited to behavior and usability plumbing, not final visual polish.
+- Current direction:
+  - `See all` should target the real `Shop more` area instead of removed `Featured Sets`.
+  - bag, review, and footer policy links should stay inside the current prototype instead of pointing to missing checkout, review, or policy routes.
+  - small-screen row scrollbars and clipped review chips should be cleaned up before the full UI pass.
 
 ## Open Product/Site Decisions
 

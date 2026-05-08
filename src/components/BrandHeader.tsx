@@ -40,7 +40,7 @@ export function BrandHeader() {
           <a className="brand-header__shop-link" href="#shop-collections">
             Shop
           </a>
-          <a className="brand-header__icon-button" href="#bag" aria-label="View bag">
+          <a className="brand-header__icon-button" href="#faq" aria-label="View bag">
             <ShoppingBag aria-hidden="true" size={18} />
           </a>
         </div>

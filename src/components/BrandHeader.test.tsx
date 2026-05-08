@@ -26,7 +26,7 @@ describe("BrandHeader", () => {
       "href",
       "#shop-collections"
     );
-    expect(screen.getByRole("link", { name: "View bag" })).toHaveAttribute("href", "#bag");
+    expect(screen.getByRole("link", { name: "View bag" })).toHaveAttribute("href", "#faq");
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
   });
 

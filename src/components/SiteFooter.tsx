@@ -37,9 +37,9 @@ const footerGroups: FooterGroup[] = [
     id: "policies",
     label: "Policies",
     links: [
-      { href: "/shipping", label: "Shipping" },
-      { href: "/returns", label: "Returns" },
-      { href: "/privacy", label: "Privacy" }
+      { href: "#faq", label: "Shipping" },
+      { href: "#faq", label: "Returns" },
+      { href: "#faq", label: "Privacy" }
     ]
   },
   {
