@@ -42,6 +42,7 @@ Implemented:
   - latest mockup-alignment pass centers the mobile brand mark over the full hero image, keeps menu/Shop/bag on one row, removes the heavy dark hero overlay, and uses the softer berry serif headline treatment from the approved direction
   - accent correction moves the green from the minty `#cce7ca` family toward the inspo's dustier `#adba85`
   - 319px header overlap fix keeps the larger brand mark in the protected middle grid column so the `Shop` pill cannot cover it
+  - CTA typography pass gives the header `Shop` pill and hero `Shop sets` button a softer rounded sans stack instead of the heavier generic app-button text
   - slim confidence strip follows the hero
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now

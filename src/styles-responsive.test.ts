@@ -7,6 +7,7 @@ describe("small mobile responsive CSS", () => {
   it("includes the locked S3 header and hero visual rules", () => {
     expect(styles).toContain("--color-sage-accent");
     expect(styles).toContain("--color-sage-accent: #adba85;");
+    expect(styles).toContain("--font-cta:");
     expect(styles).toContain("--hero-overlay-bottom");
     expect(styles).toContain(".brand-header--at-top");
     expect(styles).toContain(".brand-header--scrolled");
@@ -27,6 +28,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("grid-template-columns: 38px minmax(0, 1fr) auto 38px;");
     expect(styles).toContain("grid-column: 2;");
     expect(styles).toContain("font-size: 1.08rem;");
+    expect(styles).toContain("font-family: var(--font-cta);");
   });
 
   it("includes dedicated layout tightening for 320px screens", () => {
