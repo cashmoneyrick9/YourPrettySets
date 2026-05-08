@@ -23,6 +23,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("max-height: min(650px, calc(94vh - 108px))");
     expect(styles).toContain("width: min(100%, 520px)");
     expect(styles).toContain(".hero-copy h1::after");
+    expect(styles).toContain("linear-gradient(45deg");
+    expect(styles).toContain("86px 1px");
     expect(styles).toContain(".hero-section {\n  display: grid;");
     expect(styles).toContain("padding: 0;");
     expect(styles).toContain("border-radius: 0;");

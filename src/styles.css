@@ -312,23 +312,24 @@ h1 {
 
 .hero-copy h1::after {
   background:
-    radial-gradient(circle at center, #f5a9bd 0 3px, transparent 4px),
-    linear-gradient(90deg, transparent 0, transparent 43%, rgba(155, 59, 102, 0.4) 43% 57%, transparent 57%),
-    linear-gradient(90deg, rgba(155, 59, 102, 0.4), rgba(155, 59, 102, 0.4));
+    linear-gradient(45deg, transparent calc(50% - 0.8px), rgba(245, 169, 189, 0.78) calc(50% - 0.8px) calc(50% + 0.8px), transparent calc(50% + 0.8px)),
+    linear-gradient(-45deg, transparent calc(50% - 0.8px), rgba(245, 169, 189, 0.78) calc(50% - 0.8px) calc(50% + 0.8px), transparent calc(50% + 0.8px)),
+    linear-gradient(90deg, rgba(155, 59, 102, 0.22) 0 36px, transparent 36px 50px, rgba(155, 59, 102, 0.22) 50px 86px);
   background-position:
     center,
     center,
     center;
   background-repeat: no-repeat;
   background-size:
-    15px 15px,
-    100% 2px,
-    100% 1px;
+    9px 9px,
+    9px 9px,
+    86px 1px;
   content: "";
   display: block;
-  height: 15px;
-  margin-top: 16px;
-  width: 98px;
+  height: 10px;
+  margin-top: 14px;
+  opacity: 0.88;
+  width: 86px;
 }
 
 .hero-copy .primary-button {

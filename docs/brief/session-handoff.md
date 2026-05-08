@@ -44,6 +44,7 @@ Implemented:
   - 319px header overlap fix keeps the larger brand mark in the protected middle grid column so the `Shop` pill cannot cover it
   - CTA typography pass gives the header `Shop` pill and hero `Shop sets` button a softer rounded sans stack instead of the heavier generic app-button text
   - scrolled-header correction rounds the sage bar, restores berry brand text, and keeps menu/bag as outline-only icons while `Shop` stays in a white pill
+  - hero divider refinement replaces the heavy center-dot divider with a thinner mockup-style split line and tiny sparkle
   - slim confidence strip follows the hero
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
