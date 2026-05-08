@@ -20,7 +20,11 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("scroll-padding-top: 84px");
     expect(styles).toContain("justify-self: center");
     expect(styles).toContain("max-height: min(650px, calc(94vh - 108px))");
-    expect(styles).toContain("width: min(100%, 460px)");
+    expect(styles).toContain("width: min(100%, 520px)");
+    expect(styles).toContain(".hero-copy p:not(.eyebrow)::after");
+    expect(styles).toContain(".hero-section {\n  display: grid;");
+    expect(styles).toContain("padding: 0;");
+    expect(styles).toContain("border-radius: 0;");
   });
 
   it("includes dedicated layout tightening for 320px screens", () => {

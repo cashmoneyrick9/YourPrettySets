@@ -38,6 +38,7 @@ Implemented:
 - Mobile Home page shopping path:
   - hero leads with product/lifestyle visual treatment and a direct `Shop sets` CTA
   - S3 header/hero UI pass adds the real `public/assets/hero-s3-summer.png` background, transparent-at-top header, sage/pistachio scrolled header, and fixed-header anchor offset
+  - S3 fidelity correction makes the mobile hero background full-bleed from the top under the transparent header, softens the temporary brand mark, refines the sage/berry accents, and adds the small divider before the hero CTA
   - slim confidence strip follows the hero
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
@@ -285,6 +286,7 @@ Implemented scope:
 - Replaced the code-native hero hand illustration with the image-backed S3 hero treatment.
 - Added CSS protections for fixed-header anchor jumps and tablet/desktop hero height.
 - Added regression coverage for header scroll state and S3 header/hero CSS rules.
+- Follow-up fidelity correction made the mobile hero image full-bleed behind the transparent header, refined the temporary brand mark and accent values, and added the small divider above the CTA.
 
 ## Open Product/Site Decisions
 

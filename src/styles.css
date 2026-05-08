@@ -6,9 +6,9 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --color-ink: #2a2528;
-  --color-berry: #8f315a;
-  --color-sage-accent: #b9d8b6;
-  --color-sage-deep: #355f50;
+  --color-berry: #9b3b66;
+  --color-sage-accent: #c8e6c6;
+  --color-sage-deep: #2f6258;
   --color-mint: #d9f0e5;
   --color-lilac: #e7ddf5;
   --color-sorbet: #f5b7c8;
@@ -42,7 +42,7 @@ a {
 
 .brand-header {
   left: 0;
-  padding: 12px clamp(14px, 4vw, 44px);
+  padding: 14px clamp(14px, 4vw, 44px);
   position: fixed;
   right: 0;
   top: 0;
@@ -54,13 +54,13 @@ a {
 }
 
 .brand-header--at-top {
-  background: linear-gradient(180deg, rgba(36, 30, 34, 0.34), rgba(36, 30, 34, 0));
+  background: linear-gradient(180deg, rgba(36, 30, 34, 0.28), rgba(36, 30, 34, 0));
   color: #ffffff;
 }
 
 .brand-header--scrolled {
   backdrop-filter: blur(14px);
-  background: rgba(185, 216, 182, 0.94);
+  background: rgba(200, 230, 198, 0.94);
   box-shadow: 0 12px 30px rgba(53, 95, 80, 0.14);
   color: var(--color-sage-deep);
 }
@@ -75,8 +75,10 @@ a {
 .brand-mark {
   color: inherit;
   flex: 0 0 auto;
-  font-size: 1.12rem;
+  font-family: "Arial Rounded MT Bold", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.16rem;
   font-weight: 900;
+  letter-spacing: 0.01em;
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.18);
   white-space: nowrap;
 }
@@ -228,8 +230,9 @@ h1 {
   display: grid;
   grid-template-areas: "hero";
   grid-template-columns: minmax(0, 1fr);
-  min-height: min(760px, 94vh);
-  padding: clamp(88px, 18vw, 132px) clamp(14px, 4vw, 56px) clamp(20px, 5vw, 56px);
+  min-height: 92vh;
+  overflow: hidden;
+  padding: 0;
   position: relative;
 }
 
@@ -239,9 +242,8 @@ h1 {
   border-radius: 10px;
   content: "";
   grid-area: hero;
-  justify-self: center;
   pointer-events: none;
-  width: min(100%, 460px);
+  width: 100%;
   z-index: 1;
 }
 
@@ -251,11 +253,10 @@ h1 {
   display: grid;
   gap: 10px;
   grid-area: hero;
-  justify-self: center;
+  justify-self: stretch;
   max-width: 510px;
-  padding: clamp(20px, 5vw, 38px);
+  padding: 0 clamp(24px, 6vw, 42px) clamp(24px, 6vw, 44px);
   text-shadow: 0 2px 18px rgba(42, 37, 40, 0.24);
-  width: min(100%, 460px);
   z-index: 2;
 }
 
@@ -277,6 +278,16 @@ h1 {
   max-width: 420px;
 }
 
+.hero-copy p:not(.eyebrow)::after {
+  background: rgba(200, 230, 198, 0.9);
+  border-radius: 999px;
+  content: "";
+  display: block;
+  height: 2px;
+  margin-top: 14px;
+  width: 56px;
+}
+
 .hero-copy .primary-button {
   background: var(--color-sage-accent);
   color: var(--color-sage-deep);
@@ -287,18 +298,18 @@ h1 {
   aspect-ratio: 9 / 14;
   background-color: var(--color-mint);
   background-image: url("/assets/hero-s3-summer.png");
-  background-position: center;
+  background-position: center top;
   background-size: cover;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 10px;
-  box-shadow: 0 24px 70px rgba(53, 95, 80, 0.18);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   grid-area: hero;
-  justify-self: center;
-  max-height: min(650px, calc(94vh - 108px));
-  min-height: min(650px, calc(94vh - 108px));
+  justify-self: stretch;
+  max-height: none;
+  min-height: 92vh;
   overflow: hidden;
   position: relative;
-  width: min(100%, 460px);
+  width: 100%;
 }
 
 .hero-photo__hand {
@@ -1625,7 +1636,7 @@ h1 {
 
 @media (max-width: 720px) {
   .brand-header {
-    padding: 10px 14px;
+    padding: 14px;
   }
 
   .brand-header__bar {
@@ -1633,7 +1644,7 @@ h1 {
   }
 
   .brand-mark {
-    font-size: 1rem;
+    font-size: 1.04rem;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1652,9 +1663,37 @@ h1 {
   }
 }
 
+@media (min-width: 721px) {
+  .hero-section {
+    min-height: min(760px, 94vh);
+    padding: clamp(88px, 18vw, 132px) clamp(14px, 4vw, 56px) clamp(20px, 5vw, 56px);
+    place-items: center;
+  }
+
+  .hero-section::after,
+  .hero-copy,
+  .hero-photo {
+    border-radius: 10px;
+    width: min(100%, 520px);
+  }
+
+  .hero-copy {
+    justify-self: center;
+    padding: clamp(20px, 5vw, 38px);
+  }
+
+  .hero-photo {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 24px 70px rgba(53, 95, 80, 0.18);
+    justify-self: center;
+    max-height: min(650px, calc(94vh - 108px));
+    min-height: min(650px, calc(94vh - 108px));
+  }
+}
+
 @media (max-width: 860px) {
   .hero-section {
-    min-height: auto;
+    min-height: 92vh;
   }
 }
 
@@ -1727,7 +1766,7 @@ h1 {
 
 @media (max-width: 360px) {
   .brand-header {
-    padding: 12px 14px;
+    padding: 14px 12px;
   }
 
   .brand-header__bar {
@@ -1735,7 +1774,7 @@ h1 {
   }
 
   .brand-mark {
-    font-size: 1rem;
+    font-size: 0.98rem;
   }
 
   .brand-header__mobile-actions {
@@ -1759,7 +1798,7 @@ h1 {
   .hero-section {
     grid-template-areas: "hero";
     min-height: 92vh;
-    padding: 76px 10px 18px;
+    padding: 0;
   }
 
   h1 {
@@ -1769,7 +1808,7 @@ h1 {
 
   .hero-copy {
     gap: 8px;
-    padding: 16px;
+    padding: 0 16px 18px;
   }
 
   .hero-copy h1 {
@@ -1795,7 +1834,7 @@ h1 {
     aspect-ratio: 9 / 14;
     background-position: center top;
     max-height: none;
-    min-height: calc(92vh - 94px);
+    min-height: 92vh;
     width: 100%;
   }
 
