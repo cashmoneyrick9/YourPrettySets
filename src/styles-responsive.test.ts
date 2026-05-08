@@ -14,17 +14,16 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("background-image: url(\"/assets/hero-s3-summer.png\")");
     expect(styles).toContain(".hero-photo__hand {\n  display: none;");
     expect(styles).toContain(".hero-section::after");
-    expect(styles).toContain(
-      "padding: clamp(88px, 18vw, 132px) clamp(14px, 4vw, 56px) clamp(20px, 5vw, 56px)",
-    );
+    expect(styles).toContain("min-height: clamp(520px, 68vh, 640px)");
     expect(styles).toContain("scroll-padding-top: 84px");
     expect(styles).toContain("justify-self: center");
     expect(styles).toContain("max-height: min(650px, calc(94vh - 108px))");
     expect(styles).toContain("width: min(100%, 520px)");
-    expect(styles).toContain(".hero-copy p:not(.eyebrow)::after");
+    expect(styles).toContain(".hero-copy h1::after");
     expect(styles).toContain(".hero-section {\n  display: grid;");
     expect(styles).toContain("padding: 0;");
     expect(styles).toContain("border-radius: 0;");
+    expect(styles).toContain("grid-template-columns: 38px minmax(0, 1fr) auto 38px;");
   });
 
   it("includes dedicated layout tightening for 320px screens", () => {
@@ -67,7 +66,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__mobile-menu");
     expect(styles).toContain("@media (max-width: 720px)");
     expect(styles).toContain(".brand-header__desktop-nav {\n    display: none;");
-    expect(styles).toContain(".brand-header__mobile-actions {\n    display: flex;");
+    expect(styles).toContain(".brand-header__mobile-actions {\n    display: contents;");
     expect(styles).toContain(".brand-header__mobile-menu {\n    display: grid;");
   });
 });
