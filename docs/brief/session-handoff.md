@@ -37,7 +37,6 @@ Implemented:
 - Regression test for 320px mobile CSS rules.
 - Mobile Home page shopping path:
   - hero leads with product/lifestyle visual treatment and a direct `Shop sets` CTA
-  - S3 header and hero styling is implemented with the real `public/assets/hero-s3-summer.png` image, fixed transparent-to-sage header states, and S3 color tokens
   - slim confidence strip follows the hero
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
@@ -55,13 +54,11 @@ Implemented:
 
 Latest known verification before handoff:
 
-- `npm test -- src/styles-responsive.test.ts`: 1 file, 4 tests passed.
-- `npm test -- src/components/BrandHeader.test.tsx`: 1 file, 3 tests passed.
-- `npm test`: 10 files, 25 tests passed.
+- `npm test`: 10 files, 23 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
-- Browser plugin verification was unavailable in the latest Task 5 session because the in-app browser backend was not available. The dev server started on `http://localhost:5174/` because port `5173` was already occupied.
+- Browser verification at `http://localhost:5173/` confirmed the weekly set is a real carousel without the unwanted `Up next` module, `Shop more` arrows rotate a two-card product view, review arrows no longer collide with the quote card, the FAQ start strip is a link to `#how-it-works`, and the footer no longer clips at 319px-class browser widths.
 - Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
@@ -89,7 +86,6 @@ Latest known verification before handoff:
 - `00afc7c` - Restore richer home carousels
 - `24efa30` - Remove weekly up-next module
 - `341fe95` - Fix narrow footer overflow
-- Task 5 pending commit - Style S3 header and hero
 
 ## CEO Feedback And Preferences
 
@@ -262,20 +258,6 @@ Latest UX bug pass:
   - do not bring back the weekly `Up next` module
   - do not collapse `Shop more` back to one generic card
   - do not reopen checkout, final product photography, final logo, or policy/legal copy unless asked
-
-## Latest Discussion: S3 Header And Hero Styling
-
-The CEO locked S3 as the desired direction for the Home page header and hero.
-
-Implemented direction:
-
-- Added S3 color tokens in `src/styles.css`.
-- Converted the header to fixed overlay behavior with top and scrolled visual states.
-- Replaced the code-native hero illustration with the real `hero-s3-summer.png` asset.
-- Kept the hero `Shop sets` CTA as a sage exception while global primary buttons use berry.
-- Tightened mobile and 320px header/hero rules around the new image-led hero.
-
-No React component behavior changed in this pass.
   - use the current Home page as the working surface, but expect substantial visual refinement section by section
 
 ## Open Product/Site Decisions
