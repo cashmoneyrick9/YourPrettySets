@@ -58,7 +58,7 @@ Latest known verification before handoff:
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
-- Browser verification at `http://localhost:5173/` confirmed the weekly set no longer has a fake carousel peek, `Shop more` arrows rotate products, review arrows no longer collide with the quote card, and the FAQ start strip is a link to `#how-it-works`.
+- Browser verification at `http://localhost:5173/` confirmed the weekly set is a real carousel without the unwanted `Up next` module, `Shop more` arrows rotate a two-card product view, review arrows no longer collide with the quote card, the FAQ start strip is a link to `#how-it-works`, and the footer no longer clips at 319px-class browser widths.
 - Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
@@ -80,6 +80,12 @@ Latest known verification before handoff:
 - `84dc479` - Build FAQ accordion foundation
 - `6d14f94` - Build accordion footer foundation
 - `937d495` - Remove standalone footer contact CTA
+- `e7a11df` - Fix home UX bug pass
+- `ad09ef5` - Address home UX review comments
+- `ca8a0b9` - Build real weekly set carousel
+- `00afc7c` - Restore richer home carousels
+- `24efa30` - Remove weekly up-next module
+- `341fe95` - Fix narrow footer overflow
 
 ## CEO Feedback And Preferences
 
@@ -239,16 +245,20 @@ Latest UX bug pass:
 - The approved design and implementation plan are saved at:
   - `docs/superpowers/specs/2026-05-08-home-ux-bug-pass-design.md`
   - `docs/superpowers/plans/2026-05-08-home-ux-bug-pass.md`
-- This pass is limited to behavior and usability plumbing, not final visual polish.
-- Current direction:
-  - `See all` should target the real `Shop more` area instead of removed `Featured Sets`.
-  - bag, review, and footer policy links should stay inside the current prototype instead of pointing to missing checkout, review, or policy routes.
-  - small-screen row scrollbars and clipped review chips should be cleaned up before the full UI pass.
-- Review follow-up:
-  - remove fake carousel affordances instead of implying unavailable interaction
-  - make `Shop more` image browsing explicit through previous/next buttons
-  - give review carousel arrows their own space outside the card
-  - make the FAQ `New to press-ons? Start here.` strip behave like a CTA
+- This pass was limited to behavior and usability plumbing, not final visual polish.
+- Completed scope:
+  - fixed broken/incomplete navigation targets for collection `See all`, bag, review CTA, footer links, and FAQ beginner strip
+  - replaced fake carousel affordances with real controls where needed
+  - kept the weekly-set carousel simple: full product card, `1 of 4` count, previous/next controls, and dots, with no added `Up next` CTA module
+  - made `Shop more` browse two product cards at a time with previous/next arrows
+  - separated review arrows from the quote card so they do not collide on narrow mobile
+  - removed global `body` 320px minimum so the footer does not clip at 319px-class in-app browser widths
+- This UX bug pass is complete. The next chat should start the full UI pass, which is a broader visual/taste pass rather than another structural UX bug pass.
+- For the UI pass, preserve the approved behavior unless the CEO explicitly reopens it. In particular:
+  - do not bring back the weekly `Up next` module
+  - do not collapse `Shop more` back to one generic card
+  - do not reopen checkout, final product photography, final logo, or policy/legal copy unless asked
+  - use the current Home page as the working surface, but expect substantial visual refinement section by section
 
 ## Open Product/Site Decisions
 

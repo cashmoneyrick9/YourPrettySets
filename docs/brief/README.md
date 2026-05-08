@@ -36,6 +36,6 @@ The current goal is not a public launch MVP. The current goal is a structured br
 
 The Home page foundation exists as a Vite React TypeScript app. It has central placeholder product data, shared Home components, a long-scroll mobile-first Home page, responsive CSS including 320px rules, and passing test/build/audit checks.
 
-The latest Home page UX pass focused on mobile shopping flow rather than final UI polish. Current sections include a compact mobile header, image-led hero, step carousel, collection tiles, weekly set module, shop-more row, kit contents accordion, review carousel, FAQ accordion, and accordion footer.
+The latest Home page UX bug pass is complete and focused on mobile behavior rather than final UI polish. Current sections include a compact mobile header, image-led hero, step carousel, collection tiles, real weekly set carousel, two-card shop-more carousel, kit contents accordion, review carousel, FAQ accordion, and accordion footer.
 
-Next likely work should continue UX review/polish section by section. Do not treat the logo, final visuals, product photography, product copy, checkout, policies, or broader UI styling as final.
+Next likely work is the broader UI pass. Preserve the approved behavior documented in `session-handoff.md`, then improve visual treatment section by section. Do not treat the logo, final visuals, product photography, product copy, checkout, policies, or broader UI styling as final.
