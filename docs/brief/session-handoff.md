@@ -45,7 +45,7 @@ Implemented:
   - What's included now uses a compact kit summary and grouped accordion rows instead of a long vertical item list
   - reviews now use a compact trust-chip row, single featured review carousel, product thumbnail/detail, dots, and a `See more reviews` link
   - FAQ now uses a beginner help strip, accordion answers, a care-tips cue, and a contact CTA
-  - footer now uses a compact brand intro, visible contact CTA, grouped accordion links, and tiny legal text instead of placeholder link piles
+  - footer now uses a compact brand intro, grouped accordion links, and tiny legal text instead of placeholder link piles
 
 Latest known verification before handoff:
 
@@ -215,8 +215,8 @@ Latest footer decision:
 - The footer now uses:
   - brand line `YourPrettySets`
   - reassurance copy `Ready-to-wear press-ons, packed with care.`
-  - visible `Contact us` CTA
   - accordion groups: `Shop`, `Help`, `Policies`, and `Social`
+  - `Contact us` lives inside the `Help` accordion instead of as a standalone footer button
   - `Shop` open by default, with only one group open at a time
   - small copyright text
 - This is a UX foundation only; final UI polish remains open.

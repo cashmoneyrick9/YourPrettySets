@@ -1467,21 +1467,6 @@ h1 {
   max-width: 24rem;
 }
 
-.site-footer__contact {
-  align-items: center;
-  background: #fffaf8;
-  border-radius: 999px;
-  color: #a82f57;
-  display: inline-flex;
-  font-size: 0.9rem;
-  font-weight: 900;
-  justify-content: center;
-  justify-self: start;
-  min-height: 40px;
-  padding: 0 18px;
-  text-decoration: none;
-}
-
 .site-footer__groups {
   display: grid;
   gap: 10px;
@@ -1540,7 +1525,6 @@ h1 {
 }
 
 .site-footer__brand:focus-visible,
-.site-footer__contact:focus-visible,
 .site-footer__toggle:focus-visible,
 .site-footer__panel a:focus-visible {
   outline: 3px solid #f4c3d1;

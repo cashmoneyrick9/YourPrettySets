@@ -59,9 +59,6 @@ export function SiteFooter() {
           YourPrettySets
         </a>
         <p>Ready-to-wear press-ons, packed with care.</p>
-        <a className="site-footer__contact" href="#contact">
-          Contact us
-        </a>
       </div>
 
       <nav aria-label="Footer navigation" className="site-footer__groups">

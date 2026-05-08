@@ -29,7 +29,7 @@ describe("App", () => {
     const helpGroup = footer.getByRole("button", { name: /Help/i });
 
     expect(footer.getByText("Ready-to-wear press-ons, packed with care.")).toBeInTheDocument();
-    expect(footer.getByRole("link", { name: "Contact us" })).toBeInTheDocument();
+    expect(footer.queryByRole("link", { name: "Contact us" })).not.toBeInTheDocument();
     expect(shopGroup).toHaveAttribute("aria-expanded", "true");
     expect(footer.getByRole("link", { name: "Collections" })).toHaveAttribute("href", "#shop-collections");
     expect(footer.queryByRole("link", { name: "Care tips" })).not.toBeInTheDocument();
@@ -39,6 +39,7 @@ describe("App", () => {
     expect(shopGroup).toHaveAttribute("aria-expanded", "false");
     expect(helpGroup).toHaveAttribute("aria-expanded", "true");
     expect(footer.getByRole("link", { name: "Care tips" })).toHaveAttribute("href", "#faq");
+    expect(footer.getByRole("link", { name: "Contact us" })).toHaveAttribute("href", "#contact");
     expect(footer.queryByRole("link", { name: "Collections" })).not.toBeInTheDocument();
   });
 });
