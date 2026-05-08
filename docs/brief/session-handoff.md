@@ -48,11 +48,11 @@ Implemented:
   - footer now uses a compact brand intro, grouped accordion links, and tiny legal text instead of placeholder link piles
   - Home UX bug pass fixed broken or incomplete prototype destinations, including collection `See all`, bag, review, and footer policy links
   - mobile overflow polish hides native row scrollbars, lets review trust chips wrap, and tightens the collection-to-weekly-set spacing on very small screens
-  - review follow-up removed the fake weekly-set carousel peek/count, added real `Shop more` product arrows, spaced review arrows away from the card, and made the FAQ start strip an in-page CTA link
+  - review follow-up replaced the fake weekly-set peek with a real product-backed weekly carousel, added real `Shop more` product arrows, spaced review arrows away from the card, and made the FAQ start strip an in-page CTA link
 
 Latest known verification before handoff:
 
-- `npm test`: 10 files, 21 tests passed.
+- `npm test`: 10 files, 22 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
@@ -177,7 +177,7 @@ Latest weekly-set flow decision:
 
 - The CEO liked the full-page direction that removes duplicate `New Arrivals` and `Featured Sets` sections.
 - The Home page now moves from Collections into a featured `This week's set` module, then a compact `Shop more` row, then What's included.
-- `This week's set` uses `Blush Crush` as the lead product, includes `1 of 4`, a `Shop this set` CTA, `Browse all new sets`, and a visible next-card peek so the carousel intent is clearer.
+- `This week's set` uses `Blush Crush` as the lead product, includes `1 of 4`, a `Shop this set` CTA, `Browse all new sets`, and previous/next carousel controls that cycle through the actual `New Arrivals` products.
 - `Shop more` shows a short product row instead of repeating another full carousel section.
 - Product tiles no longer show visible `Clean background placeholder...` copy; they use code-native nail-set visuals until real product photography exists.
 - The design spec is saved at `docs/superpowers/specs/2026-05-07-weekly-set-home-flow-design.md`.

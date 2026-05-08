@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { HomePage } from "./HomePage";
@@ -37,8 +37,8 @@ describe("HomePage", () => {
     expect(screen.queryByRole("heading", { name: "New Arrivals" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Featured Sets" })).not.toBeInTheDocument();
     expect(screen.getByText("Blush Crush")).toBeInTheDocument();
-    expect(screen.getByText("Soft pink, ready for everyday plans.")).toBeInTheDocument();
-    expect(screen.queryByText("1 of 4")).not.toBeInTheDocument();
+    expect(screen.getByText("A soft pink ready-to-wear set with an easy everyday glow.")).toBeInTheDocument();
+    expect(screen.getByText("1 of 4")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop this set" })).toHaveAttribute("href", "#product-blush-crush");
     expect(screen.getByRole("link", { name: "Browse all new sets" })).toHaveAttribute("href", "#shop-more");
     expect(document.querySelector(".weekly-set__peek")).not.toBeInTheDocument();
@@ -48,6 +48,23 @@ describe("HomePage", () => {
     expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Pretty notes from customers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
+  });
+
+  it("moves through real weekly set carousel slides", async () => {
+    const user = userEvent.setup();
+    render(<HomePage />);
+
+    const weeklySet = document.querySelector(".weekly-set-card");
+    expect(weeklySet).toBeInTheDocument();
+    expect(screen.getByText("1 of 4")).toBeInTheDocument();
+    expect(within(weeklySet as HTMLElement).getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Next weekly set" }));
+
+    const updatedWeeklySet = document.querySelector(".weekly-set-card");
+    expect(screen.getByText("2 of 4")).toBeInTheDocument();
+    expect(within(updatedWeeklySet as HTMLElement).getByRole("heading", { name: "Golden Hour" })).toBeInTheDocument();
+    expect(within(updatedWeeklySet as HTMLElement).getByRole("link", { name: "Shop this set" })).toHaveAttribute("href", "#product-golden-hour");
   });
 
   it("lets shoppers move through the Shop more product images with visible controls", async () => {

@@ -51,17 +51,18 @@ const faqs = [
 ];
 
 const weeklyProducts = products.filter((product) => product.collections.includes("New Arrivals")).slice(0, 4);
-const weeklyProduct = weeklyProducts[0];
 const shopMoreProducts = products.filter((product) =>
   ["golden-hour", "vacation-crush", "soft-serve"].includes(product.id)
 );
 
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const [activeWeeklyIndex, setActiveWeeklyIndex] = useState(0);
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
   const [activeShopMoreIndex, setActiveShopMoreIndex] = useState(0);
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
   const activeStep = confidenceSteps[activeStepIndex];
+  const activeWeeklyProduct = weeklyProducts[activeWeeklyIndex];
   const activeReview = reviews[activeReviewIndex];
   const activeShopMoreProduct = shopMoreProducts[activeShopMoreIndex];
   const nextReview = reviews[(activeReviewIndex + 1) % reviews.length];
@@ -70,6 +71,12 @@ export function HomePage() {
   };
   const showNextStep = () => {
     setActiveStepIndex((current) => (current === confidenceSteps.length - 1 ? 0 : current + 1));
+  };
+  const showPreviousWeeklySet = () => {
+    setActiveWeeklyIndex((current) => (current === 0 ? weeklyProducts.length - 1 : current - 1));
+  };
+  const showNextWeeklySet = () => {
+    setActiveWeeklyIndex((current) => (current === weeklyProducts.length - 1 ? 0 : current + 1));
   };
   const showPreviousReview = () => {
     setActiveReviewIndex((current) => (current === 0 ? reviews.length - 1 : current - 1));
@@ -159,10 +166,21 @@ export function HomePage() {
             <p className="eyebrow">Curated this week</p>
             <h2>This week's set</h2>
           </div>
+          <span className="weekly-set-count">
+            {activeWeeklyIndex + 1} of {weeklyProducts.length}
+          </span>
         </div>
-        <div className="weekly-set-layout">
-          <article className="weekly-set-card" id={`product-${weeklyProduct.slug}`}>
-            <div className={`weekly-set-art product-art product-art--${weeklyProduct.detailTier}`} aria-label={weeklyProduct.images.clean}>
+        <div className="weekly-set-layout" aria-live="polite">
+          <button
+            aria-label="Previous weekly set"
+            className="weekly-set-carousel__button"
+            onClick={showPreviousWeeklySet}
+            type="button"
+          >
+            ‹
+          </button>
+          <article className="weekly-set-card" id={`product-${activeWeeklyProduct.slug}`}>
+            <div className={`weekly-set-art product-art product-art--${activeWeeklyProduct.detailTier}`} aria-label={activeWeeklyProduct.images.clean}>
               <span className="product-art__nail product-art__nail--one" />
               <span className="product-art__nail product-art__nail--two" />
               <span className="product-art__nail product-art__nail--three" />
@@ -171,13 +189,13 @@ export function HomePage() {
             </div>
             <div className="weekly-set-card__body">
               <div>
-                <h3>{weeklyProduct.name}</h3>
-                <p>Soft pink, ready for everyday plans.</p>
+                <h3>{activeWeeklyProduct.name}</h3>
+                <p>{activeWeeklyProduct.description}</p>
               </div>
-              <strong>${weeklyProduct.price}</strong>
+              <strong>${activeWeeklyProduct.price}</strong>
             </div>
             <div className="weekly-set-card__actions">
-              <a className="primary-button" href={`#product-${weeklyProduct.slug}`}>
+              <a className="primary-button" href={`#product-${activeWeeklyProduct.slug}`}>
                 Shop this set
               </a>
               <a className="weekly-set-card__link" href="#shop-more">
@@ -185,6 +203,14 @@ export function HomePage() {
               </a>
             </div>
           </article>
+          <button
+            aria-label="Next weekly set"
+            className="weekly-set-carousel__button"
+            onClick={showNextWeeklySet}
+            type="button"
+          >
+            ›
+          </button>
         </div>
       </section>
       <section className="section-block shop-more-section" id="shop-more">
