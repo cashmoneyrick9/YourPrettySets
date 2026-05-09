@@ -14,7 +14,7 @@
   --color-sorbet: #f5b7c8;
   --color-butter: #f7dc86;
   --color-cream: #fffdf9;
-  --hero-overlay-bottom: rgba(255, 244, 239, 0.24);
+  --hero-overlay-bottom: rgba(255, 250, 248, 0.72);
   --font-cta: "Avenir Next Rounded", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -274,7 +274,13 @@ h1 {
 
 .hero-section::after {
   background:
-    linear-gradient(180deg, rgba(255, 250, 247, 0.04) 0%, rgba(255, 250, 247, 0.18) 42%, var(--hero-overlay-bottom) 100%);
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 247, 0.04) 0%,
+      rgba(255, 250, 247, 0.16) 46%,
+      rgba(255, 250, 248, 0.52) 82%,
+      var(--hero-overlay-bottom) 100%
+    );
   border-radius: 10px;
   content: "";
   grid-area: hero;
@@ -1105,7 +1111,7 @@ h1 {
 
 .confidence-section {
   background:
-    linear-gradient(180deg, rgba(255, 250, 248, 0.24) 0%, rgba(255, 250, 248, 0.94) 38%, #fffaf8 100%);
+    linear-gradient(180deg, rgba(255, 250, 248, 0) 0%, rgba(255, 250, 248, 0.86) 34%, #fffaf8 100%);
   margin-top: clamp(-42px, -5vw, -26px);
   padding: 0 clamp(18px, 4vw, 56px) clamp(24px, 4vw, 42px);
   position: relative;
@@ -1134,6 +1140,26 @@ h1 {
   z-index: -1;
 }
 
+.confidence-section::after {
+  backdrop-filter: blur(12px) saturate(1.03);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 253, 249, 0) 0%,
+      rgba(255, 253, 249, 0.42) 30%,
+      rgba(255, 253, 249, 0.74) 70%,
+      rgba(255, 253, 249, 0.92) 100%
+    );
+  content: "";
+  height: 54px;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: -26px;
+  z-index: 0;
+}
+
 .confidence-section .section-heading {
   margin-bottom: 14px;
 }
@@ -1154,6 +1180,7 @@ h1 {
   overflow: visible;
   padding: 10px 22px;
   position: relative;
+  z-index: 1;
 }
 
 .confidence-carousel__button {
@@ -1394,6 +1421,8 @@ h1 {
   gap: 5px;
   justify-content: center;
   margin-top: 14px;
+  position: relative;
+  z-index: 1;
 }
 
 .confidence-dots__dot {
