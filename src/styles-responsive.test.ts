@@ -46,11 +46,16 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("z-index: 1");
     expect(styles).toContain(".confidence-carousel");
     expect(styles).toContain(".confidence-carousel__button");
-    expect(styles).toContain("margin-top: 0");
-    expect(styles).not.toContain("margin-top: -18px");
+    expect(styles).toContain("margin-top: clamp(-42px, -5vw, -26px)");
+    expect(styles).toContain("backdrop-filter: blur(18px)");
+    expect(styles).toContain("border: 1px solid rgba(168, 47, 87, 0.24)");
+    expect(styles).toContain("transform: translateX(-50%)");
     expect(styles).toContain("grid-template-columns: minmax(76px, 0.72fr) minmax(0, 1fr)");
     expect(styles).toContain(".collection-card__visual");
     expect(styles).toContain(".confidence-card__visual");
+    expect(styles).toContain(".confidence-card__tray");
+    expect(styles).toContain(".confidence-card__glue");
+    expect(styles).toContain(".confidence-card__hand");
     expect(styles).toContain(".confidence-dots");
     expect(styles).toContain("scrollbar-width: none");
     expect(styles).toContain(".shop-more-grid::-webkit-scrollbar");

@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-08
+Last updated: 2026-05-09
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -46,6 +46,7 @@ Implemented:
   - scrolled-header correction rounds the sage bar, restores berry brand text, and keeps menu/bag as outline-only icons while `Shop` stays in a white pill
   - hero divider refinement replaces the heavy center-dot divider with a thinner mockup-style split line and tiny sparkle
   - slim confidence strip follows the hero
+  - How It Works carousel UI pass slightly overlaps the hero, uses a frosted warm-white card with a thin berry outline, places arrows just outside the card edges, and gives each slide its own code-native visual
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
   - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
@@ -62,12 +63,12 @@ Implemented:
 
 Latest known verification before handoff:
 
-- `npm test`: 10 files, 25 tests passed.
+- `npm test`: 10 files, 26 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
-- Browser verification at `http://localhost:5173/` confirmed the S3 hero image renders, the header is transparent at the top, the 319px mobile header keeps the larger brand mark clear of the `Shop` pill, the header switches to a rounded sage/pistachio accent after scrolling, the scrolled menu/bag icons are outline-only, CTA typography is softer, and the hero divider is a thin split line with a tiny sparkle.
-- The browser was last left at `http://localhost:5173/#shop-collections` after CTA navigation review.
+- Browser verification at `http://localhost:5173/`: Safari check confirmed the carousel changes through all three slides in the hero context after the new card UI pass.
+- The browser was last left at `http://localhost:5173/` after How It Works carousel review.
 - Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
@@ -201,6 +202,13 @@ Latest carousel decision:
   - `Pick your set` / `Find the look you want`
   - `Choose your wear` / `Glue or tabs`
   - `Press on pretty` / `Ready in minutes`
+- The 2026-05-09 UI direction is now approved enough to implement:
+  - keep the same carousel UX, placement, and copy
+  - let the card slightly overlap the hero with a soft frosted transition
+  - use the cleaner warm-white card with thin blush/berry outline, soft shadow, rounded corners, and arrows breaking outside the card edges
+  - improve slide visuals so they are intentional temporary code-native visuals: nail tray, glue/tabs, and finished press-on hand
+- The design spec is saved at `docs/superpowers/specs/2026-05-09-how-it-works-carousel-ui-design.md`.
+- The implementation plan is saved at `docs/superpowers/plans/2026-05-09-how-it-works-carousel-ui.md`.
 
 Latest weekly-set flow decision:
 

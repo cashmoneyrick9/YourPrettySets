@@ -1104,8 +1104,12 @@ h1 {
 }
 
 .confidence-section {
-  background: #fff6ed;
-  padding-block: clamp(24px, 4vw, 42px);
+  background:
+    linear-gradient(180deg, rgba(255, 250, 248, 0.04) 0%, rgba(255, 250, 248, 0.92) 48%, #fffaf8 100%);
+  margin-top: clamp(-42px, -5vw, -26px);
+  padding: 0 clamp(18px, 4vw, 56px) clamp(24px, 4vw, 42px);
+  position: relative;
+  z-index: 3;
 }
 
 .confidence-section .section-heading {
@@ -1114,33 +1118,51 @@ h1 {
 
 .confidence-carousel {
   align-items: center;
-  background: #fff0ee;
-  border: 1px solid rgba(217, 79, 124, 0.12);
-  border-radius: 8px;
-  box-shadow: 0 12px 30px rgba(93, 48, 67, 0.08);
+  backdrop-filter: blur(18px);
+  background: rgba(255, 253, 249, 0.86);
+  border: 1px solid rgba(168, 47, 87, 0.24);
+  border-radius: 12px;
+  box-shadow:
+    0 18px 38px rgba(93, 48, 67, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset;
   display: flex;
-  gap: 10px;
+  gap: 0;
   margin: 0 auto;
-  max-width: 760px;
-  padding: 10px;
+  max-width: 620px;
+  overflow: visible;
+  padding: 10px 22px;
+  position: relative;
 }
 
 .confidence-carousel__button {
   align-items: center;
-  background: #ffffff;
-  border: 1px solid rgba(168, 47, 87, 0.16);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(168, 47, 87, 0.2);
   border-radius: 999px;
-  color: #392a31;
+  box-shadow: 0 8px 18px rgba(93, 48, 67, 0.12);
+  color: #8f315a;
   cursor: pointer;
   display: inline-flex;
-  flex: 0 0 auto;
   font: inherit;
-  font-size: 1.45rem;
+  font-size: 1.24rem;
   font-weight: 800;
-  height: 34px;
+  height: 32px;
   justify-content: center;
   line-height: 1;
-  width: 34px;
+  position: absolute;
+  top: 50%;
+  width: 32px;
+  z-index: 2;
+}
+
+.confidence-carousel__button:first-child {
+  left: 0;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.confidence-carousel__button:last-child {
+  right: 0;
+  transform: translateX(50%) translateY(-50%);
 }
 
 .weekly-set-carousel__button:focus-visible,
@@ -1155,50 +1177,172 @@ h1 {
   align-items: center;
   display: grid;
   flex: 1 1 auto;
-  gap: 16px;
-  grid-template-columns: minmax(92px, 0.75fr) minmax(0, 1fr);
+  gap: 18px;
+  grid-template-columns: minmax(116px, 0.82fr) minmax(0, 1fr);
   min-width: 0;
   position: relative;
 }
 
 .confidence-card__visual {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 76px;
+  position: relative;
+}
+
+.confidence-card__tray {
   align-items: end;
+  background:
+    linear-gradient(135deg, rgba(255, 244, 235, 0.96), rgba(233, 238, 209, 0.78)),
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(173, 186, 133, 0.13) 7px 8px);
+  border: 1px solid rgba(173, 186, 133, 0.3);
+  border-radius: 6px;
+  box-shadow: 0 10px 18px rgba(93, 48, 67, 0.09);
   display: flex;
   gap: 5px;
   justify-content: center;
-  min-height: 76px;
+  min-height: 64px;
+  padding: 9px 10px 7px;
+  transform: rotate(-1deg);
 }
 
 .confidence-card__nail {
-  background: linear-gradient(180deg, #fff0e8, #ef8c77);
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.92) 0 17%, transparent 18%),
+    linear-gradient(180deg, #fff0e8, #ef8c77);
   border-radius: 999px 999px 12px 12px;
-  box-shadow: inset 0 6px 9px rgba(255, 255, 255, 0.44);
+  box-shadow:
+    inset 0 6px 9px rgba(255, 255, 255, 0.44),
+    0 6px 10px rgba(126, 65, 78, 0.1);
   display: block;
-  min-height: 58px;
-  width: 20px;
+  min-height: 48px;
+  width: 14px;
 }
 
 .confidence-card__nail--two {
-  min-height: 70px;
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.9) 0 17%, transparent 18%),
+    linear-gradient(180deg, #fff8ee, #d8ca92);
+  min-height: 56px;
 }
 
 .confidence-card__nail--three {
-  background: linear-gradient(180deg, #ffe2e8, #d9576e);
-  min-height: 64px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 234, 134, 0.72) 0 3px, transparent 4px),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.88) 0 17%, transparent 18%),
+    linear-gradient(180deg, #eadff7, #b69ad4);
+  min-height: 60px;
 }
 
 .confidence-card__nail--four {
-  min-height: 52px;
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.9) 0 17%, transparent 18%),
+    linear-gradient(180deg, #ffe2e8, #d9576e);
+  min-height: 54px;
 }
 
-.confidence-card--wear .confidence-card__nail {
-  background: linear-gradient(180deg, #fff8f4, #f3b1a5);
-  width: 16px;
+.confidence-card__nail--five {
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.9) 0 17%, transparent 18%),
+    linear-gradient(180deg, #f0f5d9, #adba85);
+  min-height: 46px;
 }
 
-.confidence-card--press .confidence-card__nail {
-  background: linear-gradient(180deg, #ffe5e7, #d9576e);
-  transform: rotate(18deg);
+.confidence-card__glue {
+  background:
+    linear-gradient(180deg, #f6d3d6 0 24%, #ffffff 25% 100%);
+  border: 1px solid rgba(168, 47, 87, 0.16);
+  border-radius: 999px 999px 10px 10px;
+  box-shadow: 0 10px 16px rgba(93, 48, 67, 0.1);
+  height: 58px;
+  position: relative;
+  transform: rotate(-1deg);
+  width: 18px;
+}
+
+.confidence-card__glue::before {
+  background: #d9576e;
+  border-radius: 999px 999px 3px 3px;
+  content: "";
+  height: 16px;
+  left: 5px;
+  position: absolute;
+  top: -10px;
+  width: 8px;
+}
+
+.confidence-card__tabs {
+  background: rgba(255, 249, 244, 0.9);
+  border: 1px solid rgba(173, 186, 133, 0.32);
+  border-radius: 9px;
+  box-shadow: 0 10px 18px rgba(93, 48, 67, 0.09);
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(3, 12px);
+  margin-left: 14px;
+  padding: 8px;
+  transform: rotate(2deg);
+}
+
+.confidence-card__tabs span {
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.88), transparent 42%),
+    #d8caef;
+  border: 1px solid rgba(155, 59, 102, 0.08);
+  border-radius: 999px;
+  height: 15px;
+  width: 12px;
+}
+
+.confidence-card__hand {
+  background: radial-gradient(circle at 56% 34%, #ffe6d9 0 34%, #f3b59f 58%, transparent 59%);
+  border: 1px solid rgba(168, 47, 87, 0.14);
+  border-radius: 999px;
+  box-shadow: 0 10px 20px rgba(93, 48, 67, 0.1);
+  display: block;
+  height: 70px;
+  overflow: hidden;
+  position: relative;
+  width: 70px;
+}
+
+.confidence-card__finger {
+  background: linear-gradient(180deg, #ffd9c8, #efac96);
+  border-radius: 999px;
+  bottom: -10px;
+  display: block;
+  height: 55px;
+  position: absolute;
+  width: 18px;
+}
+
+.confidence-card__finger::after {
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.88) 0 20%, transparent 21%),
+    linear-gradient(180deg, #ffe2ea, #d9576e);
+  border-radius: 999px 999px 8px 8px;
+  content: "";
+  height: 22px;
+  left: 3px;
+  position: absolute;
+  top: 4px;
+  width: 12px;
+}
+
+.confidence-card__finger--one {
+  left: 18px;
+  transform: rotate(-9deg);
+}
+
+.confidence-card__finger--two {
+  height: 62px;
+  left: 31px;
+}
+
+.confidence-card__finger--three {
+  left: 44px;
+  transform: rotate(8deg);
 }
 
 .confidence-card__copy {
@@ -1208,7 +1352,10 @@ h1 {
 }
 
 .confidence-card__label {
+  color: #8f315a;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1rem;
+  font-weight: 700;
   line-height: 1.1;
   min-width: 0;
 }
@@ -1224,7 +1371,7 @@ h1 {
   display: flex;
   gap: 5px;
   justify-content: center;
-  margin-top: 9px;
+  margin-top: 14px;
 }
 
 .confidence-dots__dot {
@@ -2024,7 +2171,7 @@ h1 {
 
   .confidence-section {
     background: transparent;
-    margin-top: 0;
+    margin-top: clamp(-42px, -5vw, -26px);
     padding: 10px 12px 18px;
     position: relative;
     z-index: 2;
@@ -2036,7 +2183,7 @@ h1 {
 
   .confidence-carousel {
     gap: 8px;
-    padding: 8px;
+    padding: 8px 18px;
   }
 
   .confidence-carousel__button {
@@ -2054,21 +2201,53 @@ h1 {
     min-height: 60px;
   }
 
+  .confidence-card__tray {
+    gap: 4px;
+    min-height: 54px;
+    padding: 7px 8px 6px;
+  }
+
   .confidence-card__nail {
-    min-height: 44px;
-    width: 14px;
+    min-height: 38px;
+    width: 11px;
   }
 
   .confidence-card__nail--two {
-    min-height: 54px;
+    min-height: 45px;
   }
 
   .confidence-card__nail--three {
-    min-height: 50px;
+    min-height: 48px;
   }
 
   .confidence-card__nail--four {
-    min-height: 40px;
+    min-height: 43px;
+  }
+
+  .confidence-card__nail--five {
+    min-height: 36px;
+  }
+
+  .confidence-card__glue {
+    height: 48px;
+    width: 15px;
+  }
+
+  .confidence-card__tabs {
+    gap: 3px;
+    grid-template-columns: repeat(3, 10px);
+    margin-left: 10px;
+    padding: 6px;
+  }
+
+  .confidence-card__tabs span {
+    height: 13px;
+    width: 10px;
+  }
+
+  .confidence-card__hand {
+    height: 58px;
+    width: 58px;
   }
 
   .confidence-card__label {

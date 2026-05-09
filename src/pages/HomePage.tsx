@@ -10,6 +10,44 @@ const confidenceSteps = [
   { label: "Press on pretty", helper: "Ready in minutes", visual: "press" }
 ];
 
+function renderConfidenceVisual(visual: string) {
+  if (visual === "wear") {
+    return (
+      <>
+        <span className="confidence-card__glue" />
+        <span className="confidence-card__tabs">
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </span>
+      </>
+    );
+  }
+
+  if (visual === "press") {
+    return (
+      <span className="confidence-card__hand">
+        <span className="confidence-card__finger confidence-card__finger--one" />
+        <span className="confidence-card__finger confidence-card__finger--two" />
+        <span className="confidence-card__finger confidence-card__finger--three" />
+      </span>
+    );
+  }
+
+  return (
+    <span className="confidence-card__tray">
+      <span className="confidence-card__nail confidence-card__nail--one" />
+      <span className="confidence-card__nail confidence-card__nail--two" />
+      <span className="confidence-card__nail confidence-card__nail--three" />
+      <span className="confidence-card__nail confidence-card__nail--four" />
+      <span className="confidence-card__nail confidence-card__nail--five" />
+    </span>
+  );
+}
+
 const reviews = [
   {
     detail: "Oval · Short",
@@ -132,12 +170,9 @@ export function HomePage() {
             ‹
           </button>
           <article className={`confidence-card confidence-card--${activeStep.visual}`}>
-              <span className="confidence-card__visual" aria-hidden="true">
-                <span className="confidence-card__nail confidence-card__nail--one" />
-                <span className="confidence-card__nail confidence-card__nail--two" />
-                <span className="confidence-card__nail confidence-card__nail--three" />
-                <span className="confidence-card__nail confidence-card__nail--four" />
-              </span>
+            <span className="confidence-card__visual" aria-hidden="true">
+              {renderConfidenceVisual(activeStep.visual)}
+            </span>
             <span className="confidence-card__copy">
               <strong className="confidence-card__label">{activeStep.label}</strong>
               <span className="confidence-card__helper">{activeStep.helper}</span>

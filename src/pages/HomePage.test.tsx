@@ -123,6 +123,28 @@ describe("HomePage", () => {
     expect(screen.getByText("Find the look you want")).toBeInTheDocument();
   });
 
+  it("renders distinct visual treatments for each step without changing carousel copy", async () => {
+    const user = userEvent.setup();
+    render(<HomePage />);
+
+    expect(screen.getByText("Pick your set")).toBeInTheDocument();
+    expect(screen.getByText("Find the look you want")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-card__tray")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Next step" }));
+
+    expect(screen.getByText("Choose your wear")).toBeInTheDocument();
+    expect(screen.getByText("Glue or tabs")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-card__glue")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-card__tabs")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Next step" }));
+
+    expect(screen.getByText("Press on pretty")).toBeInTheDocument();
+    expect(screen.getByText("Ready in minutes")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-card__hand")).toBeInTheDocument();
+  });
+
   it("renders the FAQ help strip, accordion, and contact CTA", async () => {
     const user = userEvent.setup();
     render(<HomePage />);
