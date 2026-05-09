@@ -316,6 +316,7 @@ Current CEO review state:
 - The CEO has been judging mockup fidelity at mobile width around 319px.
 - The temporary text logo is intentionally still not final, but the current larger serif mark is preferred over the earlier heavier sans mark.
 - The green accent should stay closer to dusty olive sage `#adba85`, not the minty `#cce7ca` family.
+- The How It Works / confidence carousel transition should be solved through physical overlap, not a full-width frost band: the hero copy has extra bottom clearance, the card overlaps upward into the hero image, and the former hard cream strip/pseudo-element divider was removed.
 - If the next agent continues UI polish, start by asking what section or visual detail the CEO wants to judge next rather than reopening already-approved behavior.
 
 ## Open Product/Site Decisions
