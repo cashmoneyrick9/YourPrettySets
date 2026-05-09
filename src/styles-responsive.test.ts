@@ -50,8 +50,11 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".confidence-section::before");
     expect(styles).toContain("top: 0");
     expect(styles).not.toContain("top: clamp(-52px, -7vw, -34px)");
-    expect(styles).toContain("height: clamp(82px, 12vw, 120px)");
-    expect(styles).toContain("backdrop-filter: blur(22px) saturate(1.08)");
+    expect(styles).toContain("height: 72px");
+    expect(styles).not.toContain("height: clamp(82px, 12vw, 120px)");
+    expect(styles).toContain("backdrop-filter: blur(18px) saturate(1.05)");
+    expect(styles).toContain("rgba(255, 253, 249, 0.55) 28%");
+    expect(styles).toContain("rgba(255, 253, 249, 0.9) 68%");
     expect(styles).toContain("backdrop-filter: blur(18px)");
     expect(styles).toContain("border: 1px solid rgba(168, 47, 87, 0.24)");
     expect(styles).toContain("transform: translateX(-50%)");
