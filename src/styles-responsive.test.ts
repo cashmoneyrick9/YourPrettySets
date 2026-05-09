@@ -47,6 +47,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".confidence-carousel");
     expect(styles).toContain(".confidence-carousel__button");
     expect(styles).toContain("margin-top: clamp(-42px, -5vw, -26px)");
+    expect(styles).toContain(".confidence-section::before");
+    expect(styles).toContain("top: clamp(-52px, -7vw, -34px)");
+    expect(styles).toContain("height: clamp(82px, 12vw, 120px)");
+    expect(styles).toContain("backdrop-filter: blur(22px) saturate(1.08)");
     expect(styles).toContain("backdrop-filter: blur(18px)");
     expect(styles).toContain("border: 1px solid rgba(168, 47, 87, 0.24)");
     expect(styles).toContain("transform: translateX(-50%)");

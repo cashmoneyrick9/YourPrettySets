@@ -1105,11 +1105,27 @@ h1 {
 
 .confidence-section {
   background:
-    linear-gradient(180deg, rgba(255, 250, 248, 0.04) 0%, rgba(255, 250, 248, 0.92) 48%, #fffaf8 100%);
+    linear-gradient(180deg, rgba(255, 250, 248, 0.24) 0%, rgba(255, 250, 248, 0.94) 38%, #fffaf8 100%);
   margin-top: clamp(-42px, -5vw, -26px);
   padding: 0 clamp(18px, 4vw, 56px) clamp(24px, 4vw, 42px);
   position: relative;
   z-index: 3;
+}
+
+.confidence-section::before {
+  backdrop-filter: blur(22px) saturate(1.08);
+  background:
+    linear-gradient(180deg, rgba(255, 253, 249, 0) 0%, rgba(255, 253, 249, 0.76) 34%, rgba(246, 251, 247, 0.9) 100%),
+    radial-gradient(circle at 20% 18%, rgba(173, 186, 133, 0.24), transparent 34%),
+    radial-gradient(circle at 74% 24%, rgba(245, 183, 200, 0.24), transparent 36%);
+  content: "";
+  height: clamp(82px, 12vw, 120px);
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: clamp(-52px, -7vw, -34px);
+  z-index: -1;
 }
 
 .confidence-section .section-heading {
