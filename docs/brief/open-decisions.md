@@ -45,6 +45,12 @@ Direction is spring/summer colorful with pinks, corals, peaches, greens, blues, 
 
 Exact hex values are not locked yet.
 
+## How It Works Card UI
+
+The carousel UX is approved enough to preserve for now: one step card at a time, same short copy, arrows, dots, and near-hero placement.
+
+The visual styling of the actual cards is still open. Recent generated mockups for frosted, editorial, tag, packaging, stationery, tray, and acrylic-inspired card styles did not land. The next useful step is not another broad fantasy mockup by default; start closer to the live card and explore practical refinements to surface, border, image treatment, typography, arrow treatment, and spacing.
+
 ## Exact Product Count
 
 First placeholder data set should support 12-30 products.

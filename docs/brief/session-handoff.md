@@ -10,6 +10,18 @@ YourPrettySets is being built as a from-scratch brand and ecommerce prototype fo
 
 This is not a public launch MVP yet. It is a structured prototype for the CEO and agents to shape the brand, product system, Home page, and future shop pages.
 
+## New Chat Starting Point
+
+Start the next chat from the Home page UI pass, not from UX restructuring.
+
+Current CEO direction:
+
+- Stop spending more time on the hero-to-How-It-Works gradient transition unless the CEO explicitly reopens it.
+- Keep the current carousel UX: one step card at a time, same copy, same arrows, same dots, same placement near the hero.
+- Focus next on the visual design of the actual How It Works carousel cards.
+- The CEO disliked several generated card-mockup rounds, including generic frosted/editorial/tag/packaging pivots. A future chat should either ask what felt wrong about those mockups or generate a more grounded set that stays closer to the live card while improving polish.
+- Do not implement a new card UI until the CEO picks a direction.
+
 ## What Has Been Built
 
 The project now has a Vite React TypeScript app.
@@ -46,7 +58,7 @@ Implemented:
   - scrolled-header correction rounds the sage bar, restores berry brand text, and keeps menu/bag as outline-only icons while `Shop` stays in a white pill
   - hero divider refinement replaces the heavy center-dot divider with a thinner mockup-style split line and tiny sparkle
   - slim confidence strip follows the hero
-  - How It Works carousel UI pass slightly overlaps the hero, uses a frosted warm-white card with a thin berry outline, places arrows just outside the card edges, and gives each slide its own code-native visual
+  - How It Works carousel UI pass overlaps the hero, uses a warm-white card with a thin berry outline, places arrows just outside the card edges, gives each slide its own code-native visual, and has a softened hero/card transition after several visual review passes
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
   - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
@@ -67,8 +79,8 @@ Latest known verification before handoff:
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
-- Browser verification at `http://localhost:5173/`: Safari check confirmed the carousel changes through all three slides in the hero context after the new card UI pass.
-- The browser was last left at `http://localhost:5173/` after How It Works carousel review.
+- Browser verification at `http://localhost:5173/`: Safari check confirmed the current hero/card overlap and softened transition after commit `15d1ef4`.
+- The browser was last left at `http://localhost:5173/`.
 - Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
@@ -108,6 +120,9 @@ Latest known verification before handoff:
 - `33cc27f` - Soften S3 CTA typography
 - `4ffe5f6` - Fix scrolled S3 header styling
 - `81d2ce1` - Refine hero sparkle divider
+- `90afd57` - Add how it works carousel UI plan
+- `dc47bce` - Refine how it works carousel UI
+- `15d1ef4` - Soften hero carousel transition
 
 ## CEO Feedback And Preferences
 
@@ -316,8 +331,9 @@ Current CEO review state:
 - The CEO has been judging mockup fidelity at mobile width around 319px.
 - The temporary text logo is intentionally still not final, but the current larger serif mark is preferred over the earlier heavier sans mark.
 - The green accent should stay closer to dusty olive sage `#adba85`, not the minty `#cce7ca` family.
-- The How It Works / confidence carousel transition should be solved through physical overlap, not a full-width frost band: the hero copy has extra bottom clearance, the card overlaps upward into the hero image, and the former hard cream strip/pseudo-element divider was removed.
-- If the next agent continues UI polish, start by asking what section or visual detail the CEO wants to judge next rather than reopening already-approved behavior.
+- The How It Works / confidence carousel transition has been frustrating. The current implementation uses physical overlap, extra hero-copy clearance, a warm hero-bottom fade, and reduced card shadow. Do not keep iterating on that transition by default; the CEO explicitly said to skip that task.
+- The next useful visual question is the actual card UI. The CEO asked for card-only mockups, then rejected multiple imagegen pivots. Treat those rejected imagegen outputs as discarded directions, not approved specs.
+- If the next agent continues UI polish, start by grounding the card UI direction before implementation: ask what the rejected mockups missed, or offer a concise set of more practical card treatments based on the live UI.
 
 ## Open Product/Site Decisions
 
