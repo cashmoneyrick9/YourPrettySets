@@ -99,6 +99,7 @@ const shopMoreProducts = products.filter((product) =>
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [isStepResetting, setIsStepResetting] = useState(false);
+  const [stepSlideOffset, setStepSlideOffset] = useState(0);
   const [activeWeeklyIndex, setActiveWeeklyIndex] = useState(0);
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
   const [activeShopMoreIndex, setActiveShopMoreIndex] = useState(0);
@@ -106,6 +107,7 @@ export function HomePage() {
   const visibleStepIndex = activeStepIndex % confidenceSteps.length;
   const activeStep = confidenceSteps[visibleStepIndex];
   const isStepRotationPaused = useRef(false);
+  const stepTrackRef = useRef<HTMLDivElement>(null);
   const activeWeeklyProduct = weeklyProducts[activeWeeklyIndex];
   const activeReview = reviews[activeReviewIndex];
   const activeShopMoreProduct = shopMoreProducts[activeShopMoreIndex];
@@ -133,6 +135,44 @@ export function HomePage() {
 
     return () => window.cancelAnimationFrame(resetId);
   }, [isStepResetting]);
+
+  useEffect(() => {
+    const track = stepTrackRef.current;
+    const viewport = track?.parentElement;
+
+    if (!track || !viewport) {
+      return;
+    }
+
+    const measureSlideOffset = () => {
+      const firstCard = track.querySelector<HTMLElement>(".confidence-card");
+
+      if (!firstCard) {
+        return;
+      }
+
+      const trackStyles = window.getComputedStyle(track);
+      const parsedGap = Number.parseFloat(trackStyles.columnGap || trackStyles.gap);
+      const gap = Number.isFinite(parsedGap) ? parsedGap : 0;
+      setStepSlideOffset(firstCard.getBoundingClientRect().width + gap);
+    };
+
+    measureSlideOffset();
+    window.addEventListener("resize", measureSlideOffset);
+
+    if (typeof ResizeObserver === "undefined") {
+      return () => window.removeEventListener("resize", measureSlideOffset);
+    }
+
+    const resizeObserver = new ResizeObserver(measureSlideOffset);
+    resizeObserver.observe(viewport);
+    resizeObserver.observe(track);
+
+    return () => {
+      window.removeEventListener("resize", measureSlideOffset);
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   const pauseStepRotation = () => {
     isStepRotationPaused.current = true;
@@ -233,6 +273,8 @@ export function HomePage() {
             <div
               className={`confidence-carousel__track${isStepResetting ? " confidence-carousel__track--resetting" : ""}`}
               onTransitionEnd={handleStepTransitionEnd}
+              ref={stepTrackRef}
+              style={{ transform: `translateX(-${activeStepIndex * stepSlideOffset}px)` }}
             >
               {loopedConfidenceSteps.map((step, stepIndex) => {
                 const isLoopClone = stepIndex === confidenceSteps.length;

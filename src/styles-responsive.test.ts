@@ -74,9 +74,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".confidence-carousel__track");
     expect(styles).toContain("--confidence-card-height: 112px;");
     expect(styles).toContain("--confidence-card-height: 104px;");
-    expect(styles).toContain(".confidence-carousel[data-track-index=\"1\"] .confidence-carousel__track");
-    expect(styles).toContain("margin-left: calc(-100% + var(--confidence-peek) - var(--confidence-gap))");
-    expect(styles).toContain("transition: margin-left 760ms cubic-bezier(0.22, 1, 0.36, 1)");
+    expect(styles).not.toContain(".confidence-carousel[data-track-index=\"1\"] .confidence-carousel__track");
+    expect(styles).not.toContain("margin-left: calc(-100% + var(--confidence-peek) - var(--confidence-gap))");
+    expect(styles).toContain("transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1)");
     expect(styles).toContain(".confidence-carousel__track--resetting");
     expect(styles).toContain(".confidence-card__visual-frame");
     expect(styles).toContain("overflow: hidden;");

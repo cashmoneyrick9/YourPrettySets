@@ -1162,24 +1162,9 @@ h1 {
 .confidence-carousel__track {
   display: flex;
   gap: var(--confidence-gap);
-  margin-left: 0;
-  transition: margin-left 760ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: margin-left;
-}
-
-.confidence-carousel[data-track-index="1"] .confidence-carousel__track {
-  margin-left: calc(-100% + var(--confidence-peek) - var(--confidence-gap));
-}
-
-.confidence-carousel[data-track-index="2"] .confidence-carousel__track {
-  margin-left: calc(-200% + var(--confidence-peek) + var(--confidence-peek) - var(--confidence-gap) - var(--confidence-gap));
-}
-
-.confidence-carousel[data-track-index="3"] .confidence-carousel__track {
-  margin-left: calc(
-    -300% + var(--confidence-peek) + var(--confidence-peek) + var(--confidence-peek) - var(--confidence-gap) - var(--confidence-gap) -
-      var(--confidence-gap)
-  );
+  transform: translateX(0);
+  transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .confidence-carousel__track--resetting {

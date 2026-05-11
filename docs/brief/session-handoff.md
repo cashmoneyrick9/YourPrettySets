@@ -337,6 +337,7 @@ Current CEO review state:
 - The temporary text logo is intentionally still not final, but the current larger serif mark is preferred over the earlier heavier sans mark.
 - The green accent should stay closer to dusty olive sage `#adba85`, not the minty `#cce7ca` family.
 - The first How It Works carousel build failed founder review because the cards were uneven heights and the motion felt like a sudden swap. The approved repair is one real horizontal track with equal-height cards, fixed visual frames, a next-card peek, and slower soft slide motion.
+- Follow-up repair fixed slide 2 and 3 positioning. The percentage `margin-left` movement caused later slides to clip instead of aligning; the track now measures the actual rendered card width plus gap and moves by pixel offset.
 - The How It Works UX repair is about structure only. Do not treat the current card colors, placeholder copy, or placeholder visuals as final UI direction.
 - The next useful visual question is still the actual card UI after the repaired structure is judged. The CEO asked for card-only mockups, then rejected multiple imagegen pivots. Treat those rejected imagegen outputs as discarded directions, not approved specs.
 
