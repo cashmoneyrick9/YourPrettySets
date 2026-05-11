@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react";
 import { CollectionFilters } from "../components/CollectionFilters";
 import { KitContents } from "../components/KitContents";
 import { ProductCard } from "../components/ProductCard";
@@ -10,8 +10,16 @@ const confidenceSteps = [
   { number: "03", label: "Press on pretty", helper: "Ready in minutes", visual: "press" }
 ];
 
-const confidenceRotationDelay = 5200;
-const loopedConfidenceSteps = [...confidenceSteps, confidenceSteps[0]];
+const confidenceRotationDelay = 4800;
+const loopedConfidenceSteps = [
+  confidenceSteps[confidenceSteps.length - 1],
+  ...confidenceSteps,
+  confidenceSteps[0]
+];
+const realStepStartIndex = 1;
+const realStepEndIndex = confidenceSteps.length;
+const preCloneIndex = 0;
+const postCloneIndex = loopedConfidenceSteps.length - 1;
 
 function renderConfidenceVisual(visual: string) {
   if (visual === "wear") {
@@ -97,14 +105,15 @@ const shopMoreProducts = products.filter((product) =>
 );
 
 export function HomePage() {
-  const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const [activeStepIndex, setActiveStepIndex] = useState(realStepStartIndex);
   const [isStepResetting, setIsStepResetting] = useState(false);
   const [stepSlideOffset, setStepSlideOffset] = useState(0);
   const [activeWeeklyIndex, setActiveWeeklyIndex] = useState(0);
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
   const [activeShopMoreIndex, setActiveShopMoreIndex] = useState(0);
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
-  const visibleStepIndex = activeStepIndex % confidenceSteps.length;
+  const stepCount = confidenceSteps.length;
+  const visibleStepIndex = ((activeStepIndex - realStepStartIndex) % stepCount + stepCount) % stepCount;
   const activeStep = confidenceSteps[visibleStepIndex];
   const isStepRotationPaused = useRef(false);
   const stepTrackRef = useRef<HTMLDivElement>(null);
@@ -117,7 +126,10 @@ export function HomePage() {
   useEffect(() => {
     const rotationId = window.setInterval(() => {
       if (!isStepRotationPaused.current) {
-        setActiveStepIndex((current) => (current >= confidenceSteps.length ? 1 : current + 1));
+        setActiveStepIndex((current) => {
+          const next = current + 1;
+          return next > postCloneIndex ? realStepStartIndex : next;
+        });
       }
     }, confidenceRotationDelay);
 
@@ -152,9 +164,10 @@ export function HomePage() {
       }
 
       const trackStyles = window.getComputedStyle(track);
-      const parsedGap = Number.parseFloat(trackStyles.columnGap || trackStyles.gap);
+      const parsedColumnGap = Number.parseFloat(trackStyles.columnGap);
+      const parsedGap = Number.isFinite(parsedColumnGap) ? parsedColumnGap : Number.parseFloat(trackStyles.gap);
       const gap = Number.isFinite(parsedGap) ? parsedGap : 0;
-      setStepSlideOffset(firstCard.getBoundingClientRect().width + gap);
+      setStepSlideOffset(firstCard.offsetWidth + gap);
     };
 
     measureSlideOffset();
@@ -174,16 +187,50 @@ export function HomePage() {
     };
   }, []);
 
-  const pauseStepRotation = () => {
-    isStepRotationPaused.current = true;
+  const resumeRotationTimerRef = useRef<number | null>(null);
+  const dragStateRef = useRef({
+    isDragging: false,
+    pointerStartX: 0,
+    baseTranslate: 0,
+    totalDelta: 0,
+    pointerId: -1
+  });
+  const [isStepDragging, setIsStepDragging] = useState(false);
+
+  const clearResumeTimer = () => {
+    if (resumeRotationTimerRef.current !== null) {
+      window.clearTimeout(resumeRotationTimerRef.current);
+      resumeRotationTimerRef.current = null;
+    }
   };
 
+  const pauseStepRotation = () => {
+    isStepRotationPaused.current = true;
+    clearResumeTimer();
+  };
+
+  const scheduleResumeRotation = (delay = 700) => {
+    clearResumeTimer();
+    resumeRotationTimerRef.current = window.setTimeout(() => {
+      isStepRotationPaused.current = false;
+      resumeRotationTimerRef.current = null;
+    }, delay);
+  };
+
+  useEffect(() => () => clearResumeTimer(), []);
+
   const showNextStepWithoutPausing = () => {
-    setActiveStepIndex((current) => (current >= confidenceSteps.length ? 1 : current + 1));
+    setActiveStepIndex((current) => {
+      const next = current + 1;
+      return next > postCloneIndex ? realStepStartIndex : next;
+    });
   };
   const showPreviousStep = () => {
     pauseStepRotation();
-    setActiveStepIndex((current) => (current <= 0 ? confidenceSteps.length - 1 : current - 1));
+    setActiveStepIndex((current) => {
+      const prev = current - 1;
+      return prev < preCloneIndex ? realStepEndIndex : prev;
+    });
   };
   const showNextStep = () => {
     pauseStepRotation();
@@ -201,9 +248,98 @@ export function HomePage() {
     }
   };
   const handleStepTransitionEnd = () => {
-    if (activeStepIndex === confidenceSteps.length) {
+    if (activeStepIndex === postCloneIndex) {
       setIsStepResetting(true);
-      setActiveStepIndex(0);
+      setActiveStepIndex(realStepStartIndex);
+    } else if (activeStepIndex === preCloneIndex) {
+      setIsStepResetting(true);
+      setActiveStepIndex(realStepEndIndex);
+    }
+  };
+
+  const readCurrentTranslate = (): number => {
+    const track = stepTrackRef.current;
+    if (!track) return 0;
+    const computed = window.getComputedStyle(track).transform;
+    if (!computed || computed === "none") return 0;
+    try {
+      const matrix = new DOMMatrixReadOnly(computed);
+      return matrix.m41;
+    } catch {
+      return -activeStepIndex * stepSlideOffset;
+    }
+  };
+
+  const handleStepPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    pauseStepRotation();
+
+    const track = stepTrackRef.current;
+    if (!track || typeof event.pointerId !== "number" || event.pointerId < 0) {
+      return;
+    }
+
+    const currentTranslate = readCurrentTranslate();
+    track.style.transform = `translateX(${currentTranslate}px)`;
+    track.style.transition = "none";
+
+    dragStateRef.current = {
+      isDragging: true,
+      pointerStartX: event.clientX,
+      baseTranslate: currentTranslate,
+      totalDelta: 0,
+      pointerId: event.pointerId
+    };
+
+    setIsStepDragging(true);
+
+    try {
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    } catch {
+      /* ignore — environments without pointer capture (e.g. JSDOM) */
+    }
+  };
+
+  const handleStepPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = dragStateRef.current;
+    if (!drag.isDragging || !stepTrackRef.current) return;
+    if (event.pointerId !== drag.pointerId) return;
+
+    const delta = event.clientX - drag.pointerStartX;
+    drag.totalDelta = delta;
+    stepTrackRef.current.style.transform = `translateX(${drag.baseTranslate + delta}px)`;
+  };
+
+  const finishStepDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = dragStateRef.current;
+    if (!drag.isDragging) return;
+    if (event.pointerId !== drag.pointerId && event.type !== "pointercancel") return;
+
+    const offset = stepSlideOffset > 0 ? stepSlideOffset : 1;
+    const startIndex = Math.round(-drag.baseTranslate / offset);
+    const stepDelta = -drag.totalDelta / offset;
+
+    let snapped = startIndex;
+    if (Math.abs(stepDelta) > 0.15) {
+      const direction = stepDelta > 0 ? 1 : -1;
+      snapped = startIndex + direction * Math.max(1, Math.round(Math.abs(stepDelta)));
+    }
+    snapped = Math.max(preCloneIndex, Math.min(postCloneIndex, snapped));
+
+    const track = stepTrackRef.current;
+    if (track) {
+      track.style.transition = "";
+      track.style.transform = `translateX(-${snapped * offset}px)`;
+    }
+
+    drag.isDragging = false;
+    setIsStepDragging(false);
+    setActiveStepIndex(snapped);
+    scheduleResumeRotation(1000);
+
+    try {
+      event.currentTarget.releasePointerCapture?.(drag.pointerId);
+    } catch {
+      /* ignore */
     }
   };
   const showPreviousWeeklySet = () => {
@@ -262,11 +398,14 @@ export function HomePage() {
         <div
           aria-label="How it works rotating steps"
           aria-live="polite"
-          className="confidence-carousel"
+          className={`confidence-carousel${isStepDragging ? " confidence-carousel--dragging" : ""}`}
           data-active-step={activeStep.number}
           data-track-index={activeStepIndex}
           onKeyDown={handleStepKeyDown}
-          onPointerDown={pauseStepRotation}
+          onPointerCancel={finishStepDrag}
+          onPointerDown={handleStepPointerDown}
+          onPointerMove={handleStepPointerMove}
+          onPointerUp={finishStepDrag}
           tabIndex={0}
         >
           <div className="confidence-carousel__viewport">
@@ -277,14 +416,14 @@ export function HomePage() {
               style={{ transform: `translateX(-${activeStepIndex * stepSlideOffset}px)` }}
             >
               {loopedConfidenceSteps.map((step, stepIndex) => {
-                const isLoopClone = stepIndex === confidenceSteps.length;
-                const isActiveTrackCard = stepIndex === activeStepIndex || (isLoopClone && activeStepIndex === confidenceSteps.length);
+                const isLoopClone = stepIndex === preCloneIndex || stepIndex === postCloneIndex;
+                const isActiveTrackCard = stepIndex === activeStepIndex;
 
                 return (
                   <article
                     aria-hidden={!isActiveTrackCard}
                     className={`confidence-card confidence-card--${step.visual}${isLoopClone ? " confidence-card--loop-clone" : ""}`}
-                    key={`${step.number}-${isLoopClone ? "clone" : "step"}`}
+                    key={`${step.number}-${stepIndex}`}
                   >
                     <span className="confidence-card__visual" aria-hidden="true">
                       <span className="confidence-card__visual-frame">{renderConfidenceVisual(step.visual)}</span>

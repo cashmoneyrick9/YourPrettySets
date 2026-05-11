@@ -24,9 +24,9 @@ describe("HomePage", () => {
     expect(screen.getAllByText("01 Pick your set")).toHaveLength(2);
     expect(screen.getAllByText("Find the look you want")).toHaveLength(2);
     expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
-    expect(screen.getByText("03 Press on pretty")).toBeInTheDocument();
-    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(4);
-    expect(document.querySelectorAll(".confidence-card__visual-frame")).toHaveLength(4);
+    expect(screen.getAllByText("03 Press on pretty")).toHaveLength(2);
+    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(5);
+    expect(document.querySelectorAll(".confidence-card__visual-frame")).toHaveLength(5);
     expect(document.querySelector(".confidence-carousel__track")).toBeInTheDocument();
     expect(document.querySelector(".confidence-card--peek")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".confidence-dots__dot")).toHaveLength(0);
@@ -162,9 +162,9 @@ describe("HomePage", () => {
     vi.useFakeTimers();
     render(<HomePage />);
 
-    expect(document.querySelectorAll(".confidence-card")).toHaveLength(4);
-    expect(document.querySelectorAll(".confidence-card--loop-clone")).toHaveLength(1);
-    expect(document.querySelectorAll(".confidence-card__visual-frame")).toHaveLength(4);
+    expect(document.querySelectorAll(".confidence-card")).toHaveLength(5);
+    expect(document.querySelectorAll(".confidence-card--loop-clone")).toHaveLength(2);
+    expect(document.querySelectorAll(".confidence-card__visual-frame")).toHaveLength(5);
     expect(document.querySelector(".confidence-card__tray")).toBeInTheDocument();
     expect(document.querySelector(".confidence-card__glue")).toBeInTheDocument();
     expect(document.querySelector(".confidence-card__tabs")).toBeInTheDocument();
