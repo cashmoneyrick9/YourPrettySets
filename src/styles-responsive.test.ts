@@ -45,7 +45,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".hero-copy");
     expect(styles).toContain("z-index: 1");
     expect(styles).toContain(".confidence-carousel");
-    expect(styles).toContain(".confidence-carousel__button");
+    expect(styles).not.toContain(".confidence-carousel__button");
     expect(styles).toContain("padding: 0 clamp(24px, 6vw, 42px) clamp(78px, 12vw, 104px)");
     expect(styles).toContain("margin-top: clamp(-76px, -10vw, -54px)");
     expect(styles).toContain("--hero-overlay-bottom: rgba(255, 250, 248, 0.58);");
@@ -68,14 +68,16 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("z-index: 1;");
     expect(styles).toContain("backdrop-filter: blur(18px)");
     expect(styles).toContain("border: 1px solid rgba(168, 47, 87, 0.24)");
-    expect(styles).toContain("transform: translateX(-50%)");
-    expect(styles).toContain("grid-template-columns: minmax(76px, 0.72fr) minmax(0, 1fr)");
+    expect(styles).toContain(".confidence-carousel:focus-visible");
+    expect(styles).toContain(".confidence-card--peek");
+    expect(styles).toContain("grid-template-columns: minmax(0, 1fr) minmax(42px, 0.16fr)");
+    expect(styles).toContain("overflow: hidden;");
     expect(styles).toContain(".collection-card__visual");
     expect(styles).toContain(".confidence-card__visual");
     expect(styles).toContain(".confidence-card__tray");
     expect(styles).toContain(".confidence-card__glue");
     expect(styles).toContain(".confidence-card__hand");
-    expect(styles).toContain(".confidence-dots");
+    expect(styles).not.toContain(".confidence-dots");
     expect(styles).toContain("scrollbar-width: none");
     expect(styles).toContain(".shop-more-grid::-webkit-scrollbar");
     expect(styles).toContain(".review-proof-row {\n    flex-wrap: wrap;");
@@ -85,7 +87,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".review-card--peek {\n    display: none;");
     expect(styles).toContain("position: static;");
     expect(styles).toContain("font-size: 1.58rem");
-    expect(styles).toContain("padding: 0 12px 18px");
+    expect(styles).toContain("padding: 0 0 18px");
   });
 
   it("does not force tiny mobile viewports wider than the screen", () => {

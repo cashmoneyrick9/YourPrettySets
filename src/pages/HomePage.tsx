@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { CollectionFilters } from "../components/CollectionFilters";
 import { KitContents } from "../components/KitContents";
 import { ProductCard } from "../components/ProductCard";
 import { products } from "../data/products";
 
 const confidenceSteps = [
-  { label: "Pick your set", helper: "Find the look you want", visual: "set" },
-  { label: "Choose your wear", helper: "Glue or tabs", visual: "wear" },
-  { label: "Press on pretty", helper: "Ready in minutes", visual: "press" }
+  { number: "01", label: "Pick your set", helper: "Find the look you want", visual: "set" },
+  { number: "02", label: "Choose your wear", helper: "Glue or tabs", visual: "wear" },
+  { number: "03", label: "Press on pretty", helper: "Ready in minutes", visual: "press" }
 ];
+
+const confidenceRotationDelay = 5200;
 
 function renderConfidenceVisual(visual: string) {
   if (visual === "wear") {
@@ -100,17 +102,46 @@ export function HomePage() {
   const [activeShopMoreIndex, setActiveShopMoreIndex] = useState(0);
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
   const activeStep = confidenceSteps[activeStepIndex];
+  const nextStep = confidenceSteps[(activeStepIndex + 1) % confidenceSteps.length];
+  const isStepRotationPaused = useRef(false);
   const activeWeeklyProduct = weeklyProducts[activeWeeklyIndex];
   const activeReview = reviews[activeReviewIndex];
   const activeShopMoreProduct = shopMoreProducts[activeShopMoreIndex];
   const nextShopMoreProduct = shopMoreProducts[(activeShopMoreIndex + 1) % shopMoreProducts.length];
   const visibleShopMoreProducts = [activeShopMoreProduct, nextShopMoreProduct];
   const nextReview = reviews[(activeReviewIndex + 1) % reviews.length];
+  useEffect(() => {
+    const rotationId = window.setInterval(() => {
+      if (!isStepRotationPaused.current) {
+        setActiveStepIndex((current) => (current === confidenceSteps.length - 1 ? 0 : current + 1));
+      }
+    }, confidenceRotationDelay);
+
+    return () => window.clearInterval(rotationId);
+  }, []);
+
+  const pauseStepRotation = () => {
+    isStepRotationPaused.current = true;
+  };
+
   const showPreviousStep = () => {
+    pauseStepRotation();
     setActiveStepIndex((current) => (current === 0 ? confidenceSteps.length - 1 : current - 1));
   };
   const showNextStep = () => {
+    pauseStepRotation();
     setActiveStepIndex((current) => (current === confidenceSteps.length - 1 ? 0 : current + 1));
+  };
+  const handleStepKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      showPreviousStep();
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      showNextStep();
+    }
   };
   const showPreviousWeeklySet = () => {
     setActiveWeeklyIndex((current) => (current === 0 ? weeklyProducts.length - 1 : current - 1));
@@ -165,34 +196,36 @@ export function HomePage() {
           <p className="eyebrow">Ready to wear</p>
           <h2>Ready in three steps</h2>
         </div>
-        <div className="confidence-carousel" aria-live="polite">
-          <button className="confidence-carousel__button" type="button" onClick={showPreviousStep} aria-label="Previous step">
-            ‹
-          </button>
+        <div
+          aria-label="How it works rotating steps"
+          aria-live="polite"
+          className="confidence-carousel"
+          onKeyDown={handleStepKeyDown}
+          onPointerDown={pauseStepRotation}
+          tabIndex={0}
+        >
           <article className={`confidence-card confidence-card--${activeStep.visual}`}>
             <span className="confidence-card__visual" aria-hidden="true">
               {renderConfidenceVisual(activeStep.visual)}
             </span>
             <span className="confidence-card__copy">
-              <strong className="confidence-card__label">{activeStep.label}</strong>
+              <strong className="confidence-card__label">
+                {activeStep.number} {activeStep.label}
+              </strong>
               <span className="confidence-card__helper">{activeStep.helper}</span>
             </span>
           </article>
-          <button className="confidence-carousel__button" type="button" onClick={showNextStep} aria-label="Next step">
-            ›
-          </button>
-        </div>
-        <div className="confidence-dots" aria-label="Step carousel controls">
-          {confidenceSteps.map((step, index) => (
-            <button
-              aria-label={`Show ${step.label}`}
-              aria-pressed={index === activeStepIndex}
-              className={`confidence-dots__dot${index === activeStepIndex ? " confidence-dots__dot--active" : ""}`}
-              key={step.label}
-              onClick={() => setActiveStepIndex(index)}
-              type="button"
-            />
-          ))}
+          <article aria-hidden="true" className={`confidence-card confidence-card--peek confidence-card--${nextStep.visual}`}>
+            <span className="confidence-card__visual">
+              {renderConfidenceVisual(nextStep.visual)}
+            </span>
+            <span className="confidence-card__copy">
+              <strong className="confidence-card__label">
+                {nextStep.number} {nextStep.label}
+              </strong>
+              <span className="confidence-card__helper">{nextStep.helper}</span>
+            </span>
+          </article>
         </div>
       </section>
 

@@ -20,11 +20,9 @@ Current CEO direction:
 
 - Stop spending more time on the hero-to-How-It-Works gradient transition unless the CEO explicitly reopens it.
 - Apply the Baseline Improved UX direction to the live How It Works section before doing deeper UI polish.
-- Use a compact, image-led rotating strip with three numbered steps.
-- Remove arrows and dots.
-- Let a small piece of the next step peek at the edge.
-- Auto-rotate calmly by default, then stop rotating after shopper interaction.
-- Reuse the current placeholder visuals for speed; rearrange them rather than generating final visuals now.
+- The How It Works UX pass is now implemented: compact image-led rotating strip, three numbered steps, no arrows, no dots, and a next-step peek.
+- The strip auto-rotates calmly by default, then stops rotating after shopper interaction.
+- It reuses the current placeholder visuals for speed; they were rearranged rather than replaced with final generated visuals.
 - Treat final colors, final step imagery, typography, and copy as a later UI pass.
 - The approved UX spec is saved at `docs/superpowers/specs/2026-05-11-how-it-works-ux-pass-design.md`.
 
@@ -65,6 +63,7 @@ Implemented:
   - hero divider refinement replaces the heavy center-dot divider with a thinner mockup-style split line and tiny sparkle
   - slim confidence strip follows the hero
   - How It Works carousel UI pass overlaps the hero, uses a warm-white card with a thin berry outline, places arrows just outside the card edges, gives each slide its own code-native visual, and has a softened hero/card transition after several visual review passes
+  - latest How It Works UX pass removes the arrows and dots, adds clear step numbers, shows one active image-led step with a small next-step peek, auto-rotates calmly, and pauses rotation once the shopper interacts
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
   - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
