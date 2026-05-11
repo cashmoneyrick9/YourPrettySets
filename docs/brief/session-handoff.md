@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-09
+Last updated: 2026-05-11
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -14,13 +14,19 @@ This is not a public launch MVP yet. It is a structured prototype for the CEO an
 
 Start the next chat from the Home page UI pass, not from UX restructuring.
 
+Before starting a section pass, read `docs/brief/section-pass-template.md` and use that CEO checklist. The founder wants planning chats to stay nontechnical: discuss what feels right or wrong, use image mockups when appearance is unclear, then write a plain-English handoff for the web dev to review and build.
+
 Current CEO direction:
 
 - Stop spending more time on the hero-to-How-It-Works gradient transition unless the CEO explicitly reopens it.
-- Keep the current carousel UX: one step card at a time, same copy, same arrows, same dots, same placement near the hero.
-- Focus next on the visual design of the actual How It Works carousel cards.
-- The CEO disliked several generated card-mockup rounds, including generic frosted/editorial/tag/packaging pivots. A future chat should either ask what felt wrong about those mockups or generate a more grounded set that stays closer to the live card while improving polish.
-- Do not implement a new card UI until the CEO picks a direction.
+- Apply the Baseline Improved UX direction to the live How It Works section before doing deeper UI polish.
+- Use a compact, image-led rotating strip with three numbered steps.
+- Remove arrows and dots.
+- Let a small piece of the next step peek at the edge.
+- Auto-rotate calmly by default, then stop rotating after shopper interaction.
+- Reuse the current placeholder visuals for speed; rearrange them rather than generating final visuals now.
+- Treat final colors, final step imagery, typography, and copy as a later UI pass.
+- The approved UX spec is saved at `docs/superpowers/specs/2026-05-11-how-it-works-ux-pass-design.md`.
 
 ## What Has Been Built
 
