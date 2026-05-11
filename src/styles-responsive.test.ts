@@ -69,8 +69,16 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("backdrop-filter: blur(18px)");
     expect(styles).toContain("border: 1px solid rgba(168, 47, 87, 0.24)");
     expect(styles).toContain(".confidence-carousel:focus-visible");
-    expect(styles).toContain(".confidence-card--peek");
-    expect(styles).toContain("grid-template-columns: minmax(0, 1fr) minmax(42px, 0.16fr)");
+    expect(styles).not.toContain(".confidence-card--peek");
+    expect(styles).toContain(".confidence-carousel__viewport");
+    expect(styles).toContain(".confidence-carousel__track");
+    expect(styles).toContain("--confidence-card-height: 112px;");
+    expect(styles).toContain("--confidence-card-height: 104px;");
+    expect(styles).toContain(".confidence-carousel[data-track-index=\"1\"] .confidence-carousel__track");
+    expect(styles).toContain("margin-left: calc(-100% + var(--confidence-peek) - var(--confidence-gap))");
+    expect(styles).toContain("transition: margin-left 760ms cubic-bezier(0.22, 1, 0.36, 1)");
+    expect(styles).toContain(".confidence-carousel__track--resetting");
+    expect(styles).toContain(".confidence-card__visual-frame");
     expect(styles).toContain("overflow: hidden;");
     expect(styles).toContain(".collection-card__visual");
     expect(styles).toContain(".confidence-card__visual");

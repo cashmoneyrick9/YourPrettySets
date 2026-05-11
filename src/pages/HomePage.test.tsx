@@ -21,12 +21,14 @@ describe("HomePage", () => {
 
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "#shop-collections");
-    expect(screen.getByText("01 Pick your set")).toBeInTheDocument();
-    expect(screen.getByText("Find the look you want")).toBeInTheDocument();
+    expect(screen.getAllByText("01 Pick your set")).toHaveLength(2);
+    expect(screen.getAllByText("Find the look you want")).toHaveLength(2);
     expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
-    expect(screen.queryByText("Press on pretty")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(2);
-    expect(document.querySelector(".confidence-card--peek")).toBeInTheDocument();
+    expect(screen.getByText("03 Press on pretty")).toBeInTheDocument();
+    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(4);
+    expect(document.querySelectorAll(".confidence-card__visual-frame")).toHaveLength(4);
+    expect(document.querySelector(".confidence-carousel__track")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-card--peek")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".confidence-dots__dot")).toHaveLength(0);
     expect(screen.queryByText(/size/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/sizing kit/i)).not.toBeInTheDocument();
@@ -117,16 +119,15 @@ describe("HomePage", () => {
     expect(screen.queryByRole("button", { name: "Next step" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Previous step" })).not.toBeInTheDocument();
     expect(document.querySelectorAll(".confidence-dots__dot")).toHaveLength(0);
-    expect(screen.getByText("01 Pick your set")).toBeInTheDocument();
+    expect(screen.getAllByText("01 Pick your set")).toHaveLength(2);
     expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-active-step", "01");
 
     act(() => {
       vi.advanceTimersByTime(5200);
     });
 
-    expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
-    expect(screen.getByText("Glue or tabs")).toBeInTheDocument();
-    expect(screen.getByText("03 Press on pretty")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-active-step", "02");
 
     const carousel = document.querySelector(".confidence-carousel");
     expect(carousel).toBeInTheDocument();
@@ -135,8 +136,7 @@ describe("HomePage", () => {
       vi.advanceTimersByTime(10400);
     });
 
-    expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
-    expect(screen.getByText("Glue or tabs")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-active-step", "02");
   });
 
   it("lets keyboard shoppers move the step strip and pauses automatic rotation", () => {
@@ -149,38 +149,25 @@ describe("HomePage", () => {
       carousel.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowRight" }));
     });
 
-    expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
+    expect(carousel).toHaveAttribute("data-active-step", "02");
 
     act(() => {
       vi.advanceTimersByTime(10400);
     });
 
-    expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
+    expect(carousel).toHaveAttribute("data-active-step", "02");
   });
 
-  it("renders distinct visual treatments for each step without changing carousel copy", () => {
+  it("renders equal-size carousel cards with a cloned first card for the soft loop", () => {
     vi.useFakeTimers();
     render(<HomePage />);
 
-    expect(screen.getByText("01 Pick your set")).toBeInTheDocument();
-    expect(screen.getByText("Find the look you want")).toBeInTheDocument();
+    expect(document.querySelectorAll(".confidence-card")).toHaveLength(4);
+    expect(document.querySelectorAll(".confidence-card--loop-clone")).toHaveLength(1);
+    expect(document.querySelectorAll(".confidence-card__visual-frame")).toHaveLength(4);
     expect(document.querySelector(".confidence-card__tray")).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(5200);
-    });
-
-    expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
-    expect(screen.getByText("Glue or tabs")).toBeInTheDocument();
     expect(document.querySelector(".confidence-card__glue")).toBeInTheDocument();
     expect(document.querySelector(".confidence-card__tabs")).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(5200);
-    });
-
-    expect(screen.getByText("03 Press on pretty")).toBeInTheDocument();
-    expect(screen.getByText("Ready in minutes")).toBeInTheDocument();
     expect(document.querySelector(".confidence-card__hand")).toBeInTheDocument();
   });
 

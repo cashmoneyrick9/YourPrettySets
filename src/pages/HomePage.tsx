@@ -11,6 +11,7 @@ const confidenceSteps = [
 ];
 
 const confidenceRotationDelay = 5200;
+const loopedConfidenceSteps = [...confidenceSteps, confidenceSteps[0]];
 
 function renderConfidenceVisual(visual: string) {
   if (visual === "wear") {
@@ -97,12 +98,13 @@ const shopMoreProducts = products.filter((product) =>
 
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const [isStepResetting, setIsStepResetting] = useState(false);
   const [activeWeeklyIndex, setActiveWeeklyIndex] = useState(0);
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
   const [activeShopMoreIndex, setActiveShopMoreIndex] = useState(0);
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
-  const activeStep = confidenceSteps[activeStepIndex];
-  const nextStep = confidenceSteps[(activeStepIndex + 1) % confidenceSteps.length];
+  const visibleStepIndex = activeStepIndex % confidenceSteps.length;
+  const activeStep = confidenceSteps[visibleStepIndex];
   const isStepRotationPaused = useRef(false);
   const activeWeeklyProduct = weeklyProducts[activeWeeklyIndex];
   const activeReview = reviews[activeReviewIndex];
@@ -113,24 +115,39 @@ export function HomePage() {
   useEffect(() => {
     const rotationId = window.setInterval(() => {
       if (!isStepRotationPaused.current) {
-        setActiveStepIndex((current) => (current === confidenceSteps.length - 1 ? 0 : current + 1));
+        setActiveStepIndex((current) => (current >= confidenceSteps.length ? 1 : current + 1));
       }
     }, confidenceRotationDelay);
 
     return () => window.clearInterval(rotationId);
   }, []);
 
+  useEffect(() => {
+    if (!isStepResetting) {
+      return;
+    }
+
+    const resetId = window.requestAnimationFrame(() => {
+      setIsStepResetting(false);
+    });
+
+    return () => window.cancelAnimationFrame(resetId);
+  }, [isStepResetting]);
+
   const pauseStepRotation = () => {
     isStepRotationPaused.current = true;
   };
 
+  const showNextStepWithoutPausing = () => {
+    setActiveStepIndex((current) => (current >= confidenceSteps.length ? 1 : current + 1));
+  };
   const showPreviousStep = () => {
     pauseStepRotation();
-    setActiveStepIndex((current) => (current === 0 ? confidenceSteps.length - 1 : current - 1));
+    setActiveStepIndex((current) => (current <= 0 ? confidenceSteps.length - 1 : current - 1));
   };
   const showNextStep = () => {
     pauseStepRotation();
-    setActiveStepIndex((current) => (current === confidenceSteps.length - 1 ? 0 : current + 1));
+    showNextStepWithoutPausing();
   };
   const handleStepKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowLeft") {
@@ -141,6 +158,12 @@ export function HomePage() {
     if (event.key === "ArrowRight") {
       event.preventDefault();
       showNextStep();
+    }
+  };
+  const handleStepTransitionEnd = () => {
+    if (activeStepIndex === confidenceSteps.length) {
+      setIsStepResetting(true);
+      setActiveStepIndex(0);
     }
   };
   const showPreviousWeeklySet = () => {
@@ -200,32 +223,41 @@ export function HomePage() {
           aria-label="How it works rotating steps"
           aria-live="polite"
           className="confidence-carousel"
+          data-active-step={activeStep.number}
+          data-track-index={activeStepIndex}
           onKeyDown={handleStepKeyDown}
           onPointerDown={pauseStepRotation}
           tabIndex={0}
         >
-          <article className={`confidence-card confidence-card--${activeStep.visual}`}>
-            <span className="confidence-card__visual" aria-hidden="true">
-              {renderConfidenceVisual(activeStep.visual)}
-            </span>
-            <span className="confidence-card__copy">
-              <strong className="confidence-card__label">
-                {activeStep.number} {activeStep.label}
-              </strong>
-              <span className="confidence-card__helper">{activeStep.helper}</span>
-            </span>
-          </article>
-          <article aria-hidden="true" className={`confidence-card confidence-card--peek confidence-card--${nextStep.visual}`}>
-            <span className="confidence-card__visual">
-              {renderConfidenceVisual(nextStep.visual)}
-            </span>
-            <span className="confidence-card__copy">
-              <strong className="confidence-card__label">
-                {nextStep.number} {nextStep.label}
-              </strong>
-              <span className="confidence-card__helper">{nextStep.helper}</span>
-            </span>
-          </article>
+          <div className="confidence-carousel__viewport">
+            <div
+              className={`confidence-carousel__track${isStepResetting ? " confidence-carousel__track--resetting" : ""}`}
+              onTransitionEnd={handleStepTransitionEnd}
+            >
+              {loopedConfidenceSteps.map((step, stepIndex) => {
+                const isLoopClone = stepIndex === confidenceSteps.length;
+                const isActiveTrackCard = stepIndex === activeStepIndex || (isLoopClone && activeStepIndex === confidenceSteps.length);
+
+                return (
+                  <article
+                    aria-hidden={!isActiveTrackCard}
+                    className={`confidence-card confidence-card--${step.visual}${isLoopClone ? " confidence-card--loop-clone" : ""}`}
+                    key={`${step.number}-${isLoopClone ? "clone" : "step"}`}
+                  >
+                    <span className="confidence-card__visual" aria-hidden="true">
+                      <span className="confidence-card__visual-frame">{renderConfidenceVisual(step.visual)}</span>
+                    </span>
+                    <span className="confidence-card__copy">
+                      <strong className="confidence-card__label">
+                        {step.number} {step.label}
+                      </strong>
+                      <span className="confidence-card__helper">{step.helper}</span>
+                    </span>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
