@@ -2,7 +2,7 @@
   color: #2a2528;
   background: #fffdf9;
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --color-ink: #2a2528;
@@ -15,7 +15,8 @@
   --color-butter: #f7dc86;
   --color-cream: #fffdf9;
   --hero-overlay-bottom: rgba(255, 250, 248, 0.58);
-  --font-cta: "Avenir Next Rounded", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+  --font-cta: "Manrope", "Avenir Next Rounded", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", "Cormorant Garamond", Georgia, "Times New Roman", serif;
 }
 
 * {
@@ -275,16 +276,20 @@ h1 {
 .hero-section::after {
   background:
     linear-gradient(
-      180deg,
-      rgba(255, 250, 247, 0.04) 0%,
-      rgba(255, 250, 247, 0.16) 58%,
-      rgba(255, 250, 248, 0.44) 84%,
-      var(--hero-overlay-bottom) 100%
+      to bottom,
+      rgba(251, 246, 238, 0) 0%,
+      rgba(251, 246, 238, 0.55) 35%,
+      rgba(251, 246, 238, 0.92) 70%,
+      #fbf6ee 100%
     );
-  border-radius: 10px;
+  border-radius: 0;
+  bottom: -1px;
   content: "";
-  grid-area: hero;
+  height: clamp(180px, 32vh, 220px);
+  left: 0;
   pointer-events: none;
+  position: absolute;
+  right: 0;
   width: 100%;
   z-index: 1;
 }
@@ -309,32 +314,38 @@ h1 {
 
 .hero-copy h1 {
   color: inherit;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
   font-size: clamp(2rem, 8vw, 3.3rem);
-  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 1;
+  font-weight: 460;
+  letter-spacing: -0.012em;
   line-height: 1.06;
   max-width: 360px;
 }
 
+.hero-copy__accent {
+  color: #9b3b66;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  font-weight: 420;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+
 .hero-copy h1::after {
   background:
-    linear-gradient(45deg, transparent calc(50% - 0.8px), rgba(245, 169, 189, 0.78) calc(50% - 0.8px) calc(50% + 0.8px), transparent calc(50% + 0.8px)),
-    linear-gradient(-45deg, transparent calc(50% - 0.8px), rgba(245, 169, 189, 0.78) calc(50% - 0.8px) calc(50% + 0.8px), transparent calc(50% + 0.8px)),
-    linear-gradient(90deg, rgba(155, 59, 102, 0.22) 0 36px, transparent 36px 50px, rgba(155, 59, 102, 0.22) 50px 86px);
-  background-position:
-    center,
-    center,
-    center;
-  background-repeat: no-repeat;
-  background-size:
-    9px 9px,
-    9px 9px,
-    86px 1px;
+    radial-gradient(circle at center, var(--color-berry) 0 2.4px, transparent 2.9px) 18px center / 6px 6px no-repeat,
+    radial-gradient(circle at center, var(--color-berry) 0 3px, transparent 3.5px) center center / 8px 8px no-repeat,
+    radial-gradient(circle at center, var(--color-berry) 0 2.4px, transparent 2.9px) calc(100% - 18px) center / 6px 6px no-repeat,
+    linear-gradient(90deg, rgba(155, 59, 102, 0.32) 0 22px, transparent 22px 64px, rgba(155, 59, 102, 0.32) 64px 86px) center / 86px 1px no-repeat,
+    linear-gradient(45deg, transparent, transparent) center / 1px 1px no-repeat;
   content: "";
   display: block;
   height: 10px;
-  margin-top: 14px;
-  opacity: 0.88;
+  margin-top: 18px;
+  opacity: 1;
   width: 86px;
 }
 
@@ -1110,315 +1121,196 @@ h1 {
 }
 
 .confidence-section {
-  background: linear-gradient(180deg, rgba(255, 250, 248, 0) 0%, rgba(255, 250, 248, 0.34) 48%, #fffaf8 100%);
-  margin-top: clamp(-76px, -10vw, -54px);
-  padding: 0 0 clamp(24px, 4vw, 42px);
+  background:
+    linear-gradient(180deg, #fbf6ee 0%, #fbf6ee 34%, #f7f0e6 100%);
+  margin-top: 0;
+  overflow: visible;
+  padding: 28px 0 clamp(24px, 6vw, 46px);
   position: relative;
   z-index: 3;
 }
 
-.confidence-section::before {
-  background: radial-gradient(ellipse at 50% 52%, rgba(255, 253, 249, 0.68) 0%, rgba(255, 253, 249, 0.3) 46%, rgba(255, 253, 249, 0) 76%);
-  content: "";
-  height: 96px;
-  left: 10px;
-  pointer-events: none;
-  position: absolute;
-  right: 10px;
-  top: -8px;
-  z-index: -1;
+.confidence-section__heading {
+  margin: 0 auto 18px;
+  max-width: 520px;
+  padding: 0 20px;
+  position: relative;
+  text-align: center;
+  z-index: 1;
 }
 
-.confidence-section .section-heading {
-  margin-bottom: 14px;
+.confidence-section__heading .eyebrow {
+  color: #8b7569;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.confidence-section__heading h2 {
+  color: #241f1d;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 3.25rem);
+  font-variation-settings: "opsz" 144, "SOFT" 35, "WONK" 0;
+  font-weight: 460;
+  letter-spacing: 0;
+  line-height: 0.98;
+  margin-top: 6px;
 }
 
 .confidence-carousel {
-  align-items: center;
-  --confidence-card-height: 124px;
-  --confidence-gap: 14px;
-  --confidence-peek: clamp(56px, 18vw, 96px);
-  --confidence-fade: clamp(28px, 8vw, 56px);
+  --confidence-card-width: min(78vw, 324px);
+  --confidence-gap: 6px;
   background: transparent;
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  cursor: grab;
   display: block;
   margin: 0 auto;
-  max-width: 760px;
-  overflow: hidden;
-  padding: 6px 0 6px clamp(16px, 4vw, 28px);
+  max-width: 1040px;
   position: relative;
   z-index: 1;
 }
 
 .confidence-carousel__viewport {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    #000 var(--confidence-fade),
-    #000 calc(100% - var(--confidence-fade)),
-    transparent 100%
+  overflow: visible;
+  position: relative;
+}
+
+.confidence-carousel__viewport::after {
+  background: linear-gradient(
+    to bottom,
+    rgba(251, 246, 238, 0) 0%,
+    rgba(251, 246, 238, 0.75) 55%,
+    #fbf6ee 100%
   );
-          mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    #000 var(--confidence-fade),
-    #000 calc(100% - var(--confidence-fade)),
-    transparent 100%
-  );
+  bottom: 0;
+  content: "";
+  height: 52px;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  z-index: 2;
 }
 
 .confidence-carousel__track {
+  cursor: grab;
   display: flex;
   gap: var(--confidence-gap);
-  transform: translateX(0);
-  transition: transform 4800ms linear;
-  will-change: transform;
+  overscroll-behavior-x: contain;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 10px max(32px, calc((100vw - var(--confidence-card-width)) / 2)) 52px;
+  position: relative;
+  scroll-padding-inline: max(32px, calc((100vw - var(--confidence-card-width)) / 2));
+  scroll-snap-type: none;
+  scrollbar-width: none;
+  touch-action: pan-y;
+  user-select: none;
+  z-index: 1;
 }
 
-.confidence-carousel--dragging {
+.confidence-carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.confidence-carousel--interacting .confidence-carousel__track {
   cursor: grabbing;
 }
 
-.confidence-carousel--dragging .confidence-card {
-  transition: none;
-}
-
-.confidence-carousel__track--resetting {
-  transition: none;
+@media (prefers-reduced-motion: reduce) {
+  .confidence-carousel--drifting .confidence-carousel__track {
+    scroll-snap-type: none;
+  }
 }
 
 .weekly-set-carousel__button:focus-visible,
 .shop-more-carousel__button:focus-visible,
-.confidence-carousel:focus-visible {
+.confidence-carousel:focus-visible,
+.confidence-progress:focus-visible {
   outline: 3px solid #0a6866;
   outline-offset: 3px;
 }
 
 .confidence-card {
-  align-items: center;
-  background: linear-gradient(180deg, rgba(255, 253, 249, 0.95), rgba(255, 246, 242, 0.78));
-  border: 1px solid rgba(168, 47, 87, 0.08);
-  border-radius: 14px;
-  box-shadow: 0 10px 24px -14px rgba(93, 48, 67, 0.18);
+  background: linear-gradient(180deg, rgba(255, 254, 250, 0.98), rgba(250, 245, 238, 0.98));
+  border: 1px solid rgba(99, 77, 66, 0.12);
+  border-radius: 24px;
+  box-shadow:
+    0 10px 22px rgba(80, 55, 42, 0.05),
+    0 3px 8px rgba(80, 55, 42, 0.035);
   display: grid;
-  flex: 0 0 calc(100% - var(--confidence-peek));
-  gap: 16px;
-  grid-template-columns: minmax(122px, 0.92fr) minmax(0, 0.9fr);
-  height: var(--confidence-card-height);
+  flex: 0 0 var(--confidence-card-width);
+  gap: 18px;
   min-width: 0;
-  opacity: 0.42;
+  min-height: 330px;
+  opacity: 0.72;
   overflow: hidden;
-  padding: 10px 16px 10px 10px;
+  padding: 14px 14px 22px;
   position: relative;
-  transform: scale(0.96);
-  transition: opacity 540ms ease, transform 540ms cubic-bezier(0.22, 1, 0.36, 1);
+  scroll-snap-align: center;
+  transform: scale(0.965);
+  transition: opacity 240ms ease, transform 240ms ease, box-shadow 240ms ease;
 }
 
-.confidence-card[aria-hidden="false"] {
+.confidence-card[aria-current="step"],
+.confidence-card--active {
+  box-shadow:
+    0 10px 20px rgba(92, 65, 50, 0.055),
+    0 3px 8px rgba(92, 65, 50, 0.035);
   opacity: 1;
   transform: scale(1);
 }
 
-.confidence-card__visual {
-  align-items: center;
-  display: flex;
-  height: calc(var(--confidence-card-height) - 18px);
-  justify-content: center;
-  min-height: 0;
+.confidence-carousel__controls {
+  background: #fbf6ee;
+  padding: 8px 0 34px;
   position: relative;
+  z-index: 3;
 }
 
-.confidence-card__visual-frame {
-  align-items: center;
+.confidence-progress {
   display: flex;
-  height: 82px;
-  justify-content: center;
-  position: relative;
-  width: 132px;
+  gap: 7px;
+  margin: 0 auto;
+  max-width: 104px;
+  width: 30%;
 }
 
-.confidence-card__tray {
-  align-items: end;
-  background:
-    linear-gradient(135deg, rgba(255, 244, 235, 0.96), rgba(233, 238, 209, 0.78)),
-    repeating-linear-gradient(90deg, transparent 0 7px, rgba(173, 186, 133, 0.13) 7px 8px);
-  border: 1px solid rgba(173, 186, 133, 0.3);
-  border-radius: 6px;
-  box-shadow: 0 10px 18px rgba(93, 48, 67, 0.09);
-  display: flex;
-  gap: 5px;
-  justify-content: center;
-  min-height: 64px;
-  padding: 9px 10px 7px;
-  transform: rotate(-1deg);
-}
-
-.confidence-card__nail {
-  background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.92) 0 17%, transparent 18%),
-    linear-gradient(180deg, #fff0e8, #ef8c77);
-  border-radius: 999px 999px 12px 12px;
-  box-shadow:
-    inset 0 6px 9px rgba(255, 255, 255, 0.44),
-    0 6px 10px rgba(126, 65, 78, 0.1);
-  display: block;
-  min-height: 48px;
-  width: 14px;
-}
-
-.confidence-card__nail--two {
-  background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.9) 0 17%, transparent 18%),
-    linear-gradient(180deg, #fff8ee, #d8ca92);
-  min-height: 56px;
-}
-
-.confidence-card__nail--three {
-  background:
-    radial-gradient(circle at 50% 38%, rgba(255, 234, 134, 0.72) 0 3px, transparent 4px),
-    linear-gradient(150deg, rgba(255, 255, 255, 0.88) 0 17%, transparent 18%),
-    linear-gradient(180deg, #eadff7, #b69ad4);
-  min-height: 60px;
-}
-
-.confidence-card__nail--four {
-  background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.9) 0 17%, transparent 18%),
-    linear-gradient(180deg, #ffe2e8, #d9576e);
-  min-height: 54px;
-}
-
-.confidence-card__nail--five {
-  background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.9) 0 17%, transparent 18%),
-    linear-gradient(180deg, #f0f5d9, #adba85);
-  min-height: 46px;
-}
-
-.confidence-card__glue {
-  background:
-    linear-gradient(180deg, #f6d3d6 0 24%, #ffffff 25% 100%);
-  border: 1px solid rgba(168, 47, 87, 0.16);
-  border-radius: 999px 999px 10px 10px;
-  box-shadow: 0 10px 16px rgba(93, 48, 67, 0.1);
-  height: 58px;
-  position: relative;
-  transform: rotate(-1deg);
-  width: 18px;
-}
-
-.confidence-card__glue::before {
-  background: #d9576e;
-  border-radius: 999px 999px 3px 3px;
-  content: "";
-  height: 16px;
-  left: 5px;
-  position: absolute;
-  top: -10px;
-  width: 8px;
-}
-
-.confidence-card__tabs {
-  background: rgba(255, 249, 244, 0.9);
-  border: 1px solid rgba(173, 186, 133, 0.32);
-  border-radius: 9px;
-  box-shadow: 0 10px 18px rgba(93, 48, 67, 0.09);
-  display: grid;
-  gap: 4px;
-  grid-template-columns: repeat(3, 12px);
-  margin-left: 14px;
-  padding: 8px;
-  transform: rotate(2deg);
-}
-
-.confidence-card__tabs span {
-  background:
-    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.88), transparent 42%),
-    #d8caef;
-  border: 1px solid rgba(155, 59, 102, 0.08);
+.confidence-progress__pill {
+  background: rgba(139, 117, 105, 0.2);
   border-radius: 999px;
-  height: 15px;
-  width: 12px;
-}
-
-.confidence-card__hand {
-  background: radial-gradient(circle at 56% 34%, #ffe6d9 0 34%, #f3b59f 58%, transparent 59%);
-  border: 1px solid rgba(168, 47, 87, 0.14);
-  border-radius: 999px;
-  box-shadow: 0 10px 20px rgba(93, 48, 67, 0.1);
   display: block;
-  height: 70px;
+  flex: 1 1 0;
+  height: 7px;
   overflow: hidden;
-  position: relative;
-  width: 70px;
 }
 
-.confidence-card__finger {
-  background: linear-gradient(180deg, #ffd9c8, #efac96);
-  border-radius: 999px;
-  bottom: -10px;
+.confidence-progress__fill {
+  background: #8b7569;
+  border-radius: inherit;
   display: block;
-  height: 55px;
-  position: absolute;
-  width: 18px;
+  height: 100%;
+  transition: width 160ms linear;
 }
 
-.confidence-card__finger::after {
-  background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.88) 0 20%, transparent 21%),
-    linear-gradient(180deg, #ffe2ea, #d9576e);
-  border-radius: 999px 999px 8px 8px;
-  content: "";
-  height: 22px;
-  left: 3px;
-  position: absolute;
-  top: 4px;
-  width: 12px;
-}
-
-.confidence-card__finger--one {
-  left: 18px;
-  transform: rotate(-9deg);
-}
-
-.confidence-card__finger--two {
-  height: 62px;
-  left: 31px;
-}
-
-.confidence-card__finger--three {
-  left: 44px;
-  transform: rotate(8deg);
-}
-
-.confidence-card__copy {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-
-.confidence-card__label {
-  color: #8f315a;
-  font-family: Georgia, "Times New Roman", serif;
-  font-feature-settings: "lnum" 1, "ss01" 1;
-  font-size: 1.06rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  line-height: 1.1;
-  min-width: 0;
-}
-
-.confidence-card__helper {
-  color: #5d4853;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  line-height: 1.3;
+.confidence-carousel__hint {
+  align-items: center;
+  color: #7d6a60;
+  display: flex;
+  font-size: 0.76rem;
+  font-weight: 800;
+  gap: 8px;
+  justify-content: center;
+  letter-spacing: 0.08em;
+  margin-top: 14px;
   text-transform: uppercase;
+}
+
+.confidence-carousel__hint span {
+  color: #a38c7c;
+  font-size: 0.9rem;
+  line-height: 1;
 }
 
 .reviews-section {
@@ -1863,6 +1755,20 @@ h1 {
     padding: 14px;
   }
 
+  .hero-section::after {
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(251, 246, 238, 0) 0%,
+        rgba(251, 246, 238, 0.04) 18%,
+        rgba(251, 246, 238, 0.14) 35%,
+        rgba(251, 246, 238, 0.34) 55%,
+        rgba(251, 246, 238, 0.68) 78%,
+        #fbf6ee 100%
+      );
+    height: 105px;
+  }
+
   .brand-header__bar {
     display: grid;
     gap: 8px;
@@ -1908,9 +1814,11 @@ h1 {
     display: grid;
   }
 
-  .confidence-section .section-heading {
-    display: none;
+  .confidence-section {
+    margin-top: 0;
+    padding: 22px 0 0;
   }
+
 }
 
 @media (min-width: 721px) {
@@ -1920,7 +1828,6 @@ h1 {
     place-items: center;
   }
 
-  .hero-section::after,
   .hero-copy,
   .hero-photo {
     border-radius: 10px;
@@ -1938,6 +1845,44 @@ h1 {
     justify-self: center;
     max-height: min(650px, calc(94vh - 108px));
     min-height: min(650px, calc(94vh - 108px));
+  }
+
+  .confidence-section {
+    margin-top: 0;
+  }
+
+  .confidence-carousel {
+    padding: 0 28px;
+  }
+
+  .confidence-carousel__track {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+    padding: 8px 0 0;
+    scroll-snap-type: none;
+  }
+
+  .confidence-carousel__viewport::after,
+  .confidence-carousel__controls {
+    display: none;
+  }
+
+  .confidence-card {
+    flex-basis: auto;
+    min-height: 348px;
+    opacity: 1;
+    transform: none;
+  }
+
+  .confidence-card--loop-buffer {
+    display: none;
+  }
+
+  .confidence-progress,
+  .confidence-carousel__hint {
+    display: none;
   }
 }
 
@@ -2206,94 +2151,35 @@ h1 {
   }
 
   .confidence-section {
-    background: linear-gradient(180deg, rgba(255, 250, 248, 0) 0%, rgba(255, 250, 248, 0.34) 48%, #fffaf8 100%);
-    margin-top: clamp(-76px, -10vw, -54px);
-    padding: 0 0 18px;
+    margin-top: 0;
+    padding: 20px 0 0;
     position: relative;
     z-index: 2;
   }
 
-  .confidence-section .section-heading {
-    display: none;
+  .confidence-section__heading {
+    margin-bottom: 8px;
+    padding: 0 14px;
+  }
+
+  .confidence-section__heading h2 {
+    font-size: 1.8rem;
   }
 
   .confidence-carousel {
-    --confidence-card-height: 104px;
-    --confidence-gap: 8px;
-    --confidence-peek: 42px;
-    padding: 8px 0 8px 12px;
+    --confidence-card-width: min(72vw, 270px);
+    --confidence-gap: 0px;
   }
 
   .confidence-card {
-    gap: 10px;
-    grid-template-columns: 72px minmax(0, 1fr);
-    padding: 7px 10px 7px 7px;
+    border-radius: 20px;
+    min-height: 258px;
+    padding: 12px 12px 16px;
   }
 
-  .confidence-card__visual {
-    height: calc(var(--confidence-card-height) - 14px);
-  }
-
-  .confidence-card__visual-frame {
-    height: 74px;
-    width: 72px;
-  }
-
-  .confidence-card__tray {
-    gap: 4px;
-    min-height: 54px;
-    padding: 7px 8px 6px;
-  }
-
-  .confidence-card__nail {
-    min-height: 38px;
-    width: 11px;
-  }
-
-  .confidence-card__nail--two {
-    min-height: 45px;
-  }
-
-  .confidence-card__nail--three {
-    min-height: 48px;
-  }
-
-  .confidence-card__nail--four {
-    min-height: 43px;
-  }
-
-  .confidence-card__nail--five {
-    min-height: 36px;
-  }
-
-  .confidence-card__glue {
-    height: 48px;
-    width: 15px;
-  }
-
-  .confidence-card__tabs {
-    gap: 3px;
-    grid-template-columns: repeat(3, 10px);
-    margin-left: 10px;
-    padding: 6px;
-  }
-
-  .confidence-card__tabs span {
-    height: 13px;
-    width: 10px;
-  }
-
-  .confidence-card__hand {
-    height: 58px;
-    width: 58px;
-  }
-
-  .confidence-card__label {
-    font-size: 0.88rem;
-  }
-
-  .confidence-card__helper {
-    font-size: 0.72rem;
+  .confidence-carousel__hint {
+    font-size: 0.68rem;
+    margin-top: 12px;
   }
 
   .kit-summary,

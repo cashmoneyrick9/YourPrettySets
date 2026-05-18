@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-11
+Last updated: 2026-05-18
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -19,11 +19,17 @@ Before starting a section pass, read `docs/brief/section-pass-template.md` and u
 Current CEO direction:
 
 - Stop spending more time on the hero-to-How-It-Works gradient transition unless the CEO explicitly reopens it.
-- Apply the Baseline Improved UX direction to the live How It Works section before doing deeper UI polish.
-- The How It Works UX pass is now implemented: compact image-led rotating strip, three numbered steps, no arrows, no dots, and a next-step peek.
-- The strip auto-rotates calmly by default, then stops rotating after shopper interaction.
-- It reuses the current placeholder visuals for speed; they were rearranged rather than replaced with final generated visuals.
-- Treat final colors, final step imagery, typography, and copy as a later UI pass.
+- The latest approved How It Works direction is a polished luxury clean-beauty section, not the old continuous auto-strip.
+- The live section now uses centered `HOW IT WORKS` / `3 easy steps` heading copy, three swipeable mobile cards, three dynamic progress pills, a subtle `Swipe to explore` hint, and desktop three-column layout.
+- The latest mobile polish keeps the hero-to-section gradient, centers the first real card on load, adds loop-buffer side cards so both edges visibly peek, softens the active card shadow, separates the card lane from the controls block, and spaces the progress/hint/Collections handoff cleanly.
+- The latest transition/shadow repair keeps the current layout and copy, uses a 105px mobile hero bottom fade into `#fbf6ee`, keeps the How It Works section at `margin-top: 0`, and keeps the active card shadow softer/shorter so it does not fight the controls.
+- Latest CEO feedback on 2026-05-18 asked to remove all content inside the How It Works cards. The live cards are now intentionally blank shells; keep them blank until the CEO chooses what belongs inside them.
+- Latest mobile gradient fix on 2026-05-18 keeps the fade attached to the outer hero container, but overrides the mobile fade to a 105px layer with gradual `#fbf6ee` opacity stops and no negative How It Works overlap.
+- Latest mobile carousel shadow/control fix on 2026-05-18 separates the card lane and controls area: the lane has 52px bottom breathing room, a 52px cream fade at the bottom, and the progress/swipe hint sit on their own solid `#fbf6ee` controls block.
+- Latest carousel behavior decision on 2026-05-18: build slow continuous drift directly on `main`, not as an experiment branch. The carousel now drifts at a more visibly moving display-shelf speed, uses three repeated card sets so loop resets happen at a matching visual position, remaps manual/native scrolling at the loop edge into the matching middle card set, temporarily pauses for 3 seconds after shopper interaction, keeps the lane free while dragging, gently settles to the nearest card on release, and disables drift for `prefers-reduced-motion`.
+- Implementation note: the drift keeps a virtual scroll position so sub-pixel frame movement accumulates across whole-pixel browser `scrollLeft` updates; the three progress pills are tied to normalized carousel position, not hidden loop-card state.
+- The old repeating `01 / 02 / 03 / 01 / 02 / 03` strip, transform-based auto-scroll behavior, and text-only fast cleanup baseline are superseded.
+- Do not restore the prior card copy or code-native line visuals without CEO approval.
 - The approved UX spec is saved at `docs/superpowers/specs/2026-05-11-how-it-works-ux-pass-design.md`.
 
 ## What Has Been Built
@@ -63,7 +69,7 @@ Implemented:
   - hero divider refinement replaces the heavy center-dot divider with a thinner mockup-style split line and tiny sparkle
   - slim confidence strip follows the hero
   - How It Works carousel UI pass overlaps the hero, uses a warm-white card with a thin berry outline, places arrows just outside the card edges, gives each slide its own code-native visual, and has a softened hero/card transition after several visual review passes
-  - latest How It Works UX pass removes the arrows and dots, adds clear step numbers, shows one active image-led step with a small next-step peek, auto-rotates calmly, and pauses rotation once the shopper interacts
+  - latest How It Works UI pass replaces the continuous text-only strip with a polished luxury clean-beauty card carousel: centered editorial heading, swipeable mobile cards with side peeks, three dynamic progress pills, swipe hint, and desktop three-column layout
   - collections appear before the featured weekly set and product shopping row
   - sizing-kit language is intentionally excluded for now
   - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
@@ -80,12 +86,12 @@ Implemented:
 
 Latest known verification before handoff:
 
-- `npm test`: 10 files, 26 tests passed.
+- `npm test`: 10 files, 33 tests passed.
 - `npm run build`: passed.
-- `npm audit --audit-level=moderate`: 0 vulnerabilities.
+- `npm audit --audit-level=moderate`: 0 vulnerabilities after `npm audit fix` updated the transitive dev dependency `ws` from `8.20.0` to `8.20.1`.
 - `git diff --check`: passed.
-- Browser verification at `http://localhost:5173/`: Safari check confirmed the current hero/card overlap and softened transition after commit `15d1ef4`.
-- The browser was last left at `http://localhost:5173/`.
+- Browser/dev server check at `http://localhost:5173/#home`: localhost responded. Automated DOM tests confirm the How It Works cards render as blank shells with no visible card copy or code-native visual nodes, continuous drift advances the card lane at a visible 36px/second pace, auto and manual loop-edge movement remap to matching visual positions instead of racing back to the start, manual drag keeps snapping off while interacting, release settles to the nearest card, interaction pauses drift for 3 seconds, the old dot controls are replaced by three dynamic progress pills, and reduced-motion users do not get the drifting class. In-app browser verification confirmed 9 repeated carousel cards, 6 loop-buffer cards, 3 progress fills, no dot controls, `scroll-snap-type: none`, `touch-action: pan-y`, and active pill fill advancing during drift.
+- The browser was last left at `http://localhost:5173/#home`.
 - Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
@@ -214,21 +220,22 @@ Second inspiration fidelity pass:
   - rendering five nail shapes per collection tile instead of three abstract marks
 - The pass is documented at `docs/superpowers/specs/2026-05-07-home-inspo-ux-fidelity-design.md` and `docs/superpowers/plans/2026-05-07-home-inspo-ux-fidelity.md`.
 
-Latest carousel decision:
+Latest How It Works decision:
 
-- The CEO selected the single explainer-card carousel mockup for the step section.
-- The Home page now shows one step card at a time with a visual, title, short explainer text, previous/next arrows, and dot buttons.
-- Current step copy:
-  - `Pick your set` / `Find the look you want`
-  - `Choose your wear` / `Glue or tabs`
-  - `Press on pretty` / `Ready in minutes`
-- The 2026-05-09 UI direction is now approved enough to implement:
-  - keep the same carousel UX, placement, and copy
-  - let the card slightly overlap the hero with a soft frosted transition
-  - use the cleaner warm-white card with thin blush/berry outline, soft shadow, rounded corners, and arrows breaking outside the card edges
-  - improve slide visuals so they are intentional temporary code-native visuals: nail tray, glue/tabs, and finished press-on hand
-- The design spec is saved at `docs/superpowers/specs/2026-05-09-how-it-works-carousel-ui-design.md`.
-- The implementation plan is saved at `docs/superpowers/plans/2026-05-09-how-it-works-carousel-ui.md`.
+- The CEO asked to remake the card shape/UX and then provided a direct build brief for a polished mobile-first How It Works section.
+- Ignore the brief line that suggested changing homepage order to add a trust/benefits bar; the CEO explicitly said to ignore that section.
+- The current Home page keeps the section in place between hero and Collections and only changes the How It Works section.
+- Mobile now uses a horizontal swipeable carousel with one prominent centered card, partial side-card peeks, three dynamic progress pills, and a subtle `Swipe to explore` hint.
+- The 2026-05-18 polish fixes the remaining mobile layout issue: the active card is centered at roughly three-quarters viewport width, the previous and next cards both peek from the edges, the card shadow has vertical room to fade, and the progress/hint no longer collide with the shadow.
+- The follow-up 2026-05-18 repair narrows only the transition and active-card shadow: the hero now uses a 105px absolute full-width bottom fade into the How It Works cream, the How It Works section starts without negative overlap, and the carousel uses ordinary bottom padding plus a separate cream controls block below it.
+- The latest 2026-05-18 card-content cleanup keeps the carousel shells, peeks, progress pills, and hint, but removes every visible element inside each card.
+- The latest mobile gradient cleanup changes only the mobile hero fade and section spacing: the fade is 105px, opacity reaches the section-start cream `#fbf6ee` at the bottom, and mobile How It Works uses `margin-top: 0` with `padding: 22px 0 0` or `20px 0 0` at the smallest breakpoint; desktop/tablet layout and section order are unchanged.
+- The latest mobile carousel controls cleanup changes only the shadow/control handoff: card-lane bottom padding is 52px, a 52px `#fbf6ee` fade dissolves the shadow before the controls, and the controls use `padding: 8px 0 34px` on a solid cream background.
+- The latest carousel behavior pass adds slow continuous drift to the blank How It Works card lane; passive motion does not snap, drag/native scroll at the loop edge remaps into the matching middle card set, release settles to the nearest card, and touch/focus interaction pauses drift for 3 seconds.
+- Desktop/tablet now uses the same card system as a clean three-column layout.
+- Current step cards are blank. The previous step copy was removed from the live section.
+- The section styling intentionally shifts toward warm ivory, muted taupe, nude blush, soft brown, champagne beige, and charcoal with editorial serif headings.
+- Code-native minimal visuals were removed from the live cards.
 
 Latest weekly-set flow decision:
 

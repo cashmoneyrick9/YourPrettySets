@@ -1,63 +1,25 @@
-import { KeyboardEvent, PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react";
+import { PointerEvent as ReactPointerEvent, UIEvent, useEffect, useRef, useState } from "react";
 import { CollectionFilters } from "../components/CollectionFilters";
 import { KitContents } from "../components/KitContents";
 import { ProductCard } from "../components/ProductCard";
 import { products } from "../data/products";
 
+const confidenceDriftPixelsPerSecond = 36;
+const confidenceInteractionPauseMs = 3000;
 const confidenceSteps = [
-  { number: "01", label: "Pick your set", helper: "Find the look you want", visual: "set" },
-  { number: "02", label: "Choose your wear", helper: "Glue or tabs", visual: "wear" },
-  { number: "03", label: "Press on pretty", helper: "Ready in minutes", visual: "press" }
+  { number: "1" },
+  { number: "2" },
+  { number: "3" }
 ];
-
-const confidenceRotationDelay = 4800;
-const loopedConfidenceSteps = [
-  confidenceSteps[confidenceSteps.length - 1],
-  ...confidenceSteps,
-  confidenceSteps[0]
-];
-const realStepStartIndex = 1;
-const realStepEndIndex = confidenceSteps.length;
-const preCloneIndex = 0;
-const postCloneIndex = loopedConfidenceSteps.length - 1;
-
-function renderConfidenceVisual(visual: string) {
-  if (visual === "wear") {
-    return (
-      <>
-        <span className="confidence-card__glue" />
-        <span className="confidence-card__tabs">
-          <span />
-          <span />
-          <span />
-          <span />
-          <span />
-          <span />
-        </span>
-      </>
-    );
-  }
-
-  if (visual === "press") {
-    return (
-      <span className="confidence-card__hand">
-        <span className="confidence-card__finger confidence-card__finger--one" />
-        <span className="confidence-card__finger confidence-card__finger--two" />
-        <span className="confidence-card__finger confidence-card__finger--three" />
-      </span>
-    );
-  }
-
-  return (
-    <span className="confidence-card__tray">
-      <span className="confidence-card__nail confidence-card__nail--one" />
-      <span className="confidence-card__nail confidence-card__nail--two" />
-      <span className="confidence-card__nail confidence-card__nail--three" />
-      <span className="confidence-card__nail confidence-card__nail--four" />
-      <span className="confidence-card__nail confidence-card__nail--five" />
-    </span>
-  );
-}
+const confidencePrimaryLoopIndex = 1;
+const confidenceCarouselCards = Array.from({ length: 3 }, (_, loopIndex) =>
+  confidenceSteps.map((step, stepIndex) => ({
+    isLoopBuffer: loopIndex !== confidencePrimaryLoopIndex,
+    loopIndex,
+    step,
+    stepIndex
+  }))
+).flat();
 
 const reviews = [
   {
@@ -105,17 +67,17 @@ const shopMoreProducts = products.filter((product) =>
 );
 
 export function HomePage() {
-  const [activeStepIndex, setActiveStepIndex] = useState(realStepStartIndex);
-  const [isStepResetting, setIsStepResetting] = useState(false);
-  const [stepSlideOffset, setStepSlideOffset] = useState(0);
+  const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const [isStepAutoPaused, setIsStepAutoPaused] = useState(false);
+  const [isStepInteracting, setIsStepInteracting] = useState(false);
+  const [confidenceProgressPills, setConfidenceProgressPills] = useState(() => confidenceSteps.map(() => 0));
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
+    typeof window.matchMedia === "function" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false
+  );
   const [activeWeeklyIndex, setActiveWeeklyIndex] = useState(0);
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
   const [activeShopMoreIndex, setActiveShopMoreIndex] = useState(0);
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
-  const stepCount = confidenceSteps.length;
-  const visibleStepIndex = ((activeStepIndex - realStepStartIndex) % stepCount + stepCount) % stepCount;
-  const activeStep = confidenceSteps[visibleStepIndex];
-  const isStepRotationPaused = useRef(false);
   const stepTrackRef = useRef<HTMLDivElement>(null);
   const activeWeeklyProduct = weeklyProducts[activeWeeklyIndex];
   const activeReview = reviews[activeReviewIndex];
@@ -123,225 +85,277 @@ export function HomePage() {
   const nextShopMoreProduct = shopMoreProducts[(activeShopMoreIndex + 1) % shopMoreProducts.length];
   const visibleShopMoreProducts = [activeShopMoreProduct, nextShopMoreProduct];
   const nextReview = reviews[(activeReviewIndex + 1) % reviews.length];
-  useEffect(() => {
-    const rotationId = window.setInterval(() => {
-      if (!isStepRotationPaused.current) {
-        setActiveStepIndex((current) => {
-          const next = current + 1;
-          return next > postCloneIndex ? realStepStartIndex : next;
-        });
-      }
-    }, confidenceRotationDelay);
+  const isStepAutoPausedRef = useRef(false);
+  const isStepInteractingRef = useRef(false);
+  const stepAnimationFrameRef = useRef<number | null>(null);
+  const stepAutoPauseTimeoutRef = useRef<number | null>(null);
+  const stepDragStateRef = useRef<{ pointerId: number; startScrollLeft: number; startX: number } | null>(null);
+  const stepIsVisibleRef = useRef(true);
+  const stepLastFrameTimeRef = useRef<number | null>(null);
+  const stepVirtualScrollLeftRef = useRef<number | null>(null);
 
-    return () => window.clearInterval(rotationId);
+  const getConfidenceCardDistance = (track: HTMLElement) => {
+    const firstCard = track.querySelector<HTMLElement>(".confidence-card");
+    if (!firstCard) return 0;
+
+    const trackStyles = window.getComputedStyle(track);
+    const parsedColumnGap = Number.parseFloat(trackStyles.columnGap);
+    const parsedGap = Number.isFinite(parsedColumnGap) ? parsedColumnGap : Number.parseFloat(trackStyles.gap);
+    const gap = Number.isFinite(parsedGap) ? parsedGap : 0;
+
+    return firstCard.offsetWidth + gap;
+  };
+
+  const normalizeConfidenceScrollLeft = (scrollLeft: number, cardDistance: number) => {
+    const loopDistance = cardDistance * confidenceSteps.length;
+    if (cardDistance <= 0 || loopDistance <= 0) return scrollLeft;
+
+    const primaryLoopOffset = loopDistance * confidencePrimaryLoopIndex;
+    const relativeOffset = ((scrollLeft - primaryLoopOffset) % loopDistance + loopDistance) % loopDistance;
+    return primaryLoopOffset + relativeOffset;
+  };
+
+  const syncConfidenceTrackScrollLeft = (track: HTMLElement, scrollLeft: number) => {
+    const cardDistance = getConfidenceCardDistance(track);
+    if (cardDistance <= 0 || !Number.isFinite(scrollLeft)) return track.scrollLeft;
+
+    const normalizedScrollLeft = normalizeConfidenceScrollLeft(scrollLeft, cardDistance);
+    if (Math.abs(track.scrollLeft - normalizedScrollLeft) > 0.5) {
+      track.scrollLeft = normalizedScrollLeft;
+    }
+    return normalizedScrollLeft;
+  };
+
+  const updateActiveConfidenceStepFromTrack = (track: HTMLElement, scrollLeft = track.scrollLeft) => {
+    const cardDistance = getConfidenceCardDistance(track);
+    const loopDistance = cardDistance * confidenceSteps.length;
+    if (cardDistance <= 0 || loopDistance <= 0) return;
+
+    const normalizedScrollLeft = normalizeConfidenceScrollLeft(scrollLeft, cardDistance);
+    const primaryLoopOffset = loopDistance * confidencePrimaryLoopIndex;
+    const relativeOffset = normalizedScrollLeft - primaryLoopOffset;
+    const roundedStep = Math.round(relativeOffset / cardDistance);
+    if (!Number.isFinite(roundedStep) || !Number.isFinite(relativeOffset)) return;
+
+    const relativeStep = ((roundedStep % confidenceSteps.length) + confidenceSteps.length) % confidenceSteps.length;
+    const progressThroughSteps = Math.max(0, Math.min(confidenceSteps.length, relativeOffset / cardDistance));
+    const pillProgress = confidenceSteps.map((_, stepIndex) => {
+      const rawProgress = (progressThroughSteps - stepIndex) * 100;
+      return Math.max(0, Math.min(100, rawProgress));
+    });
+
+    setActiveStepIndex(relativeStep);
+    setConfidenceProgressPills(pillProgress);
+  };
+
+  const scrollConfidenceStepIntoView = (stepIndex: number, behavior: ScrollBehavior = "smooth") => {
+    const track = stepTrackRef.current;
+    const cards = [...(track?.querySelectorAll<HTMLElement>(".confidence-card") ?? [])];
+    const targetCard = cards.find(
+      (card) => card.dataset.stepIndex === String(stepIndex) && !card.classList.contains("confidence-card--loop-buffer")
+    );
+
+    if (targetCard?.scrollIntoView) {
+      targetCard.scrollIntoView({
+        behavior,
+        block: "nearest",
+        inline: "center"
+      });
+      return;
+    }
+
+    const targetIndex = cards.indexOf(targetCard as HTMLElement);
+    const cardWidth = track ? getConfidenceCardDistance(track) : 0;
+    if (track && targetIndex >= 0 && cardWidth > 0) {
+      track.scrollLeft = targetIndex * cardWidth;
+      stepVirtualScrollLeftRef.current = track.scrollLeft;
+    }
+  };
+
+  const pauseConfidenceAutoDrift = () => {
+    if (prefersReducedMotion) return;
+
+    stepVirtualScrollLeftRef.current = stepTrackRef.current?.scrollLeft ?? null;
+    isStepAutoPausedRef.current = true;
+    setIsStepAutoPaused(true);
+    if (stepAutoPauseTimeoutRef.current !== null) {
+      window.clearTimeout(stepAutoPauseTimeoutRef.current);
+    }
+    stepAutoPauseTimeoutRef.current = window.setTimeout(() => {
+      isStepAutoPausedRef.current = false;
+      setIsStepAutoPaused(false);
+      stepAutoPauseTimeoutRef.current = null;
+    }, confidenceInteractionPauseMs);
+  };
+
+  const settleConfidenceTrack = (track: HTMLElement) => {
+    const cardDistance = getConfidenceCardDistance(track);
+    if (cardDistance <= 0) return;
+
+    const sourceScrollLeft = stepVirtualScrollLeftRef.current ?? track.scrollLeft;
+    const normalizedScrollLeft = normalizeConfidenceScrollLeft(sourceScrollLeft, cardDistance);
+    const primaryLoopOffset = cardDistance * confidenceSteps.length * confidencePrimaryLoopIndex;
+    const relativeOffset = normalizedScrollLeft - primaryLoopOffset;
+    const roundedStep = Math.round(relativeOffset / cardDistance);
+    if (!Number.isFinite(roundedStep)) return;
+
+    const targetStepIndex = ((roundedStep % confidenceSteps.length) + confidenceSteps.length) % confidenceSteps.length;
+    const targetScrollLeft = primaryLoopOffset + targetStepIndex * cardDistance;
+
+    stepVirtualScrollLeftRef.current = targetScrollLeft;
+    if (typeof track.scrollTo === "function") {
+      track.scrollTo({ behavior: "smooth", left: targetScrollLeft });
+    } else {
+      track.scrollLeft = targetScrollLeft;
+    }
+    updateActiveConfidenceStepFromTrack(track, targetScrollLeft);
+  };
+
+  useEffect(() => {
+    const centerInitialCard = () => scrollConfidenceStepIntoView(0, "auto");
+
+    if (typeof window.requestAnimationFrame !== "function") {
+      centerInitialCard();
+      return undefined;
+    }
+
+    const frameId = window.requestAnimationFrame(centerInitialCard);
+    return () => window.cancelAnimationFrame(frameId);
   }, []);
 
   useEffect(() => {
-    if (!isStepResetting) {
-      return;
+    if (typeof window.matchMedia !== "function") return undefined;
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handleMotionChange = () => setPrefersReducedMotion(motionQuery.matches);
+    handleMotionChange();
+    if (motionQuery.addEventListener) {
+      motionQuery.addEventListener("change", handleMotionChange);
+    } else {
+      motionQuery.addListener?.(handleMotionChange);
     }
-
-    const resetId = window.requestAnimationFrame(() => {
-      setIsStepResetting(false);
-    });
-
-    return () => window.cancelAnimationFrame(resetId);
-  }, [isStepResetting]);
-
-  useEffect(() => {
-    const track = stepTrackRef.current;
-    const viewport = track?.parentElement;
-
-    if (!track || !viewport) {
-      return;
-    }
-
-    const measureSlideOffset = () => {
-      const firstCard = track.querySelector<HTMLElement>(".confidence-card");
-
-      if (!firstCard) {
-        return;
-      }
-
-      const trackStyles = window.getComputedStyle(track);
-      const parsedColumnGap = Number.parseFloat(trackStyles.columnGap);
-      const parsedGap = Number.isFinite(parsedColumnGap) ? parsedColumnGap : Number.parseFloat(trackStyles.gap);
-      const gap = Number.isFinite(parsedGap) ? parsedGap : 0;
-      setStepSlideOffset(firstCard.offsetWidth + gap);
-    };
-
-    measureSlideOffset();
-    window.addEventListener("resize", measureSlideOffset);
-
-    if (typeof ResizeObserver === "undefined") {
-      return () => window.removeEventListener("resize", measureSlideOffset);
-    }
-
-    const resizeObserver = new ResizeObserver(measureSlideOffset);
-    resizeObserver.observe(viewport);
-    resizeObserver.observe(track);
 
     return () => {
-      window.removeEventListener("resize", measureSlideOffset);
-      resizeObserver.disconnect();
+      if (motionQuery.removeEventListener) {
+        motionQuery.removeEventListener("change", handleMotionChange);
+      } else {
+        motionQuery.removeListener?.(handleMotionChange);
+      }
     };
   }, []);
 
-  const resumeRotationTimerRef = useRef<number | null>(null);
-  const dragStateRef = useRef({
-    isDragging: false,
-    pointerStartX: 0,
-    baseTranslate: 0,
-    totalDelta: 0,
-    pointerId: -1
-  });
-  const [isStepDragging, setIsStepDragging] = useState(false);
-
-  const clearResumeTimer = () => {
-    if (resumeRotationTimerRef.current !== null) {
-      window.clearTimeout(resumeRotationTimerRef.current);
-      resumeRotationTimerRef.current = null;
-    }
-  };
-
-  const pauseStepRotation = () => {
-    isStepRotationPaused.current = true;
-    clearResumeTimer();
-  };
-
-  const scheduleResumeRotation = (delay = 700) => {
-    clearResumeTimer();
-    resumeRotationTimerRef.current = window.setTimeout(() => {
-      isStepRotationPaused.current = false;
-      resumeRotationTimerRef.current = null;
-    }, delay);
-  };
-
-  useEffect(() => () => clearResumeTimer(), []);
-
-  const showNextStepWithoutPausing = () => {
-    setActiveStepIndex((current) => {
-      const next = current + 1;
-      return next > postCloneIndex ? realStepStartIndex : next;
-    });
-  };
-  const showPreviousStep = () => {
-    pauseStepRotation();
-    setActiveStepIndex((current) => {
-      const prev = current - 1;
-      return prev < preCloneIndex ? realStepEndIndex : prev;
-    });
-  };
-  const showNextStep = () => {
-    pauseStepRotation();
-    showNextStepWithoutPausing();
-  };
-  const handleStepKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      showPreviousStep();
-    }
-
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      showNextStep();
-    }
-  };
-  const handleStepTransitionEnd = () => {
-    if (activeStepIndex === postCloneIndex) {
-      setIsStepResetting(true);
-      setActiveStepIndex(realStepStartIndex);
-    } else if (activeStepIndex === preCloneIndex) {
-      setIsStepResetting(true);
-      setActiveStepIndex(realStepEndIndex);
-    }
-  };
-
-  const readCurrentTranslate = (): number => {
+  useEffect(() => {
     const track = stepTrackRef.current;
-    if (!track) return 0;
-    const computed = window.getComputedStyle(track).transform;
-    if (!computed || computed === "none") return 0;
-    try {
-      const matrix = new DOMMatrixReadOnly(computed);
-      return matrix.m41;
-    } catch {
-      return -activeStepIndex * stepSlideOffset;
+    if (!track || prefersReducedMotion || typeof window.requestAnimationFrame !== "function") {
+      return undefined;
     }
+
+    const section = track.closest("#how-it-works");
+    let observer: IntersectionObserver | null = null;
+    if (section && typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(([entry]) => {
+        stepIsVisibleRef.current = entry.isIntersecting;
+      });
+      observer.observe(section);
+    }
+
+    const advanceDrift = (timestamp: number) => {
+      if (stepLastFrameTimeRef.current !== null && !isStepAutoPausedRef.current && stepIsVisibleRef.current) {
+        const elapsed = Math.min(timestamp - stepLastFrameTimeRef.current, 80);
+        const cardDistance = getConfidenceCardDistance(track);
+        const loopDistance = cardDistance * confidenceSteps.length;
+
+        if (cardDistance > 0 && loopDistance > 0) {
+          const primaryLoopOffset = loopDistance * confidencePrimaryLoopIndex;
+          const loopStart = primaryLoopOffset;
+          const loopEnd = primaryLoopOffset + loopDistance;
+          if (stepVirtualScrollLeftRef.current === null) {
+            stepVirtualScrollLeftRef.current = track.scrollLeft;
+          }
+          let nextScrollLeft =
+            stepVirtualScrollLeftRef.current + (elapsed * confidenceDriftPixelsPerSecond) / 1000;
+
+          if (nextScrollLeft >= loopEnd) {
+            nextScrollLeft -= loopDistance;
+          } else if (nextScrollLeft < loopStart) {
+            nextScrollLeft += loopDistance;
+          }
+
+          stepVirtualScrollLeftRef.current = nextScrollLeft;
+          track.scrollLeft = nextScrollLeft;
+          updateActiveConfidenceStepFromTrack(track, nextScrollLeft);
+        }
+      }
+
+      stepLastFrameTimeRef.current = timestamp;
+      stepAnimationFrameRef.current = window.requestAnimationFrame(advanceDrift);
+    };
+
+    stepAnimationFrameRef.current = window.requestAnimationFrame(advanceDrift);
+
+    return () => {
+      if (stepAnimationFrameRef.current !== null) {
+        window.cancelAnimationFrame(stepAnimationFrameRef.current);
+      }
+      observer?.disconnect();
+      stepLastFrameTimeRef.current = null;
+    };
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    return () => {
+      if (stepAutoPauseTimeoutRef.current !== null) {
+        window.clearTimeout(stepAutoPauseTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleStepScroll = (event: UIEvent<HTMLDivElement>) => {
+    const currentScrollLeft = event.currentTarget.scrollLeft;
+    const scrollLeft = syncConfidenceTrackScrollLeft(event.currentTarget, currentScrollLeft);
+    if (isStepAutoPausedRef.current || isStepInteractingRef.current) {
+      stepVirtualScrollLeftRef.current = scrollLeft;
+    }
+    updateActiveConfidenceStepFromTrack(event.currentTarget, scrollLeft);
   };
 
   const handleStepPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    pauseStepRotation();
-
-    const track = stepTrackRef.current;
-    if (!track || typeof event.pointerId !== "number" || event.pointerId < 0) {
-      return;
-    }
-
-    const currentTranslate = readCurrentTranslate();
-    track.style.transform = `translateX(${currentTranslate}px)`;
-    track.style.transition = "none";
-
-    dragStateRef.current = {
-      isDragging: true,
-      pointerStartX: event.clientX,
-      baseTranslate: currentTranslate,
-      totalDelta: 0,
-      pointerId: event.pointerId
+    const track = event.currentTarget;
+    const startX = Number.isFinite(event.clientX) ? event.clientX : 0;
+    pauseConfidenceAutoDrift();
+    stepDragStateRef.current = {
+      pointerId: event.pointerId,
+      startScrollLeft: stepVirtualScrollLeftRef.current ?? track.scrollLeft,
+      startX
     };
-
-    setIsStepDragging(true);
-
-    try {
-      event.currentTarget.setPointerCapture?.(event.pointerId);
-    } catch {
-      /* ignore — environments without pointer capture (e.g. JSDOM) */
-    }
+    isStepInteractingRef.current = true;
+    setIsStepInteracting(true);
+    track.setPointerCapture?.(event.pointerId);
   };
 
   const handleStepPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const drag = dragStateRef.current;
-    if (!drag.isDragging || !stepTrackRef.current) return;
-    if (event.pointerId !== drag.pointerId) return;
+    const dragState = stepDragStateRef.current;
+    if (!dragState || dragState.pointerId !== event.pointerId) return;
 
-    const delta = event.clientX - drag.pointerStartX;
-    drag.totalDelta = delta;
-    stepTrackRef.current.style.transform = `translateX(${drag.baseTranslate + delta}px)`;
+    const currentX = Number.isFinite(event.clientX) ? event.clientX : dragState.startX;
+    const nextScrollLeft = dragState.startScrollLeft - (currentX - dragState.startX);
+    const scrollLeft = syncConfidenceTrackScrollLeft(event.currentTarget, nextScrollLeft);
+    stepVirtualScrollLeftRef.current = scrollLeft;
+    updateActiveConfidenceStepFromTrack(event.currentTarget, scrollLeft);
+    event.preventDefault();
   };
 
-  const finishStepDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const drag = dragStateRef.current;
-    if (!drag.isDragging) return;
-    if (event.pointerId !== drag.pointerId && event.type !== "pointercancel") return;
+  const endStepInteraction = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const dragState = stepDragStateRef.current;
+    if (dragState && dragState.pointerId !== event.pointerId) return;
 
-    const offset = stepSlideOffset > 0 ? stepSlideOffset : 1;
-    const startIndex = Math.round(-drag.baseTranslate / offset);
-    const stepDelta = -drag.totalDelta / offset;
-
-    let snapped = startIndex;
-    if (Math.abs(stepDelta) > 0.15) {
-      const direction = stepDelta > 0 ? 1 : -1;
-      snapped = startIndex + direction * Math.max(1, Math.round(Math.abs(stepDelta)));
-    }
-    snapped = Math.max(preCloneIndex, Math.min(postCloneIndex, snapped));
-
-    const track = stepTrackRef.current;
-    if (track) {
-      track.style.transition = "";
-      track.style.transform = `translateX(-${snapped * offset}px)`;
-    }
-
-    drag.isDragging = false;
-    setIsStepDragging(false);
-    setActiveStepIndex(snapped);
-    scheduleResumeRotation(1000);
-
-    try {
-      event.currentTarget.releasePointerCapture?.(drag.pointerId);
-    } catch {
-      /* ignore */
-    }
+    stepDragStateRef.current = null;
+    isStepInteractingRef.current = false;
+    setIsStepInteracting(false);
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+    settleConfidenceTrack(event.currentTarget);
   };
+
   const showPreviousWeeklySet = () => {
     setActiveWeeklyIndex((current) => (current === 0 ? weeklyProducts.length - 1 : current - 1));
   };
@@ -382,7 +396,9 @@ export function HomePage() {
         </div>
         <div className="hero-copy">
           <p className="eyebrow">Handmade ready-to-wear press-ons</p>
-          <h1>Ready-to-wear sets for pretty plans</h1>
+          <h1>
+            Ready-to-wear sets for <em className="hero-copy__accent">pretty plans</em>
+          </h1>
           <p>Handmade press-on sets for everyday style, special plans, and salon-looking moments at home.</p>
           <a className="primary-button" href="#shop-collections">
             Shop sets
@@ -391,53 +407,55 @@ export function HomePage() {
       </section>
 
       <section className="section-block confidence-section" id="how-it-works">
-        <div className="section-heading">
-          <p className="eyebrow">Ready to wear</p>
-          <h2>Ready in three steps</h2>
+        <div className="section-heading confidence-section__heading">
+          <p className="eyebrow">HOW IT WORKS</p>
+          <h2>3 easy steps</h2>
         </div>
         <div
-          aria-label="How it works rotating steps"
+          aria-label="How It Works carousel"
           aria-live="polite"
-          className={`confidence-carousel${isStepDragging ? " confidence-carousel--dragging" : ""}`}
-          data-active-step={activeStep.number}
-          data-track-index={activeStepIndex}
-          onKeyDown={handleStepKeyDown}
-          onPointerCancel={finishStepDrag}
-          onPointerDown={handleStepPointerDown}
-          onPointerMove={handleStepPointerMove}
-          onPointerUp={finishStepDrag}
-          tabIndex={0}
+          className={`confidence-carousel${prefersReducedMotion ? "" : " confidence-carousel--drifting"}${
+            isStepAutoPaused ? " confidence-carousel--auto-paused" : ""
+          }${isStepInteracting ? " confidence-carousel--interacting" : ""
+          }`}
+          data-active-step={confidenceSteps[activeStepIndex].number}
+          onFocusCapture={pauseConfidenceAutoDrift}
         >
           <div className="confidence-carousel__viewport">
             <div
-              className={`confidence-carousel__track${isStepResetting ? " confidence-carousel__track--resetting" : ""}`}
-              onTransitionEnd={handleStepTransitionEnd}
+              className="confidence-carousel__track"
+              onPointerCancel={endStepInteraction}
+              onPointerDown={handleStepPointerDown}
+              onPointerMove={handleStepPointerMove}
+              onPointerUp={endStepInteraction}
+              onScroll={handleStepScroll}
               ref={stepTrackRef}
-              style={{ transform: `translateX(-${activeStepIndex * stepSlideOffset}px)` }}
             >
-              {loopedConfidenceSteps.map((step, stepIndex) => {
-                const isLoopClone = stepIndex === preCloneIndex || stepIndex === postCloneIndex;
-                const isActiveTrackCard = stepIndex === activeStepIndex;
-
-                return (
-                  <article
-                    aria-hidden={!isActiveTrackCard}
-                    className={`confidence-card confidence-card--${step.visual}${isLoopClone ? " confidence-card--loop-clone" : ""}`}
-                    key={`${step.number}-${stepIndex}`}
-                  >
-                    <span className="confidence-card__visual" aria-hidden="true">
-                      <span className="confidence-card__visual-frame">{renderConfidenceVisual(step.visual)}</span>
-                    </span>
-                    <span className="confidence-card__copy">
-                      <strong className="confidence-card__label">
-                        {step.number} {step.label}
-                      </strong>
-                      <span className="confidence-card__helper">{step.helper}</span>
-                    </span>
-                  </article>
-                );
-              })}
+              {confidenceCarouselCards.map(({ isLoopBuffer, loopIndex, step, stepIndex }, cardIndex) => (
+                <article
+                  aria-current={!isLoopBuffer && stepIndex === activeStepIndex ? "step" : undefined}
+                  aria-hidden={isLoopBuffer ? "true" : undefined}
+                  className={`confidence-card${stepIndex === activeStepIndex ? " confidence-card--active" : ""}${
+                    isLoopBuffer ? " confidence-card--loop-buffer" : ""
+                  }`}
+                  data-step-index={stepIndex}
+                  key={`${loopIndex}-${step.number}-${cardIndex}`}
+                >
+                </article>
+              ))}
             </div>
+          </div>
+          <div className="confidence-carousel__controls">
+            <div className="confidence-progress" aria-hidden="true">
+              {confidenceProgressPills.map((progress, index) => (
+                <span className="confidence-progress__pill" key={confidenceSteps[index].number}>
+                  <span className="confidence-progress__fill" style={{ width: `${progress}%` }} />
+                </span>
+              ))}
+            </div>
+            <p className="confidence-carousel__hint" aria-hidden="true">
+              <span>←</span> Swipe to explore <span>→</span>
+            </p>
           </div>
         </div>
       </section>

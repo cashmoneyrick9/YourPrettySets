@@ -9,11 +9,47 @@ afterEach(() => {
 });
 
 describe("HomePage", () => {
+  const mockAnimationFrame = () => {
+    let nextFrameId = 1;
+    const frameCallbacks: FrameRequestCallback[] = [];
+    const requestAnimationFrameSpy = vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      frameCallbacks.push(callback);
+      return nextFrameId++;
+    });
+    const cancelAnimationFrameSpy = vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => undefined);
+
+    return {
+      cancelAnimationFrameSpy,
+      requestAnimationFrameSpy,
+      runNextFrame(timestamp: number) {
+        const callback = frameCallbacks.shift();
+        if (!callback) {
+          throw new Error("Expected a queued animation frame");
+        }
+        callback(timestamp);
+      }
+    };
+  };
+
+  const setCardMetrics = (track: HTMLElement, cardWidth = 300) => {
+    const firstCard = track.querySelector(".confidence-card") as HTMLElement;
+    expect(firstCard).toBeInTheDocument();
+    let scrollLeft = cardWidth * 3;
+    Object.defineProperty(firstCard, "offsetWidth", { configurable: true, value: cardWidth });
+    Object.defineProperty(track, "scrollLeft", {
+      configurable: true,
+      get: () => scrollLeft,
+      set: (value: number) => {
+        scrollLeft = Math.trunc(value);
+      }
+    });
+  };
+
   it("renders the mobile shopping path before product shopping", () => {
     render(<HomePage />);
 
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
-    const confidence = screen.getByRole("heading", { name: "Ready in three steps" });
+    const confidence = screen.getByRole("heading", { name: "3 easy steps" });
     const collections = screen.getByRole("heading", { name: "Browse by the plan, mood, or moment." });
     const weeklySet = screen.getByRole("heading", { name: "This week's set" });
     const shopMore = screen.getByRole("heading", { name: "Shop more" });
@@ -21,15 +57,18 @@ describe("HomePage", () => {
 
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "#shop-collections");
-    expect(screen.getAllByText("01 Pick your set")).toHaveLength(2);
-    expect(screen.getAllByText("Find the look you want")).toHaveLength(2);
-    expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
-    expect(screen.getAllByText("03 Press on pretty")).toHaveLength(2);
-    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(5);
-    expect(document.querySelectorAll(".confidence-card__visual-frame")).toHaveLength(5);
+    expect(screen.getByText("HOW IT WORKS")).toBeInTheDocument();
+    expect(screen.queryByText("Pick Your Set")).not.toBeInTheDocument();
+    expect(screen.queryByText("Choose your favorite ready-to-wear or custom press-on set.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Choose Glue or Tabs")).not.toBeInTheDocument();
+    expect(screen.queryByText("Pick nail glue for longer wear or adhesive tabs for easy removal.")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Wear" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Apply in minutes and enjoy salon-quality nails at home.")).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(0);
+    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
     expect(document.querySelector(".confidence-carousel__track")).toBeInTheDocument();
-    expect(document.querySelector(".confidence-card--peek")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".confidence-dots__dot")).toHaveLength(0);
+    expect(document.querySelector(".confidence-progress")).toBeInTheDocument();
+    expect(screen.getByText("Swipe to explore")).toBeInTheDocument();
     expect(screen.queryByText(/size/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/sizing kit/i)).not.toBeInTheDocument();
 
@@ -112,63 +151,201 @@ describe("HomePage", () => {
     expect(screen.getAllByText("Golden Hour").length).toBeGreaterThan(0);
   });
 
-  it("auto-rotates the step strip calmly and stops after shopper interaction", () => {
-    vi.useFakeTimers();
+  it("shows three How It Works progress pills instead of dot controls", () => {
     render(<HomePage />);
 
     expect(screen.queryByRole("button", { name: "Next step" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Previous step" })).not.toBeInTheDocument();
     expect(document.querySelectorAll(".confidence-dots__dot")).toHaveLength(0);
-    expect(screen.getAllByText("01 Pick your set")).toHaveLength(2);
-    expect(screen.getByText("02 Choose your wear")).toBeInTheDocument();
-    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-active-step", "01");
-
-    act(() => {
-      vi.advanceTimersByTime(5200);
-    });
-
-    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-active-step", "02");
-
-    const carousel = document.querySelector(".confidence-carousel");
-    expect(carousel).toBeInTheDocument();
-    act(() => {
-      carousel?.dispatchEvent(new Event("pointerdown", { bubbles: true }));
-      vi.advanceTimersByTime(10400);
-    });
-
-    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-active-step", "02");
+    expect(document.querySelectorAll(".confidence-progress__pill")).toHaveLength(3);
+    expect([...document.querySelectorAll<HTMLElement>(".confidence-progress__fill")].map((pill) => pill.style.width)).toEqual([
+      "0%",
+      "0%",
+      "0%"
+    ]);
+    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-active-step", "1");
   });
 
-  it("lets keyboard shoppers move the step strip and pauses automatic rotation", () => {
-    vi.useFakeTimers();
+  it("continuously drifts the How It Works cards at a visible slow pace without using snap", () => {
+    const animationFrame = mockAnimationFrame();
     render(<HomePage />);
 
     const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
-    carousel.focus();
+    const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
+    expect(carousel).toHaveClass("confidence-carousel--drifting");
+    setCardMetrics(track);
+
+    act(() => {
+      for (let frame = 0; frame <= 63; frame += 1) {
+        animationFrame.runNextFrame(frame * 16);
+      }
+    });
+
+    expect(track.scrollLeft).toBeGreaterThan(934);
+    expect(document.querySelector(".confidence-progress__fill")).not.toHaveStyle({ width: "0%" });
+    expect(carousel).toHaveAttribute("data-active-step", "1");
+  });
+
+  it("loops the How It Works drift at a matching visual position instead of racing back to the start", () => {
+    const animationFrame = mockAnimationFrame();
+    render(<HomePage />);
+
+    const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
+    setCardMetrics(track);
+    track.scrollLeft = 1799;
+
+    act(() => {
+      animationFrame.runNextFrame(0);
+      animationFrame.runNextFrame(80);
+    });
+
+    expect(track.scrollLeft).toBeGreaterThan(899);
+    expect(track.scrollLeft).toBeLessThan(910);
+  });
+
+  it("remaps manual scrolling at the loop edge into the matching middle card set", () => {
+    render(<HomePage />);
+
+    const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
+    const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
+    setCardMetrics(track);
+    track.scrollLeft = 1805;
+
+    act(() => {
+      track.dispatchEvent(new Event("scroll", { bubbles: true }));
+    });
+
+    expect(track.scrollLeft).toBe(905);
+    expect(carousel).toHaveAttribute("data-active-step", "1");
+    expect([...document.querySelectorAll<HTMLElement>(".confidence-progress__fill")].map((pill) => pill.style.width)).toEqual([
+      "1.6666666666666667%",
+      "0%",
+      "0%"
+    ]);
+  });
+
+  it("keeps the card lane free while shoppers drag, then settles after release", () => {
+    vi.useFakeTimers();
+    mockAnimationFrame();
+    render(<HomePage />);
+
+    const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
+    const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
+    setCardMetrics(track);
+    const scrollTo = vi.fn(({ left }: ScrollToOptions) => {
+      track.scrollLeft = Number(left);
+      track.dispatchEvent(new Event("scroll", { bubbles: true }));
+    });
+    Object.defineProperty(track, "scrollTo", { configurable: true, value: scrollTo });
+    const dispatchPointer = (type: string, clientX: number) => {
+      const event = new Event(type, { bubbles: true, cancelable: true });
+      Object.defineProperty(event, "clientX", { value: clientX });
+      Object.defineProperty(event, "pointerId", { value: 1 });
+      track.dispatchEvent(event);
+    };
+
+    act(() => {
+      dispatchPointer("pointerdown", 200);
+    });
+
+    expect(carousel).toHaveClass("confidence-carousel--interacting");
+    expect(carousel).toHaveClass("confidence-carousel--auto-paused");
+
+    act(() => {
+      dispatchPointer("pointermove", 40);
+    });
+    expect(track.scrollLeft).toBeGreaterThan(300);
+
+    act(() => {
+      dispatchPointer("pointerup", 40);
+    });
+    expect(carousel).not.toHaveClass("confidence-carousel--interacting");
+    expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ behavior: "smooth", left: 1200 }));
+    expect(carousel).toHaveAttribute("data-active-step", "2");
+
+    act(() => {
+      vi.advanceTimersByTime(2999);
+    });
+    expect(carousel).toHaveClass("confidence-carousel--auto-paused");
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(carousel).not.toHaveClass("confidence-carousel--auto-paused");
+  });
+
+  it("disables continuous drift for reduced-motion shoppers", () => {
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: vi.fn((query: string) => ({
+        addEventListener: vi.fn(),
+        addListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+        matches: query === "(prefers-reduced-motion: reduce)",
+        media: query,
+        onchange: null,
+        removeEventListener: vi.fn(),
+        removeListener: vi.fn()
+      }))
+    });
+    render(<HomePage />);
+
+    expect(document.querySelector(".confidence-carousel")).not.toHaveClass("confidence-carousel--drifting");
+  });
+
+  it("does not expose the How It Works carousel as an arrow-key region", () => {
+    render(<HomePage />);
+
+    const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
+    expect(carousel).not.toHaveAttribute("tabindex");
+
     act(() => {
       carousel.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowRight" }));
     });
 
-    expect(carousel).toHaveAttribute("data-active-step", "02");
-
-    act(() => {
-      vi.advanceTimersByTime(10400);
-    });
-
-    expect(carousel).toHaveAttribute("data-active-step", "02");
+    expect(carousel).toHaveAttribute("data-active-step", "1");
+    expect(carousel).not.toHaveClass("confidence-carousel--paused");
   });
 
-  it("renders equal-size carousel cards with a cloned first card for the soft loop", () => {
-    vi.useFakeTimers();
+  it("updates the active How It Works card from horizontal scroll position", () => {
     render(<HomePage />);
 
-    expect(document.querySelectorAll(".confidence-card")).toHaveLength(5);
-    expect(document.querySelectorAll(".confidence-card--loop-clone")).toHaveLength(2);
-    expect(document.querySelectorAll(".confidence-card__visual-frame")).toHaveLength(5);
-    expect(document.querySelector(".confidence-card__tray")).toBeInTheDocument();
-    expect(document.querySelector(".confidence-card__glue")).toBeInTheDocument();
-    expect(document.querySelector(".confidence-card__tabs")).toBeInTheDocument();
-    expect(document.querySelector(".confidence-card__hand")).toBeInTheDocument();
+    const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
+    const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
+    const firstCard = document.querySelector(".confidence-card") as HTMLElement;
+    expect(carousel).toBeInTheDocument();
+    expect(track).toBeInTheDocument();
+    expect(firstCard).toBeInTheDocument();
+    setCardMetrics(track);
+    track.scrollLeft = 1200;
+
+    act(() => {
+      track.dispatchEvent(new Event("scroll", { bubbles: true }));
+    });
+
+    expect(carousel).toHaveAttribute("data-active-step", "2");
+    expect([...document.querySelectorAll<HTMLElement>(".confidence-progress__fill")].map((pill) => pill.style.width)).toEqual([
+      "100%",
+      "0%",
+      "0%"
+    ]);
+  });
+
+  it("renders repeated loop cards so the active How It Works card has both side previews", () => {
+    render(<HomePage />);
+
+    const cards = [...document.querySelectorAll(".confidence-card")];
+    expect(cards).toHaveLength(9);
+    expect(cards.map((card) => card.getAttribute("data-step-index"))).toEqual(["0", "1", "2", "0", "1", "2", "0", "1", "2"]);
+    expect(document.querySelectorAll(".confidence-card--loop-buffer")).toHaveLength(6);
+    expect(document.querySelectorAll(".confidence-card--repeat")).toHaveLength(0);
+    expect(cards.map((card) => card.textContent?.trim())).toEqual(["", "", "", "", "", "", "", "", ""]);
+    expect(document.querySelectorAll(".confidence-card--loop-clone")).toHaveLength(0);
+    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(0);
+    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
+    expect(screen.queryByLabelText("Minimal nail tips arranged in a product tray")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Minimal nail glue, adhesive tabs, and cuticle stick")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Minimal hand with finished press-on nails")).not.toBeInTheDocument();
   });
 
   it("renders the FAQ help strip, accordion, and contact CTA", async () => {

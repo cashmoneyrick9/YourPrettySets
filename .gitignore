@@ -24,6 +24,7 @@ pnpm-debug.log*
 .vscode/
 .idea/
 .codex/
+.claude/
 
 # Test and cache output
 coverage/
