@@ -312,6 +312,8 @@ export function HomePage() {
     const track = event.currentTarget;
     const startX = Number.isFinite(event.clientX) ? event.clientX : 0;
     pauseConfidenceAutoDrift();
+    if (event.pointerType && event.pointerType !== "mouse") return;
+
     stepDragStateRef.current = {
       pointerId: event.pointerId,
       startScrollLeft: stepVirtualScrollLeftRef.current ?? track.scrollLeft,
@@ -337,7 +339,7 @@ export function HomePage() {
 
   const endStepInteraction = (event: ReactPointerEvent<HTMLDivElement>) => {
     const dragState = stepDragStateRef.current;
-    if (dragState && dragState.pointerId !== event.pointerId) return;
+    if (!dragState || dragState.pointerId !== event.pointerId) return;
 
     stepDragStateRef.current = null;
     isStepInteractingRef.current = false;

@@ -125,6 +125,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".confidence-carousel:focus-visible");
     expect(styles).not.toContain(".confidence-card--peek");
     expect(styles).toContain(".confidence-carousel__track");
+    expect(styles).toContain("-webkit-overflow-scrolling: touch;");
     expect(styles).not.toMatch(/\.confidence-carousel__track\s*\{[^}]*scroll-snap-type: x mandatory;/);
     expect(styles).toContain("scroll-snap-type: none;");
     expect(styles).not.toContain(".confidence-carousel--auto-paused .confidence-carousel__track");
@@ -139,7 +140,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("cursor: grab;");
     expect(styles).not.toContain(".confidence-carousel--dragging");
     expect(styles).toContain("cursor: grabbing;");
-    expect(styles).toContain("touch-action: pan-y;");
+    expect(styles).toContain("touch-action: pan-x pan-y;");
     expect(styles).not.toContain("animation: confidence-loop");
     expect(styles).not.toContain(".confidence-carousel--paused .confidence-carousel__track");
     expect(styles).not.toContain("animation-play-state: paused;");

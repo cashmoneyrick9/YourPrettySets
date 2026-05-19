@@ -1152,6 +1152,7 @@ h1 {
 }
 
 .confidence-carousel__track {
+  -webkit-overflow-scrolling: touch;
   cursor: grab;
   display: flex;
   gap: var(--confidence-gap);
@@ -1163,7 +1164,7 @@ h1 {
   scroll-padding-inline: max(32px, calc((100vw - var(--confidence-card-width)) / 2));
   scroll-snap-type: none;
   scrollbar-width: none;
-  touch-action: pan-y;
+  touch-action: pan-x pan-y;
   user-select: none;
   z-index: 1;
 }

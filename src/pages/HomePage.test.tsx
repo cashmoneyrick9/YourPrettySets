@@ -295,6 +295,58 @@ describe("HomePage", () => {
     expect(carousel).not.toHaveClass("confidence-carousel--auto-paused");
   });
 
+  it("lets touch swipes use native horizontal scrolling instead of mouse-style dragging", () => {
+    vi.useFakeTimers();
+    mockAnimationFrame();
+    render(<HomePage />);
+
+    const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
+    const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
+    setCardMetrics(track);
+    const scrollTo = vi.fn();
+    const setPointerCapture = vi.fn();
+    const releasePointerCapture = vi.fn();
+    Object.defineProperty(track, "scrollTo", { configurable: true, value: scrollTo });
+    Object.defineProperty(track, "setPointerCapture", { configurable: true, value: setPointerCapture });
+    Object.defineProperty(track, "releasePointerCapture", { configurable: true, value: releasePointerCapture });
+    const dispatchPointer = (type: string, clientX: number) => {
+      const event = new Event(type, { bubbles: true, cancelable: true });
+      Object.defineProperty(event, "clientX", { value: clientX });
+      Object.defineProperty(event, "pointerId", { value: 1 });
+      Object.defineProperty(event, "pointerType", { value: "touch" });
+      const preventDefault = vi.spyOn(event, "preventDefault");
+      track.dispatchEvent(event);
+      return preventDefault;
+    };
+
+    act(() => {
+      dispatchPointer("pointerdown", 200);
+    });
+
+    expect(carousel).toHaveClass("confidence-carousel--auto-paused");
+    expect(carousel).not.toHaveClass("confidence-carousel--interacting");
+    expect(setPointerCapture).not.toHaveBeenCalled();
+
+    let preventDefault: ReturnType<typeof vi.spyOn>;
+    act(() => {
+      preventDefault = dispatchPointer("pointermove", 40);
+    });
+
+    expect(preventDefault!).not.toHaveBeenCalled();
+    expect(track.scrollLeft).toBe(900);
+
+    act(() => {
+      track.scrollLeft = 1200;
+      track.dispatchEvent(new Event("scroll", { bubbles: true }));
+      dispatchPointer("pointerup", 40);
+    });
+
+    expect(scrollTo).not.toHaveBeenCalled();
+    expect(releasePointerCapture).not.toHaveBeenCalled();
+    expect(carousel).not.toHaveClass("confidence-carousel--interacting");
+    expect(carousel).toHaveAttribute("data-active-step", "2");
+  });
+
   it("settles a drag past slide 3 onto the next physical slide 1 instead of snapping back", () => {
     vi.useFakeTimers();
     mockAnimationFrame();
