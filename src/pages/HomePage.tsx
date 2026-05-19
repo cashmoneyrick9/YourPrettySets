@@ -115,17 +115,6 @@ export function HomePage() {
     return primaryLoopOffset + relativeOffset;
   };
 
-  const syncConfidenceTrackScrollLeft = (track: HTMLElement, scrollLeft: number) => {
-    const cardDistance = getConfidenceCardDistance(track);
-    if (cardDistance <= 0 || !Number.isFinite(scrollLeft)) return track.scrollLeft;
-
-    const normalizedScrollLeft = normalizeConfidenceScrollLeft(scrollLeft, cardDistance);
-    if (Math.abs(track.scrollLeft - normalizedScrollLeft) > 0.5) {
-      track.scrollLeft = normalizedScrollLeft;
-    }
-    return normalizedScrollLeft;
-  };
-
   const updateActiveConfidenceStepFromTrack = (track: HTMLElement, scrollLeft = track.scrollLeft) => {
     const cardDistance = getConfidenceCardDistance(track);
     const loopDistance = cardDistance * confidenceSteps.length;
@@ -154,22 +143,27 @@ export function HomePage() {
     const targetCard = cards.find(
       (card) => card.dataset.stepIndex === String(stepIndex) && !card.classList.contains("confidence-card--loop-buffer")
     );
+    if (!track || !targetCard) return;
 
-    if (targetCard?.scrollIntoView) {
-      targetCard.scrollIntoView({
-        behavior,
-        block: "nearest",
-        inline: "center"
-      });
-      return;
-    }
+    const targetIndex = cards.indexOf(targetCard);
+    const cardDistance = getConfidenceCardDistance(track);
+    if (targetIndex < 0 || cardDistance <= 0) return;
 
-    const targetIndex = cards.indexOf(targetCard as HTMLElement);
-    const cardWidth = track ? getConfidenceCardDistance(track) : 0;
-    if (track && targetIndex >= 0 && cardWidth > 0) {
-      track.scrollLeft = targetIndex * cardWidth;
-      stepVirtualScrollLeftRef.current = track.scrollLeft;
+    const centerOffset = (track.clientWidth - targetCard.offsetWidth) / 2;
+    const measuredScrollLeft = targetCard.offsetLeft - centerOffset;
+    const fallbackScrollLeft = targetIndex * cardDistance;
+    const targetScrollLeft =
+      Number.isFinite(measuredScrollLeft) && (targetCard.offsetLeft > 0 || track.clientWidth > 0)
+        ? measuredScrollLeft
+        : fallbackScrollLeft;
+
+    if (typeof track.scrollTo === "function") {
+      track.scrollTo({ behavior, left: Math.max(0, targetScrollLeft) });
+    } else {
+      track.scrollLeft = Math.max(0, targetScrollLeft);
     }
+    stepVirtualScrollLeftRef.current = track.scrollLeft;
+    updateActiveConfidenceStepFromTrack(track);
   };
 
   const pauseConfidenceAutoDrift = () => {
@@ -193,14 +187,10 @@ export function HomePage() {
     if (cardDistance <= 0) return;
 
     const sourceScrollLeft = stepVirtualScrollLeftRef.current ?? track.scrollLeft;
-    const normalizedScrollLeft = normalizeConfidenceScrollLeft(sourceScrollLeft, cardDistance);
-    const primaryLoopOffset = cardDistance * confidenceSteps.length * confidencePrimaryLoopIndex;
-    const relativeOffset = normalizedScrollLeft - primaryLoopOffset;
-    const roundedStep = Math.round(relativeOffset / cardDistance);
-    if (!Number.isFinite(roundedStep)) return;
+    const roundedCard = Math.round(sourceScrollLeft / cardDistance);
+    if (!Number.isFinite(roundedCard)) return;
 
-    const targetStepIndex = ((roundedStep % confidenceSteps.length) + confidenceSteps.length) % confidenceSteps.length;
-    const targetScrollLeft = primaryLoopOffset + targetStepIndex * cardDistance;
+    const targetScrollLeft = Math.max(0, roundedCard * cardDistance);
 
     stepVirtualScrollLeftRef.current = targetScrollLeft;
     if (typeof track.scrollTo === "function") {
@@ -312,11 +302,10 @@ export function HomePage() {
 
   const handleStepScroll = (event: UIEvent<HTMLDivElement>) => {
     const currentScrollLeft = event.currentTarget.scrollLeft;
-    const scrollLeft = syncConfidenceTrackScrollLeft(event.currentTarget, currentScrollLeft);
     if (isStepAutoPausedRef.current || isStepInteractingRef.current) {
-      stepVirtualScrollLeftRef.current = scrollLeft;
+      stepVirtualScrollLeftRef.current = currentScrollLeft;
     }
-    updateActiveConfidenceStepFromTrack(event.currentTarget, scrollLeft);
+    updateActiveConfidenceStepFromTrack(event.currentTarget, currentScrollLeft);
   };
 
   const handleStepPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -339,7 +328,8 @@ export function HomePage() {
 
     const currentX = Number.isFinite(event.clientX) ? event.clientX : dragState.startX;
     const nextScrollLeft = dragState.startScrollLeft - (currentX - dragState.startX);
-    const scrollLeft = syncConfidenceTrackScrollLeft(event.currentTarget, nextScrollLeft);
+    event.currentTarget.scrollLeft = nextScrollLeft;
+    const scrollLeft = event.currentTarget.scrollLeft;
     stepVirtualScrollLeftRef.current = scrollLeft;
     updateActiveConfidenceStepFromTrack(event.currentTarget, scrollLeft);
     event.preventDefault();
@@ -399,7 +389,7 @@ export function HomePage() {
           <h1>
             Ready-to-wear sets for <em className="hero-copy__accent">pretty plans</em>
           </h1>
-          <p>Handmade press-on sets for everyday style, special plans, and salon-looking moments at home.</p>
+          <p>Salon quality press-ons that are easy, affordable, and made to last.</p>
           <a className="primary-button" href="#shop-collections">
             Shop sets
           </a>

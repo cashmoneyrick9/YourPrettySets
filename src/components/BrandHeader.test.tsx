@@ -22,10 +22,7 @@ describe("BrandHeader", () => {
       "aria-expanded",
       "false"
     );
-    expect(screen.getByRole("link", { name: "Shop" })).toHaveAttribute(
-      "href",
-      "#shop-collections"
-    );
+    expect(screen.queryByRole("link", { name: "Shop" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "View bag" })).toHaveAttribute("href", "#faq");
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
   });

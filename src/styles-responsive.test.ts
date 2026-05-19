@@ -28,6 +28,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--color-sage-accent: #adba85;");
     expect(styles).toContain("--font-cta:");
     expect(styles).toContain("--hero-overlay-bottom");
+    expect(styles).toContain("--hero-button-offset: 4px;");
+    expect(styles).toContain("--hero-copy-gap: 20px;");
+    expect(styles).toContain("--hero-copy-top: clamp(58px, 8vh, 84px);");
+    expect(styles).toContain("--hero-mobile-min-height: clamp(520px, 68vh, 640px);");
     expect(styles).toContain(".brand-header--at-top");
     expect(styles).toContain(".brand-header--scrolled");
     expect(styles).toContain("border-radius: 8px;");
@@ -36,18 +40,18 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("background-image: url(\"/assets/hero-s3-summer.png\")");
     expect(styles).toContain(".hero-photo__hand {\n  display: none;");
     expect(styles).toContain(".hero-section::after");
-    expect(styles).toContain("min-height: clamp(520px, 68vh, 640px)");
+    expect(styles).toContain("min-height: var(--hero-mobile-min-height)");
+    expect(styles).toContain("min-height: var(--hero-mobile-min-height, clamp(520px, 68vh, 640px))");
     expect(styles).toContain("scroll-padding-top: 84px");
     expect(styles).toContain("justify-self: center");
     expect(styles).toContain("max-height: min(650px, calc(94vh - 108px))");
     expect(styles).toContain("width: min(100%, 520px)");
-    expect(styles).toContain(".hero-copy h1::after");
-    expect(styles).toContain("linear-gradient(45deg");
-    expect(styles).toContain("86px 1px");
+    expect(styles).not.toContain(".hero-copy h1::after");
+    expect(styles).not.toContain("86px 1px");
     expect(styles).toContain(".hero-section {\n  display: grid;");
     expect(styles).toContain("padding: 0;");
     expect(styles).toContain("border-radius: 0;");
-    expect(styles).toContain("grid-template-columns: 38px minmax(0, 1fr) auto 38px;");
+    expect(styles).toContain("grid-template-columns: 40px minmax(0, 1fr) 40px;");
     expect(styles).toContain("grid-column: 2;");
     expect(styles).toContain("font-size: 21px;");
     expect(styles).toContain("font-family: var(--font-cta);");
@@ -79,10 +83,15 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("z-index: 1");
     expect(styles).toContain(".confidence-carousel");
     expect(styles).not.toContain(".confidence-carousel__button");
-    expect(styles).toContain("padding: 0 clamp(24px, 6vw, 42px) clamp(78px, 12vw, 104px)");
+    expect(styles).toContain("align-self: start;");
+    expect(styles).toContain("padding: var(--hero-copy-top) clamp(24px, 6vw, 42px) 0;");
+    expect(styles).toContain("gap: var(--hero-copy-gap);");
+    expect(styles).toContain("margin-top: var(--hero-button-offset);");
+    expect(styles).toContain("--hero-mobile-min-height: 540px;");
     expect(styles).toContain(".confidence-section {\n  background:");
     expect(styles).toContain("margin-top: 0;");
-    expect(styles).toContain("padding: 22px 0 0;");
+    expect(styles).toContain("padding: 26px 0 0;");
+    expect(styles).toContain("padding: 28px 0 0;");
     expect(styles).not.toContain("margin-top: clamp(-32px, -5vw, -18px)");
     expect(styles).not.toContain("margin-top: -22px");
     expect(styles).not.toContain("margin-top: -18px");
@@ -106,9 +115,11 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".confidence-carousel__viewport");
     expect(styles).toContain(".confidence-carousel__viewport::after");
     expect(styles).toContain("height: 52px;");
+    expect(styles).toContain("height: 34px;");
     expect(styles).toContain("rgba(251, 246, 238, 0.75) 55%");
     expect(styles).toContain(".confidence-carousel__controls");
     expect(styles).toContain("padding: 8px 0 34px;");
+    expect(styles).toContain("padding: 2px 0 24px;");
     expect(styles).toContain("0 10px 20px rgba(92, 65, 50, 0.055),\n    0 3px 8px rgba(92, 65, 50, 0.035)");
     expect(styles).not.toContain("mask-image: linear-gradient(");
     expect(styles).toContain(".confidence-carousel:focus-visible");
@@ -121,6 +132,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
     expect(styles).toContain("scroll-padding-inline");
     expect(styles).toContain("padding: 10px max(32px, calc((100vw - var(--confidence-card-width)) / 2)) 52px;");
+    expect(styles).toContain("padding: 6px max(30px, calc((100vw - var(--confidence-card-width)) / 2)) 34px;");
     expect(styles).not.toContain("--confidence-card-height");
     expect(styles).not.toContain(".confidence-carousel[data-track-index=\"1\"] .confidence-carousel__track");
     expect(styles).not.toContain("margin-left: calc(-100% + var(--confidence-peek) - var(--confidence-gap))");
@@ -136,6 +148,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("overflow: visible;");
     expect(styles).toContain(".collection-card__visual");
     expect(styles).toContain("padding: 14px 14px 22px;");
+    expect(styles).toContain("--confidence-card-width: min(80vw, 306px);");
+    expect(styles).toContain("--confidence-card-width: min(78vw, 282px);");
+    expect(styles).toContain("min-height: 154px;");
+    expect(styles).toContain("min-height: 148px;");
     expect(styles).not.toContain(".confidence-card__visual");
     expect(styles).not.toContain(".confidence-card__visual--wear");
     expect(styles).not.toContain(".confidence-card__visual--hand");
@@ -159,7 +175,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".review-card--peek {\n    display: none;");
     expect(styles).toContain("position: static;");
     expect(styles).toContain("font-size: 1.8rem");
-    expect(styles).toContain("padding: 20px 0 0");
+    expect(styles).toContain("padding: 28px 0 0");
   });
 
   it("does not force tiny mobile viewports wider than the screen", () => {

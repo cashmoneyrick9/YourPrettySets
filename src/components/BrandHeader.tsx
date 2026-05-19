@@ -62,9 +62,6 @@ export function BrandHeader() {
           >
             {isMenuOpen ? <X aria-hidden="true" size={18} /> : <Menu aria-hidden="true" size={18} />}
           </button>
-          <a className="brand-header__shop-link" href="#shop-collections">
-            Shop
-          </a>
           <a className="brand-header__icon-button" href="#faq" aria-label="View bag">
             <ShoppingBag aria-hidden="true" size={18} />
           </a>

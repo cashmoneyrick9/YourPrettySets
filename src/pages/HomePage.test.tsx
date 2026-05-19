@@ -6,6 +6,8 @@ import { HomePage } from "./HomePage";
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
+  vi.restoreAllMocks();
+  Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView");
 });
 
 describe("HomePage", () => {
@@ -44,6 +46,25 @@ describe("HomePage", () => {
       }
     });
   };
+
+  it("does not scroll the page while centering the initial How It Works card", () => {
+    const animationFrame = mockAnimationFrame();
+    const scrollIntoViewSpy = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
+      configurable: true,
+      value: scrollIntoViewSpy
+    });
+    render(<HomePage />);
+
+    const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
+    expect(track).toBeInTheDocument();
+
+    act(() => {
+      animationFrame.runNextFrame(0);
+    });
+
+    expect(scrollIntoViewSpy).not.toHaveBeenCalled();
+  });
 
   it("renders the mobile shopping path before product shopping", () => {
     render(<HomePage />);
@@ -203,7 +224,7 @@ describe("HomePage", () => {
     expect(track.scrollLeft).toBeLessThan(910);
   });
 
-  it("remaps manual scrolling at the loop edge into the matching middle card set", () => {
+  it("lets manual scrolling pass from slide 3 into the next slide 1 while progress resets", () => {
     render(<HomePage />);
 
     const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
@@ -215,7 +236,7 @@ describe("HomePage", () => {
       track.dispatchEvent(new Event("scroll", { bubbles: true }));
     });
 
-    expect(track.scrollLeft).toBe(905);
+    expect(track.scrollLeft).toBe(1805);
     expect(carousel).toHaveAttribute("data-active-step", "1");
     expect([...document.querySelectorAll<HTMLElement>(".confidence-progress__fill")].map((pill) => pill.style.width)).toEqual([
       "1.6666666666666667%",
@@ -272,6 +293,42 @@ describe("HomePage", () => {
       vi.advanceTimersByTime(1);
     });
     expect(carousel).not.toHaveClass("confidence-carousel--auto-paused");
+  });
+
+  it("settles a drag past slide 3 onto the next physical slide 1 instead of snapping back", () => {
+    vi.useFakeTimers();
+    mockAnimationFrame();
+    render(<HomePage />);
+
+    const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
+    const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
+    setCardMetrics(track);
+    track.scrollLeft = 1500;
+    const scrollTo = vi.fn(({ left }: ScrollToOptions) => {
+      track.scrollLeft = Number(left);
+      track.dispatchEvent(new Event("scroll", { bubbles: true }));
+    });
+    Object.defineProperty(track, "scrollTo", { configurable: true, value: scrollTo });
+    const dispatchPointer = (type: string, clientX: number) => {
+      const event = new Event(type, { bubbles: true, cancelable: true });
+      Object.defineProperty(event, "clientX", { value: clientX });
+      Object.defineProperty(event, "pointerId", { value: 1 });
+      track.dispatchEvent(event);
+    };
+
+    act(() => {
+      dispatchPointer("pointerdown", 200);
+      dispatchPointer("pointermove", -120);
+    });
+
+    expect(track.scrollLeft).toBe(1820);
+
+    act(() => {
+      dispatchPointer("pointerup", -120);
+    });
+
+    expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ behavior: "smooth", left: 1800 }));
+    expect(carousel).toHaveAttribute("data-active-step", "1");
   });
 
   it("disables continuous drift for reduced-motion shoppers", () => {

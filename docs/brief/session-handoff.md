@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-18
+Last updated: 2026-05-19
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -26,8 +26,12 @@ Current CEO direction:
 - Latest CEO feedback on 2026-05-18 asked to remove all content inside the How It Works cards. The live cards are now intentionally blank shells; keep them blank until the CEO chooses what belongs inside them.
 - Latest mobile gradient fix on 2026-05-18 keeps the fade attached to the outer hero container, but overrides the mobile fade to a 105px layer with gradual `#fbf6ee` opacity stops and no negative How It Works overlap.
 - Latest mobile carousel shadow/control fix on 2026-05-18 separates the card lane and controls area: the lane has 52px bottom breathing room, a 52px cream fade at the bottom, and the progress/swipe hint sit on their own solid `#fbf6ee` controls block.
-- Latest carousel behavior decision on 2026-05-18: build slow continuous drift directly on `main`, not as an experiment branch. The carousel now drifts at a more visibly moving display-shelf speed, uses three repeated card sets so loop resets happen at a matching visual position, remaps manual/native scrolling at the loop edge into the matching middle card set, temporarily pauses for 3 seconds after shopper interaction, keeps the lane free while dragging, gently settles to the nearest card on release, and disables drift for `prefers-reduced-motion`.
+- Latest carousel behavior decision on 2026-05-19: keep slow continuous drift directly on `main`, but manual shopper movement must own the physical card lane. The carousel still uses three repeated card sets and drift can reset at a matching visual position, but native/manual scrolling and dragging should pass from slide 3 into the next physical slide 1 without snapping back into the middle set. The progress pills are display state only: they derive from normalized scroll position and reset visually, but they do not drive or remap the carousel lane. Shopper interaction still pauses drift for 3 seconds, drag release settles to the nearest physical card, and `prefers-reduced-motion` disables drift.
+- Latest page-load fix on 2026-05-19 keeps the Home page loading at the very top. The How It Works carousel now centers its initial card by setting the horizontal track `scrollLeft` directly instead of calling `scrollIntoView()`, because `scrollIntoView()` could move the whole document down to the carousel on load.
 - Latest mobile safe-area/header pivot on 2026-05-18 keeps `viewport-fit=cover` and body-level header state classes, but no longer lets the mobile header float transparently over the hero. Mobile now uses a fixed cream top nav bar that owns the safe-area/status space, keeps square top corners, stays cream after scroll, and offsets the hero image below the bar so there is no nav/hero overlap. Follow-up tightened the mobile top-bar padding so the notch safe area does not create a double-tall-feeling header, then matched the hero offset to the real header height so no cream sliver shows between the nav and hero.
+- Latest mobile header layout tweak on 2026-05-18 removes the separate mobile `Shop` pill from the top bar and balances the bar as menu / centered brand / bag. Shop access still lives in desktop navigation, the mobile menu, and the hero `Shop sets` CTA.
+- Latest hero cleanup on 2026-05-18 removes the small berry divider between the hero headline and `Shop sets` CTA so the CTA sits directly under the headline.
+- Latest mobile hero copy-position cleanup on 2026-05-18 keeps the React markup unchanged and uses mobile CSS variables for `--hero-mobile-min-height`, `--hero-copy-top`, `--hero-copy-gap`, and `--hero-button-offset`. The current mobile target moves the headline/CTA block higher into the upper-left/mid-left hero area without changing the nav, image, copy, button styling, or hero/How-It-Works handoff.
 - Implementation note: the drift keeps a virtual scroll position so sub-pixel frame movement accumulates across whole-pixel browser `scrollLeft` updates; the three progress pills are tied to normalized carousel position, not hidden loop-card state.
 - The old repeating `01 / 02 / 03 / 01 / 02 / 03` strip, transform-based auto-scroll behavior, and text-only fast cleanup baseline are superseded.
 - Do not restore the prior card copy or code-native line visuals without CEO approval.
@@ -54,7 +58,7 @@ Implemented:
   - stronger contrast for key text/buttons
   - keyboard-focusable product carousel regions
 - Compact mobile header:
-  - brand text, menu, `Shop`, and bag stay usable when the viewport is narrow
+  - brand text, menu, and bag stay usable when the viewport is narrow
   - full desktop nav is hidden on mobile
   - mobile menu opens/closes through a simple panel
 - Regression test for 320px mobile CSS rules.
@@ -68,7 +72,7 @@ Implemented:
   - CTA typography pass gives the header `Shop` pill and hero `Shop sets` button a softer rounded sans stack instead of the heavier generic app-button text
   - scrolled-header correction rounds the sage bar, restores berry brand text, and keeps menu/bag as outline-only icons while `Shop` stays in a white pill
   - safe-area/header pivot makes mobile use a real cream top app bar with matching safe-area paint; the hero begins below the nav instead of sitting behind it, the mobile scrolled state no longer becomes a floating sage rounded card, and the final follow-up tightens the top-bar padding around the notch area and removes the offset mismatch that exposed a thin cream sliver above the hero image
-  - hero divider refinement replaces the heavy center-dot divider with a thinner mockup-style split line and tiny sparkle
+  - hero divider was later removed so the CTA sits directly under the headline
   - slim confidence strip follows the hero
   - How It Works carousel UI pass overlaps the hero, uses a warm-white card with a thin berry outline, places arrows just outside the card edges, gives each slide its own code-native visual, and has a softened hero/card transition after several visual review passes
   - latest How It Works UI pass replaces the continuous text-only strip with a polished luxury clean-beauty card carousel: centered editorial heading, swipeable mobile cards with side peeks, three dynamic progress pills, swipe hint, and desktop three-column layout
@@ -88,12 +92,12 @@ Implemented:
 
 Latest known verification before handoff:
 
-- `npm test`: 10 files, 33 tests passed.
+- `npm test`: 10 files, 37 tests passed.
 - `npm run build`: passed.
-- `npm audit --audit-level=moderate`: 0 vulnerabilities after `npm audit fix` updated the transitive dev dependency `ws` from `8.20.0` to `8.20.1`.
+- `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
-- Browser/dev server check at `http://localhost:5173/#home`: localhost responded. Automated DOM tests confirm the How It Works cards render as blank shells with no visible card copy or code-native visual nodes, continuous drift advances the card lane at a visible 36px/second pace, auto and manual loop-edge movement remap to matching visual positions instead of racing back to the start, manual drag keeps snapping off while interacting, release settles to the nearest card, interaction pauses drift for 3 seconds, the old dot controls are replaced by three dynamic progress pills, and reduced-motion users do not get the drifting class. In-app browser verification confirmed 9 repeated carousel cards, 6 loop-buffer cards, 3 progress fills, no dot controls, `scroll-snap-type: none`, `touch-action: pan-y`, and active pill fill advancing during drift.
-- The browser was last left at `http://localhost:5173/#home`.
+- Browser/dev server check: `http://localhost:5173/` responded. Automated DOM tests confirm the How It Works cards render as blank shells with no visible card copy or code-native visual nodes, continuous drift advances the card lane at a visible 36px/second pace, passive drift still resets at a matching visual loop point, manual/native scroll from slide 3 into the next physical slide 1 keeps the forward scroll position while progress resets, drag past slide 3 settles onto the next physical slide 1 instead of snapping back, touch/focus interaction pauses drift for 3 seconds, the old dot controls are replaced by three dynamic progress pills, reduced-motion users do not get the drifting class, and initial carousel centering does not call page-scrolling APIs. In-app browser verification at a 390px mobile viewport confirmed root Home load stays at `scrollY: 0`, with the hero at top and How It Works below the fold, while the carousel still initializes horizontally.
+- The in-app browser viewport override was reset after verification.
 - Git working tree has the known unrelated untracked `.claude/` directory.
 
 ## Important Commits
@@ -160,7 +164,7 @@ Confirmed direction:
 
 - Use a compact mobile ecommerce header.
 - Keep `YourPrettySets` visible as a text brand mark for now.
-- Show compact mobile actions for menu, `Shop`, and bag.
+- Show compact mobile actions for menu and bag; shopping access stays in the menu, desktop nav, and page CTAs.
 - Put secondary links inside a simple menu panel.
 - Do not redesign the logo yet.
 - Do not use overly decorative boutique details.
@@ -233,7 +237,7 @@ Latest How It Works decision:
 - The latest 2026-05-18 card-content cleanup keeps the carousel shells, peeks, progress pills, and hint, but removes every visible element inside each card.
 - The latest mobile gradient cleanup changes only the mobile hero fade and section spacing: the fade is 105px, opacity reaches the section-start cream `#fbf6ee` at the bottom, and mobile How It Works uses `margin-top: 0` with `padding: 22px 0 0` or `20px 0 0` at the smallest breakpoint; desktop/tablet layout and section order are unchanged.
 - The latest mobile carousel controls cleanup changes only the shadow/control handoff: card-lane bottom padding is 52px, a 52px `#fbf6ee` fade dissolves the shadow before the controls, and the controls use `padding: 8px 0 34px` on a solid cream background.
-- The latest carousel behavior pass adds slow continuous drift to the blank How It Works card lane; passive motion does not snap, drag/native scroll at the loop edge remaps into the matching middle card set, release settles to the nearest card, and touch/focus interaction pauses drift for 3 seconds.
+- The latest carousel behavior pass adds slow continuous drift to the blank How It Works card lane; passive drift can reset at the visual loop point, but drag/native scroll across slide 3 into slide 1 does not remap the physical lane. Release settles to the nearest physical card, progress pills reset from normalized position, and touch/focus interaction pauses drift for 3 seconds.
 - Desktop/tablet now uses the same card system as a clean three-column layout.
 - Current step cards are blank. The previous step copy was removed from the live section.
 - The section styling intentionally shifts toward warm ivory, muted taupe, nude blush, soft brown, champagne beige, and charcoal with editorial serif headings.
@@ -337,7 +341,7 @@ Implemented scope:
 - Replaced the code-native hero hand illustration with the image-backed S3 hero treatment.
 - Added CSS protections for fixed-header anchor jumps and tablet/desktop hero height.
 - Added regression coverage for header scroll state and S3 header/hero CSS rules.
-- Follow-up fidelity corrections made the mobile hero image full-bleed behind the transparent header, refined the temporary brand mark and accent values, moved the green accent to `#adba85`, protected the larger mobile brand mark from the `Shop` pill, softened CTA typography, rounded the scrolled sage header, kept scrolled menu/bag icons outline-only, and replaced the heavy divider with a thin split line and tiny sparkle.
+- Follow-up fidelity corrections made the mobile hero image full-bleed behind the transparent header, refined the temporary brand mark and accent values, moved the green accent to `#adba85`, protected the larger mobile brand mark from the earlier `Shop` pill, softened CTA typography, rounded the scrolled sage header, kept scrolled menu/bag icons outline-only, and later removed the hero divider entirely.
 
 Current CEO review state:
 
