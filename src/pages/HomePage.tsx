@@ -115,6 +115,18 @@ export function HomePage() {
     return primaryLoopOffset + relativeOffset;
   };
 
+  const remapConfidenceScrollLeftFromOuterBuffer = (scrollLeft: number, cardDistance: number) => {
+    const loopDistance = cardDistance * confidenceSteps.length;
+    if (cardDistance <= 0 || loopDistance <= 0 || !Number.isFinite(scrollLeft)) return scrollLeft;
+
+    const totalLoopDistance = loopDistance * 3;
+    if (scrollLeft <= cardDistance || scrollLeft >= totalLoopDistance - cardDistance) {
+      return normalizeConfidenceScrollLeft(scrollLeft, cardDistance);
+    }
+
+    return scrollLeft;
+  };
+
   const updateActiveConfidenceStepFromTrack = (track: HTMLElement, scrollLeft = track.scrollLeft) => {
     const cardDistance = getConfidenceCardDistance(track);
     const loopDistance = cardDistance * confidenceSteps.length;
@@ -301,11 +313,17 @@ export function HomePage() {
   }, []);
 
   const handleStepScroll = (event: UIEvent<HTMLDivElement>) => {
-    const currentScrollLeft = event.currentTarget.scrollLeft;
-    if (isStepAutoPausedRef.current || isStepInteractingRef.current) {
-      stepVirtualScrollLeftRef.current = currentScrollLeft;
+    const track = event.currentTarget;
+    const cardDistance = getConfidenceCardDistance(track);
+    const currentScrollLeft = track.scrollLeft;
+    const scrollLeft = remapConfidenceScrollLeftFromOuterBuffer(currentScrollLeft, cardDistance);
+    if (Math.abs(scrollLeft - currentScrollLeft) > 0.5) {
+      track.scrollLeft = scrollLeft;
     }
-    updateActiveConfidenceStepFromTrack(event.currentTarget, currentScrollLeft);
+    if (isStepAutoPausedRef.current || isStepInteractingRef.current) {
+      stepVirtualScrollLeftRef.current = scrollLeft;
+    }
+    updateActiveConfidenceStepFromTrack(track, scrollLeft);
   };
 
   const handleStepPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -331,7 +349,11 @@ export function HomePage() {
     const currentX = Number.isFinite(event.clientX) ? event.clientX : dragState.startX;
     const nextScrollLeft = dragState.startScrollLeft - (currentX - dragState.startX);
     event.currentTarget.scrollLeft = nextScrollLeft;
-    const scrollLeft = event.currentTarget.scrollLeft;
+    const cardDistance = getConfidenceCardDistance(event.currentTarget);
+    const scrollLeft = remapConfidenceScrollLeftFromOuterBuffer(event.currentTarget.scrollLeft, cardDistance);
+    if (Math.abs(scrollLeft - event.currentTarget.scrollLeft) > 0.5) {
+      event.currentTarget.scrollLeft = scrollLeft;
+    }
     stepVirtualScrollLeftRef.current = scrollLeft;
     updateActiveConfidenceStepFromTrack(event.currentTarget, scrollLeft);
     event.preventDefault();

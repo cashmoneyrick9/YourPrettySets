@@ -245,6 +245,31 @@ describe("HomePage", () => {
     ]);
   });
 
+  it("re-centers native scrolling from the outer buffer before the carousel reaches a hard end", () => {
+    render(<HomePage />);
+
+    const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
+    const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
+    setCardMetrics(track);
+    track.scrollLeft = 2405;
+
+    act(() => {
+      track.dispatchEvent(new Event("scroll", { bubbles: true }));
+    });
+
+    expect(track.scrollLeft).toBe(1505);
+    expect(carousel).toHaveAttribute("data-active-step", "3");
+
+    track.scrollLeft = 295;
+
+    act(() => {
+      track.dispatchEvent(new Event("scroll", { bubbles: true }));
+    });
+
+    expect(track.scrollLeft).toBe(1195);
+    expect(carousel).toHaveAttribute("data-active-step", "2");
+  });
+
   it("keeps the card lane free while shoppers drag, then settles after release", () => {
     vi.useFakeTimers();
     mockAnimationFrame();
