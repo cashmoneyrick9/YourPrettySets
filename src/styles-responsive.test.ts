@@ -2,8 +2,27 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const styles = readFileSync("src/styles.css", "utf-8");
+const indexHtml = readFileSync("index.html", "utf-8");
 
 describe("small mobile responsive CSS", () => {
+  it("uses a fixed mobile top bar with safe-area paint and hero offset", () => {
+    expect(indexHtml).toContain('name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"');
+    expect(styles).toContain("@supports (height: env(safe-area-inset-top))");
+    expect(styles).toContain("--mobile-header-offset: calc(51px + env(safe-area-inset-top, 0px));");
+    expect(styles).toContain("padding: calc(4px + env(safe-area-inset-top, 0px)) 14px 8px;");
+    expect(styles).toContain("body::before");
+    expect(styles).toContain("height: env(safe-area-inset-top)");
+    expect(styles).toContain("body.header-at-top::before");
+    expect(styles).toContain("background: rgba(255, 253, 249, 0.98);");
+    expect(styles).not.toContain("rgba(221, 104, 133, 0.36) 0%");
+    expect(styles).not.toContain("padding-top: max(14px, env(safe-area-inset-top))");
+    expect(styles).toContain("body.header-scrolled::before");
+    expect(styles).toContain(".brand-header--at-top,\n  .brand-header--scrolled");
+    expect(styles).toContain("border-radius: 0;");
+    expect(styles).toContain("padding-top: var(--mobile-header-offset);");
+    expect(styles).toContain("--mobile-header-offset: calc(45px + env(safe-area-inset-top, 0px));");
+  });
+
   it("includes the locked S3 header and hero visual rules", () => {
     expect(styles).toContain("--color-sage-accent");
     expect(styles).toContain("--color-sage-accent: #adba85;");
@@ -30,7 +49,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("border-radius: 0;");
     expect(styles).toContain("grid-template-columns: 38px minmax(0, 1fr) auto 38px;");
     expect(styles).toContain("grid-column: 2;");
-    expect(styles).toContain("font-size: 1.08rem;");
+    expect(styles).toContain("font-size: 21px;");
     expect(styles).toContain("font-family: var(--font-cta);");
     expect(styles).toContain(".brand-header--scrolled .brand-header__icon-button");
     expect(styles).toContain("background: transparent;");

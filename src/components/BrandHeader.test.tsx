@@ -54,6 +54,8 @@ describe("BrandHeader", () => {
 
     expect(header).toHaveClass("brand-header--at-top");
     expect(header).not.toHaveClass("brand-header--scrolled");
+    expect(document.body).toHaveClass("header-at-top");
+    expect(document.body).not.toHaveClass("header-scrolled");
 
     Object.defineProperty(window, "scrollY", {
       configurable: true,
@@ -65,6 +67,8 @@ describe("BrandHeader", () => {
       expect(header).toHaveClass("brand-header--scrolled");
     });
     expect(header).not.toHaveClass("brand-header--at-top");
+    expect(document.body).toHaveClass("header-scrolled");
+    expect(document.body).not.toHaveClass("header-at-top");
 
     Object.defineProperty(window, "scrollY", {
       configurable: true,
@@ -75,5 +79,18 @@ describe("BrandHeader", () => {
     await waitFor(() => {
       expect(header).toHaveClass("brand-header--at-top");
     });
+    expect(document.body).toHaveClass("header-at-top");
+    expect(document.body).not.toHaveClass("header-scrolled");
+  });
+
+  it("cleans up document-level header state classes on unmount", () => {
+    const { unmount } = render(<BrandHeader />);
+
+    expect(document.body).toHaveClass("header-at-top");
+
+    unmount();
+
+    expect(document.body).not.toHaveClass("header-at-top");
+    expect(document.body).not.toHaveClass("header-scrolled");
   });
 });

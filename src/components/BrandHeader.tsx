@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 
 const desktopNavItems = ["Home", "Shop Collections", "How It Works", "FAQ", "Bag"];
 const mobileMenuItems = ["Home", "Shop Collections", "How It Works", "FAQ"];
+const headerAtTopBodyClass = "header-at-top";
+const headerScrolledBodyClass = "header-scrolled";
 
 function hrefFor(item: string) {
   return `#${item.toLowerCase().replace(/\s+/g, "-")}`;
@@ -24,6 +26,15 @@ export function BrandHeader() {
       window.removeEventListener("scroll", syncHeaderState);
     };
   }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle(headerAtTopBodyClass, !isScrolled);
+    document.body.classList.toggle(headerScrolledBodyClass, isScrolled);
+
+    return () => {
+      document.body.classList.remove(headerAtTopBodyClass, headerScrolledBodyClass);
+    };
+  }, [isScrolled]);
 
   return (
     <header className={`brand-header ${isScrolled ? "brand-header--scrolled" : "brand-header--at-top"}`}>
