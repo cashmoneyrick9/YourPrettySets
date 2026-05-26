@@ -72,7 +72,7 @@ describe("HomePage", () => {
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
     const confidence = screen.getByRole("heading", { name: "3 easy steps" });
     const collections = screen.getByRole("heading", { name: "Browse" });
-    const included = screen.getByRole("heading", { name: "Everything ready for your set." });
+    const included = screen.getByRole("heading", { name: "What’s Included" });
 
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "#shop-collections");
@@ -91,7 +91,6 @@ describe("HomePage", () => {
     expect(document.querySelector(".collection-carousel__hint")).toHaveTextContent("Swipe to explore");
     expect(document.querySelector("#shop-more")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Shop more" })).not.toBeInTheDocument();
-    expect(screen.queryByText(/size/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/sizing kit/i)).not.toBeInTheDocument();
 
     expect(hero.compareDocumentPosition(collections) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -107,7 +106,8 @@ describe("HomePage", () => {
     expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "#");
     expect(screen.queryByRole("heading", { name: "Blush Crush" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Soft Serve" })).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".collection-product-card")).toHaveLength(4);
+    expect(document.querySelectorAll(".collection-product-row > .collection-product-card")).toHaveLength(4);
+    expect(document.querySelectorAll(".collection-product-teaser .collection-product-card")).toHaveLength(2);
     expect(document.querySelectorAll(".collection-product-card .product-card")).toHaveLength(0);
     expect(screen.queryByText("1 of 4")).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Shop this set" })).not.toBeInTheDocument();

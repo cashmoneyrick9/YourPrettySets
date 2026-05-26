@@ -40,8 +40,11 @@ describe("CollectionFilters", () => {
     expect(screen.queryByText(/\d+ sets/)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Everyday" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: "Everyday sets" })).toBeInTheDocument();
-    expect(document.querySelectorAll(".collection-product-card")).toHaveLength(4);
-    expect(document.querySelectorAll(".collection-product-card--placeholder")).toHaveLength(0);
+    expect(document.querySelectorAll(".collection-product-row > .collection-product-card")).toHaveLength(4);
+    expect(document.querySelectorAll(".collection-product-row > .collection-product-card--placeholder")).toHaveLength(0);
+    expect(document.querySelectorAll(".collection-product-teaser")).toHaveLength(1);
+    expect(document.querySelectorAll(".collection-product-teaser .collection-product-card")).toHaveLength(2);
+    expect(document.querySelector(".collection-product-teaser")).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "#product-soft-serve");
     expect(screen.queryByRole("heading", { name: "Soft Serve" })).not.toBeInTheDocument();
     expect(screen.queryByText("$20")).not.toBeInTheDocument();
@@ -53,8 +56,9 @@ describe("CollectionFilters", () => {
     expect(screen.getByRole("button", { name: "Bridal" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: "Bridal sets" })).toBeInTheDocument();
     expect(screen.getByText("2 available")).toBeInTheDocument();
-    expect(document.querySelectorAll(".collection-product-card")).toHaveLength(4);
-    expect(document.querySelectorAll(".collection-product-card--placeholder")).toHaveLength(2);
+    expect(document.querySelectorAll(".collection-product-row > .collection-product-card")).toHaveLength(4);
+    expect(document.querySelectorAll(".collection-product-row > .collection-product-card--placeholder")).toHaveLength(2);
+    expect(document.querySelectorAll(".collection-product-teaser .collection-product-card")).toHaveLength(2);
     expect(screen.getByRole("link", { name: "View Something Blue" })).toHaveAttribute("href", "#product-something-blue");
     expect(screen.queryByRole("heading", { name: "Something Blue" })).not.toBeInTheDocument();
     expect(screen.queryByText("$36")).not.toBeInTheDocument();

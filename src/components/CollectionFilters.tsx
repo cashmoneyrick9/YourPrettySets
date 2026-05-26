@@ -275,6 +275,14 @@ export function CollectionFilters() {
             </div>
           ))}
         </div>
+        <div className="collection-product-teaser" aria-hidden="true">
+          <span className="collection-product-card collection-product-teaser__card">
+            <span className="collection-product-card__blank" />
+          </span>
+          <span className="collection-product-card collection-product-teaser__card">
+            <span className="collection-product-card__blank" />
+          </span>
+        </div>
         <a className="collection-products__more" href="#">
           See more
         </a>

@@ -385,6 +385,24 @@ Still open:
 - Final shipping and policy wording.
 - Final mobile menu visual polish.
 
+## Latest Discussion: Barebones Home UI Pass
+
+The latest chat continued the mobile-first barebones Home page review. The CEO requested direct visual edits from the in-app browser rather than a broad redesign.
+
+Implemented scope:
+
+- Made the collection selector feel edge-to-edge on mobile.
+- Removed visible black outlines/circles from the mobile header menu and bag controls in barebones review mode.
+- Tightened and resized the collection product card grid, then added the partial/faded teaser row under the visible product cards to imply a larger shop page.
+- Replaced the old `KitContents` / “What’s Included” treatment with the approved compact black-and-white section: centered header, real kit image, two accordion cards, primary care CTA, and required FAQ link.
+- Added the kit image asset at `public/assets/kit-contents-spread.png` and kept it frameless/larger in the visual area.
+
+Current review state:
+
+- The “What’s Included” structure is now the active section direction, but the CEO is still tuning image scale/spacing.
+- The kit visual is a real PNG asset rather than CSS-built shapes. Future edits should adjust the image/card sizing in `.kit-spread` and `.kit-spread__image` before changing the accordion.
+- The current product grid is intentionally placeholder/blank for layout review; do not treat it as final product photography.
+
 ## Suggested Next Agent Flow
 
 1. Read `docs/brief/README.md`, `docs/brief/brand.md`, `docs/brief/page-home.md`, `docs/brief/open-decisions.md`, and this file.

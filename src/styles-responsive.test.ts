@@ -169,8 +169,24 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-carousel__hint");
     expect(styles).toContain(".collection-products");
     expect(styles).toContain(".collection-product-row");
+    expect(styles).toContain("margin-inline: calc(-1 * clamp(18px, 4vw, 56px));");
+    expect(styles).toContain("max-width: none;");
+    expect(styles).toContain("padding: 2px 18px 12px;");
+    expect(styles).toContain("scroll-padding-inline: 18px;");
     expect(styles).toContain("grid-auto-columns: minmax(132px, 42vw);");
-    expect(styles).toContain("grid-template-columns: repeat(2, minmax(0, 1fr));");
+    expect(styles).toContain("grid-template-columns: repeat(2, 170px);");
+    expect(styles).toContain("column-gap: 20px;");
+    expect(styles).toContain("justify-content: center;");
+    expect(styles).toContain("row-gap: 20px;");
+    expect(styles).toContain("height: 245px;");
+    expect(styles).toContain(".collection-product-teaser");
+    expect(styles).toContain("height: 70px;");
+    expect(styles).toContain(".collection-product-teaser {\n  column-gap: 20px;");
+    expect(styles).toContain("height: 70px;\n  justify-content: center;\n  margin-top: 6px;");
+    expect(styles).toContain("linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 88%)");
+    expect(styles).toContain(".collection-products__more");
+    expect(styles).toContain(".collection-products__more {\n  align-self: center;");
+    expect(styles).toContain("justify-content: center;\n  margin-top: 6px;");
     expect(styles).not.toContain("grid-auto-columns: minmax(148px, 56vw);");
     expect(styles).not.toContain(".confidence-carousel__hint");
     expect(styles).toContain("margin-top: 14px;");
@@ -181,6 +197,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-section {\n    padding-bottom: 24px;");
     expect(styles).toContain(".review-carousel {\n    gap: 8px;");
     expect(styles).toContain(".review-card--peek {\n    display: none;");
+    expect(styles).toContain(".kit-spread {\n    min-height: 250px;");
+    expect(styles).toContain(".kit-spread {\n    min-height: 238px;");
+    expect(styles).not.toContain("min-height: 166px;");
+    expect(styles).not.toContain("min-height: 158px;");
     expect(styles).toContain("position: static;");
     expect(styles).toContain("font-size: 1.8rem");
     expect(styles).toContain("padding: 28px 0 0");
@@ -207,6 +227,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("height: var(--barebones-hero-copy-height);");
     expect(styles).toContain(".storefront-barebones .hero-section {\n    height: var(--barebones-hero-section-height);");
     expect(styles).toContain("padding-top: var(--barebones-mobile-header-offset);");
+    expect(styles).toContain(".hero-photo--asset-preserved::before");
+    expect(styles).toContain("border-color: transparent !important;");
   });
 
   it("sizes the bare-bones How It Works heading from mobile review tokens", () => {
@@ -220,11 +242,29 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("transform: translateY(var(--barebones-confidence-eyebrow-offset));");
   });
 
-  it("keeps bare-bones header action icons visible inside black buttons", () => {
+  it("keeps bare-bones header action buttons white without circular outlines", () => {
     expect(styles).toContain("--barebones-mobile-brand-size: 25px;");
     expect(styles).toContain(".site-shell--barebones .brand-mark {\n    font-size: var(--barebones-mobile-brand-size);");
-    expect(styles).toContain(".brand-header__icon-button svg,\n.brand-header__icon-button svg *");
-    expect(styles).toContain("stroke: #ffffff !important;");
+    expect(styles).toContain(".site-shell--barebones .brand-header {\n  border-color: transparent !important;");
+    expect(styles).toContain(".site-shell--barebones .brand-header__icon-button");
+    expect(styles).toContain("background: #ffffff !important;");
+    expect(styles).toContain("border-color: transparent !important;");
+    expect(styles).toContain("color: #000000 !important;");
+    expect(styles).toContain(
+      ".site-shell--barebones .brand-header__icon-button svg,\n.site-shell--barebones .brand-header__icon-button svg *"
+    );
+    expect(styles).toContain("stroke: #000000 !important;");
+    expect(styles).toContain(".storefront-barebones .kit-primary-link,\n.storefront-barebones .kit-primary-link span");
+    expect(styles).toContain("color: #ffffff !important;");
+  });
+
+  it("keeps the What’s Included kit image frameless and visually larger", () => {
+    expect(styles).toContain(".kit-spread {\n  align-items: center;");
+    expect(styles).toContain("border: 0;");
+    expect(styles).toContain("padding: 0;");
+    expect(styles).toContain(".kit-spread__image");
+    expect(styles).toContain("object-fit: cover;");
+    expect(styles).not.toContain(".collection-card__mood,\n.kit-spread,\n.review-product__art");
   });
 
   it("includes compact mobile header rules that hide the desktop nav", () => {
