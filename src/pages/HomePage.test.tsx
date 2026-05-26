@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HomePage } from "./HomePage";
@@ -71,9 +71,7 @@ describe("HomePage", () => {
 
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
     const confidence = screen.getByRole("heading", { name: "3 easy steps" });
-    const collections = screen.getByRole("heading", { name: "Browse by the plan, mood, or moment." });
-    const weeklySet = screen.getByRole("heading", { name: "This week's set" });
-    const shopMore = screen.getByRole("heading", { name: "Shop more" });
+    const collections = screen.getByRole("heading", { name: "Browse" });
     const included = screen.getByRole("heading", { name: "Everything ready for your set." });
 
     expect(hero).toBeInTheDocument();
@@ -89,65 +87,46 @@ describe("HomePage", () => {
     expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
     expect(document.querySelector(".confidence-carousel__track")).toBeInTheDocument();
     expect(document.querySelector(".confidence-progress")).toBeInTheDocument();
-    expect(screen.getByText("Swipe to explore")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-carousel__hint")).not.toBeInTheDocument();
+    expect(document.querySelector(".collection-carousel__hint")).toHaveTextContent("Swipe to explore");
+    expect(document.querySelector("#shop-more")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Shop more" })).not.toBeInTheDocument();
     expect(screen.queryByText(/size/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/sizing kit/i)).not.toBeInTheDocument();
 
-    expect(hero.compareDocumentPosition(confidence) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(confidence.compareDocumentPosition(collections) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(collections.compareDocumentPosition(weeklySet) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(weeklySet.compareDocumentPosition(shopMore) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(shopMore.compareDocumentPosition(included) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(hero.compareDocumentPosition(collections) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(collections.compareDocumentPosition(confidence) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(confidence.compareDocumentPosition(included) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "New Arrivals" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Featured Sets" })).not.toBeInTheDocument();
-    expect(screen.getByText("Blush Crush")).toBeInTheDocument();
-    expect(screen.getByText("A soft pink ready-to-wear set with an easy everyday glow.")).toBeInTheDocument();
-    expect(screen.getByText("1 of 4")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Shop this set" })).toHaveAttribute("href", "#product-blush-crush");
-    expect(screen.getByRole("link", { name: "Browse all new sets" })).toHaveAttribute("href", "#shop-more");
+    expect(screen.queryByRole("heading", { name: "This week's set" })).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Everyday sets" })).toBeInTheDocument();
+    expect(screen.getByText("5 available")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "#product-blush-crush");
+    expect(screen.getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "#product-soft-serve");
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "#");
+    expect(screen.queryByRole("heading", { name: "Blush Crush" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Soft Serve" })).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".collection-product-card")).toHaveLength(4);
+    expect(document.querySelectorAll(".collection-product-card .product-card")).toHaveLength(0);
+    expect(screen.queryByText("1 of 4")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Shop this set" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Browse all new sets" })).not.toBeInTheDocument();
     expect(document.querySelector(".weekly-set__peek")).not.toBeInTheDocument();
     expect(screen.queryByText("Up next")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".weekly-set-dots__dot")).toHaveLength(4);
-    expect(screen.getAllByText("Golden Hour").length).toBeGreaterThan(0);
+    expect(document.querySelectorAll(".weekly-set-dots__dot")).toHaveLength(0);
     expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Pretty notes from customers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
   });
 
-  it("moves through real weekly set carousel slides", async () => {
-    const user = userEvent.setup();
+  it("uses a bare-bones black-and-white presentation without deleting the hero image container", () => {
     render(<HomePage />);
 
-    const weeklySet = document.querySelector(".weekly-set-card");
-    expect(weeklySet).toBeInTheDocument();
-    expect(screen.getByText("1 of 4")).toBeInTheDocument();
-    expect(within(weeklySet as HTMLElement).getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Next weekly set" }));
-
-    const updatedWeeklySet = document.querySelector(".weekly-set-card");
-    expect(screen.getByText("2 of 4")).toBeInTheDocument();
-    expect(within(updatedWeeklySet as HTMLElement).getByRole("heading", { name: "Golden Hour" })).toBeInTheDocument();
-    expect(within(updatedWeeklySet as HTMLElement).getByRole("link", { name: "Shop this set" })).toHaveAttribute("href", "#product-golden-hour");
-  });
-
-  it("lets shoppers browse Shop more as a two-card product carousel", async () => {
-    const user = userEvent.setup();
-    render(<HomePage />);
-    const shopMoreSection = document.querySelector("#shop-more");
-
-    expect(screen.getByText("1 of 3")).toBeInTheDocument();
-    expect(within(shopMoreSection as HTMLElement).getByText("Golden Hour")).toBeInTheDocument();
-    expect(within(shopMoreSection as HTMLElement).getByText("Vacation Crush")).toBeInTheDocument();
-    expect(within(shopMoreSection as HTMLElement).queryByText("Soft Serve")).not.toBeInTheDocument();
-    expect((shopMoreSection as HTMLElement).querySelectorAll(".shop-more-carousel__card .product-card")).toHaveLength(2);
-
-    await user.click(screen.getByRole("button", { name: "Next shop more product" }));
-
-    expect(screen.getByText("2 of 3")).toBeInTheDocument();
-    expect(within(shopMoreSection as HTMLElement).getByText("Vacation Crush")).toBeInTheDocument();
-    expect(within(shopMoreSection as HTMLElement).getByText("Soft Serve")).toBeInTheDocument();
-    expect(within(shopMoreSection as HTMLElement).queryByText("Golden Hour")).not.toBeInTheDocument();
+    expect(document.querySelector("#home")).toHaveClass("storefront-barebones");
+    expect(document.querySelector(".hero-photo")).toHaveClass("hero-photo--asset-preserved");
+    expect(document.querySelector(".hero-photo")).toHaveAttribute("aria-hidden", "true");
+    expect(document.querySelector(".hero-photo")).not.toHaveAttribute("aria-label");
   });
 
   it("shows the review carousel foundation", async () => {

@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-19
+Last updated: 2026-05-24
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -18,9 +18,18 @@ Before starting a section pass, read `docs/brief/section-pass-template.md` and u
 
 Current CEO direction:
 
+- Latest CEO direction on 2026-05-22 is a bare-bones storefront review pass: strip the visible Home page/site presentation to black and white only, and remove the hero image from the visible page without deleting the image asset or previous hero implementation history.
+- The live app now uses `site-shell--barebones` / `storefront-barebones` class hooks plus final CSS overrides to remove color accents, shadows, decorative gradients, and visible hero imagery. Keep this reversible unless the CEO explicitly asks to delete the prior color direction or hero asset.
+- The hero image asset is intentionally preserved in `public/assets/hero-s3-summer.png`; the visible `.hero-photo` container remains as a structural placeholder and is marked `aria-hidden`.
+- Follow-up browser annotation on 2026-05-22 tightened only the mobile bare-bones hero copy panel: `padding-top: 23px`, `padding-inline: 29px`, `padding-bottom: 1px`, and `height: 263.36px` under the existing `max-width: 720px` mobile breakpoint.
+- Follow-up browser annotations on 2026-05-22 tightened the mobile bare-bones hero/How-It-Works transition: `.hero-section` now uses `padding-top: 45px` and `height: 635px`; `.confidence-section__heading` uses `height: 85.06px`; the `HOW IT WORKS` eyebrow uses `height/line-height: 20.48px` plus `translateY(-3px)` because negative padding is not valid CSS.
+- Follow-up browser comments on 2026-05-22 fixed the bare-bones mobile header icon color: nested SVG icons inside the black menu/bag circles are forced to white so the buttons remain visible.
+- Follow-up browser annotation on 2026-05-22 increases the bare-bones mobile brand mark from `21px` to `25px` under the existing mobile breakpoint.
+- Collections UI pass on 2026-05-22 replaces the old static three-tile grid with a horizontal mood-picker carousel. Latest browser annotations shorten the heading to `Browse`, keep `COLLECTIONS` and `See all`, render seven blank accessible collection cards from central collection labels (`Everyday`, `Date Night`, `Vacation`, `Bridal`, `Birthday`, `Work/Neutral`, `Statement`), and keep visual pagination dots with the `Swipe to explore` hint moved here from How It Works. The lane has mouse grab-drag on `.collection-track`, native touch swipes, accidental-click suppression after drag, smooth-settle to the nearest card on mouse release, and active pagination dots from scroll position. A later glide fix removes mandatory CSS snap from `.collection-track` and uses a debounced JS settle after native scroll idle so CSS snap and smooth scrolling do not fight each other. Real collection images/icons, visible card copy, and richer dot/progress behavior are still placeholders/future work.
+- Latest shopping-path refactor on 2026-05-24 makes shopping come first after the hero: Collections now render as slim filter cards, the active collection immediately shows a 2x2 blank product-card wireframe from central product data, `See all` points to that product row, and the undecided third shopping/editorial slot is intentionally left out for later CEO decision.
 - Stop spending more time on the hero-to-How-It-Works gradient transition unless the CEO explicitly reopens it.
 - The latest approved How It Works direction is a polished luxury clean-beauty section, not the old continuous auto-strip.
-- The live section now uses centered `HOW IT WORKS` / `3 easy steps` heading copy, three swipeable mobile cards, three dynamic progress pills, a subtle `Swipe to explore` hint, and desktop three-column layout.
+- The live section now uses centered `HOW IT WORKS` / `3 easy steps` heading copy, three swipeable mobile cards, three dynamic progress pills, no swipe hint because the section auto-scrolls, and desktop three-column layout.
 - The latest mobile polish keeps the hero-to-section gradient, centers the first real card on load, adds loop-buffer side cards so both edges visibly peek, softens the active card shadow, separates the card lane from the controls block, and spaces the progress/hint/Collections handoff cleanly.
 - The latest transition/shadow repair keeps the current layout and copy, uses a 105px mobile hero bottom fade into `#fbf6ee`, keeps the How It Works section at `margin-top: 0`, and keeps the active card shadow softer/shorter so it does not fight the controls.
 - Latest CEO feedback on 2026-05-18 asked to remove all content inside the How It Works cards. The live cards are now intentionally blank shells; keep them blank until the CEO chooses what belongs inside them.
@@ -75,29 +84,32 @@ Implemented:
   - scrolled-header correction rounds the sage bar, restores berry brand text, and keeps menu/bag as outline-only icons while `Shop` stays in a white pill
   - safe-area/header pivot makes mobile use a real cream top app bar with matching safe-area paint; the hero begins below the nav instead of sitting behind it, the mobile scrolled state no longer becomes a floating sage rounded card, and the final follow-up tightens the top-bar padding around the notch area and removes the offset mismatch that exposed a thin cream sliver above the hero image
   - hero divider was later removed so the CTA sits directly under the headline
-  - slim confidence strip follows the hero
+  - slim confidence strip now follows the first shopping module instead of leading the page before products
   - How It Works carousel UI pass overlaps the hero, uses a warm-white card with a thin berry outline, places arrows just outside the card edges, gives each slide its own code-native visual, and has a softened hero/card transition after several visual review passes
   - latest How It Works UI pass replaces the continuous text-only strip with a polished luxury clean-beauty card carousel: centered editorial heading, swipeable mobile cards with side peeks, three dynamic progress pills, swipe hint, and desktop three-column layout
-  - collections appear before the featured weekly set and product shopping row
+  - collections appear before How It Works and include the first product browsing row
   - sizing-kit language is intentionally excluded for now
   - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
-  - weekly-set flow replaces duplicate `New Arrivals` and `Featured Sets` sections with `This week's set` and `Shop more`
+  - the former weekly-set slot is removed for now; the CEO does not want to decide that third section yet
   - What's included now uses a compact kit summary and grouped accordion rows instead of a long vertical item list
   - reviews now use a compact trust-chip row, single featured review carousel, product thumbnail/detail, dots, and a `See more reviews` link
   - FAQ now uses a beginner help strip, accordion answers, a care-tips cue, and a contact CTA
   - footer now uses a compact brand intro, grouped accordion links, and tiny legal text instead of placeholder link piles
   - Home UX bug pass fixed broken or incomplete prototype destinations, including collection `See all`, bag, review, and footer policy links
-  - mobile overflow polish hides native row scrollbars, lets review trust chips wrap, and tightens the collection-to-weekly-set spacing on very small screens
-  - review follow-up replaced the fake weekly-set peek with a real product-backed weekly carousel, added real `Shop more` product arrows, spaced review arrows away from the card, and made the FAQ start strip an in-page CTA link
-  - carousel regression cleanup removed the unwanted weekly `Up next` CTA module, kept the weekly carousel as real product slides with simple controls and dots, and kept `Shop more` browsing two product cards at a time
+  - mobile overflow polish hides native row scrollbars, lets review trust chips wrap, and tightens small-screen spacing
+  - review follow-up spaced review arrows away from the card and made the FAQ start strip an in-page CTA link
+  - carousel regression cleanup removed the unwanted weekly `Up next` CTA module and kept the weekly carousel as real product slides with simple controls and dots
   - narrow footer overflow cleanup removed the global 320px body minimum so 319px-class in-app browser widths do not clip the footer or show a horizontal scrollbar
+  - 2026-05-22 bare-bones review mode strips the visible site to black and white and hides the hero background image from presentation while preserving the asset and hero container for reversibility
+  - 2026-05-22 browser review deleted the `Shop more` section, and the 2026-05-24 refactor deleted `This week's set`; Home now moves from Collections/product browsing to How It Works to What's included, and links no longer target `#shop-more` or `#this-weeks-set`
 
 Latest known verification before handoff:
 
-- `npm test`: 10 files, 39 tests passed.
+- `npm test`: 10 files, 46 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
 - `git diff --check`: passed.
+- Browser/dev server check on 2026-05-22: `http://localhost:5173/` responded from this repo after starting `npm run dev -- --host 0.0.0.0`. In-app browser verification confirmed `.hero-photo` has `aria-hidden="true"` and `background-image: none`, `#home` has `storefront-barebones`, sampled visible page styles resolved only to black, white, or transparent, and the annotated mobile elements computed as requested at the 375px viewport: `.hero-copy` `padding: 23px 29px 1px` with height `263.359px`; `.hero-section` `padding-top: 45px` with height now adjusted to `635px`; `.confidence-section__heading` height `85.047px`; `.confidence-section__heading .eyebrow` height `20.469px` with `translateY(-3px)`; `.brand-mark` font-size `25px`.
 - Browser/dev server check: `http://localhost:5173/` responded. Automated DOM tests confirm the How It Works cards render as blank shells with no visible card copy or code-native visual nodes, continuous drift advances the card lane at a visible 36px/second pace, passive drift still resets at a matching visual loop point, manual/native scroll from slide 3 into the next physical slide 1 keeps the forward scroll position while progress resets, outer-buffer native scroll re-centers before either hard end, drag past slide 3 settles onto the next physical slide 1 instead of snapping back, touch/focus interaction pauses drift for 3 seconds, touch pointers stay out of the custom mouse-drag path, the old dot controls are replaced by three dynamic progress pills, reduced-motion users do not get the drifting class, and initial carousel centering does not call page-scrolling APIs. In-app browser verification at a 390px mobile viewport confirmed repeated drags advance 1 -> 2 -> 3 -> 1 -> 2, then re-center to an equivalent slide-3 position before the hard end instead of exhausting the physical strip.
 - The in-app browser viewport override was reset after verification.
 - Git working tree has the known unrelated untracked `.claude/` directory.
@@ -233,10 +245,10 @@ Latest How It Works decision:
 - The CEO asked to remake the card shape/UX and then provided a direct build brief for a polished mobile-first How It Works section.
 - Ignore the brief line that suggested changing homepage order to add a trust/benefits bar; the CEO explicitly said to ignore that section.
 - The current Home page keeps the section in place between hero and Collections and only changes the How It Works section.
-- Mobile now uses a horizontal swipeable carousel with one prominent centered card, partial side-card peeks, three dynamic progress pills, and a subtle `Swipe to explore` hint.
+- Mobile now uses a horizontal swipeable carousel with one prominent centered card, partial side-card peeks, and three dynamic progress pills. The old `Swipe to explore` hint has been moved to the Collections carousel because How It Works auto-scrolls.
 - The 2026-05-18 polish fixes the remaining mobile layout issue: the active card is centered at roughly three-quarters viewport width, the previous and next cards both peek from the edges, the card shadow has vertical room to fade, and the progress/hint no longer collide with the shadow.
 - The follow-up 2026-05-18 repair narrows only the transition and active-card shadow: the hero now uses a 105px absolute full-width bottom fade into the How It Works cream, the How It Works section starts without negative overlap, and the carousel uses ordinary bottom padding plus a separate cream controls block below it.
-- The latest 2026-05-18 card-content cleanup keeps the carousel shells, peeks, progress pills, and hint, but removes every visible element inside each card.
+- The latest 2026-05-18 card-content cleanup keeps the carousel shells, peeks, and progress pills, but removes every visible element inside each card.
 - The latest mobile gradient cleanup changes only the mobile hero fade and section spacing: the fade is 105px, opacity reaches the section-start cream `#fbf6ee` at the bottom, and mobile How It Works uses `margin-top: 0` with `padding: 22px 0 0` or `20px 0 0` at the smallest breakpoint; desktop/tablet layout and section order are unchanged.
 - The latest mobile carousel controls cleanup changes only the shadow/control handoff: card-lane bottom padding is 52px, a 52px `#fbf6ee` fade dissolves the shadow before the controls, and the controls use `padding: 8px 0 34px` on a solid cream background.
 - The latest carousel behavior pass adds slow continuous drift to the blank How It Works card lane; passive drift can reset at the visual loop point, but drag/native scroll across slide 3 into slide 1 does not remap the physical lane. Release settles to the nearest physical card, progress pills reset from normalized position, and touch/focus interaction pauses drift for 3 seconds.
@@ -245,13 +257,15 @@ Latest How It Works decision:
 - The section styling intentionally shifts toward warm ivory, muted taupe, nude blush, soft brown, champagne beige, and charcoal with editorial serif headings.
 - Code-native minimal visuals were removed from the live cards.
 
-Latest weekly-set flow decision:
+Latest collection/product flow decision:
 
 - The CEO liked the full-page direction that removes duplicate `New Arrivals` and `Featured Sets` sections.
-- The Home page now moves from Collections into a featured `This week's set` module, then a compact `Shop more` row, then What's included.
-- `This week's set` uses `Blush Crush` as the lead product, includes `1 of 4`, a `Shop this set` CTA, `Browse all new sets`, and simple carousel controls/dots that cycle through the actual `New Arrivals` products without an added `Up next` CTA module.
-- `Shop more` shows a short two-card product carousel instead of repeating another full carousel section or collapsing into one generic product card.
-- Product tiles no longer show visible `Clean background placeholder...` copy; they use code-native nail-set visuals until real product photography exists.
+- The Home page now moves from Collections into product cards belonging to the active collection, then How It Works, then What's included.
+- Browser feedback on 2026-05-24 simplified the Collection filter cards to centered collection names only, with no visible set counts in each card.
+- The active collection product row is now a 2x2 blank-card wireframe. It shows up to four actual product links with accessible product labels, fills short collections with blank placeholder slots, and includes a small `See more` CTA with a temporary `#` destination.
+- `This week's set` was removed on 2026-05-24 because the CEO does not like that concept yet. Do not link to `#this-weeks-set` unless that section is intentionally rebuilt.
+- `Shop more` was removed after the 2026-05-22 browser review. Do not link to `#shop-more` unless that section is intentionally rebuilt.
+- Product tiles no longer show visible `Clean background placeholder...` copy; the active collection row is intentionally blank until the CEO decides the product-card content system.
 - The design spec is saved at `docs/superpowers/specs/2026-05-07-weekly-set-home-flow-design.md`.
 - The implementation plan is saved at `docs/superpowers/plans/2026-05-07-weekly-set-home-flow.md`.
 
@@ -313,14 +327,15 @@ Latest UX bug pass:
 - Completed scope:
   - fixed broken/incomplete navigation targets for collection `See all`, bag, review CTA, footer links, and FAQ beginner strip
   - replaced fake carousel affordances with real controls where needed
-  - kept the weekly-set carousel simple: full product card, `1 of 4` count, previous/next controls, and dots, with no added `Up next` CTA module
-  - made `Shop more` browse two product cards at a time with previous/next arrows
+  - the later 2026-05-24 refactor removed the weekly-set carousel and moved How It Works below the first product browsing row
+  - the later 2026-05-22 browser review removed `Shop more`, and the current Home flow skips directly from active collection products to How It Works
   - separated review arrows from the quote card so they do not collide on narrow mobile
   - removed global `body` 320px minimum so the footer does not clip at 319px-class in-app browser widths
 - This UX bug pass is complete. The next chat should start the full UI pass, which is a broader visual/taste pass rather than another structural UX bug pass.
 - For the UI pass, preserve the approved behavior unless the CEO explicitly reopens it. In particular:
   - do not bring back the weekly `Up next` module
-  - do not collapse `Shop more` back to one generic card
+  - do not bring back `This week's set` unless the CEO asks for it again
+  - do not bring back `Shop more` unless the CEO asks for it again
   - do not reopen checkout, final product photography, final logo, or policy/legal copy unless asked
   - use the current Home page as the working surface, but expect substantial visual refinement section by section
 

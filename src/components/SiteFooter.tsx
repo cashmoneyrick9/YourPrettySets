@@ -18,11 +18,7 @@ const footerGroups: FooterGroup[] = [
   {
     id: "shop",
     label: "Shop",
-    links: [
-      { href: "#shop-collections", label: "Collections" },
-      { href: "#this-weeks-set", label: "This week's set" },
-      { href: "#shop-more", label: "Shop more" }
-    ]
+    links: [{ href: "#shop-collections", label: "Collections" }]
   },
   {
     id: "help",

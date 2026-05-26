@@ -4,7 +4,7 @@ import { HomePage } from "./pages/HomePage";
 
 function App() {
   return (
-    <div className="site-shell">
+    <div className="site-shell site-shell--barebones">
       <BrandHeader />
       <HomePage />
       <SiteFooter />
