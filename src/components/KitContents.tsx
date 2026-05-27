@@ -1,10 +1,19 @@
 import { useState } from "react";
 
 type KitPanelId = "fit" | "prep";
+type PrepItem = {
+  imageSrc?: string;
+  label: string;
+};
 
-const sizeTiles = ["0", "1", "3", "4", "5", "6", "8", "10"];
-
-const prepItems = ["Adhesive tabs", "Nail glue", "Nail file", "Cuticle pusher", "Alcohol wipe", "Storage pouch/card"];
+const prepItems: PrepItem[] = [
+  { imageSrc: "/assets/adhesive-tabs.png", label: "Adhesive tabs" },
+  { imageSrc: "/assets/nail-glue.png", label: "Nail glue" },
+  { imageSrc: "/assets/nail-file.png", label: "Nail file" },
+  { imageSrc: "/assets/cuticle-pusher.png", label: "Cuticle pusher" },
+  { imageSrc: "/assets/alcohol-wipe.png", label: "Alcohol wipe" },
+  { imageSrc: "/assets/storage-case.png", label: "Storage case/card" }
+];
 
 export function KitContents() {
   const [openPanel, setOpenPanel] = useState<KitPanelId>("fit");
@@ -22,7 +31,7 @@ export function KitContents() {
           <img
             alt="Press-on nail kit with tabs and tools"
             className="kit-spread__image"
-            src="/assets/kit-contents-spread.png"
+            src="/assets/kit-contents-spread-v2.png"
           />
         </div>
 
@@ -46,14 +55,12 @@ export function KitContents() {
             </button>
             {openPanel === "fit" && (
               <div className="kit-accordion__panel" id="kit-panel-fit">
-                <p>Extra sizes help you find the best fit for each finger before applying.</p>
                 <div className="kit-size-row" aria-label="Example nail sizes">
-                  {sizeTiles.map((size, index) => (
-                    <span className="kit-size-tile" key={size}>
-                      <span className={`kit-size-tile__nail kit-size-tile__nail--${index}`} aria-hidden="true" />
-                      <span>{size}</span>
-                    </span>
-                  ))}
+                  <img
+                    alt="Twenty-four press-on nails in multiple sizes with small fruit details"
+                    className="kit-size-row__image"
+                    src="/assets/nail-size-set.png"
+                  />
                 </div>
               </div>
             )}
@@ -80,9 +87,9 @@ export function KitContents() {
               <div className="kit-accordion__panel" id="kit-panel-prep">
                 <div className="kit-item-grid" aria-label="Prep and application items">
                   {prepItems.map((item) => (
-                    <span className="kit-item-tile" key={item}>
-                      <span className="kit-item-tile__shape" aria-hidden="true" />
-                      <span>{item}</span>
+                    <span className="kit-item-card" key={item.label}>
+                      <img className="kit-item-card__image" src={item.imageSrc} alt="" aria-hidden="true" />
+                      <span>{item.label}</span>
                     </span>
                   ))}
                 </div>

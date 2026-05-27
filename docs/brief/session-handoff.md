@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-24
+Last updated: 2026-05-26
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -271,27 +271,38 @@ Latest collection/product flow decision:
 
 Latest What's included decision:
 
-- The CEO liked the accordion-style kit UX direction but noted the mockup UI could be fixed later.
+- The CEO liked the accordion-style kit UX direction and later replaced the placeholder prep visuals with real kit asset photos.
 - The section now uses:
-  - heading `Everything ready for your set.`
-  - summary message `24 nails plus the tools to apply, wear, and store them.`
-  - a code-native kit flat-lay visual
-  - three grouped accordion rows: `In the set`, `For application`, and `For aftercare`
-  - `In the set` open by default, with only one group open at a time
-  - a secondary `See care tips` link to `#faq`
-- The goal was UX structure, not final UI polish.
+  - eyebrow `THE COMPLETE SET`
+  - heading `What’s Included`
+  - summary message `Everything you need for your set.`
+  - a real kit flat-lay image at `/assets/kit-contents-spread-v2.png`
+  - two accordion rows: `Made to fit` and `Prep + apply kit`
+  - `Made to fit` open by default, with one group open at a time
+  - `Made to fit` uses the real nail-size image at `/assets/nail-size-set.png`, replacing the old CSS-built black size tiles
+  - `Prep + apply kit` shows six static image cards for adhesive tabs, nail glue, nail file, cuticle pusher, alcohol wipe, and storage case/card
+  - a primary `HOW TO APPLY & CARE` link to `#faq`
+- The latest prep-kit decision removes selector behavior, preview swapping, and blank icon placeholders. All six prep images are visible directly in the grid.
 
 Latest reviews decision:
 
-- The CEO selected pieces from review mockups: five-star row, quote card, customer label, small product thumbnail/detail, arrows, dots, and `See more reviews`.
+- The CEO selected the carousel direction from the review mockup: a centered featured review card, left/right neighboring peeks, five-star row, customer label, and product/shape tag. Later CEO feedback removed the arrows, dots, and `READ MORE REVIEWS`.
 - The Home page review section now uses:
-  - eyebrow `Customer notes`
-  - heading `Pretty notes from customers`
-  - trust chips: `Easy fit`, `Photo-ready`, `Beginner friendly`
-  - one featured review card with a partial next-card peek
-  - previous/next buttons and dot controls
-  - product detail attached to the active quote
-- This is a UX foundation only; final UI polish remains open.
+  - eyebrow `CUSTOMER LOVE`
+  - heading `Loved by first-time press-on buyers`
+  - one centered active review card with left/right peeks on mobile
+  - native horizontal swipe/scroll on the review track
+  - no dot controls or decorative dot cue under the carousel
+  - no bottom review CTA while the destination is undecided
+  - believable placeholder quotes from the existing in-file review data
+  - no product thumbnail/icon art inside the review cards after the 2026-05-26 browser comment
+- Browser verification at 390px and 360px confirmed visible card peeks, working dots, and no horizontal page overflow before the icon-art removal; recheck the shortened cards visually if more spacing tweaks are requested.
+- Follow-up arrow removal on 2026-05-26 removed review arrow buttons, their previous/next handlers, and the arrow-specific CSS.
+- Follow-up review auto-scroll on 2026-05-26 added the same 36px/second continuous drift used by How It Works. Focus/touch interaction pauses the review drift briefly, reduced-motion disables it, and native swipe still owns manual movement.
+- Follow-up placeholder expansion on 2026-05-26 changed Reviews to 12 blank reference cards numbered `01` through `12`.
+- Follow-up repeat removal on 2026-05-26 removed the hidden repeated review loop-buffer cards entirely. Reviews now renders exactly 12 physical cards, so there are no blank repeat cards while scrolling.
+- Follow-up product-card test on 2026-05-27 applies a `Reviewed set + Shop this set` layout only to review slide `02`, using placeholder copy for `Taylor K.`, `Soft Pink`, `Square Short · From $35`, and `/shop`. The other 11 slides remain the numbered reference cards for comparison.
+- Follow-up on 2026-05-27 removed the `READ MORE REVIEWS` CTA, then removed all review dots. The carousel still renders all 12 cards and keeps native swipe/auto-scroll behavior.
 
 Latest FAQ decision:
 
@@ -395,12 +406,12 @@ Implemented scope:
 - Removed visible black outlines/circles from the mobile header menu and bag controls in barebones review mode.
 - Tightened and resized the collection product card grid, then added the partial/faded teaser row under the visible product cards to imply a larger shop page.
 - Replaced the old `KitContents` / “What’s Included” treatment with the approved compact black-and-white section: centered header, real kit image, two accordion cards, primary care CTA, and required FAQ link.
-- Added the kit image asset at `public/assets/kit-contents-spread.png` and kept it frameless/larger in the visual area.
+- Added the updated kit image asset at `public/assets/kit-contents-spread-v2.png` plus individual prep-kit assets for adhesive tabs, nail glue, nail file, cuticle pusher, alcohol wipe, and storage case/card.
 
 Current review state:
 
-- The “What’s Included” structure is now the active section direction, but the CEO is still tuning image scale/spacing.
-- The kit visual is a real PNG asset rather than CSS-built shapes. Future edits should adjust the image/card sizing in `.kit-spread` and `.kit-spread__image` before changing the accordion.
+- The “What’s Included” structure is now the active section direction. The current prep-kit layout is a static two-column image grid, with no selector, preview swap, or blank icon placeholders.
+- The kit visual is a real PNG asset rather than CSS-built shapes. Future edits should adjust the image/card sizing in `.kit-spread`, `.kit-spread__image`, `.kit-item-card`, and `.kit-item-card__image` before changing the accordion.
 - The current product grid is intentionally placeholder/blank for layout review; do not treat it as final product photography.
 
 ## Suggested Next Agent Flow

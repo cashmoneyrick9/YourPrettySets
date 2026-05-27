@@ -20,30 +20,34 @@ const confidenceCarouselCards = Array.from({ length: 3 }, (_, loopIndex) =>
 ).flat();
 
 const reviews = [
-  {
-    detail: "Oval · Short",
-    product: "Date Night",
-    quote: "The set looked dressed up without feeling hard to wear.",
-    name: "Everyday customer",
-    tier: "mid"
-  },
-  {
-    detail: "Almond · Medium",
-    product: "Golden Hour",
-    quote: "Pretty enough for photos, practical enough for the week.",
-    name: "Beauty shopper",
-    tier: "detailed"
-  },
-  {
-    detail: "Round · Short",
-    product: "Blush Crush",
-    quote: "The 24-nail set made finding a fit feel less stressful.",
-    name: "First-time press-on buyer",
-    tier: "simple"
-  }
-];
+  "01",
+  "02",
+  "03",
+  "04",
+  "05",
+  "06",
+  "07",
+  "08",
+  "09",
+  "10",
+  "11",
+  "12"
+].map((number) => ({ number }));
 
-const reviewChips = ["Easy fit", "Photo-ready", "Beginner friendly"];
+const reviewedSetCard = {
+  buyer: "Taylor K.",
+  meta: "Square Short · From $35",
+  productName: "Soft Pink",
+  productUrl: "/shop",
+  quote: "I was nervous to try press-ons, but this set was easy to apply and looked polished all week."
+};
+
+const reviewCarouselCards = reviews.map((review, reviewIndex) => ({
+  cardIndex: reviewIndex,
+  review,
+  reviewIndex
+}));
+
 const faqs = [
   {
     answer: "Each set includes 24 nails, adhesive tabs, nail glue, a nail file, cuticle pusher, alcohol wipe, application card, and storage.",
@@ -67,13 +71,19 @@ export function HomePage() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
     typeof window.matchMedia === "function" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false
   );
-  const [activeReviewIndex, setActiveReviewIndex] = useState(0);
+  const [activeReviewCardIndex, setActiveReviewCardIndex] = useState(0);
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
   const stepTrackRef = useRef<HTMLDivElement>(null);
-  const activeReview = reviews[activeReviewIndex];
-  const nextReview = reviews[(activeReviewIndex + 1) % reviews.length];
+  const reviewTrackRef = useRef<HTMLDivElement>(null);
+  const isReviewRecenteringRef = useRef(false);
+  const isReviewAutoPausedRef = useRef(false);
   const isStepAutoPausedRef = useRef(false);
   const isStepInteractingRef = useRef(false);
+  const reviewAnimationFrameRef = useRef<number | null>(null);
+  const reviewAutoPauseTimeoutRef = useRef<number | null>(null);
+  const reviewIsVisibleRef = useRef(true);
+  const reviewLastFrameTimeRef = useRef<number | null>(null);
+  const reviewVirtualScrollLeftRef = useRef<number | null>(null);
   const stepAnimationFrameRef = useRef<number | null>(null);
   const stepAutoPauseTimeoutRef = useRef<number | null>(null);
   const stepDragStateRef = useRef<{ pointerId: number; startScrollLeft: number; startX: number } | null>(null);
@@ -357,12 +367,147 @@ export function HomePage() {
     settleConfidenceTrack(event.currentTarget);
   };
 
-  const showPreviousReview = () => {
-    setActiveReviewIndex((current) => (current === 0 ? reviews.length - 1 : current - 1));
+  const getCenteredReviewScrollLeft = (track: HTMLElement, card: HTMLElement) =>
+    card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2;
+
+  const getReviewCardDistance = (track: HTMLElement) => {
+    const cards = Array.from(track.querySelectorAll<HTMLElement>(".review-card"));
+    if (cards.length >= 2) {
+      const measuredDistance = cards[1].offsetLeft - cards[0].offsetLeft;
+      if (measuredDistance > 0) return measuredDistance;
+    }
+
+    const firstCard = cards[0];
+    if (!firstCard) return 0;
+    const trackStyles = window.getComputedStyle(track);
+    const parsedColumnGap = Number.parseFloat(trackStyles.columnGap);
+    const parsedGap = Number.isFinite(parsedColumnGap) ? parsedColumnGap : Number.parseFloat(trackStyles.gap);
+    const gap = Number.isFinite(parsedGap) ? parsedGap : 0;
+    return firstCard.offsetWidth + gap;
   };
-  const showNextReview = () => {
-    setActiveReviewIndex((current) => (current === reviews.length - 1 ? 0 : current + 1));
+
+  const updateActiveReviewFromTrack = (track: HTMLElement, scrollLeft = track.scrollLeft) => {
+    const cards = Array.from(track.querySelectorAll<HTMLElement>(".review-card"));
+    if (cards.length === 0) return;
+
+    const trackCenter = scrollLeft + track.clientWidth / 2;
+    const nearestCard = cards.reduce((nearest, card) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const nearestCenter = nearest.offsetLeft + nearest.offsetWidth / 2;
+      return Math.abs(cardCenter - trackCenter) < Math.abs(nearestCenter - trackCenter) ? card : nearest;
+    }, cards[0]);
+
+    const nextCardIndex = Number(nearestCard.dataset.cardIndex);
+    if (!Number.isFinite(nextCardIndex)) return;
+
+    setActiveReviewCardIndex(nextCardIndex);
   };
+
+  const pauseReviewAutoDrift = () => {
+    if (prefersReducedMotion) return;
+
+    reviewVirtualScrollLeftRef.current = reviewTrackRef.current?.scrollLeft ?? null;
+    isReviewAutoPausedRef.current = true;
+    if (reviewAutoPauseTimeoutRef.current !== null) {
+      window.clearTimeout(reviewAutoPauseTimeoutRef.current);
+    }
+    reviewAutoPauseTimeoutRef.current = window.setTimeout(() => {
+      isReviewAutoPausedRef.current = false;
+      reviewAutoPauseTimeoutRef.current = null;
+    }, confidenceInteractionPauseMs);
+  };
+
+  const centerReviewCardByIndex = (cardIndex: number) => {
+    const track = reviewTrackRef.current;
+    const card = track?.querySelector<HTMLElement>(`.review-card[data-card-index="${cardIndex}"]`);
+    if (!track || !card) return;
+
+    isReviewRecenteringRef.current = true;
+    track.scrollLeft = getCenteredReviewScrollLeft(track, card);
+    reviewVirtualScrollLeftRef.current = track.scrollLeft;
+    window.setTimeout(() => {
+      isReviewRecenteringRef.current = false;
+    }, 0);
+  };
+
+  const handleReviewScroll = () => {
+    if (isReviewRecenteringRef.current) return;
+
+    const track = reviewTrackRef.current;
+    const cards = Array.from(track?.querySelectorAll<HTMLElement>(".review-card") ?? []);
+    if (!track || cards.length === 0) return;
+
+    const scrollLeft = track.scrollLeft;
+    if (isReviewAutoPausedRef.current) {
+      reviewVirtualScrollLeftRef.current = scrollLeft;
+    }
+    updateActiveReviewFromTrack(track, scrollLeft);
+  };
+
+  useEffect(() => {
+    centerReviewCardByIndex(0);
+  }, []);
+
+  useEffect(() => {
+    const track = reviewTrackRef.current;
+    if (!track || prefersReducedMotion || typeof window.requestAnimationFrame !== "function") {
+      return undefined;
+    }
+
+    const section = track.closest("#reviews");
+    let observer: IntersectionObserver | null = null;
+    if (section && typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(([entry]) => {
+        reviewIsVisibleRef.current = entry.isIntersecting;
+      });
+      observer.observe(section);
+    }
+
+    const advanceDrift = (timestamp: number) => {
+      if (reviewLastFrameTimeRef.current !== null && !isReviewAutoPausedRef.current && reviewIsVisibleRef.current) {
+        const elapsed = Math.min(timestamp - reviewLastFrameTimeRef.current, 80);
+        const cardDistance = getReviewCardDistance(track);
+        const maxScrollLeft = track.scrollWidth - track.clientWidth;
+
+        if (cardDistance > 0 && maxScrollLeft > 0) {
+          if (reviewVirtualScrollLeftRef.current === null) {
+            reviewVirtualScrollLeftRef.current = track.scrollLeft;
+          }
+          let nextScrollLeft =
+            reviewVirtualScrollLeftRef.current + (elapsed * confidenceDriftPixelsPerSecond) / 1000;
+
+          if (nextScrollLeft > maxScrollLeft) {
+            nextScrollLeft = 0;
+          }
+
+          reviewVirtualScrollLeftRef.current = nextScrollLeft;
+          track.scrollLeft = nextScrollLeft;
+          updateActiveReviewFromTrack(track, nextScrollLeft);
+        }
+      }
+
+      reviewLastFrameTimeRef.current = timestamp;
+      reviewAnimationFrameRef.current = window.requestAnimationFrame(advanceDrift);
+    };
+
+    reviewAnimationFrameRef.current = window.requestAnimationFrame(advanceDrift);
+
+    return () => {
+      if (reviewAnimationFrameRef.current !== null) {
+        window.cancelAnimationFrame(reviewAnimationFrameRef.current);
+      }
+      observer?.disconnect();
+      reviewLastFrameTimeRef.current = null;
+    };
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    return () => {
+      if (reviewAutoPauseTimeoutRef.current !== null) {
+        window.clearTimeout(reviewAutoPauseTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <main className="storefront-barebones" id="home">
@@ -400,7 +545,7 @@ export function HomePage() {
       <section className="section-block confidence-section" id="how-it-works">
         <div className="section-heading confidence-section__heading">
           <p className="eyebrow">HOW IT WORKS</p>
-          <h2>3 easy steps</h2>
+          <h2>3 EASY STEPS</h2>
         </div>
         <div
           aria-label="How It Works carousel"
@@ -450,64 +595,76 @@ export function HomePage() {
       <KitContents />
 
       <section className="section-block reviews-section" id="reviews">
-        <div className="section-heading">
-          <p className="eyebrow">Customer notes</p>
-          <h2>Pretty notes from customers</h2>
+        <div className="section-heading review-heading">
+          <p className="eyebrow">CUSTOMER LOVE</p>
+          <h2>Loved by first-time press-on buyers</h2>
         </div>
-        <div className="review-proof-row" aria-label="Review highlights">
-          {reviewChips.map((chip) => (
-            <span key={chip}>{chip}</span>
-          ))}
-        </div>
-        <div className="review-carousel">
-          <button className="review-carousel__button" type="button" onClick={showPreviousReview} aria-label="Previous review">
-            ‹
-          </button>
-          <figure className="review-card">
-            <div className="review-card__stars" aria-label="5 out of 5 stars">
-              ★★★★★
+        <div className="review-carousel" aria-label="Customer review carousel" onFocusCapture={pauseReviewAutoDrift}>
+          <div className="review-carousel__viewport">
+            <div
+              className="review-carousel__track"
+              onScroll={handleReviewScroll}
+              onPointerDown={pauseReviewAutoDrift}
+              ref={reviewTrackRef}
+            >
+              {reviewCarouselCards.map(({ cardIndex, review, reviewIndex }) => {
+                const isActive = cardIndex === activeReviewCardIndex;
+                const isReviewedSetCard = reviewIndex === 1;
+
+                return (
+                  <figure
+                    aria-hidden={isActive ? undefined : "true"}
+                    className={`review-card${isActive ? " review-card--active" : " review-card--peek"}${
+                      isReviewedSetCard ? " review-card--product" : ""
+                    }`}
+                    data-card-index={cardIndex}
+                    data-review-index={reviewIndex}
+                    key={`${cardIndex}-${review.number}`}
+                  >
+                    {isReviewedSetCard ? (
+                      <>
+                        <span className="review-card__stars review-card__stars--product" aria-label="5 out of 5 stars">
+                          ★★★★★
+                        </span>
+                        <blockquote>{reviewedSetCard.quote}</blockquote>
+                        <figcaption className="review-card__buyer">
+                          <strong>{reviewedSetCard.buyer}</strong>
+                          <span>
+                            <span className="review-card__verified" aria-hidden="true">
+                              ✓
+                            </span>
+                            Verified Buyer
+                          </span>
+                        </figcaption>
+                        <div className="reviewed-set" aria-label={`Reviewed set: ${reviewedSetCard.productName}`}>
+                          <p className="reviewed-set__label">REVIEWED SET</p>
+                          <div className="reviewed-set__details">
+                            <span className="reviewed-set__thumbnail" aria-hidden="true">
+                              <span />
+                            </span>
+                            <div className="reviewed-set__copy">
+                              <strong>{reviewedSetCard.productName}</strong>
+                              <span>{reviewedSetCard.meta}</span>
+                            </div>
+                          </div>
+                          <a
+                            className="reviewed-set__link"
+                            href={reviewedSetCard.productUrl}
+                            tabIndex={isActive ? undefined : -1}
+                          >
+                            SHOP THIS SET <span aria-hidden="true">→</span>
+                          </a>
+                        </div>
+                      </>
+                    ) : (
+                      <span className="review-card__number">{review.number}</span>
+                    )}
+                  </figure>
+                );
+              })}
             </div>
-            <blockquote>{activeReview.quote}</blockquote>
-            <figcaption>{activeReview.name}</figcaption>
-            <div className="review-product">
-              <span className={`review-product__art review-product__art--${activeReview.tier}`} aria-hidden="true">
-                <span className="review-product__nail review-product__nail--one" />
-                <span className="review-product__nail review-product__nail--two" />
-                <span className="review-product__nail review-product__nail--three" />
-              </span>
-              <span>
-                <strong>{activeReview.product}</strong>
-                <small>{activeReview.detail}</small>
-              </span>
-            </div>
-          </figure>
-          <div className="review-card review-card--peek" aria-hidden="true">
-            <span className="review-card__stars">★★★★★</span>
-            <span className={`review-product__art review-product__art--${nextReview.tier}`}>
-              <span className="review-product__nail review-product__nail--one" />
-              <span className="review-product__nail review-product__nail--two" />
-              <span className="review-product__nail review-product__nail--three" />
-            </span>
           </div>
-          <button className="review-carousel__button review-carousel__button--next" type="button" onClick={showNextReview} aria-label="Next review">
-            ›
-          </button>
         </div>
-        <div className="review-dots" aria-label="Review carousel controls">
-          {reviews.map((review, index) => (
-            <button
-              aria-label={`Show review from ${review.name}`}
-              aria-pressed={index === activeReviewIndex}
-              className={`review-dots__dot${index === activeReviewIndex ? " review-dots__dot--active" : ""}`}
-              key={review.name}
-              onClick={() => setActiveReviewIndex(index)}
-              type="button"
-            />
-          ))}
-        </div>
-        <a className="review-more-link" href="#contact">
-          See more reviews <span aria-hidden="true">›</span>
-        </a>
       </section>
 
       <section className="section-block faq-teaser" id="faq">

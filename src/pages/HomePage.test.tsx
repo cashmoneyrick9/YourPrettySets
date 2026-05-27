@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HomePage } from "./HomePage";
@@ -47,6 +47,25 @@ describe("HomePage", () => {
     });
   };
 
+  const setReviewCardMetrics = (track: HTMLElement, cardWidth = 294, gap = 14) => {
+    let scrollLeft = 0;
+    Object.defineProperty(track, "clientWidth", { configurable: true, value: 339 });
+    Object.defineProperty(track, "scrollLeft", {
+      configurable: true,
+      get: () => scrollLeft,
+      set: (value: number) => {
+        scrollLeft = Math.trunc(value);
+      }
+    });
+    const cards = document.querySelectorAll<HTMLElement>(".review-card");
+    Object.defineProperty(track, "scrollWidth", { configurable: true, value: 78 + cards.length * (cardWidth + gap) });
+    cards.forEach((card, index) => {
+      Object.defineProperty(card, "offsetWidth", { configurable: true, value: cardWidth });
+      Object.defineProperty(card, "clientWidth", { configurable: true, value: cardWidth });
+      Object.defineProperty(card, "offsetLeft", { configurable: true, value: 39 + index * (cardWidth + gap) });
+    });
+  };
+
   it("does not scroll the page while centering the initial How It Works card", () => {
     const animationFrame = mockAnimationFrame();
     const scrollIntoViewSpy = vi.fn();
@@ -70,7 +89,7 @@ describe("HomePage", () => {
     render(<HomePage />);
 
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
-    const confidence = screen.getByRole("heading", { name: "3 easy steps" });
+    const confidence = screen.getByRole("heading", { name: "3 EASY STEPS" });
     const collections = screen.getByRole("heading", { name: "Browse" });
     const included = screen.getByRole("heading", { name: "What’s Included" });
 
@@ -116,7 +135,7 @@ describe("HomePage", () => {
     expect(screen.queryByText("Up next")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".weekly-set-dots__dot")).toHaveLength(0);
     expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Pretty notes from customers" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Loved by first-time press-on buyers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
   });
 
@@ -129,26 +148,100 @@ describe("HomePage", () => {
     expect(document.querySelector(".hero-photo")).not.toHaveAttribute("aria-label");
   });
 
-  it("shows the review carousel foundation", async () => {
-    const user = userEvent.setup();
+  it("shows the review carousel foundation", () => {
     render(<HomePage />);
 
-    expect(screen.getByText("Customer notes")).toBeInTheDocument();
-    expect(screen.getByText("Easy fit")).toBeInTheDocument();
-    expect(screen.getByText("Photo-ready")).toBeInTheDocument();
-    expect(screen.getByText("Beginner friendly")).toBeInTheDocument();
-    expect(screen.getByText("The set looked dressed up without feeling hard to wear.")).toBeInTheDocument();
-    expect(screen.getByText("Everyday customer")).toBeInTheDocument();
-    expect(screen.getAllByText("Date Night").length).toBeGreaterThan(0);
-    expect(screen.getByText("Oval · Short")).toBeInTheDocument();
-    expect(document.querySelectorAll(".review-dots__dot")).toHaveLength(3);
-    expect(screen.getByRole("link", { name: "See more reviews" })).toHaveAttribute("href", "#contact");
+    expect(screen.getByText("CUSTOMER LOVE")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Loved by first-time press-on buyers" })).toBeInTheDocument();
+    expect(document.querySelector(".review-carousel__track")).toBeInTheDocument();
+    expect(document.querySelectorAll(".review-card")).toHaveLength(12);
+    expect(document.querySelector(".review-dots")).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".review-dots__dot")).toHaveLength(0);
+    expect(document.querySelectorAll(".review-card__number")).toHaveLength(11);
+    expect([...document.querySelectorAll(".review-card__number")].map((number) => number.textContent)).toEqual([
+      "01",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12"
+    ]);
+    expect(document.querySelector('[data-review-index="1"]')).toHaveClass("review-card--product");
+    expect(document.querySelector('[data-review-index="1"] .review-card__number')).not.toBeInTheDocument();
+    expect(screen.getByText("Taylor K.")).toBeInTheDocument();
+    expect(screen.getByText("Verified Buyer")).toBeInTheDocument();
+    expect(screen.getByText("REVIEWED SET")).toBeInTheDocument();
+    expect(screen.getByText("Soft Pink")).toBeInTheDocument();
+    expect(screen.getByText("Square Short · From $35")).toBeInTheDocument();
+    expect(document.querySelectorAll(".review-card--product")).toHaveLength(1);
+    expect(document.querySelector('[data-review-index="1"] .reviewed-set__link')).toHaveAttribute("tabindex", "-1");
+    expect(document.querySelector('[data-review-index="1"] .reviewed-set__link')).toHaveAttribute("href", "/shop");
+    expect(document.querySelectorAll(".review-card--loop-buffer")).toHaveLength(0);
+    expect(screen.queryByRole("button", { name: "Previous review" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next review" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Show review/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "READ MORE REVIEWS" })).not.toBeInTheDocument();
+  });
 
-    await user.click(screen.getByRole("button", { name: "Next review" }));
+  it("uses native review scroll position as the active card source of truth", async () => {
+    render(<HomePage />);
 
-    expect(screen.getByText("Pretty enough for photos, practical enough for the week.")).toBeInTheDocument();
-    expect(screen.getByText("Beauty shopper")).toBeInTheDocument();
-    expect(screen.getAllByText("Golden Hour").length).toBeGreaterThan(0);
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
+    });
+
+    const track = document.querySelector(".review-carousel__track") as HTMLElement;
+    setReviewCardMetrics(track);
+    track.scrollLeft = 1249;
+
+    fireEvent.scroll(track);
+
+    expect(document.querySelector(".review-card--active")).toHaveAttribute("data-review-index", "4");
+    expect(document.querySelector(".review-card--active .review-card__number")).toHaveTextContent("05");
+    expect(document.querySelector(".review-dots")).not.toBeInTheDocument();
+  });
+
+  it("continuously drifts the review cards at the same slow pace as How It Works", () => {
+    const animationFrame = mockAnimationFrame();
+    render(<HomePage />);
+
+    const track = document.querySelector(".review-carousel__track") as HTMLElement;
+    setReviewCardMetrics(track);
+    act(() => {
+      for (let frame = 0; frame <= 70; frame += 1) {
+        animationFrame.runNextFrame(frame * 16);
+      }
+    });
+
+    expect(track.scrollLeft).toBeGreaterThan(30);
+    expect(document.querySelector(".review-card--active")).toHaveAttribute("data-review-index", "0");
+  });
+
+  it("does not render hidden review loop-buffer copies", async () => {
+    render(<HomePage />);
+    const cards = [...document.querySelectorAll(".review-card")];
+
+    expect(cards).toHaveLength(12);
+    expect(cards.map((card) => card.getAttribute("data-card-index"))).toEqual([
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+    ]);
+    expect(document.querySelectorAll(".review-card--loop-buffer")).toHaveLength(0);
   });
 
   it("shows three How It Works progress pills instead of dot controls", () => {

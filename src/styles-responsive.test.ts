@@ -60,7 +60,6 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("bottom: -1px;");
     expect(styles).toContain("height: clamp(180px, 32vh, 220px);");
     expect(styles).toContain("left: 0;");
-    expect(styles).toContain("position: absolute;");
     expect(styles).toContain("right: 0;");
     expect(styles).toContain("border-radius: 0;");
     expect(styles).not.toContain(".hero-section::after,\n  .hero-copy,\n  .hero-photo");
@@ -193,19 +192,20 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("scrollbar-width: none");
     expect(styles).not.toContain(".shop-more-grid");
     expect(styles).not.toContain(".weekly-set-section");
-    expect(styles).toContain(".review-proof-row {\n    flex-wrap: wrap;");
     expect(styles).toContain(".collection-section {\n    padding-bottom: 24px;");
     expect(styles).toContain(".collection-carousel {\n    margin-inline: -14px;");
     expect(styles).toContain(".collection-products,\n  .collection-products__heading {\n    min-width: 0;");
     expect(styles).toContain(".collection-product-row,\n  .collection-product-teaser {\n    grid-template-columns: repeat(2, minmax(0, 1fr));");
     expect(styles).toContain(".collection-products__more {\n    max-width: 100%;\n    justify-self: center;\n    width: fit-content;");
-    expect(styles).toContain(".review-carousel {\n    gap: 8px;");
-    expect(styles).toContain(".review-card--peek {\n    display: none;");
-    expect(styles).toContain(".kit-spread {\n    min-height: 250px;");
-    expect(styles).toContain(".kit-spread {\n    min-height: 238px;");
+    expect(styles).toContain("margin-left: calc(50% - 50vw);");
+    expect(styles).toContain("margin-right: calc(50% - 50vw);");
+    expect(styles).toContain(".review-carousel {\n    --review-card-width: min(74vw, 284px);");
+    expect(styles).not.toContain(".review-carousel__button");
+    expect(styles).not.toContain(".review-card--peek {\n    display: none;");
+    expect(styles).toContain("aspect-ratio: 1020 / 573;");
     expect(styles).not.toContain("min-height: 166px;");
     expect(styles).not.toContain("min-height: 158px;");
-    expect(styles).toContain("position: static;");
+    expect(styles).toContain("position: absolute;");
     expect(styles).toContain("font-size: 1.8rem");
     expect(styles).toContain("padding: 28px 0 0");
   });
@@ -264,10 +264,12 @@ describe("small mobile responsive CSS", () => {
 
   it("keeps the What’s Included kit image frameless and visually larger", () => {
     expect(styles).toContain(".kit-spread {\n  align-items: center;");
+    expect(styles).toContain("aspect-ratio: 1020 / 573;");
     expect(styles).toContain("border: 0;");
     expect(styles).toContain("padding: 0;");
     expect(styles).toContain(".kit-spread__image");
-    expect(styles).toContain("object-fit: cover;");
+    expect(styles).toContain("object-fit: contain;");
+    expect(styles).not.toContain("object-fit: cover;");
     expect(styles).not.toContain(".collection-card__mood,\n.kit-spread,\n.review-product__art");
   });
 

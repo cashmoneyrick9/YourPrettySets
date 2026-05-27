@@ -16,15 +16,20 @@ describe("KitContents", () => {
     expect(screen.getByText("Everything you need for your set.")).toBeInTheDocument();
     expect(document.querySelector(".kit-spread")).toBeInTheDocument();
     const kitImage = screen.getByRole("img", { name: "Press-on nail kit with tabs and tools" });
-    expect(kitImage).toHaveAttribute("src", "/assets/kit-contents-spread.png");
+    expect(kitImage).toHaveAttribute("src", "/assets/kit-contents-spread-v2.png");
     expect(document.querySelector(".kit-spread")?.children).toHaveLength(1);
     expect(document.querySelectorAll(".kit-spread__piece")).toHaveLength(0);
 
     expect(screen.getByRole("button", { name: /Made to fit/i })).toBeInTheDocument();
     expect(screen.getByText("Made to fit")).toBeInTheDocument();
     expect(screen.getByText("24 nails in multiple sizes")).toBeInTheDocument();
-    expect(screen.getByText("Extra sizes help you find the best fit for each finger before applying.")).toBeInTheDocument();
-    expect(document.querySelectorAll(".kit-size-tile")).toHaveLength(8);
+    expect(screen.queryByText("Extra sizes help you find the best fit for each finger before applying.")).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Twenty-four press-on nails in multiple sizes with small fruit details" })).toHaveAttribute(
+      "src",
+      "/assets/nail-size-set.png"
+    );
+    expect(document.querySelector(".kit-size-row__image")).toBeInTheDocument();
+    expect(document.querySelectorAll(".kit-size-tile")).toHaveLength(0);
 
     expect(screen.getByRole("button", { name: /Prep \+ apply kit/i })).toBeInTheDocument();
     expect(screen.getByText("Prep + apply kit")).toBeInTheDocument();
@@ -48,7 +53,7 @@ describe("KitContents", () => {
 
     expect(fitButton).toHaveAttribute("aria-expanded", "true");
     expect(prepButton).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByText("Extra sizes help you find the best fit for each finger before applying.")).toBeInTheDocument();
+    expect(screen.queryByText("Extra sizes help you find the best fit for each finger before applying.")).not.toBeInTheDocument();
     expect(screen.queryByText("Adhesive tabs")).not.toBeInTheDocument();
 
     await user.click(prepButton);
@@ -57,7 +62,24 @@ describe("KitContents", () => {
     expect(prepButton).toHaveAttribute("aria-expanded", "true");
     expect(screen.queryByText("Extra sizes help you find the best fit for each finger before applying.")).not.toBeInTheDocument();
     expect(screen.getByText("Adhesive tabs")).toBeInTheDocument();
-    expect(screen.getByText("Storage pouch/card")).toBeInTheDocument();
+    expect(screen.getByText("Nail glue")).toBeInTheDocument();
+    expect(screen.getByText("Nail file")).toBeInTheDocument();
+    expect(screen.getByText("Cuticle pusher")).toBeInTheDocument();
+    expect(screen.getByText("Alcohol wipe")).toBeInTheDocument();
+    expect(screen.getByText("Storage case/card")).toBeInTheDocument();
+    expect(document.querySelector(".kit-item-preview")).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".kit-item-card")).toHaveLength(6);
+    expect(document.querySelectorAll(".kit-item-card__image")).toHaveLength(6);
+    expect([...document.querySelectorAll<HTMLImageElement>(".kit-item-card__image")].map((image) => image.getAttribute("src"))).toEqual([
+      "/assets/adhesive-tabs.png",
+      "/assets/nail-glue.png",
+      "/assets/nail-file.png",
+      "/assets/cuticle-pusher.png",
+      "/assets/alcohol-wipe.png",
+      "/assets/storage-case.png"
+    ]);
+    expect(screen.queryByRole("button", { name: "Adhesive tabs" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Nail glue" })).not.toBeInTheDocument();
   });
 
   it("does not render the old accordion controls or care tips CTA", () => {
