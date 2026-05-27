@@ -195,6 +195,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".weekly-set-section");
     expect(styles).toContain(".review-proof-row {\n    flex-wrap: wrap;");
     expect(styles).toContain(".collection-section {\n    padding-bottom: 24px;");
+    expect(styles).toContain(".collection-carousel {\n    margin-inline: -14px;");
+    expect(styles).toContain(".collection-products,\n  .collection-products__heading {\n    min-width: 0;");
+    expect(styles).toContain(".collection-product-row,\n  .collection-product-teaser {\n    grid-template-columns: repeat(2, minmax(0, 1fr));");
+    expect(styles).toContain(".collection-products__more {\n    max-width: 100%;\n    justify-self: center;\n    width: fit-content;");
     expect(styles).toContain(".review-carousel {\n    gap: 8px;");
     expect(styles).toContain(".review-card--peek {\n    display: none;");
     expect(styles).toContain(".kit-spread {\n    min-height: 250px;");

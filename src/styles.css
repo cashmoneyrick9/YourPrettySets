@@ -2046,6 +2046,23 @@ h1 {
     padding: 2px 0 24px;
   }
 
+  .collection-products,
+  .collection-products__heading {
+    min-width: 0;
+  }
+
+  .collection-product-row,
+  .collection-product-teaser {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .collection-products__more {
+    max-width: 100%;
+    justify-self: center;
+    width: fit-content;
+  }
+
 }
 
 @media (min-width: 721px) {
@@ -2226,6 +2243,10 @@ h1 {
   .collection-section {
     padding-bottom: 24px;
     padding-top: 28px;
+  }
+
+  .collection-carousel {
+    margin-inline: -14px;
   }
 
   .section-heading {
