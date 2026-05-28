@@ -20,6 +20,7 @@ type MobileCarouselProps = {
   options?: EmblaOptionsType;
   previousLabel?: string;
   resumeDelayMs?: number;
+  scrollToIndex?: number | null;
   showArrows?: boolean;
   showDots?: boolean;
   slideClassName?: string;
@@ -49,6 +50,7 @@ export function MobileCarousel({
   options,
   previousLabel = "Previous slide",
   resumeDelayMs = 3200,
+  scrollToIndex,
   showArrows = true,
   showDots = false,
   slideClassName,
@@ -198,6 +200,12 @@ export function MobileCarousel({
       clearResumeTimer();
     };
   }, [clearAutoRotateFrame, clearResumeTimer, startAutoRotate]);
+
+  useEffect(() => {
+    if (!carouselApi || scrollToIndex === null || scrollToIndex === undefined) return;
+
+    carouselApi.scrollTo(scrollToIndex);
+  }, [carouselApi, scrollToIndex]);
 
   const scrollToPrevious = () => carouselApi?.scrollPrev();
   const scrollToNext = () => carouselApi?.scrollNext();

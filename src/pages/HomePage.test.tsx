@@ -224,8 +224,8 @@ describe("HomePage", () => {
 
     expect(screen.getByRole("heading", { name: "How Can We Help?" })).toBeInTheDocument();
     expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("heading", { name: "Top questions in Sizing" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Visit Help Center" })).toHaveAttribute("href", "#help-center");
     expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "#contact");
 

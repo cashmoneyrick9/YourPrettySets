@@ -192,10 +192,10 @@ function topicSlug(label: string) {
 }
 
 export function FaqSection() {
-  const [activeTopicIndex, setActiveTopicIndex] = useState(0);
+  const [activeTopicIndex, setActiveTopicIndex] = useState<number | null>(null);
   const [openQuestionValue, setOpenQuestionValue] = useState<string | undefined>(undefined);
-  const activeTopic = faqTopics[activeTopicIndex];
-  const activeTopicSlug = topicSlug(activeTopic.label);
+  const activeTopic = activeTopicIndex === null ? null : faqTopics[activeTopicIndex];
+  const activeTopicSlug = activeTopic ? topicSlug(activeTopic.label) : "";
 
   useEffect(() => {
     setOpenQuestionValue(undefined);
@@ -212,11 +212,11 @@ export function FaqSection() {
 
         <MobileCarousel
           ariaLabel="Choose a help topic"
-          autoRotate
+          autoRotate={activeTopicIndex === null}
           className="faq-topic-carousel"
           containerClassName="faq-topic-grid"
-          onSelectedIndexChange={setActiveTopicIndex}
-          options={{ align: "start", containScroll: false, loop: true }}
+          options={{ align: "center", containScroll: false, loop: true }}
+          scrollToIndex={activeTopicIndex}
           showArrows={false}
           slideClassName="faq-topic-slide"
           viewportClassName="faq-topic-carousel__viewport"
@@ -229,7 +229,7 @@ export function FaqSection() {
                 aria-pressed={isActive}
                 className={`faq-topic-card${isActive ? " faq-topic-card--active" : ""}`}
                 key={topic.label}
-                onClick={() => setActiveTopicIndex(index)}
+                onClick={() => setActiveTopicIndex(isActive ? null : index)}
                 type="button"
               >
                 <Icon aria-hidden size={30} strokeWidth={1.8} />
@@ -239,6 +239,7 @@ export function FaqSection() {
           })}
         />
 
+        {activeTopic ? (
         <div className="faq-question-card">
           <div className="faq-question-card__header">
             <h3>Top questions in {activeTopic.label}</h3>
@@ -272,6 +273,7 @@ export function FaqSection() {
             </a>
           </BrandButton>
         </div>
+        ) : null}
 
         <aside className="faq-cta-card faq-cta-card--help" id="help-center" aria-label="Help Center" role="region">
           <span className="faq-cta-card__icon" aria-hidden="true">

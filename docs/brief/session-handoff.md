@@ -318,7 +318,7 @@ Latest FAQ decision:
 - The Home page FAQ now renders from `src/components/FaqSection.tsx` and uses:
   - thin black-and-white intro card with the heading `How Can We Help?`
   - tappable issue/topic cards for `Sizing`, `Application`, `Wear & Care`, `Shipping`, `Returns`, `Removal`, and `Custom Orders`
-  - `Sizing` selected by default, with topic clicks updating the `Top questions in [Topic]` card and the view-all link text
+  - no topic selected by default, with topic taps revealing the `Top questions in [Topic]` card and the view-all link text
   - Help Center CTA before the final Contact Support CTA
   - `Visit Help Center` pointing to `#help-center` and `Contact Support` pointing to the existing `#contact` footer target
 - Follow-up CEO feedback on 2026-05-27 removed all pink/blush accents from this section. Keep FAQ styling basic black, white, and light gray unless the CEO reopens color.
@@ -328,6 +328,7 @@ Latest FAQ decision:
 - Follow-up intro-card pass on 2026-05-27 removed the visible `Need help?`, `FAQ & Help`, and support copy from the intro card, then added the compact visible heading `How Can We Help?`.
 - Follow-up topic-picker pass on 2026-05-27 changed the FAQ category picker from a multi-row grid to a one-row horizontal swipe carousel to reduce vertical space while preserving the same topic buttons and selected-topic behavior.
 - Follow-up carousel setup pass on 2026-05-27 installed Embla via `embla-carousel-react`, added reusable `src/components/MobileCarousel.tsx`, and placed a blank spare carousel instance above the FAQ `How Can We Help?` heading for future section/card work. It is intentionally empty content-wise for now.
+- Follow-up FAQ topic behavior pass on 2026-05-28 changed the topic carousel so no topic is selected by default. The `Top questions in ...` card stays hidden until a shopper taps a topic, passive carousel auto-rotation no longer changes FAQ content, selecting a topic freezes carousel auto-rotation, smoothly centers the selected topic card, and tapping the selected topic again clears the selection, hides the questions, and resumes topic motion.
 - This pass intentionally stays section-scoped; it does not create a real Help Center page, full FAQ routes, or finalized policy answers.
 
 Latest footer decision:

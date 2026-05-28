@@ -8,7 +8,7 @@ afterEach(() => {
 });
 
 describe("FaqSection", () => {
-  it("renders the mobile-first help flow with Sizing selected by default", () => {
+  it("renders the mobile-first help flow with no topic selected by default", () => {
     render(<FaqSection />);
 
     const heading = screen.getByRole("heading", { name: "How Can We Help?" });
@@ -32,15 +32,11 @@ describe("FaqSection", () => {
     expect(screen.queryByRole("button", { name: "Next help topic" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Go to help topic/i })).not.toBeInTheDocument();
     expect(document.querySelector(".faq-topic-carousel__dots")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("heading", { name: "Top questions in Sizing" })).toBeInTheDocument();
-    expect(document.querySelector(".faq-question-list")).toHaveAttribute("data-slot", "accordion");
-    expect(screen.getByRole("button", { name: "How do I measure my nails?" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Can I resize after I place my order?" })).toBeInTheDocument();
-    const viewAllQuestionsLink = screen.getByRole("link", { name: "View all sizing questions" });
-    expect(viewAllQuestionsLink).toHaveAttribute("href", "#help-center");
-    expect(viewAllQuestionsLink).toHaveClass("faq-question-card__link");
-    expect(viewAllQuestionsLink).toHaveAttribute("data-slot", "button");
+    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.queryByRole("heading", { name: /Top questions in/i })).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-question-list")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "How do I measure my nails?" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /View all/i })).not.toBeInTheDocument();
 
     const helpCenterCard = screen.getByRole("region", { name: "Help Center" });
     expect(within(helpCenterCard).getByRole("heading", { name: "Need more detail?" })).toBeInTheDocument();
@@ -74,9 +70,26 @@ describe("FaqSection", () => {
 
     expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
     expect(screen.getByRole("button", { name: "Shipping" })).toHaveAttribute("aria-pressed", "true");
+    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-auto-rotate");
     expect(screen.getByRole("heading", { name: "Top questions in Shipping" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "When will my order ship?" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "View all shipping questions" })).toHaveAttribute("href", "#help-center");
+  });
+
+  it("minimizes the quick questions and resumes topic motion when the active topic is tapped again", async () => {
+    const user = userEvent.setup();
+    render(<FaqSection />);
+
+    await user.click(screen.getByRole("button", { name: "Sizing" }));
+
+    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-auto-rotate");
+    expect(screen.getByRole("heading", { name: "Top questions in Sizing" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Sizing" }));
+
+    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
+    expect(document.querySelector(".faq-topic-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
   });
 
   it("uses shared carousel behavior instead of custom topic drag handling", () => {
@@ -93,6 +106,8 @@ describe("FaqSection", () => {
   it("opens one quick answer at a time when a shopper taps questions", async () => {
     const user = userEvent.setup();
     render(<FaqSection />);
+
+    await user.click(screen.getByRole("button", { name: "Sizing" }));
 
     const measuringQuestion = screen.getByRole("button", { name: "How do I measure my nails?" });
     const betweenSizesQuestion = screen.getByRole("button", { name: "What if I’m between sizes?" });
@@ -117,6 +132,7 @@ describe("FaqSection", () => {
     const user = userEvent.setup();
     render(<FaqSection />);
 
+    await user.click(screen.getByRole("button", { name: "Sizing" }));
     await user.click(screen.getByRole("button", { name: "How do I measure my nails?" }));
     expect(screen.getByText(/Measure the widest part of each natural nail/i)).toBeInTheDocument();
 
