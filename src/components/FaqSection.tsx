@@ -12,6 +12,7 @@ import {
   type LucideIcon
 } from "lucide-react";
 import { useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { BrandButton } from "./BrandButton";
 import { FaqCtaButton } from "./FaqCtaButton";
 import { MobileCarousel } from "./MobileCarousel";
 
@@ -324,9 +325,11 @@ export function FaqSection() {
               );
             })}
           </div>
-          <a className="faq-question-card__link" href="#help-center">
-            View all {activeTopicSlug} questions <ChevronRight aria-hidden size={16} strokeWidth={2} />
-          </a>
+          <BrandButton asChild className="faq-question-card__link">
+            <a href="#help-center">
+              View all {activeTopicSlug} questions <ChevronRight aria-hidden size={16} strokeWidth={2} />
+            </a>
+          </BrandButton>
         </div>
 
         <aside className="faq-cta-card faq-cta-card--help" id="help-center" aria-label="Help Center" role="region">

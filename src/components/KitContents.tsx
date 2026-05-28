@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BrandButton } from "./BrandButton";
 
 type KitPanelId = "fit" | "prep";
 type PrepItem = {
@@ -98,12 +99,14 @@ export function KitContents() {
           </article>
         </div>
 
-        <a className="kit-primary-link" href="#faq">
-          HOW TO APPLY &amp; CARE <span aria-hidden="true">→</span>
-        </a>
-        <a className="kit-faq-link" href="#faq">
-          Have a question? Visit our FAQ
-        </a>
+        <BrandButton asChild className="kit-primary-link">
+          <a href="#faq">
+            HOW TO APPLY &amp; CARE <span aria-hidden="true">→</span>
+          </a>
+        </BrandButton>
+        <BrandButton asChild className="kit-faq-link">
+          <a href="#faq">Have a question? Visit our FAQ</a>
+        </BrandButton>
       </div>
     </section>
   );

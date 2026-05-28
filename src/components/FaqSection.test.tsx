@@ -28,7 +28,10 @@ describe("FaqSection", () => {
     expect(screen.getByRole("heading", { name: "Top questions in Sizing" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "How do I measure my nails?" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Can I resize after I place my order?" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "View all sizing questions" })).toHaveAttribute("href", "#help-center");
+    const viewAllQuestionsLink = screen.getByRole("link", { name: "View all sizing questions" });
+    expect(viewAllQuestionsLink).toHaveAttribute("href", "#help-center");
+    expect(viewAllQuestionsLink).toHaveClass("faq-question-card__link");
+    expect(viewAllQuestionsLink).toHaveAttribute("data-slot", "button");
 
     const helpCenterCard = screen.getByRole("region", { name: "Help Center" });
     expect(within(helpCenterCard).getByRole("heading", { name: "Need more detail?" })).toBeInTheDocument();

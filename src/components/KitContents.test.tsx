@@ -34,8 +34,14 @@ describe("KitContents", () => {
     expect(screen.getByRole("button", { name: /Prep \+ apply kit/i })).toBeInTheDocument();
     expect(screen.getByText("Prep + apply kit")).toBeInTheDocument();
     expect(screen.getByText("Tabs, glue, file, wipe + pusher")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /HOW TO APPLY & CARE/i })).toHaveAttribute("href", "#faq");
-    expect(screen.getByRole("link", { name: "Have a question? Visit our FAQ" })).toHaveAttribute("href", "#faq");
+    const applyCareLink = screen.getByRole("link", { name: /HOW TO APPLY & CARE/i });
+    expect(applyCareLink).toHaveAttribute("href", "#faq");
+    expect(applyCareLink).toHaveClass("kit-primary-link");
+    expect(applyCareLink).toHaveAttribute("data-slot", "button");
+    const faqLink = screen.getByRole("link", { name: "Have a question? Visit our FAQ" });
+    expect(faqLink).toHaveAttribute("href", "#faq");
+    expect(faqLink).toHaveClass("kit-faq-link");
+    expect(faqLink).toHaveAttribute("data-slot", "button");
 
     expect(screen.queryByText(/24 press-on nails/i)).not.toBeInTheDocument();
     expect(screen.queryByText("Prep and size")).not.toBeInTheDocument();
