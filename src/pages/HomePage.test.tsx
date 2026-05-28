@@ -102,30 +102,26 @@ describe("HomePage", () => {
     expect(screen.queryByRole("button", { name: "Next review" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Show review/i })).not.toBeInTheDocument();
     expect(document.querySelector(".review-carousel__dots")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".review-card__number")).toHaveLength(11);
-    expect([...document.querySelectorAll(".review-card__number")].map((number) => number.textContent)).toEqual([
-      "01",
-      "03",
-      "04",
-      "05",
-      "06",
-      "07",
-      "08",
-      "09",
-      "10",
-      "11",
-      "12"
-    ]);
+    expect(document.querySelectorAll(".review-card--product")).toHaveLength(12);
+    expect(document.querySelectorAll(".review-card__number")).toHaveLength(0);
+    expect(document.querySelectorAll(".review-card__stars--product")).toHaveLength(12);
+    expect(document.querySelectorAll(".reviewed-set")).toHaveLength(12);
     expect(document.querySelector('[data-review-index="1"]')).toHaveClass("review-card--product");
-    expect(document.querySelector('[data-review-index="1"] .review-card__number')).not.toBeInTheDocument();
     expect(screen.getByText("Taylor K.")).toBeInTheDocument();
-    expect(screen.getByText("Verified Buyer")).toBeInTheDocument();
-    expect(screen.getByText("REVIEWED SET")).toBeInTheDocument();
-    expect(screen.getByText("Soft Pink")).toBeInTheDocument();
-    expect(screen.getByText("Square Short · From $35")).toBeInTheDocument();
-    expect(document.querySelectorAll(".review-card--product")).toHaveLength(1);
+    expect(screen.getByText("Maya R.")).toBeInTheDocument();
+    expect(screen.getAllByText("Verified Buyer")).toHaveLength(12);
+    expect(screen.getAllByText("REVIEWED SET")).toHaveLength(12);
+    expect(screen.getByText("Blush Crush")).toBeInTheDocument();
+    expect(screen.getByText("Sea Glass")).toBeInTheDocument();
+    expect(screen.getAllByText("Square Short · $18")).toHaveLength(2);
+    expect(screen.getByText("Almond Medium · $32")).toBeInTheDocument();
+    expect(screen.getByText(/easy to apply and looked polished all week/i)).toBeInTheDocument();
+    expect(screen.getByText(/survived a beach weekend/i)).toBeInTheDocument();
     expect(document.querySelector('[data-review-index="1"] .reviewed-set__link')).toHaveAttribute("tabindex", "-1");
-    expect(document.querySelector('[data-review-index="1"] .reviewed-set__link')).toHaveAttribute("href", "/shop");
+    expect(document.querySelector('[data-review-index="1"] .reviewed-set__link')).toHaveAttribute(
+      "href",
+      "/shop/golden-hour"
+    );
     expect(document.querySelectorAll(".review-card--loop-buffer")).toHaveLength(0);
     expect(screen.queryByRole("link", { name: "READ MORE REVIEWS" })).not.toBeInTheDocument();
   });
@@ -226,8 +222,8 @@ describe("HomePage", () => {
     expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
     expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Visit Help Center" })).toHaveAttribute("href", "#help-center");
-    expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "#contact");
+    expect(screen.getByRole("link", { name: "Visit Help Center →" })).toHaveAttribute("href", "#help-center");
+    expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
 
     await user.click(screen.getByRole("button", { name: "Application" }));
 

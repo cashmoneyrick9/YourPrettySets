@@ -171,8 +171,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("max-width: none;");
     expect(styles).toContain(".collection-carousel__viewport");
     expect(styles).toContain("padding-inline: 18px;");
-    expect(styles).toContain(".collection-carousel,\n  .faq-topic-carousel {\n    margin-left: calc(50% - 50vw);");
-    expect(styles).toContain("width: 100vw;");
+    expect(styles).toContain(".collection-carousel,\n  .faq-topic-carousel,\n  .review-carousel {\n    margin-left: calc(-1 * clamp(18px, 4vw, 56px));");
+    expect(styles).toContain("width: auto;");
+    expect(styles).not.toContain(".collection-carousel,\n  .faq-topic-carousel {\n    margin-left: calc(50% - 50vw);");
     expect(styles).toContain(".collection-carousel__viewport,\n  .faq-topic-carousel__viewport {\n    padding-inline: 0;");
     expect(styles).toContain(".confidence-carousel__viewport {\n    overflow: hidden;");
     expect(styles).toContain("padding: 2px 18px 12px;");
@@ -201,12 +202,12 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".shop-more-grid");
     expect(styles).not.toContain(".weekly-set-section");
     expect(styles).toContain(".collection-section {\n    padding-bottom: 24px;");
-    expect(styles).toContain(".collection-carousel {\n    margin-left: calc(50% - 50vw);");
+    expect(styles).toContain(".collection-carousel {\n    margin-left: -14px;");
     expect(styles).toContain(".collection-products,\n  .collection-products__heading {\n    min-width: 0;");
     expect(styles).toContain(".collection-product-row,\n  .collection-product-teaser {\n    grid-template-columns: repeat(2, minmax(0, 1fr));");
     expect(styles).toContain(".collection-products__more {\n    max-width: 100%;\n    justify-self: center;\n    width: fit-content;");
-    expect(styles).toContain("margin-left: calc(50% - 50vw);");
-    expect(styles).toContain("margin-right: calc(50% - 50vw);");
+    expect(styles).toContain("margin-left: calc(-1 * clamp(18px, 4vw, 56px));");
+    expect(styles).toContain("margin-right: calc(-1 * clamp(18px, 4vw, 56px));");
     expect(styles).toContain("--review-card-min-height: 452px;");
     expect(styles).toContain("min-height: var(--review-card-min-height);");
     expect(styles).toContain(".review-carousel {\n    --review-card-width: min(74vw, 284px);");
@@ -301,12 +302,53 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain("flex: 0 0 clamp(116px, 31vw, 136px);");
     expect(faqStyles).not.toContain(".faq-topic-carousel__dots");
     expect(faqStyles).toContain(".faq-topic-card--active {\n  background: #ffffff;");
-    expect(faqStyles).toContain(".faq-cta-card__button--filled {\n  background: #000000;");
+    expect(faqStyles).not.toContain(".faq-cta-card__button--filled {\n  background: #000000;");
+    expect(faqStyles).toContain(".faq-support-footer");
+    expect(faqStyles).toContain(".faq-support-footer__button");
+    expect(faqStyles).toContain("border: 1px solid #000000;");
+    expect(faqStyles).toContain(".faq-support-footer__contact");
     expect(faqStyles).toContain("min-height: 112px;");
     expect(styles).toContain("flex-basis: clamp(104px, 30vw, 126px);");
     expect(styles).toContain("min-height: 96px;");
     expect(faqStyles).toContain("min-height: 44px;");
     expect(faqStyles).not.toMatch(/#(?:df7f91|e58a9b|dc5875|d94e73|fff7f8|fff5f6|fff0f1|fff6f7|f9d5d8)/i);
+  });
+
+  it("keeps the approved mobile footer system black and white", () => {
+    const footerStyles = styles.slice(styles.lastIndexOf("@media (max-width: 720px)"));
+
+    expect(styles).toContain(".site-footer-system {");
+    expect(styles).toContain(".site-footer-email,\n.site-shell--barebones .site-footer-email,\n.site-footer,\n.site-shell--barebones .site-footer");
+    expect(styles).toContain("background: #ffffff !important;");
+    expect(styles).toContain("border: 0 !important;");
+    expect(styles).toContain(".site-footer .site-footer__social a");
+    expect(styles).toContain("color: #000000;");
+    expect(styles).toContain(".site-footer .site-footer__groups {\n  border: 1px solid rgba(0, 0, 0, 0.16) !important;");
+    expect(footerStyles).toContain(".site-footer-system {\n    border-bottom: 0;");
+    expect(footerStyles).toContain("border-left: 0;");
+    expect(footerStyles).toContain("width: 100%;");
+    expect(footerStyles).not.toMatch(/#(?:fffaf4|fff7ef|bf6f72|bd6c70|7c6862|735852|4c3d39|725d57|8d7a74|b7656d)/i);
+  });
+
+  it("keeps the footer email card compact and neutral on mobile", () => {
+    const footerStyles = styles.slice(styles.lastIndexOf("@media (max-width: 720px)"));
+
+    expect(styles).toContain(".site-footer-email,\n.site-shell--barebones .site-footer-email,");
+    expect(styles).toContain(".site-footer-email__form {\n  border: 1px solid rgba(0, 0, 0, 0.34);");
+    expect(styles).toContain("grid-template-columns: minmax(0, 1fr) auto;");
+    expect(styles).toContain(".site-footer-email__button,\n.site-footer-email__button[data-slot=\"button\"] {\n  background: #000000;");
+    expect(styles).toContain("color: #ffffff !important;");
+    expect(footerStyles).toContain(".site-footer-email__content {\n    gap: 5px;");
+    expect(footerStyles).toContain("padding: 14px 20px;");
+    expect(footerStyles).toContain("font-size: clamp(1.68rem, 6.8vw, 1.92rem);");
+    expect(footerStyles).toContain("min-height: 48px;");
+    expect(footerStyles).toContain("min-height: 44px;");
+    expect(footerStyles).toContain(".site-footer .site-footer__group > h3");
+    expect(footerStyles).toContain(".site-footer .site-footer__panel[data-state=\"closed\"]");
+    expect(styles).toContain("@media (max-width: 360px)");
+    expect(styles).toContain(".site-footer-email__form {\n    border: 0;\n    gap: 8px;\n    grid-template-columns: 1fr;");
+    expect(styles).not.toContain(".footer-email-capture");
+    expect(styles).not.toContain(".cohesive-footer-preview");
   });
 
   it("includes compact mobile header rules that hide the desktop nav", () => {

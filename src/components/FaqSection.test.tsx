@@ -32,25 +32,29 @@ describe("FaqSection", () => {
     expect(screen.queryByRole("button", { name: "Next help topic" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Go to help topic/i })).not.toBeInTheDocument();
     expect(document.querySelector(".faq-topic-carousel__dots")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
     expect(screen.queryByRole("heading", { name: /Top questions in/i })).not.toBeInTheDocument();
     expect(document.querySelector(".faq-question-list")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "How do I measure my nails?" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /View all/i })).not.toBeInTheDocument();
 
-    const helpCenterCard = screen.getByRole("region", { name: "Help Center" });
-    expect(within(helpCenterCard).getByRole("heading", { name: "Need more detail?" })).toBeInTheDocument();
-    const helpCenterLink = within(helpCenterCard).getByRole("link", { name: "Visit Help Center" });
+    expect(screen.queryByRole("heading", { name: "Need more detail?" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Still need help?" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Browse our Help Center for full guides and tips.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Contact our team — we’re here for you!")).not.toBeInTheDocument();
+
+    const supportFooter = screen.getByRole("region", { name: "FAQ support" });
+    expect(within(supportFooter).queryByText("Find answers fast — or message us anytime.")).not.toBeInTheDocument();
+    expect(supportFooter.querySelector(".faq-support-footer__divider")).not.toBeInTheDocument();
+
+    const helpCenterLink = within(supportFooter).getByRole("link", { name: "Visit Help Center →" });
     expect(helpCenterLink).toHaveAttribute("href", "#help-center");
-    expect(helpCenterLink).toHaveClass("faq-cta-card__button", "faq-cta-card__button--outline");
+    expect(helpCenterLink).toHaveClass("faq-support-footer__button");
     expect(helpCenterLink).toHaveAttribute("data-slot", "button");
 
-    const supportCard = screen.getByRole("region", { name: "Contact Support" });
-    expect(within(supportCard).getByRole("heading", { name: "Still need help?" })).toBeInTheDocument();
-    const supportLink = within(supportCard).getByRole("link", { name: "Contact Support" });
-    expect(supportLink).toHaveAttribute("href", "#contact");
-    expect(supportLink).toHaveClass("faq-cta-card__button", "faq-cta-card__button--filled");
-    expect(supportLink).toHaveAttribute("data-slot", "button");
+    const supportLink = within(supportFooter).getByRole("link", { name: "Contact Support" });
+    expect(supportLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
+    expect(supportLink).toHaveClass("faq-support-footer__contact");
+    expect(supportLink).not.toHaveAttribute("data-slot", "button");
   });
 
   it("keeps Custom Orders as a standard topic card", () => {

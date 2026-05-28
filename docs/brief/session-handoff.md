@@ -311,6 +311,7 @@ Latest reviews decision:
 - Follow-up repeat removal on 2026-05-26 removed the hidden repeated review loop-buffer cards entirely. Reviews now renders exactly 12 physical cards, so there are no blank repeat cards while scrolling.
 - Follow-up product-card test on 2026-05-27 applies a `Reviewed set + Shop this set` layout only to review slide `02`, using placeholder copy for `Taylor K.`, `Soft Pink`, `Square Short · From $35`, and `/shop`. The other 11 slides remain the numbered reference cards for comparison.
 - Follow-up on 2026-05-27 removed the `READ MORE REVIEWS` CTA, then removed all review dots. The carousel still renders all 12 cards and keeps native swipe/auto-scroll behavior.
+- Follow-up browser comment on 2026-05-28 converted all 12 review slides to the same five-star review/product-card format, using realistic positive placeholder copy, central product names/prices, per-set `SHOP THIS SET` links, and no numbered placeholder cards.
 
 Latest FAQ decision:
 
@@ -319,8 +320,8 @@ Latest FAQ decision:
   - thin black-and-white intro card with the heading `How Can We Help?`
   - tappable issue/topic cards for `Sizing`, `Application`, `Wear & Care`, `Shipping`, `Returns`, `Removal`, and `Custom Orders`
   - no topic selected by default, with topic taps revealing the `Top questions in [Topic]` card and the view-all link text
-  - Help Center CTA before the final Contact Support CTA
-  - `Visit Help Center` pointing to `#help-center` and `Contact Support` pointing to the existing `#contact` footer target
+  - one compact FAQ support footer instead of the old two stacked CTA cards
+  - `Visit Help Center →` pointing to `#help-center` as the primary outlined action and `Contact Support` as a secondary underlined `mailto:hello@yourprettysets.com` placeholder link
 - Follow-up CEO feedback on 2026-05-27 removed all pink/blush accents from this section. Keep FAQ styling basic black, white, and light gray unless the CEO reopens color.
 - Follow-up size pass on 2026-05-27 reduced the FAQ section footprint so it sits closer to the scale of neighboring Home sections: smaller intro padding/title, shorter topic cards, tighter question rows, and more compact CTA cards.
 - Follow-up accordion pass on 2026-05-27 made the `Top questions in [Topic]` rows expand in place with short placeholder answers. One quick answer opens at a time, changing topic resets the open answer, and the category grid plus Help Center / Contact Support cards stay unchanged.
@@ -328,20 +329,17 @@ Latest FAQ decision:
 - Follow-up intro-card pass on 2026-05-27 removed the visible `Need help?`, `FAQ & Help`, and support copy from the intro card, then added the compact visible heading `How Can We Help?`.
 - Follow-up topic-picker pass on 2026-05-27 changed the FAQ category picker from a multi-row grid to a one-row horizontal swipe carousel to reduce vertical space while preserving the same topic buttons and selected-topic behavior.
 - Follow-up carousel setup pass on 2026-05-27 installed Embla via `embla-carousel-react`, added reusable `src/components/MobileCarousel.tsx`, and placed a blank spare carousel instance above the FAQ `How Can We Help?` heading for future section/card work. It is intentionally empty content-wise for now.
+- Follow-up support CTA pass on 2026-05-28 removed the two large FAQ CTA cards (`Need more detail?` / `Still need help?`) and replaced them with a lighter centered divider, one short support line, a full-width outlined Help Center button, and a quiet Contact Support text link. The FAQ accordion data and topic behavior stay unchanged.
 - Follow-up FAQ topic behavior pass on 2026-05-28 changed the topic carousel so no topic is selected by default. The `Top questions in ...` card stays hidden until a shopper taps a topic, passive carousel auto-rotation no longer changes FAQ content, selecting a topic freezes carousel auto-rotation, smoothly centers the selected topic card, and tapping the selected topic again clears the selection, hides the questions, and resumes topic motion.
 - This pass intentionally stays section-scoped; it does not create a real Help Center page, full FAQ routes, or finalized policy answers.
 
 Latest footer decision:
 
-- The CEO rejected the first footer mockups, then selected the accordion-footer direction from a second set.
-- The footer now uses:
-  - brand line `YourPrettySets`
-  - reassurance copy `Ready-to-wear press-ons, packed with care.`
-  - accordion groups: `Shop`, `Help`, `Policies`, and `Social`
-  - `Contact us` lives inside the `Help` accordion instead of as a standalone footer button
-  - `Shop` open by default, with only one group open at a time
-  - small copyright text
-- This is a UX foundation only; final UI polish remains open.
+- Latest approved footer direction on 2026-05-28 keeps only the email capture CTA at the bottom of `App.tsx` and removes the visible footer below it.
+- `SiteFooter` now renders only the email capture CTA card: eyebrow `YOURPRETTYSETS`, headline `Get 15% off your first set`, drops/restocks/offers copy, native email input, shadcn `Button`, and placeholder success copy after submit.
+- The visible accordion footer, social/contact row, copyright line, and payment badges were removed after CEO feedback. Do not reintroduce footer navigation unless the CEO explicitly asks for a new footer direction.
+- The old standalone `FooterEmailCapture`, `CohesiveFooterPreview`, and FAQ CTA-card components were removed. Do not reintroduce duplicate footer previews unless the CEO explicitly asks for side-by-side comparison again.
+- Newsletter/email capture is visual-only for now; it is not connected to a real email provider.
 
 Latest UX bug pass:
 

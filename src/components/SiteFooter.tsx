@@ -1,79 +1,45 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-
-type FooterGroupId = "shop" | "help" | "policies" | "social";
-
-type FooterLink = {
-  href: string;
-  label: string;
-};
-
-type FooterGroup = {
-  id: FooterGroupId;
-  label: string;
-  links: FooterLink[];
-};
-
-const footerGroups: FooterGroup[] = [
-  {
-    id: "shop",
-    label: "Shop",
-    links: [{ href: "#shop-collections", label: "Collections" }]
-  },
-  {
-    id: "help",
-    label: "Help",
-    links: [
-      { href: "#how-it-works", label: "How it works" },
-      { href: "#faq", label: "Care tips" },
-      { href: "#contact", label: "Contact us" }
-    ]
-  },
-  {
-    id: "policies",
-    label: "Policies",
-    links: [
-      { href: "#faq", label: "Shipping" },
-      { href: "#faq", label: "Returns" },
-      { href: "#faq", label: "Privacy" }
-    ]
-  },
-  {
-    id: "social",
-    label: "Social",
-    links: [{ href: "#instagram", label: "Instagram" }]
-  }
-];
+import { FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function SiteFooter() {
+  const [submitted, setSubmitted] = useState(false);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmitted(true);
+  }
+
   return (
-    <footer className="site-footer" id="contact">
-      <div className="site-footer__intro">
-        <a className="site-footer__brand" href="#home">
-          YourPrettySets
-        </a>
-        <p>Ready-to-wear press-ons, packed with care.</p>
-      </div>
-
-      <nav aria-label="Footer navigation" className="site-footer__groups">
-        <Accordion collapsible={false} defaultValue="shop" type="single">
-          {footerGroups.map((group) => (
-            <AccordionItem className="site-footer__group" key={group.id} value={group.id}>
-              <AccordionTrigger className="site-footer__toggle">
-                <span>{group.label}</span>
-              </AccordionTrigger>
-              <AccordionContent className="site-footer__panel">
-                {group.links.map((link) => (
-                  <a href={link.href} key={`${group.id}-${link.label}`}>
-                    {link.label}
-                  </a>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </nav>
-
-      <p className="site-footer__fine-print">&copy; 2026 YourPrettySets</p>
-    </footer>
+    <div className="site-footer-system">
+      <Card aria-labelledby="site-footer-email-title" className="site-footer-email" role="region">
+        <CardContent className="site-footer-email__content">
+          <p className="site-footer-email__eyebrow">YOURPRETTYSETS</p>
+          <h2 className="site-footer-email__title" id="site-footer-email-title">
+            Get 15% off your first set
+          </h2>
+          <p className="site-footer-email__copy">Join the list for new drops, restocks, and exclusive offers.</p>
+          <form className="site-footer-email__form" onSubmit={handleSubmit}>
+            <label className="sr-only" htmlFor="site-footer-email-input">
+              Email address
+            </label>
+            <input
+              autoComplete="email"
+              className="site-footer-email__input"
+              id="site-footer-email-input"
+              placeholder="Email address"
+              required
+              type="email"
+            />
+            <Button className="site-footer-email__button" type="submit">
+              Get 15% off
+            </Button>
+          </form>
+          <p className="site-footer-email__note">
+            {submitted ? "You're on the list. Your code is coming soon." : "No spam. Just pretty updates."}
+          </p>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

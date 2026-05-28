@@ -1,8 +1,6 @@
 import {
-  BookOpen,
   ChevronRight,
   Heart,
-  MessageCircle,
   Pipette,
   RotateCcw,
   Ruler,
@@ -13,9 +11,9 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandButton } from "./BrandButton";
-import { FaqCtaButton } from "./FaqCtaButton";
 import { MobileCarousel } from "./MobileCarousel";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import { Button } from "./ui/button";
 
 type FaqTopic = {
   icon: LucideIcon;
@@ -240,65 +238,49 @@ export function FaqSection() {
         />
 
         {activeTopic ? (
-        <div className="faq-question-card">
-          <div className="faq-question-card__header">
-            <h3>Top questions in {activeTopic.label}</h3>
-          </div>
-          <Accordion
-            className="faq-question-list"
-            collapsible
-            onValueChange={setOpenQuestionValue}
-            type="single"
-            value={openQuestionValue}
-          >
-            {activeTopic.questions.map((item, index) => {
-              const questionValue = `${activeTopicSlug}-${index}`;
+          <div className="faq-question-card">
+            <div className="faq-question-card__header">
+              <h3>Top questions in {activeTopic.label}</h3>
+            </div>
+            <Accordion
+              className="faq-question-list"
+              collapsible
+              onValueChange={setOpenQuestionValue}
+              type="single"
+              value={openQuestionValue}
+            >
+              {activeTopic.questions.map((item, index) => {
+                const questionValue = `${activeTopicSlug}-${index}`;
 
-              return (
-                <AccordionItem className="faq-question-item" key={item.question} value={questionValue}>
-                  <AccordionTrigger className="faq-question-row [&>svg]:hidden">
-                    <span>{item.question}</span>
-                    <ChevronRight aria-hidden className="faq-question-row__icon" size={20} strokeWidth={1.8} />
-                  </AccordionTrigger>
-                  <AccordionContent className="faq-question-answer">
-                    <p>{item.answer}</p>
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
-          <BrandButton asChild className="faq-question-card__link">
-            <a href="#help-center">
-              View all {activeTopicSlug} questions <ChevronRight aria-hidden size={16} strokeWidth={2} />
-            </a>
-          </BrandButton>
-        </div>
+                return (
+                  <AccordionItem className="faq-question-item" key={item.question} value={questionValue}>
+                    <AccordionTrigger className="faq-question-row [&>svg]:hidden">
+                      <span>{item.question}</span>
+                      <ChevronRight aria-hidden className="faq-question-row__icon" size={20} strokeWidth={1.8} />
+                    </AccordionTrigger>
+                    <AccordionContent className="faq-question-answer">
+                      <p>{item.answer}</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
+            <BrandButton asChild className="faq-question-card__link">
+              <a href="#help-center">
+                View all {activeTopicSlug} questions <ChevronRight aria-hidden size={16} strokeWidth={2} />
+              </a>
+            </BrandButton>
+          </div>
         ) : null}
 
-        <aside className="faq-cta-card faq-cta-card--help" id="help-center" aria-label="Help Center" role="region">
-          <span className="faq-cta-card__icon" aria-hidden="true">
-            <BookOpen size={28} strokeWidth={1.8} />
-          </span>
-          <div className="faq-cta-card__copy">
-            <h3>Need more detail?</h3>
-            <p>Browse our Help Center for full guides and tips.</p>
-          </div>
-          <FaqCtaButton href="#help-center" tone="outline">
-            Visit Help Center
-          </FaqCtaButton>
-        </aside>
-
-        <aside className="faq-cta-card faq-cta-card--support" aria-label="Contact Support" role="region">
-          <span className="faq-cta-card__icon" aria-hidden="true">
-            <MessageCircle size={28} strokeWidth={1.8} />
-          </span>
-          <div className="faq-cta-card__copy">
-            <h3>Still need help?</h3>
-            <p>Contact our team — we’re here for you!</p>
-          </div>
-          <FaqCtaButton href="#contact" tone="filled">
+        <aside className="faq-support-footer" id="help-center" aria-label="FAQ support" role="region">
+          <Button asChild className="faq-support-footer__button" variant="brandSafe">
+            <a href="#help-center">Visit Help Center →</a>
+          </Button>
+          {/* TODO: Replace mailto with a real contact page route when that page exists. */}
+          <a className="faq-support-footer__contact" href="mailto:hello@yourprettysets.com">
             Contact Support
-          </FaqCtaButton>
+          </a>
         </aside>
       </div>
     </section>

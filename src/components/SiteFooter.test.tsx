@@ -8,37 +8,35 @@ afterEach(() => {
 });
 
 describe("SiteFooter", () => {
-  it("uses the shared accordion foundation while keeping one footer group open at a time", async () => {
+  it("renders the approved email capture card", async () => {
     const user = userEvent.setup();
     render(<SiteFooter />);
 
-    const footerNav = screen.getByRole("navigation", { name: "Footer navigation" });
-    const accordion = footerNav.querySelector('[data-slot="accordion"]');
-    const shopGroup = screen.getByRole("button", { name: "Shop" });
-    const helpGroup = screen.getByRole("button", { name: "Help" });
+    const emailCard = screen.getByRole("region", { name: "Get 15% off your first set" });
 
-    expect(accordion).toBeInTheDocument();
-    expect(shopGroup).toHaveAttribute("aria-expanded", "true");
-    expect(helpGroup).toHaveAttribute("aria-expanded", "false");
-    expect(within(footerNav).getByRole("link", { name: "Collections" })).toHaveAttribute("href", "#shop-collections");
+    expect(within(emailCard).getByText("YOURPRETTYSETS")).toBeInTheDocument();
+    expect(within(emailCard).getByRole("heading", { name: "Get 15% off your first set" })).toBeInTheDocument();
+    expect(within(emailCard).getByText("Join the list for new drops, restocks, and exclusive offers.")).toBeInTheDocument();
+    expect(within(emailCard).getByPlaceholderText("Email address")).toHaveAttribute("type", "email");
+    expect(within(emailCard).getByRole("button", { name: "Get 15% off" })).toHaveAttribute("type", "submit");
+    expect(within(emailCard).getByText("No spam. Just pretty updates.")).toBeInTheDocument();
 
-    await user.click(helpGroup);
+    await user.type(within(emailCard).getByPlaceholderText("Email address"), "shopper@example.com");
+    await user.click(within(emailCard).getByRole("button", { name: "Get 15% off" }));
 
-    expect(shopGroup).toHaveAttribute("aria-expanded", "false");
-    expect(helpGroup).toHaveAttribute("aria-expanded", "true");
-    expect(within(footerNav).queryByRole("link", { name: "Collections" })).not.toBeInTheDocument();
-    expect(within(footerNav).getByRole("link", { name: "Contact us" })).toHaveAttribute("href", "#contact");
+    expect(within(emailCard).getByText("You're on the list. Your code is coming soon.")).toBeInTheDocument();
   });
 
-  it("keeps unfinished policy links inside the current prototype support path", async () => {
-    const user = userEvent.setup();
+  it("does not render the removed footer navigation, socials, legal, or payment area", () => {
     render(<SiteFooter />);
 
-    await user.click(screen.getByRole("button", { name: "Policies" }));
-
-    const footerNav = screen.getByRole("navigation", { name: "Footer navigation" });
-    for (const label of ["Shipping", "Returns", "Privacy"]) {
-      expect(within(footerNav).getByRole("link", { name: label })).toHaveAttribute("href", "#faq");
-    }
+    expect(screen.queryByRole("navigation", { name: "Footer navigation" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Instagram" })).not.toBeInTheDocument();
+    expect(screen.queryByText("© 2026 YourPrettySets. All rights reserved.")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("img", {
+        name: "Accepted payment methods: Apple Pay, Shop Pay, Visa, Mastercard, and PayPal"
+      })
+    ).not.toBeInTheDocument();
   });
 });
