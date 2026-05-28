@@ -1,5 +1,6 @@
 import { PointerEvent as ReactPointerEvent, UIEvent, useEffect, useRef, useState } from "react";
 import { CollectionFilters } from "../components/CollectionFilters";
+import { FaqSection } from "../components/FaqSection";
 import { KitContents } from "../components/KitContents";
 
 const confidenceDriftPixelsPerSecond = 36;
@@ -48,21 +49,6 @@ const reviewCarouselCards = reviews.map((review, reviewIndex) => ({
   reviewIndex
 }));
 
-const faqs = [
-  {
-    answer: "Each set includes 24 nails, adhesive tabs, nail glue, a nail file, cuticle pusher, alcohol wipe, application card, and storage.",
-    question: "What comes with each set?"
-  },
-  {
-    answer: "Wear time depends on prep and adhesive choice. Tabs are best for short wear, while glue is better for longer plans.",
-    question: "How long do press-ons last?"
-  },
-  {
-    answer: "Yes, with careful removal and storage between wears.",
-    question: "Can I reuse them?"
-  }
-];
-
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [isStepAutoPaused, setIsStepAutoPaused] = useState(false);
@@ -72,7 +58,6 @@ export function HomePage() {
     typeof window.matchMedia === "function" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false
   );
   const [activeReviewCardIndex, setActiveReviewCardIndex] = useState(0);
-  const [activeFaqIndex, setActiveFaqIndex] = useState(0);
   const stepTrackRef = useRef<HTMLDivElement>(null);
   const reviewTrackRef = useRef<HTMLDivElement>(null);
   const isReviewRecenteringRef = useRef(false);
@@ -667,51 +652,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section-block faq-teaser" id="faq">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">FAQ</p>
-            <h2>Quick answers</h2>
-          </div>
-          <a className="faq-care-link" href="#faq">
-            Care tips
-          </a>
-        </div>
-        <a className="faq-start-strip" href="#how-it-works">
-          <span aria-hidden="true">?</span>
-          <p>New to press-ons? Start here.</p>
-        </a>
-        <div className="faq-list">
-          {faqs.map((faq, index) => {
-            const isOpen = activeFaqIndex === index;
-            const panelId = `faq-answer-${index}`;
-
-            return (
-              <article className={`faq-item${isOpen ? " faq-item--open" : ""}`} key={faq.question}>
-                <button
-                  aria-controls={panelId}
-                  aria-expanded={isOpen}
-                  className="faq-item__button"
-                  onClick={() => setActiveFaqIndex(index)}
-                  type="button"
-                >
-                  <span>{faq.question}</span>
-                  <span aria-hidden="true">⌄</span>
-                </button>
-                {isOpen && (
-                  <p className="faq-item__answer" id={panelId}>
-                    {faq.answer}
-                  </p>
-                )}
-              </article>
-            );
-          })}
-        </div>
-        <div className="faq-contact-cta">
-          <span>Still unsure?</span>
-          <a href="#contact">Contact us</a>
-        </div>
-      </section>
+      <FaqSection />
     </main>
   );
 }

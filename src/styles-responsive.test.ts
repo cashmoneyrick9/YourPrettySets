@@ -273,6 +273,29 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".collection-card__mood,\n.kit-spread,\n.review-product__art");
   });
 
+  it("keeps the FAQ Help section black and white", () => {
+    const faqStyles = styles.slice(styles.indexOf(".faq-help-section"), styles.indexOf(".site-footer"));
+
+    expect(faqStyles).toContain("place-items: center;");
+    expect(faqStyles).toContain("font-family: var(--font-display);");
+    expect(faqStyles).toContain("font-variation-settings: \"opsz\" 144, \"SOFT\" 72, \"WONK\" 0;");
+    expect(faqStyles).toContain("font-size: clamp(1.65rem, 7vw, 2.25rem);");
+    expect(faqStyles).toContain(".faq-help__intro {\n  border-color: transparent;");
+    expect(faqStyles).toContain(".faq-topic-grid {\n  display: flex;");
+    expect(faqStyles).toContain("margin-inline: calc(-1 * clamp(18px, 4vw, 56px));");
+    expect(faqStyles).toContain("overflow-x: auto;");
+    expect(faqStyles).toContain("padding: 10px clamp(18px, 4vw, 56px) 8px;");
+    expect(faqStyles).toContain("scroll-snap-type: x mandatory;");
+    expect(faqStyles).toContain("flex: 0 0 clamp(116px, 31vw, 136px);");
+    expect(faqStyles).toContain(".faq-topic-card--active {\n  background: #ffffff;");
+    expect(faqStyles).toContain(".faq-cta-card__button--filled {\n  background: #000000;");
+    expect(faqStyles).toContain("min-height: 112px;");
+    expect(styles).toContain("flex-basis: clamp(104px, 30vw, 126px);");
+    expect(styles).toContain("min-height: 96px;");
+    expect(faqStyles).toContain("min-height: 44px;");
+    expect(faqStyles).not.toMatch(/#(?:df7f91|e58a9b|dc5875|d94e73|fff7f8|fff5f6|fff0f1|fff6f7|f9d5d8)/i);
+  });
+
   it("includes compact mobile header rules that hide the desktop nav", () => {
     expect(styles).toContain(".brand-header__mobile-actions");
     expect(styles).toContain(".brand-header__desktop-nav");

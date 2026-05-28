@@ -306,15 +306,21 @@ Latest reviews decision:
 
 Latest FAQ decision:
 
-- The CEO liked the Option C FAQ structure and wanted the contact CTA from Option B.
-- The Home page FAQ now uses:
-  - eyebrow `FAQ`
-  - heading `Quick answers`
-  - `Care tips` link
-  - helper strip `New to press-ons? Start here.`
-  - three accordion questions, with the first answer open by default
-  - bottom CTA `Still unsure? Contact us`, linking to the footer contact area
-- This is a UX foundation only; final UI polish remains open.
+- Follow-up FAQ UI pass on 2026-05-27 replaces the old compact FAQ accordion with a mobile-first `FAQ & Help` section based on the supplied bare UI mockup direction.
+- The Home page FAQ now renders from `src/components/FaqSection.tsx` and uses:
+  - thin black-and-white intro card with the heading `How Can We Help?`
+  - tappable issue/topic cards for `Sizing`, `Application`, `Wear & Care`, `Shipping`, `Returns`, `Removal`, and `Custom Orders`
+  - `Sizing` selected by default, with topic clicks updating the `Top questions in [Topic]` card and the view-all link text
+  - Help Center CTA before the final Contact Support CTA
+  - `Visit Help Center` pointing to `#help-center` and `Contact Support` pointing to the existing `#contact` footer target
+- Follow-up CEO feedback on 2026-05-27 removed all pink/blush accents from this section. Keep FAQ styling basic black, white, and light gray unless the CEO reopens color.
+- Follow-up size pass on 2026-05-27 reduced the FAQ section footprint so it sits closer to the scale of neighboring Home sections: smaller intro padding/title, shorter topic cards, tighter question rows, and more compact CTA cards.
+- Follow-up accordion pass on 2026-05-27 made the `Top questions in [Topic]` rows expand in place with short placeholder answers. One quick answer opens at a time, changing topic resets the open answer, and the category grid plus Help Center / Contact Support cards stay unchanged.
+- Follow-up category-grid pass on 2026-05-27 changed `Custom Orders` from a full-width card to the same square topic card style as the others, leaving it as the first item on the next row under `Shipping`.
+- Follow-up intro-card pass on 2026-05-27 removed the visible `Need help?`, `FAQ & Help`, and support copy from the intro card, then added the compact visible heading `How Can We Help?`.
+- Follow-up topic-picker pass on 2026-05-27 changed the FAQ category picker from a multi-row grid to a one-row horizontal swipe carousel to reduce vertical space while preserving the same topic buttons and selected-topic behavior.
+- Follow-up carousel setup pass on 2026-05-27 installed Embla via `embla-carousel-react`, added reusable `src/components/MobileCarousel.tsx`, and placed a blank spare carousel instance above the FAQ `How Can We Help?` heading for future section/card work. It is intentionally empty content-wise for now.
+- This pass intentionally stays section-scoped; it does not create a real Help Center page, full FAQ routes, or finalized policy answers.
 
 Latest footer decision:
 

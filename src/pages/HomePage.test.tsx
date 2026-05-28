@@ -110,7 +110,6 @@ describe("HomePage", () => {
     expect(document.querySelector(".collection-carousel__hint")).toHaveTextContent("Swipe to explore");
     expect(document.querySelector("#shop-more")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Shop more" })).not.toBeInTheDocument();
-    expect(screen.queryByText(/sizing kit/i)).not.toBeInTheDocument();
 
     expect(hero.compareDocumentPosition(collections) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(collections.compareDocumentPosition(confidence) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -136,7 +135,7 @@ describe("HomePage", () => {
     expect(document.querySelectorAll(".weekly-set-dots__dot")).toHaveLength(0);
     expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Loved by first-time press-on buyers" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "How Can We Help?" })).toBeInTheDocument();
   });
 
   it("uses a bare-bones black-and-white presentation without deleting the hero image container", () => {
@@ -554,23 +553,22 @@ describe("HomePage", () => {
     expect(screen.queryByLabelText("Minimal hand with finished press-on nails")).not.toBeInTheDocument();
   });
 
-  it("renders the FAQ help strip, accordion, and contact CTA", async () => {
+  it("renders the FAQ Help section with topic cards and support CTAs", async () => {
     const user = userEvent.setup();
     render(<HomePage />);
 
-    expect(screen.getByRole("link", { name: "New to press-ons? Start here." })).toHaveAttribute("href", "#how-it-works");
-    expect(screen.getByRole("link", { name: "Care tips" })).toHaveAttribute("href", "#faq");
-    expect(screen.getByRole("button", { name: /What comes with each set?/i })).toHaveAttribute("aria-expanded", "true");
-    expect(
-      screen.getByText("Each set includes 24 nails, adhesive tabs, nail glue, a nail file, cuticle pusher, alcohol wipe, application card, and storage.")
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /How long do press-ons last?/i })).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByRole("link", { name: "Contact us" })).toHaveAttribute("href", "#contact");
+    expect(screen.getByRole("heading", { name: "How Can We Help?" })).toBeInTheDocument();
+    expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: "Top questions in Sizing" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Visit Help Center" })).toHaveAttribute("href", "#help-center");
+    expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "#contact");
 
-    await user.click(screen.getByRole("button", { name: /Can I reuse them?/i }));
+    await user.click(screen.getByRole("button", { name: "Application" }));
 
-    expect(screen.getByRole("button", { name: /What comes with each set?/i })).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByRole("button", { name: /Can I reuse them?/i })).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByText("Yes, with careful removal and storage between wears.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "Application" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: "Top questions in Application" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Should I use glue or adhesive tabs?" })).toBeInTheDocument();
   });
 });
