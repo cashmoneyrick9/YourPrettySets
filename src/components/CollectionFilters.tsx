@@ -7,6 +7,7 @@ import {
   type UIEvent as ReactUIEvent,
 } from "react";
 import { collectionLabels, products } from "../data/products";
+import { BrandButton } from "./BrandButton";
 
 const collectionDragClickThreshold = 6;
 const collectionProgrammaticSettleGuardMs = 260;
@@ -192,9 +193,11 @@ export function CollectionFilters() {
           <p className="eyebrow">Collections</p>
           <h2>Browse</h2>
         </div>
-        <a className="collection-heading__link" href="#collection-products">
-          See all <span aria-hidden="true">→</span>
-        </a>
+        <BrandButton asChild className="collection-heading__link">
+          <a href="#collection-products">
+            See all <span aria-hidden="true">→</span>
+          </a>
+        </BrandButton>
       </div>
 
       <div

@@ -28,7 +28,10 @@ describe("CollectionFilters", () => {
       expect(screen.getByRole("button", { name: collection })).toBeInTheDocument();
     }
 
-    expect(screen.getByRole("link", { name: "See all" })).toHaveAttribute("href", "#collection-products");
+    const seeAllLink = screen.getByRole("link", { name: "See all" });
+    expect(seeAllLink).toHaveAttribute("href", "#collection-products");
+    expect(seeAllLink).toHaveClass("collection-heading__link");
+    expect(seeAllLink).toHaveAttribute("data-slot", "button");
     expect(screen.queryByRole("link", { name: "New Arrivals" })).not.toBeInTheDocument();
     expect(screen.queryByText("Soft sets for daily wear")).not.toBeInTheDocument();
     expect(screen.queryByText("Shop Everyday")).not.toBeInTheDocument();
