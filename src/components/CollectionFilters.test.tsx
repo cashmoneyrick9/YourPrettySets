@@ -31,6 +31,9 @@ describe("CollectionFilters", () => {
     expect(document.querySelectorAll(".collection-pagination__dot")).toHaveLength(0);
     expect(document.querySelector(".collection-pagination")).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel")).toHaveClass("mobile-carousel");
+    expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-loop", "true");
+    expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-rotate-speed", "24");
     expect(document.querySelector(".collection-track")).toHaveClass("mobile-carousel__container");
     expect(screen.queryByRole("button", { name: "Previous collection" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Next collection" })).not.toBeInTheDocument();

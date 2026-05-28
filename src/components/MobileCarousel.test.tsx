@@ -49,4 +49,25 @@ describe("MobileCarousel", () => {
     expect(carousel.querySelector(".mobile-carousel__controls")).not.toBeInTheDocument();
   });
 
+  it("marks continuous auto-rotating loop carousels for swipe-first behavior", () => {
+    render(
+      <MobileCarousel
+        ariaLabel="Auto loop carousel"
+        autoRotate
+        autoRotateSpeedPxPerSecond={24}
+        options={{ loop: true }}
+        showArrows={false}
+        slideCount={3}
+      />
+    );
+
+    const carousel = screen.getByRole("region", { name: "Auto loop carousel" });
+
+    expect(carousel).toHaveAttribute("data-auto-rotate", "true");
+    expect(carousel).toHaveAttribute("data-loop", "true");
+    expect(carousel).toHaveAttribute("data-rotate-speed", "24");
+    expect(carousel.querySelectorAll(".mobile-carousel__placeholder")).toHaveLength(3);
+    expect(carousel.querySelector(".mobile-carousel__controls")).not.toBeInTheDocument();
+  });
+
 });

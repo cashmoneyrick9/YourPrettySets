@@ -24,6 +24,9 @@ describe("FaqSection", () => {
     }
 
     expect(document.querySelector(".faq-topic-carousel")).toHaveClass("mobile-carousel");
+    expect(document.querySelector(".faq-topic-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(document.querySelector(".faq-topic-carousel")).toHaveAttribute("data-loop", "true");
+    expect(document.querySelector(".faq-topic-carousel")).toHaveAttribute("data-rotate-speed", "24");
     expect(document.querySelector(".faq-topic-grid")).toHaveClass("mobile-carousel__container");
     expect(screen.queryByRole("button", { name: "Previous help topic" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Next help topic" })).not.toBeInTheDocument();

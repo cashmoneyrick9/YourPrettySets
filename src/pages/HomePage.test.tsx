@@ -94,6 +94,9 @@ describe("HomePage", () => {
     expect(screen.getByRole("heading", { name: "Loved by first-time press-on buyers" })).toBeInTheDocument();
     expect(document.querySelector(".review-carousel__track")).toBeInTheDocument();
     expect(document.querySelector(".review-carousel")).toHaveClass("mobile-carousel");
+    expect(document.querySelector(".review-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(document.querySelector(".review-carousel")).toHaveAttribute("data-loop", "true");
+    expect(document.querySelector(".review-carousel")).toHaveAttribute("data-rotate-speed", "24");
     expect(document.querySelectorAll(".review-card")).toHaveLength(12);
     expect(screen.queryByRole("button", { name: "Previous review" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Next review" })).not.toBeInTheDocument();
@@ -156,6 +159,9 @@ describe("HomePage", () => {
     expect(screen.queryByRole("button", { name: "Next step" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Go to step/i })).not.toBeInTheDocument();
     expect(document.querySelector(".confidence-carousel")).toHaveClass("mobile-carousel");
+    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-loop", "true");
+    expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-rotate-speed", "24");
     expect(document.querySelector(".confidence-carousel")).not.toHaveClass("confidence-carousel--drifting");
     expect(document.querySelectorAll(".confidence-dots__dot")).toHaveLength(0);
     expect(document.querySelectorAll(".confidence-progress__pill")).toHaveLength(0);

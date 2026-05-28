@@ -212,10 +212,11 @@ export function FaqSection() {
 
         <MobileCarousel
           ariaLabel="Choose a help topic"
+          autoRotate
           className="faq-topic-carousel"
           containerClassName="faq-topic-grid"
           onSelectedIndexChange={setActiveTopicIndex}
-          options={{ align: "start", containScroll: "trimSnaps" }}
+          options={{ align: "start", containScroll: false, loop: true }}
           showArrows={false}
           slideClassName="faq-topic-slide"
           viewportClassName="faq-topic-carousel__viewport"

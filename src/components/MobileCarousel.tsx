@@ -1,10 +1,12 @@
 import type { EmblaCarouselType, EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 type MobileCarouselProps = {
   ariaLabel: string;
+  autoRotate?: boolean;
+  autoRotateSpeedPxPerSecond?: number;
   buttonClassName?: string;
   className?: string;
   containerClassName?: string;
@@ -17,6 +19,7 @@ type MobileCarouselProps = {
   onSelectedIndexChange?: (index: number) => void;
   options?: EmblaOptionsType;
   previousLabel?: string;
+  resumeDelayMs?: number;
   showArrows?: boolean;
   showDots?: boolean;
   slideClassName?: string;
@@ -31,6 +34,8 @@ function joinClassNames(...classNames: (false | null | string | undefined)[]) {
 
 export function MobileCarousel({
   ariaLabel,
+  autoRotate = false,
+  autoRotateSpeedPxPerSecond = 24,
   buttonClassName,
   className,
   containerClassName,
@@ -43,6 +48,7 @@ export function MobileCarousel({
   onSelectedIndexChange,
   options,
   previousLabel = "Previous slide",
+  resumeDelayMs = 3200,
   showArrows = true,
   showDots = false,
   slideClassName,
@@ -67,10 +73,18 @@ export function MobileCarousel({
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [canScrollPrevious, setCanScrollPrevious] = useState(false);
+  const autoRotateFrameRef = useRef<number | null>(null);
+  const lastAutoRotateTimeRef = useRef<number | null>(null);
+  const selectedIndexRef = useRef(0);
+  const resumeTimerRef = useRef<number | null>(null);
+  const isPausedRef = useRef(false);
+  const prefersReducedMotion =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const paginationItems = scrollSnaps.length ? scrollSnaps : renderedSlides;
 
   const updateCarouselState = useCallback((api: EmblaCarouselType) => {
     const nextSelectedIndex = api.selectedScrollSnap();
+    selectedIndexRef.current = nextSelectedIndex;
     setSelectedIndex(nextSelectedIndex);
     setScrollSnaps(api.scrollSnapList());
     setCanScrollPrevious(api.canScrollPrev());
@@ -91,6 +105,100 @@ export function MobileCarousel({
     };
   }, [carouselApi, updateCarouselState]);
 
+  const clearAutoRotateFrame = useCallback(() => {
+    if (!autoRotateFrameRef.current) return;
+
+    window.cancelAnimationFrame(autoRotateFrameRef.current);
+    autoRotateFrameRef.current = null;
+    lastAutoRotateTimeRef.current = null;
+  }, []);
+
+  const clearResumeTimer = useCallback(() => {
+    if (!resumeTimerRef.current) return;
+
+    window.clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = null;
+  }, []);
+
+  const updateContinuousSelection = useCallback((api: EmblaCarouselType) => {
+    const nextSelectedIndex = api.internalEngine().scrollTarget.byDistance(0, false).index;
+
+    if (nextSelectedIndex === selectedIndexRef.current) return;
+
+    selectedIndexRef.current = nextSelectedIndex;
+    setSelectedIndex(nextSelectedIndex);
+    onSelectedIndexChange?.(nextSelectedIndex);
+  }, [onSelectedIndexChange]);
+
+  const startAutoRotate = useCallback(() => {
+    clearAutoRotateFrame();
+
+    if (!autoRotate || prefersReducedMotion || isPausedRef.current || !carouselApi) return;
+
+    const step = (timestamp: number) => {
+      if (isPausedRef.current) {
+        clearAutoRotateFrame();
+        return;
+      }
+
+      const previousTimestamp = lastAutoRotateTimeRef.current ?? timestamp;
+      const deltaMs = Math.min(timestamp - previousTimestamp, 64);
+      lastAutoRotateTimeRef.current = timestamp;
+
+      const engine = carouselApi.internalEngine();
+      const distance = (autoRotateSpeedPxPerSecond * deltaMs) / 1000;
+      const nextLocation = engine.location.get() - distance;
+
+      engine.location.set(nextLocation);
+      engine.target.set(nextLocation);
+      engine.previousLocation.set(nextLocation);
+      engine.offsetLocation.set(nextLocation);
+      if (options?.loop) {
+        engine.scrollLooper.loop(-1);
+        engine.slideLooper.loop();
+      }
+      engine.translate.to(engine.offsetLocation.get());
+      updateContinuousSelection(carouselApi);
+
+      autoRotateFrameRef.current = window.requestAnimationFrame(step);
+    };
+
+    autoRotateFrameRef.current = window.requestAnimationFrame(step);
+  }, [
+    autoRotate,
+    autoRotateSpeedPxPerSecond,
+    carouselApi,
+    clearAutoRotateFrame,
+    prefersReducedMotion,
+    updateContinuousSelection
+  ]);
+
+  const pauseAutoRotate = useCallback(() => {
+    isPausedRef.current = true;
+    clearAutoRotateFrame();
+    clearResumeTimer();
+  }, [clearAutoRotateFrame, clearResumeTimer]);
+
+  const resumeAutoRotate = useCallback(() => {
+    clearResumeTimer();
+
+    if (!autoRotate || prefersReducedMotion) return;
+
+    resumeTimerRef.current = window.setTimeout(() => {
+      isPausedRef.current = false;
+      startAutoRotate();
+    }, resumeDelayMs);
+  }, [autoRotate, clearResumeTimer, prefersReducedMotion, resumeDelayMs, startAutoRotate]);
+
+  useEffect(() => {
+    startAutoRotate();
+
+    return () => {
+      clearAutoRotateFrame();
+      clearResumeTimer();
+    };
+  }, [clearAutoRotateFrame, clearResumeTimer, startAutoRotate]);
+
   const scrollToPrevious = () => carouselApi?.scrollPrev();
   const scrollToNext = () => carouselApi?.scrollNext();
 
@@ -99,6 +207,16 @@ export function MobileCarousel({
       aria-label={ariaLabel}
       className={joinClassNames("mobile-carousel", className)}
       data-active-step={dataActiveStep}
+      data-auto-rotate={autoRotate ? "true" : undefined}
+      data-loop={options?.loop ? "true" : undefined}
+      data-rotate-speed={autoRotate ? autoRotateSpeedPxPerSecond : undefined}
+      onBlurCapture={resumeAutoRotate}
+      onFocusCapture={pauseAutoRotate}
+      onMouseEnter={pauseAutoRotate}
+      onMouseLeave={resumeAutoRotate}
+      onPointerCancel={resumeAutoRotate}
+      onPointerDown={pauseAutoRotate}
+      onPointerUp={resumeAutoRotate}
       role="region"
     >
       <div className={joinClassNames("mobile-carousel__viewport", viewportClassName)} ref={viewportRef}>

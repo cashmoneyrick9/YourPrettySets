@@ -33,10 +33,11 @@ export function CollectionFilters() {
 
       <MobileCarousel
         ariaLabel="Shop by collection"
+        autoRotate
         className="collection-carousel"
         containerClassName="collection-track"
         onSelectedIndexChange={setActiveCollectionIndex}
-        options={{ align: "start", containScroll: "trimSnaps" }}
+        options={{ align: "start", containScroll: false, loop: true }}
         showArrows={false}
         slideClassName="collection-carousel__slide"
         viewportClassName="collection-carousel__viewport"

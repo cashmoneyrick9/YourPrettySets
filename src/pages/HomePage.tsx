@@ -77,11 +77,12 @@ export function HomePage() {
         </div>
         <MobileCarousel
           ariaLabel="How It Works carousel"
+          autoRotate
           className="confidence-carousel"
           containerClassName="confidence-carousel__track"
           dataActiveStep={confidenceSteps[activeStepIndex].number}
           onSelectedIndexChange={setActiveStepIndex}
-          options={{ align: "center", containScroll: false }}
+          options={{ align: "center", containScroll: false, loop: true }}
           showArrows={false}
           slideClassName="confidence-carousel__slide"
           viewportClassName="confidence-carousel__viewport"
@@ -104,10 +105,11 @@ export function HomePage() {
         </div>
         <MobileCarousel
           ariaLabel="Customer review carousel"
+          autoRotate
           className="review-carousel"
           containerClassName="review-carousel__track"
           onSelectedIndexChange={setActiveReviewCardIndex}
-          options={{ align: "center", containScroll: "trimSnaps" }}
+          options={{ align: "center", containScroll: false, loop: true }}
           showArrows={false}
           slideClassName="review-carousel__slide"
           viewportClassName="review-carousel__viewport"
