@@ -32,11 +32,17 @@ describe("FaqSection", () => {
 
     const helpCenterCard = screen.getByRole("region", { name: "Help Center" });
     expect(within(helpCenterCard).getByRole("heading", { name: "Need more detail?" })).toBeInTheDocument();
-    expect(within(helpCenterCard).getByRole("link", { name: "Visit Help Center" })).toHaveAttribute("href", "#help-center");
+    const helpCenterLink = within(helpCenterCard).getByRole("link", { name: "Visit Help Center" });
+    expect(helpCenterLink).toHaveAttribute("href", "#help-center");
+    expect(helpCenterLink).toHaveClass("faq-cta-card__button", "faq-cta-card__button--outline");
+    expect(helpCenterLink).toHaveAttribute("data-slot", "button");
 
     const supportCard = screen.getByRole("region", { name: "Contact Support" });
     expect(within(supportCard).getByRole("heading", { name: "Still need help?" })).toBeInTheDocument();
-    expect(within(supportCard).getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "#contact");
+    const supportLink = within(supportCard).getByRole("link", { name: "Contact Support" });
+    expect(supportLink).toHaveAttribute("href", "#contact");
+    expect(supportLink).toHaveClass("faq-cta-card__button", "faq-cta-card__button--filled");
+    expect(supportLink).toHaveAttribute("data-slot", "button");
   });
 
   it("keeps Custom Orders as a standard topic card", () => {

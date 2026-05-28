@@ -12,6 +12,7 @@ import {
   type LucideIcon
 } from "lucide-react";
 import { useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { FaqCtaButton } from "./FaqCtaButton";
 import { MobileCarousel } from "./MobileCarousel";
 
 const topicDragClickThreshold = 6;
@@ -336,9 +337,9 @@ export function FaqSection() {
             <h3>Need more detail?</h3>
             <p>Browse our Help Center for full guides and tips.</p>
           </div>
-          <a className="faq-cta-card__button faq-cta-card__button--outline" href="#help-center">
+          <FaqCtaButton href="#help-center" tone="outline">
             Visit Help Center
-          </a>
+          </FaqCtaButton>
         </aside>
 
         <aside className="faq-cta-card faq-cta-card--support" aria-label="Contact Support" role="region">
@@ -349,9 +350,9 @@ export function FaqSection() {
             <h3>Still need help?</h3>
             <p>Contact our team — we’re here for you!</p>
           </div>
-          <a className="faq-cta-card__button faq-cta-card__button--filled" href="#contact">
+          <FaqCtaButton href="#contact" tone="filled">
             Contact Support
-          </a>
+          </FaqCtaButton>
         </aside>
       </div>
     </section>
