@@ -45,7 +45,7 @@ describe("HomePage", () => {
     expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(0);
     expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
     expect(document.querySelector(".confidence-carousel__track")).toBeInTheDocument();
-    expect(document.querySelector(".confidence-progress")).toBeInTheDocument();
+    expect(document.querySelector(".confidence-progress")).not.toBeInTheDocument();
     expect(document.querySelector(".confidence-carousel__hint")).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel__hint")).toHaveTextContent("Swipe to explore");
     expect(document.querySelector("#shop-more")).not.toBeInTheDocument();
@@ -95,9 +95,10 @@ describe("HomePage", () => {
     expect(document.querySelector(".review-carousel__track")).toBeInTheDocument();
     expect(document.querySelector(".review-carousel")).toHaveClass("mobile-carousel");
     expect(document.querySelectorAll(".review-card")).toHaveLength(12);
-    expect(screen.getByRole("button", { name: "Previous review" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Next review" })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /Show review/i })).toHaveLength(12);
+    expect(screen.queryByRole("button", { name: "Previous review" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next review" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Show review/i })).not.toBeInTheDocument();
+    expect(document.querySelector(".review-carousel__dots")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".review-card__number")).toHaveLength(11);
     expect([...document.querySelectorAll(".review-card__number")].map((number) => number.textContent)).toEqual([
       "01",
@@ -148,16 +149,16 @@ describe("HomePage", () => {
     expect(document.querySelectorAll(".review-card--loop-buffer")).toHaveLength(0);
   });
 
-  it("shows a swipe-first How It Works carousel with accessible controls and step dots", () => {
+  it("shows a swipe-first How It Works carousel with no visible controls", () => {
     render(<HomePage />);
 
-    expect(screen.getByRole("button", { name: "Previous step" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Next step" })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /Go to step/i })).toHaveLength(3);
+    expect(screen.queryByRole("button", { name: "Previous step" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next step" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Go to step/i })).not.toBeInTheDocument();
     expect(document.querySelector(".confidence-carousel")).toHaveClass("mobile-carousel");
     expect(document.querySelector(".confidence-carousel")).not.toHaveClass("confidence-carousel--drifting");
     expect(document.querySelectorAll(".confidence-dots__dot")).toHaveLength(0);
-    expect(document.querySelectorAll(".confidence-progress__pill")).toHaveLength(3);
+    expect(document.querySelectorAll(".confidence-progress__pill")).toHaveLength(0);
     expect(document.querySelector(".confidence-carousel")).toHaveAttribute("data-active-step", "1");
   });
 

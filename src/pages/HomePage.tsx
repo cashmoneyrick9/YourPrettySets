@@ -77,19 +77,12 @@ export function HomePage() {
         </div>
         <MobileCarousel
           ariaLabel="How It Works carousel"
-          buttonClassName="confidence-carousel__button"
           className="confidence-carousel"
           containerClassName="confidence-carousel__track"
-          controlsClassName="confidence-carousel__controls"
           dataActiveStep={confidenceSteps[activeStepIndex].number}
-          dotClassName="confidence-progress__pill"
-          dotLabel={(index) => `Go to step ${index + 1}`}
-          dotsClassName="confidence-progress"
-          nextLabel="Next step"
           onSelectedIndexChange={setActiveStepIndex}
           options={{ align: "center", containScroll: false }}
-          previousLabel="Previous step"
-          showDots
+          showArrows={false}
           slideClassName="confidence-carousel__slide"
           viewportClassName="confidence-carousel__viewport"
           slides={confidenceSteps.map((step, stepIndex) => (
@@ -111,18 +104,11 @@ export function HomePage() {
         </div>
         <MobileCarousel
           ariaLabel="Customer review carousel"
-          buttonClassName="review-carousel__button"
           className="review-carousel"
           containerClassName="review-carousel__track"
-          controlsClassName="review-carousel__controls"
-          dotClassName="review-carousel__dot"
-          dotLabel={(index) => `Show review ${index + 1}`}
-          dotsClassName="review-carousel__dots"
-          nextLabel="Next review"
           onSelectedIndexChange={setActiveReviewCardIndex}
           options={{ align: "center", containScroll: "trimSnaps" }}
-          previousLabel="Previous review"
-          showDots
+          showArrows={false}
           slideClassName="review-carousel__slide"
           viewportClassName="review-carousel__viewport"
           slides={reviews.map((review, reviewIndex) => {

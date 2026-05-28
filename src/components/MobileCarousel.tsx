@@ -17,6 +17,7 @@ type MobileCarouselProps = {
   onSelectedIndexChange?: (index: number) => void;
   options?: EmblaOptionsType;
   previousLabel?: string;
+  showArrows?: boolean;
   showDots?: boolean;
   slideClassName?: string;
   slideCount?: number;
@@ -42,6 +43,7 @@ export function MobileCarousel({
   onSelectedIndexChange,
   options,
   previousLabel = "Previous slide",
+  showArrows = true,
   showDots = false,
   slideClassName,
   slideCount = 3,
@@ -109,42 +111,48 @@ export function MobileCarousel({
         </div>
       </div>
 
-      <div className={joinClassNames("mobile-carousel__controls", controlsClassName)}>
-        <button
-          aria-label={previousLabel}
-          className={joinClassNames("mobile-carousel__button", buttonClassName)}
-          disabled={!canScrollPrevious}
-          onClick={scrollToPrevious}
-          type="button"
-        >
-          <ChevronLeft aria-hidden size={18} strokeWidth={2} />
-        </button>
+      {showArrows || showDots ? (
+        <div className={joinClassNames("mobile-carousel__controls", controlsClassName)}>
+          {showArrows ? (
+            <button
+              aria-label={previousLabel}
+              className={joinClassNames("mobile-carousel__button", buttonClassName)}
+              disabled={!canScrollPrevious}
+              onClick={scrollToPrevious}
+              type="button"
+            >
+              <ChevronLeft aria-hidden size={18} strokeWidth={2} />
+            </button>
+          ) : null}
 
-        {showDots ? (
-          <div aria-label="Carousel pagination" className={joinClassNames("mobile-carousel__dots", dotsClassName)} role="group">
-            {paginationItems.map((_, index) => (
-              <button
-                aria-label={dotLabel(index)}
-                aria-pressed={index === selectedIndex}
-                className={joinClassNames("mobile-carousel__dot", dotClassName)}
-                key={index}
-                onClick={() => carouselApi?.scrollTo(index)}
-                type="button"
-              />
-            ))}
-          </div>
-        ) : null}
+          {showDots ? (
+            <div aria-label="Carousel pagination" className={joinClassNames("mobile-carousel__dots", dotsClassName)} role="group">
+              {paginationItems.map((_, index) => (
+                <button
+                  aria-label={dotLabel(index)}
+                  aria-pressed={index === selectedIndex}
+                  className={joinClassNames("mobile-carousel__dot", dotClassName)}
+                  key={index}
+                  onClick={() => carouselApi?.scrollTo(index)}
+                  type="button"
+                />
+              ))}
+            </div>
+          ) : null}
 
-        <button
-          aria-label={nextLabel}
-          className={joinClassNames("mobile-carousel__button", buttonClassName)}
-          disabled={!canScrollNext}
-          onClick={scrollToNext}
-          type="button"
-        >
-          <ChevronRight aria-hidden size={18} strokeWidth={2} />
-        </button>
-      </div>
+          {showArrows ? (
+            <button
+              aria-label={nextLabel}
+              className={joinClassNames("mobile-carousel__button", buttonClassName)}
+              disabled={!canScrollNext}
+              onClick={scrollToNext}
+              type="button"
+            >
+              <ChevronRight aria-hidden size={18} strokeWidth={2} />
+            </button>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -762,32 +762,6 @@ h1 {
   text-transform: uppercase;
 }
 
-.collection-pagination {
-  align-items: center;
-  display: flex;
-  gap: 7px;
-  justify-content: center;
-  margin-top: 2px;
-}
-
-.collection-pagination__dot {
-  background: rgba(57, 42, 49, 0.22);
-  border-radius: 999px;
-  display: block;
-  height: 6px;
-  width: 6px;
-}
-
-.collection-pagination__dot--active {
-  background: #392a31;
-  width: 18px;
-}
-
-.collection-pagination__dot[aria-pressed="true"] {
-  background: #392a31;
-  width: 18px;
-}
-
 .collection-carousel__controls {
   margin-top: 2px;
 }
@@ -1205,8 +1179,7 @@ h1 {
   padding-left: var(--confidence-gap);
 }
 
-.confidence-carousel:focus-visible,
-.confidence-progress:focus-visible {
+.confidence-carousel:focus-visible {
   outline: 3px solid #0a6866;
   outline-offset: 3px;
 }
@@ -1250,33 +1223,6 @@ h1 {
   padding: 8px 0 34px;
   position: relative;
   z-index: 3;
-}
-
-.confidence-progress {
-  display: flex;
-  gap: 7px;
-  max-width: 104px;
-  width: 30%;
-}
-
-.confidence-progress__pill {
-  background: rgba(139, 117, 105, 0.2);
-  border: 0;
-  border-radius: 999px;
-  cursor: pointer;
-  display: block;
-  flex: 1 1 0;
-  height: 7px;
-  overflow: hidden;
-  padding: 0;
-  transition:
-    background 160ms ease,
-    width 160ms ease;
-}
-
-.confidence-progress__pill[aria-pressed="true"] {
-  background: #8b7569;
-  width: 18px;
 }
 
 .collection-carousel__hint {
@@ -1325,6 +1271,7 @@ h1 {
 
 .review-carousel {
   --review-card-width: min(76vw, 330px);
+  --review-card-min-height: 452px;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
   width: 100vw;
@@ -1357,28 +1304,19 @@ h1 {
   display: flex;
   justify-content: center;
   margin: 0;
-  min-height: 250px;
+  min-height: var(--review-card-min-height);
   opacity: 0.58;
   padding: 22px;
-  transform: scale(0.96);
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease;
+  transition: opacity 180ms ease;
   width: 100%;
 }
 
 .review-card--active {
   opacity: 1;
-  transform: none;
 }
 
 .review-carousel__controls {
   margin-top: 4px;
-}
-
-.review-carousel__dot {
-  height: 6px;
-  width: 6px;
 }
 
 .review-card--product {
@@ -1386,7 +1324,7 @@ h1 {
   color: #2f2630;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: 430px;
+  min-height: var(--review-card-min-height);
   padding: 28px 22px 24px;
   text-align: center;
 }
@@ -1793,21 +1731,6 @@ h1 {
 
 .faq-topic-carousel__controls {
   margin-top: -2px;
-}
-
-.faq-topic-carousel__dots {
-  gap: 6px;
-}
-
-.faq-topic-carousel__dot {
-  background: rgba(23, 19, 23, 0.24);
-  height: 6px;
-  width: 6px;
-}
-
-.faq-topic-carousel__dot[aria-pressed="true"] {
-  background: #171317;
-  width: 18px;
 }
 
 .faq-question-card {
@@ -2233,6 +2156,34 @@ h1 {
 
   .confidence-carousel {
     --confidence-card-width: min(80vw, 306px);
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    max-width: none;
+    width: 100vw;
+  }
+
+  .collection-carousel,
+  .faq-topic-carousel {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    width: 100vw;
+  }
+
+  .collection-carousel__viewport,
+  .faq-topic-carousel__viewport {
+    padding-inline: 0;
+  }
+
+  .confidence-carousel__viewport {
+    overflow: hidden;
+  }
+
+  .collection-track {
+    padding: 2px 18px 12px;
+  }
+
+  .faq-topic-grid {
+    padding: 10px 18px 8px;
   }
 
   .confidence-carousel__viewport::after {
@@ -2342,10 +2293,6 @@ h1 {
     transform: none;
   }
 
-  .confidence-progress {
-    display: none;
-  }
-
   .collection-track {
     gap: 16px;
     display: grid;
@@ -2370,7 +2317,6 @@ h1 {
   }
 
   .collection-carousel__controls,
-  .collection-pagination,
   .collection-carousel__hint {
     display: none;
   }
@@ -2481,7 +2427,9 @@ h1 {
   }
 
   .collection-carousel {
-    margin-inline: -14px;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    width: 100vw;
   }
 
   .section-heading {
@@ -2589,7 +2537,7 @@ h1 {
   }
 
   .review-card {
-    min-height: 246px;
+    min-height: var(--review-card-min-height);
     padding: 18px;
   }
 
@@ -2769,9 +2717,7 @@ body,
 
 .primary-button,
 .kit-primary-link,
-.review-proof-row span,
-.collection-pagination__dot--active,
-.confidence-progress__pill[aria-pressed="true"] {
+.review-proof-row span {
   background: #000000 !important;
   background-image: none !important;
   border-color: #000000 !important;
@@ -2793,12 +2739,6 @@ body,
 .site-shell--barebones .brand-header__icon-button svg * {
   color: #000000 !important;
   stroke: #000000 !important;
-}
-
-.collection-pagination__dot,
-.confidence-progress__pill {
-  background: #ffffff !important;
-  border: 1px solid #000000 !important;
 }
 
 .product-art,

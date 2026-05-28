@@ -37,4 +37,16 @@ describe("MobileCarousel", () => {
     expect(carousel.querySelectorAll(".mobile-carousel__placeholder")).toHaveLength(2);
     expect(within(carousel).getAllByRole("button", { name: /Go to slide/i })).toHaveLength(2);
   });
+
+  it("can hide arrow controls while keeping swipeable slides", () => {
+    render(<MobileCarousel ariaLabel="Swipe-only carousel" showArrows={false} slideCount={2} />);
+
+    const carousel = screen.getByRole("region", { name: "Swipe-only carousel" });
+
+    expect(carousel.querySelectorAll(".mobile-carousel__placeholder")).toHaveLength(2);
+    expect(within(carousel).queryByRole("button", { name: "Previous slide" })).not.toBeInTheDocument();
+    expect(within(carousel).queryByRole("button", { name: "Next slide" })).not.toBeInTheDocument();
+    expect(carousel.querySelector(".mobile-carousel__controls")).not.toBeInTheDocument();
+  });
+
 });

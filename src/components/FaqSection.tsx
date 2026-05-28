@@ -212,18 +212,11 @@ export function FaqSection() {
 
         <MobileCarousel
           ariaLabel="Choose a help topic"
-          buttonClassName="faq-topic-carousel__button"
           className="faq-topic-carousel"
           containerClassName="faq-topic-grid"
-          controlsClassName="faq-topic-carousel__controls"
-          dotClassName="faq-topic-carousel__dot"
-          dotLabel={(index) => `Go to help topic ${index + 1}`}
-          dotsClassName="faq-topic-carousel__dots"
-          nextLabel="Next help topic"
           onSelectedIndexChange={setActiveTopicIndex}
           options={{ align: "start", containScroll: "trimSnaps" }}
-          previousLabel="Previous help topic"
-          showDots
+          showArrows={false}
           slideClassName="faq-topic-slide"
           viewportClassName="faq-topic-carousel__viewport"
           slides={faqTopics.map((topic, index) => {

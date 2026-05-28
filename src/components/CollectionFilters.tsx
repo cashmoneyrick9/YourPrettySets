@@ -33,18 +33,11 @@ export function CollectionFilters() {
 
       <MobileCarousel
         ariaLabel="Shop by collection"
-        buttonClassName="collection-carousel__button"
         className="collection-carousel"
         containerClassName="collection-track"
-        controlsClassName="collection-carousel__controls"
-        dotClassName="collection-pagination__dot"
-        dotLabel={(index) => `Go to collection ${index + 1}`}
-        dotsClassName="collection-pagination"
-        nextLabel="Next collection"
         onSelectedIndexChange={setActiveCollectionIndex}
         options={{ align: "start", containScroll: "trimSnaps" }}
-        previousLabel="Previous collection"
-        showDots
+        showArrows={false}
         slideClassName="collection-carousel__slide"
         viewportClassName="collection-carousel__viewport"
         slides={moodCollections.map((collection, index) => {

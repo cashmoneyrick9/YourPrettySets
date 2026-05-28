@@ -162,7 +162,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".confidence-card__copy");
     expect(styles).not.toContain(".confidence-card__body");
     expect(styles).not.toContain(".confidence-card__number");
-    expect(styles).toContain(".confidence-progress");
+    expect(styles).not.toContain(".confidence-progress");
     expect(styles).not.toContain(".confidence-dots");
     expect(styles).toContain(".collection-carousel__hint");
     expect(styles).toContain(".collection-products");
@@ -171,6 +171,12 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("max-width: none;");
     expect(styles).toContain(".collection-carousel__viewport");
     expect(styles).toContain("padding-inline: 18px;");
+    expect(styles).toContain(".collection-carousel,\n  .faq-topic-carousel {\n    margin-left: calc(50% - 50vw);");
+    expect(styles).toContain("width: 100vw;");
+    expect(styles).toContain(".collection-carousel__viewport,\n  .faq-topic-carousel__viewport {\n    padding-inline: 0;");
+    expect(styles).toContain(".confidence-carousel__viewport {\n    overflow: hidden;");
+    expect(styles).toContain("padding: 2px 18px 12px;");
+    expect(styles).toContain("padding: 10px 18px 8px;");
     expect(styles).toContain("padding: 2px 0 12px;");
     expect(styles).toContain(".collection-carousel__slide");
     expect(styles).toContain("flex: 0 0 clamp(132px, 42vw, 168px);");
@@ -187,7 +193,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-products__more");
     expect(styles).toContain(".collection-products__more {\n  align-self: center;");
     expect(styles).toContain("justify-content: center;\n  margin-top: 6px;");
-    expect(styles).toContain(".collection-pagination__dot[aria-pressed=\"true\"]");
+    expect(styles).not.toContain(".carousel-progress__pill");
     expect(styles).not.toContain("grid-auto-columns: minmax(148px, 56vw);");
     expect(styles).not.toContain(".confidence-carousel__hint");
     expect(styles).toContain("margin-top: 14px;");
@@ -195,12 +201,14 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".shop-more-grid");
     expect(styles).not.toContain(".weekly-set-section");
     expect(styles).toContain(".collection-section {\n    padding-bottom: 24px;");
-    expect(styles).toContain(".collection-carousel {\n    margin-inline: -14px;");
+    expect(styles).toContain(".collection-carousel {\n    margin-left: calc(50% - 50vw);");
     expect(styles).toContain(".collection-products,\n  .collection-products__heading {\n    min-width: 0;");
     expect(styles).toContain(".collection-product-row,\n  .collection-product-teaser {\n    grid-template-columns: repeat(2, minmax(0, 1fr));");
     expect(styles).toContain(".collection-products__more {\n    max-width: 100%;\n    justify-self: center;\n    width: fit-content;");
     expect(styles).toContain("margin-left: calc(50% - 50vw);");
     expect(styles).toContain("margin-right: calc(50% - 50vw);");
+    expect(styles).toContain("--review-card-min-height: 452px;");
+    expect(styles).toContain("min-height: var(--review-card-min-height);");
     expect(styles).toContain(".review-carousel {\n    --review-card-width: min(74vw, 284px);");
     expect(styles).not.toContain(".review-carousel__button");
     expect(styles).not.toContain(".review-card--peek {\n    display: none;");
@@ -291,7 +299,7 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain("padding: 10px 0 8px;");
     expect(faqStyles).toContain("touch-action: pan-y pinch-zoom;");
     expect(faqStyles).toContain("flex: 0 0 clamp(116px, 31vw, 136px);");
-    expect(faqStyles).toContain(".faq-topic-carousel__dot[aria-pressed=\"true\"]");
+    expect(faqStyles).not.toContain(".faq-topic-carousel__dots");
     expect(faqStyles).toContain(".faq-topic-card--active {\n  background: #ffffff;");
     expect(faqStyles).toContain(".faq-cta-card__button--filled {\n  background: #000000;");
     expect(faqStyles).toContain("min-height: 112px;");

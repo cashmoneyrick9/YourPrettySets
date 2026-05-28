@@ -25,9 +25,10 @@ describe("FaqSection", () => {
 
     expect(document.querySelector(".faq-topic-carousel")).toHaveClass("mobile-carousel");
     expect(document.querySelector(".faq-topic-grid")).toHaveClass("mobile-carousel__container");
-    expect(screen.getByRole("button", { name: "Previous help topic" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Next help topic" })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /Go to help topic/i })).toHaveLength(7);
+    expect(screen.queryByRole("button", { name: "Previous help topic" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next help topic" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Go to help topic/i })).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-topic-carousel__dots")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: "Top questions in Sizing" })).toBeInTheDocument();
     expect(document.querySelector(".faq-question-list")).toHaveAttribute("data-slot", "accordion");

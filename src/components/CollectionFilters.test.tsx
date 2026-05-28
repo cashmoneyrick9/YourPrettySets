@@ -28,12 +28,13 @@ describe("CollectionFilters", () => {
     expect(document.querySelectorAll(".collection-card__visual")).toHaveLength(0);
     expect(document.querySelectorAll(".collection-card__mood")).toHaveLength(0);
     expect(document.querySelectorAll(".collection-card__nail-preview")).toHaveLength(0);
-    expect(document.querySelectorAll(".collection-pagination__dot")).toHaveLength(7);
+    expect(document.querySelectorAll(".collection-pagination__dot")).toHaveLength(0);
+    expect(document.querySelector(".collection-pagination")).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel")).toHaveClass("mobile-carousel");
     expect(document.querySelector(".collection-track")).toHaveClass("mobile-carousel__container");
-    expect(screen.getByRole("button", { name: "Previous collection" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Next collection" })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /Go to collection/i })).toHaveLength(7);
+    expect(screen.queryByRole("button", { name: "Previous collection" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next collection" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Go to collection/i })).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel__hint")).toHaveTextContent("Swipe to explore");
     expect(screen.queryByText(/\d+ sets/)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Everyday" })).toHaveAttribute("aria-pressed", "true");
