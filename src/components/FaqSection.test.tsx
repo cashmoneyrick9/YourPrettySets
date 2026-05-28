@@ -1,6 +1,6 @@
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { FaqSection } from "./FaqSection";
 
 afterEach(() => {
@@ -11,11 +11,10 @@ describe("FaqSection", () => {
   it("renders the mobile-first help flow with Sizing selected by default", () => {
     render(<FaqSection />);
 
-    const spareCarousel = screen.getByRole("region", { name: "Reusable blank carousel" });
     const heading = screen.getByRole("heading", { name: "How Can We Help?" });
-    expect(spareCarousel.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.queryByRole("region", { name: "Reusable blank carousel" })).not.toBeInTheDocument();
 
-    expect(screen.getByRole("heading", { name: "How Can We Help?" })).toBeInTheDocument();
+    expect(heading).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "FAQ & Help" })).not.toBeInTheDocument();
     expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
     expect(screen.queryByText("Find quick answers to the most common questions.")).not.toBeInTheDocument();
@@ -24,8 +23,14 @@ describe("FaqSection", () => {
       expect(screen.getByRole("button", { name: topic })).toBeInTheDocument();
     }
 
+    expect(document.querySelector(".faq-topic-carousel")).toHaveClass("mobile-carousel");
+    expect(document.querySelector(".faq-topic-grid")).toHaveClass("mobile-carousel__container");
+    expect(screen.getByRole("button", { name: "Previous help topic" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Next help topic" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /Go to help topic/i })).toHaveLength(7);
     expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: "Top questions in Sizing" })).toBeInTheDocument();
+    expect(document.querySelector(".faq-question-list")).toHaveAttribute("data-slot", "accordion");
     expect(screen.getByRole("button", { name: "How do I measure my nails?" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Can I resize after I place my order?" })).toBeInTheDocument();
     const viewAllQuestionsLink = screen.getByRole("link", { name: "View all sizing questions" });
@@ -70,92 +75,23 @@ describe("FaqSection", () => {
     expect(screen.getByRole("link", { name: "View all shipping questions" })).toHaveAttribute("href", "#help-center");
   });
 
-  it("lets shoppers drag the topic carousel with a mouse without selecting a card", () => {
+  it("uses shared carousel behavior instead of custom topic drag handling", () => {
     render(<FaqSection />);
 
+    const carousel = document.querySelector(".faq-topic-carousel") as HTMLElement;
     const track = document.querySelector(".faq-topic-grid") as HTMLElement;
-    const setPointerCapture = vi.fn();
-    const releasePointerCapture = vi.fn();
-    Object.defineProperty(track, "setPointerCapture", { configurable: true, value: setPointerCapture });
-    Object.defineProperty(track, "releasePointerCapture", { configurable: true, value: releasePointerCapture });
-    track.scrollLeft = 100;
 
-    const dispatchPointer = (type: string, clientX: number) => {
-      const event = new Event(type, { bubbles: true, cancelable: true });
-      Object.defineProperty(event, "clientX", { value: clientX });
-      Object.defineProperty(event, "pointerId", { value: 1 });
-      Object.defineProperty(event, "pointerType", { value: "mouse" });
-      const preventDefault = vi.spyOn(event, "preventDefault");
-      track.dispatchEvent(event);
-      return preventDefault;
-    };
-
-    act(() => {
-      dispatchPointer("pointerdown", 200);
-    });
-
-    expect(track).toHaveClass("faq-topic-grid--dragging");
-    expect(setPointerCapture).toHaveBeenCalledWith(1);
-
-    let preventDefault: ReturnType<typeof vi.spyOn>;
-    act(() => {
-      preventDefault = dispatchPointer("pointermove", 40);
-    });
-
-    expect(preventDefault!).toHaveBeenCalled();
-    expect(track.scrollLeft).toBe(260);
-
-    act(() => {
-      dispatchPointer("pointerup", 40);
-    });
-
+    expect(carousel).toHaveClass("mobile-carousel");
+    expect(track).toHaveClass("mobile-carousel__container");
     expect(track).not.toHaveClass("faq-topic-grid--dragging");
-    expect(releasePointerCapture).toHaveBeenCalledWith(1);
-
-    const applicationCard = screen.getByRole("button", { name: "Application" });
-    expect(applicationCard.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }))).toBe(false);
-    expect(screen.getByRole("heading", { name: "Top questions in Sizing" })).toBeInTheDocument();
   });
 
-  it("keeps touch swipes native in the topic carousel", () => {
-    render(<FaqSection />);
-
-    const track = document.querySelector(".faq-topic-grid") as HTMLElement;
-    const setPointerCapture = vi.fn();
-    Object.defineProperty(track, "setPointerCapture", { configurable: true, value: setPointerCapture });
-    track.scrollLeft = 100;
-
-    const dispatchPointer = (type: string, clientX: number) => {
-      const event = new Event(type, { bubbles: true, cancelable: true });
-      Object.defineProperty(event, "clientX", { value: clientX });
-      Object.defineProperty(event, "pointerId", { value: 1 });
-      Object.defineProperty(event, "pointerType", { value: "touch" });
-      const preventDefault = vi.spyOn(event, "preventDefault");
-      track.dispatchEvent(event);
-      return preventDefault;
-    };
-
-    act(() => {
-      dispatchPointer("pointerdown", 200);
-    });
-
-    expect(track).not.toHaveClass("faq-topic-grid--dragging");
-    expect(setPointerCapture).not.toHaveBeenCalled();
-
-    let preventDefault: ReturnType<typeof vi.spyOn>;
-    act(() => {
-      preventDefault = dispatchPointer("pointermove", 40);
-    });
-
-    expect(preventDefault!).not.toHaveBeenCalled();
-    expect(track.scrollLeft).toBe(100);
-  });
-
-  it("opens a quick answer when a shopper taps a question", async () => {
+  it("opens one quick answer at a time when a shopper taps questions", async () => {
     const user = userEvent.setup();
     render(<FaqSection />);
 
     const measuringQuestion = screen.getByRole("button", { name: "How do I measure my nails?" });
+    const betweenSizesQuestion = screen.getByRole("button", { name: "What if I’m between sizes?" });
 
     expect(measuringQuestion).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByText(/Measure the widest part of each natural nail/i)).not.toBeInTheDocument();
@@ -164,6 +100,13 @@ describe("FaqSection", () => {
 
     expect(measuringQuestion).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByText(/Measure the widest part of each natural nail/i)).toBeInTheDocument();
+
+    await user.click(betweenSizesQuestion);
+
+    expect(measuringQuestion).toHaveAttribute("aria-expanded", "false");
+    expect(betweenSizesQuestion).toHaveAttribute("aria-expanded", "true");
+    expect(screen.queryByText(/Measure the widest part of each natural nail/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Choose the slightly larger size/i)).toBeInTheDocument();
   });
 
   it("closes the open answer when a shopper chooses a different topic", async () => {

@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-26
+Last updated: 2026-05-28
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -26,7 +26,11 @@ Current CEO direction:
 - Follow-up browser comments on 2026-05-22 fixed the bare-bones mobile header icon color: nested SVG icons inside the black menu/bag circles are forced to white so the buttons remain visible.
 - Follow-up browser annotation on 2026-05-22 increases the bare-bones mobile brand mark from `21px` to `25px` under the existing mobile breakpoint.
 - Collections UI pass on 2026-05-22 replaces the old static three-tile grid with a horizontal mood-picker carousel. Latest browser annotations shorten the heading to `Browse`, keep `COLLECTIONS` and `See all`, render seven blank accessible collection cards from central collection labels (`Everyday`, `Date Night`, `Vacation`, `Bridal`, `Birthday`, `Work/Neutral`, `Statement`), and keep visual pagination dots with the `Swipe to explore` hint moved here from How It Works. The lane has mouse grab-drag on `.collection-track`, native touch swipes, accidental-click suppression after drag, smooth-settle to the nearest card on mouse release, and active pagination dots from scroll position. A later glide fix removes mandatory CSS snap from `.collection-track` and uses a debounced JS settle after native scroll idle so CSS snap and smooth scrolling do not fight each other. Real collection images/icons, visible card copy, and richer dot/progress behavior are still placeholders/future work.
+- Phase 4B carousel cleanup replaces that custom collection drag/settle code with the shared Embla-backed `MobileCarousel` foundation. The collection cards, active collection behavior, `Swipe to explore` hint, product-row visuals, and `See all` / `See more` links stay intact; the category strip now uses shared previous/next controls and accessible pagination buttons instead of bespoke pointer/timer logic.
 - Latest shopping-path refactor on 2026-05-24 makes shopping come first after the hero: Collections now render as slim filter cards, the active collection immediately shows a 2x2 blank product-card wireframe from central product data, `See all` points to that product row, and the undecided third shopping/editorial slot is intentionally left out for later CEO decision.
+- Phase 4C FAQ cleanup replaces the FAQ topic picker’s custom drag/click-suppression logic with the shared Embla-backed `MobileCarousel` foundation. Topic cards keep the same visual style, active topic behavior, question open/close behavior, `View all ... questions`, Help Center, and Contact Support CTAs, while the row gains shared previous/next controls and accessible topic pagination.
+- Follow-up FAQ cleanup replaces the FAQ question-row `openQuestionIndex` logic with the shared shadcn/Radix Accordion foundation. The list still allows one open answer at a time, clears the open answer when the active topic changes, preserves the right-chevron row treatment, and keeps the `View all ... questions`, Help Center, and Contact Support CTAs unchanged.
+- Phase 4D footer cleanup replaces the footer’s custom open-group state with the shared shadcn/Radix Accordion foundation. The footer still defaults to `Shop`, keeps one group open at a time, preserves the same group labels and links, and keeps the current dark footer styling rather than default shadcn visuals.
 - Stop spending more time on the hero-to-How-It-Works gradient transition unless the CEO explicitly reopens it.
 - The latest approved How It Works direction is a polished luxury clean-beauty section, not the old continuous auto-strip.
 - The live section now uses centered `HOW IT WORKS` / `3 easy steps` heading copy, three swipeable mobile cards, three dynamic progress pills, no swipe hint because the section auto-scrolls, and desktop three-column layout.

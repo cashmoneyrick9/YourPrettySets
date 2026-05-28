@@ -573,29 +573,23 @@ h1 {
   max-width: none;
 }
 
+.collection-carousel__viewport {
+  overflow: hidden;
+  padding-inline: 18px;
+}
+
 .collection-track {
   -webkit-overflow-scrolling: touch;
-  cursor: grab;
-  display: grid;
-  gap: 10px;
-  grid-auto-columns: minmax(132px, 42vw);
-  grid-auto-flow: column;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  padding: 2px 18px 12px;
-  scroll-padding-inline: 18px;
-  scroll-snap-type: none;
-  scrollbar-width: none;
-  touch-action: pan-x pan-y;
-  user-select: none;
+  display: flex;
+  margin-left: -10px;
+  padding: 2px 0 12px;
+  touch-action: pan-y pinch-zoom;
 }
 
-.collection-track::-webkit-scrollbar {
-  display: none;
-}
-
-.collection-carousel--interacting .collection-track {
-  cursor: grabbing;
+.collection-carousel__slide {
+  flex: 0 0 clamp(132px, 42vw, 168px);
+  min-width: 0;
+  padding-left: 10px;
 }
 
 .collection-card {
@@ -615,11 +609,11 @@ h1 {
   overflow: hidden;
   padding: 12px;
   text-align: center;
-  scroll-snap-align: start;
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease;
+  width: 100%;
   -webkit-user-drag: none;
 }
 
@@ -787,6 +781,15 @@ h1 {
 .collection-pagination__dot--active {
   background: #392a31;
   width: 18px;
+}
+
+.collection-pagination__dot[aria-pressed="true"] {
+  background: #392a31;
+  width: 18px;
+}
+
+.collection-carousel__controls {
+  margin-top: 2px;
 }
 
 .collection-products {
@@ -1639,14 +1642,14 @@ h1 {
   color: #171317;
   cursor: pointer;
   display: inline-flex;
-  height: 36px;
+  height: 44px;
   justify-content: center;
   padding: 0;
   transition:
     border-color 160ms ease,
     opacity 160ms ease,
     transform 160ms ease;
-  width: 36px;
+  width: 44px;
 }
 
 .mobile-carousel__button:hover,
@@ -1719,26 +1722,27 @@ h1 {
   margin: 0;
 }
 
+.faq-topic-carousel {
+  margin-inline: calc(-1 * clamp(18px, 4vw, 56px));
+}
+
+.faq-topic-carousel__viewport {
+  overflow: hidden;
+  padding-inline: clamp(18px, 4vw, 56px);
+}
+
 .faq-topic-grid {
   display: flex;
-  cursor: grab;
-  gap: 10px;
-  margin-inline: calc(-1 * clamp(18px, 4vw, 56px));
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  padding: 10px clamp(18px, 4vw, 56px) 8px;
-  scroll-padding-inline: clamp(18px, 4vw, 56px);
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
+  margin-left: -10px;
+  padding: 10px 0 8px;
+  touch-action: pan-y pinch-zoom;
   -webkit-overflow-scrolling: touch;
 }
 
-.faq-topic-grid--dragging {
-  cursor: grabbing;
-}
-
-.faq-topic-grid::-webkit-scrollbar {
-  display: none;
+.faq-topic-slide {
+  flex: 0 0 clamp(116px, 31vw, 136px);
+  min-width: 0;
+  padding-left: 10px;
 }
 
 .faq-topic-card {
@@ -1746,14 +1750,13 @@ h1 {
   color: #171317;
   cursor: pointer;
   display: grid;
-  flex: 0 0 clamp(116px, 31vw, 136px);
   font: inherit;
   gap: 9px;
   justify-items: center;
   min-height: 112px;
   padding: 14px 7px;
-  scroll-snap-align: start;
   text-align: center;
+  width: 100%;
   -webkit-user-drag: none;
   transition:
     background 180ms ease,
@@ -1786,6 +1789,25 @@ h1 {
 .faq-topic-card--active {
   background: #ffffff;
   border-color: #000000;
+}
+
+.faq-topic-carousel__controls {
+  margin-top: -2px;
+}
+
+.faq-topic-carousel__dots {
+  gap: 6px;
+}
+
+.faq-topic-carousel__dot {
+  background: rgba(23, 19, 23, 0.24);
+  height: 6px;
+  width: 6px;
+}
+
+.faq-topic-carousel__dot[aria-pressed="true"] {
+  background: #171317;
+  width: 18px;
 }
 
 .faq-question-card {
@@ -2011,7 +2033,8 @@ h1 {
   width: 18px;
 }
 
-.site-footer__group--open .site-footer__toggle svg {
+.site-footer__group--open .site-footer__toggle svg,
+.site-footer__toggle[data-state="open"] svg {
   transform: rotate(180deg);
 }
 
@@ -2325,18 +2348,28 @@ h1 {
 
   .collection-track {
     gap: 16px;
-    grid-auto-flow: initial;
+    display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
     margin-inline: 0;
     overflow: visible;
     padding: 0;
-    scroll-snap-type: none;
+  }
+
+  .collection-carousel__viewport {
+    overflow: visible;
+    padding-inline: 0;
+  }
+
+  .collection-carousel__slide {
+    flex-basis: auto;
+    padding-left: 0;
   }
 
   .collection-card {
     min-height: 68px;
   }
 
+  .collection-carousel__controls,
   .collection-pagination,
   .collection-carousel__hint {
     display: none;
@@ -2498,9 +2531,11 @@ h1 {
   }
 
   .collection-track {
-    gap: 8px;
-    grid-auto-columns: minmax(118px, 42vw);
     padding-bottom: 10px;
+  }
+
+  .collection-carousel__slide {
+    flex-basis: clamp(118px, 42vw, 150px);
   }
 
   .collection-card {
@@ -2582,11 +2617,14 @@ h1 {
   }
 
   .faq-topic-grid {
-    gap: 9px;
+    padding-bottom: 8px;
+  }
+
+  .faq-topic-slide {
+    flex-basis: clamp(104px, 30vw, 126px);
   }
 
   .faq-topic-card {
-    flex-basis: clamp(104px, 30vw, 126px);
     min-height: 96px;
     padding: 12px 6px;
   }

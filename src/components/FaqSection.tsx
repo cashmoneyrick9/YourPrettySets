@@ -11,19 +11,11 @@ import {
   Truck,
   type LucideIcon
 } from "lucide-react";
-import { useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useState } from "react";
 import { BrandButton } from "./BrandButton";
 import { FaqCtaButton } from "./FaqCtaButton";
 import { MobileCarousel } from "./MobileCarousel";
-
-const topicDragClickThreshold = 6;
-
-type TopicDragState = {
-  didDrag: boolean;
-  pointerId: number;
-  startScrollLeft: number;
-  startX: number;
-};
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 type FaqTopic = {
   icon: LucideIcon;
@@ -201,82 +193,40 @@ function topicSlug(label: string) {
 
 export function FaqSection() {
   const [activeTopicIndex, setActiveTopicIndex] = useState(0);
-  const [openQuestionIndex, setOpenQuestionIndex] = useState<number | null>(null);
-  const [isTopicDragging, setIsTopicDragging] = useState(false);
-  const topicDragStateRef = useRef<TopicDragState | null>(null);
-  const suppressNextTopicClickRef = useRef(false);
+  const [openQuestionValue, setOpenQuestionValue] = useState<string | undefined>(undefined);
   const activeTopic = faqTopics[activeTopicIndex];
   const activeTopicSlug = topicSlug(activeTopic.label);
 
-  const handleTopicPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (event.pointerType && event.pointerType !== "mouse") return;
-
-    topicDragStateRef.current = {
-      didDrag: false,
-      pointerId: event.pointerId,
-      startScrollLeft: event.currentTarget.scrollLeft,
-      startX: Number.isFinite(event.clientX) ? event.clientX : 0
-    };
-    setIsTopicDragging(true);
-    event.currentTarget.setPointerCapture?.(event.pointerId);
-  };
-
-  const handleTopicPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const dragState = topicDragStateRef.current;
-    if (!dragState || dragState.pointerId !== event.pointerId) return;
-
-    const currentX = Number.isFinite(event.clientX) ? event.clientX : dragState.startX;
-    const dragDistance = currentX - dragState.startX;
-    if (Math.abs(dragDistance) > topicDragClickThreshold) {
-      dragState.didDrag = true;
-    }
-
-    event.currentTarget.scrollLeft = dragState.startScrollLeft - dragDistance;
-    event.preventDefault();
-  };
-
-  const endTopicInteraction = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const dragState = topicDragStateRef.current;
-    if (!dragState || dragState.pointerId !== event.pointerId) return;
-
-    suppressNextTopicClickRef.current = dragState.didDrag;
-    topicDragStateRef.current = null;
-    setIsTopicDragging(false);
-    event.currentTarget.releasePointerCapture?.(event.pointerId);
-  };
-
-  const handleTopicClick = (event: ReactMouseEvent<HTMLButtonElement>, index: number) => {
-    if (suppressNextTopicClickRef.current) {
-      suppressNextTopicClickRef.current = false;
-      event.preventDefault();
-      return;
-    }
-
-    setActiveTopicIndex(index);
-    setOpenQuestionIndex(null);
-  };
+  useEffect(() => {
+    setOpenQuestionValue(undefined);
+  }, [activeTopicIndex]);
 
   return (
     <section className="section-block faq-help-section" id="faq" aria-labelledby="faq-heading">
       <div className="faq-help">
-        <MobileCarousel ariaLabel="Reusable blank carousel" className="faq-spare-carousel" showDots slideCount={3} />
-
         <div className="faq-help__intro">
           <h2 className="faq-help__heading" id="faq-heading">
             How Can We Help?
           </h2>
         </div>
 
-        <div
-          className={`faq-topic-grid${isTopicDragging ? " faq-topic-grid--dragging" : ""}`}
-          aria-label="Choose a help topic"
-          onPointerCancel={endTopicInteraction}
-          onPointerDown={handleTopicPointerDown}
-          onPointerLeave={endTopicInteraction}
-          onPointerMove={handleTopicPointerMove}
-          onPointerUp={endTopicInteraction}
-        >
-          {faqTopics.map((topic, index) => {
+        <MobileCarousel
+          ariaLabel="Choose a help topic"
+          buttonClassName="faq-topic-carousel__button"
+          className="faq-topic-carousel"
+          containerClassName="faq-topic-grid"
+          controlsClassName="faq-topic-carousel__controls"
+          dotClassName="faq-topic-carousel__dot"
+          dotLabel={(index) => `Go to help topic ${index + 1}`}
+          dotsClassName="faq-topic-carousel__dots"
+          nextLabel="Next help topic"
+          onSelectedIndexChange={setActiveTopicIndex}
+          options={{ align: "start", containScroll: "trimSnaps" }}
+          previousLabel="Previous help topic"
+          showDots
+          slideClassName="faq-topic-slide"
+          viewportClassName="faq-topic-carousel__viewport"
+          slides={faqTopics.map((topic, index) => {
             const Icon = topic.icon;
             const isActive = index === activeTopicIndex;
 
@@ -285,7 +235,7 @@ export function FaqSection() {
                 aria-pressed={isActive}
                 className={`faq-topic-card${isActive ? " faq-topic-card--active" : ""}`}
                 key={topic.label}
-                onClick={(event) => handleTopicClick(event, index)}
+                onClick={() => setActiveTopicIndex(index)}
                 type="button"
               >
                 <Icon aria-hidden size={30} strokeWidth={1.8} />
@@ -293,38 +243,35 @@ export function FaqSection() {
               </button>
             );
           })}
-        </div>
+        />
 
         <div className="faq-question-card">
           <div className="faq-question-card__header">
             <h3>Top questions in {activeTopic.label}</h3>
           </div>
-          <div className="faq-question-list">
+          <Accordion
+            className="faq-question-list"
+            collapsible
+            onValueChange={setOpenQuestionValue}
+            type="single"
+            value={openQuestionValue}
+          >
             {activeTopic.questions.map((item, index) => {
-              const isOpen = index === openQuestionIndex;
-              const answerId = `faq-answer-${activeTopicSlug}-${index}`;
+              const questionValue = `${activeTopicSlug}-${index}`;
 
               return (
-                <div className="faq-question-item" key={item.question}>
-                  <button
-                    aria-controls={answerId}
-                    aria-expanded={isOpen}
-                    className="faq-question-row"
-                    onClick={() => setOpenQuestionIndex(isOpen ? null : index)}
-                    type="button"
-                  >
+                <AccordionItem className="faq-question-item" key={item.question} value={questionValue}>
+                  <AccordionTrigger className="faq-question-row [&>svg]:hidden">
                     <span>{item.question}</span>
                     <ChevronRight aria-hidden className="faq-question-row__icon" size={20} strokeWidth={1.8} />
-                  </button>
-                  {isOpen ? (
-                    <div className="faq-question-answer" id={answerId}>
-                      <p>{item.answer}</p>
-                    </div>
-                  ) : null}
-                </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="faq-question-answer">
+                    <p>{item.answer}</p>
+                  </AccordionContent>
+                </AccordionItem>
               );
             })}
-          </div>
+          </Accordion>
           <BrandButton asChild className="faq-question-card__link">
             <a href="#help-center">
               View all {activeTopicSlug} questions <ChevronRight aria-hidden size={16} strokeWidth={2} />

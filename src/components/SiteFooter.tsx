@@ -1,5 +1,4 @@
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 type FooterGroupId = "shop" | "help" | "policies" | "social";
 
@@ -46,8 +45,6 @@ const footerGroups: FooterGroup[] = [
 ];
 
 export function SiteFooter() {
-  const [openGroup, setOpenGroup] = useState<FooterGroupId>("shop");
-
   return (
     <footer className="site-footer" id="contact">
       <div className="site-footer__intro">
@@ -58,34 +55,22 @@ export function SiteFooter() {
       </div>
 
       <nav aria-label="Footer navigation" className="site-footer__groups">
-        {footerGroups.map((group) => {
-          const isOpen = openGroup === group.id;
-          const panelId = `footer-panel-${group.id}`;
-
-          return (
-            <section className={`site-footer__group${isOpen ? " site-footer__group--open" : ""}`} key={group.id}>
-              <button
-                aria-controls={panelId}
-                aria-expanded={isOpen}
-                className="site-footer__toggle"
-                onClick={() => setOpenGroup(group.id)}
-                type="button"
-              >
+        <Accordion collapsible={false} defaultValue="shop" type="single">
+          {footerGroups.map((group) => (
+            <AccordionItem className="site-footer__group" key={group.id} value={group.id}>
+              <AccordionTrigger className="site-footer__toggle">
                 <span>{group.label}</span>
-                <ChevronDown aria-hidden="true" />
-              </button>
-              {isOpen && (
-                <div className="site-footer__panel" id={panelId}>
-                  {group.links.map((link) => (
-                    <a href={link.href} key={`${group.id}-${link.label}`}>
-                      {link.label}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </section>
-          );
-        })}
+              </AccordionTrigger>
+              <AccordionContent className="site-footer__panel">
+                {group.links.map((link) => (
+                  <a href={link.href} key={`${group.id}-${link.label}`}>
+                    {link.label}
+                  </a>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </nav>
 
       <p className="site-footer__fine-print">&copy; 2026 YourPrettySets</p>
