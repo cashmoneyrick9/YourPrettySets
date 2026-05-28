@@ -29,6 +29,13 @@ describe("HomePage", () => {
           throw new Error("Expected a queued animation frame");
         }
         callback(timestamp);
+      },
+      runFrame(timestamp: number) {
+        const callbacks = frameCallbacks.splice(0);
+        if (callbacks.length === 0) {
+          throw new Error("Expected queued animation frames");
+        }
+        callbacks.forEach((callback) => callback(timestamp));
       }
     };
   };
@@ -269,7 +276,7 @@ describe("HomePage", () => {
 
     act(() => {
       for (let frame = 0; frame <= 63; frame += 1) {
-        animationFrame.runNextFrame(frame * 16);
+        animationFrame.runFrame(frame * 16);
       }
     });
 
@@ -284,11 +291,12 @@ describe("HomePage", () => {
 
     const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
     setCardMetrics(track);
-    track.scrollLeft = 1799;
 
     act(() => {
-      animationFrame.runNextFrame(0);
-      animationFrame.runNextFrame(80);
+      animationFrame.runFrame(0);
+      track.scrollLeft = 1799;
+      track.dispatchEvent(new Event("scroll", { bubbles: true }));
+      animationFrame.runFrame(80);
     });
 
     expect(track.scrollLeft).toBeGreaterThan(899);

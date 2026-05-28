@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BrandButton } from "./BrandButton";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 type KitPanelId = "fit" | "prep";
 type PrepItem = {
@@ -36,14 +37,21 @@ export function KitContents() {
           />
         </div>
 
-        <div className="kit-accordion" aria-label="Included kit details">
-          <article className={`kit-accordion__item${openPanel === "fit" ? " kit-accordion__item--open" : ""}`}>
-            <button
-              aria-controls="kit-panel-fit"
-              aria-expanded={openPanel === "fit"}
-              className="kit-accordion__button"
-              onClick={() => setOpenPanel("fit")}
-              type="button"
+        <Accordion
+          aria-label="Included kit details"
+          className="kit-accordion"
+          onValueChange={(value) => {
+            if (value === "fit" || value === "prep") {
+              setOpenPanel(value);
+            }
+          }}
+          type="single"
+          value={openPanel}
+        >
+          <AccordionItem className={`kit-accordion__item${openPanel === "fit" ? " kit-accordion__item--open" : ""}`} value="fit">
+            <AccordionTrigger
+              className="kit-accordion__button [&>svg]:hidden"
+              id="kit-trigger-fit"
             >
               <span className="kit-accordion__number">1</span>
               <span className="kit-accordion__summary">
@@ -53,27 +61,22 @@ export function KitContents() {
               <span className="kit-accordion__chevron" aria-hidden="true">
                 {openPanel === "fit" ? "−" : "+"}
               </span>
-            </button>
-            {openPanel === "fit" && (
-              <div className="kit-accordion__panel" id="kit-panel-fit">
-                <div className="kit-size-row" aria-label="Example nail sizes">
-                  <img
-                    alt="Twenty-four press-on nails in multiple sizes with small fruit details"
-                    className="kit-size-row__image"
-                    src="/assets/nail-size-set.png"
-                  />
-                </div>
+            </AccordionTrigger>
+            <AccordionContent className="kit-accordion__panel" id="kit-panel-fit">
+              <div className="kit-size-row" aria-label="Example nail sizes">
+                <img
+                  alt="Twenty-four press-on nails in multiple sizes with small fruit details"
+                  className="kit-size-row__image"
+                  src="/assets/nail-size-set.png"
+                />
               </div>
-            )}
-          </article>
+            </AccordionContent>
+          </AccordionItem>
 
-          <article className={`kit-accordion__item${openPanel === "prep" ? " kit-accordion__item--open" : ""}`}>
-            <button
-              aria-controls="kit-panel-prep"
-              aria-expanded={openPanel === "prep"}
-              className="kit-accordion__button"
-              onClick={() => setOpenPanel("prep")}
-              type="button"
+          <AccordionItem className={`kit-accordion__item${openPanel === "prep" ? " kit-accordion__item--open" : ""}`} value="prep">
+            <AccordionTrigger
+              className="kit-accordion__button [&>svg]:hidden"
+              id="kit-trigger-prep"
             >
               <span className="kit-accordion__number">2</span>
               <span className="kit-accordion__summary">
@@ -83,21 +86,19 @@ export function KitContents() {
               <span className="kit-accordion__chevron" aria-hidden="true">
                 {openPanel === "prep" ? "−" : "+"}
               </span>
-            </button>
-            {openPanel === "prep" && (
-              <div className="kit-accordion__panel" id="kit-panel-prep">
-                <div className="kit-item-grid" aria-label="Prep and application items">
-                  {prepItems.map((item) => (
-                    <span className="kit-item-card" key={item.label}>
-                      <img className="kit-item-card__image" src={item.imageSrc} alt="" aria-hidden="true" />
-                      <span>{item.label}</span>
-                    </span>
-                  ))}
-                </div>
+            </AccordionTrigger>
+            <AccordionContent className="kit-accordion__panel" id="kit-panel-prep">
+              <div className="kit-item-grid" aria-label="Prep and application items">
+                {prepItems.map((item) => (
+                  <span className="kit-item-card" key={item.label}>
+                    <img className="kit-item-card__image" src={item.imageSrc} alt="" aria-hidden="true" />
+                    <span>{item.label}</span>
+                  </span>
+                ))}
               </div>
-            )}
-          </article>
-        </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         <BrandButton asChild className="kit-primary-link">
           <a href="#faq">

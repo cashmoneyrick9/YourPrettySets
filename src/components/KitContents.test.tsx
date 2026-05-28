@@ -19,6 +19,8 @@ describe("KitContents", () => {
     expect(kitImage).toHaveAttribute("src", "/assets/kit-contents-spread-v2.png");
     expect(document.querySelector(".kit-spread")?.children).toHaveLength(1);
     expect(document.querySelectorAll(".kit-spread__piece")).toHaveLength(0);
+    expect(document.querySelector('[data-slot="accordion"].kit-accordion')).toBeInTheDocument();
+    expect(document.querySelectorAll('[data-slot="accordion-item"].kit-accordion__item')).toHaveLength(2);
 
     expect(screen.getByRole("button", { name: /Made to fit/i })).toBeInTheDocument();
     expect(screen.getByText("Made to fit")).toBeInTheDocument();
