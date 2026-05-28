@@ -1188,34 +1188,18 @@ h1 {
 
 .confidence-carousel__track {
   -webkit-overflow-scrolling: touch;
-  cursor: grab;
   display: flex;
-  gap: var(--confidence-gap);
-  overscroll-behavior-x: contain;
-  overflow-x: auto;
   overflow-y: visible;
-  padding: 10px max(32px, calc((100vw - var(--confidence-card-width)) / 2)) 52px;
+  padding: 10px 0 52px;
   position: relative;
-  scroll-padding-inline: max(32px, calc((100vw - var(--confidence-card-width)) / 2));
-  scroll-snap-type: none;
-  scrollbar-width: none;
   touch-action: pan-x pan-y;
-  user-select: none;
   z-index: 1;
 }
 
-.confidence-carousel__track::-webkit-scrollbar {
-  display: none;
-}
-
-.confidence-carousel--interacting .confidence-carousel__track {
-  cursor: grabbing;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .confidence-carousel--drifting .confidence-carousel__track {
-    scroll-snap-type: none;
-  }
+.confidence-carousel__slide {
+  flex: 0 0 var(--confidence-card-width);
+  min-width: 0;
+  padding-left: var(--confidence-gap);
 }
 
 .confidence-carousel:focus-visible,
@@ -1232,7 +1216,7 @@ h1 {
     0 10px 22px rgba(80, 55, 42, 0.05),
     0 3px 8px rgba(80, 55, 42, 0.035);
   display: grid;
-  flex: 0 0 var(--confidence-card-width);
+  height: 100%;
   gap: 18px;
   min-width: 0;
   min-height: 330px;
@@ -1255,7 +1239,11 @@ h1 {
 }
 
 .confidence-carousel__controls {
+  align-items: center;
   background: #fbf6ee;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
   padding: 8px 0 34px;
   position: relative;
   z-index: 3;
@@ -1264,26 +1252,28 @@ h1 {
 .confidence-progress {
   display: flex;
   gap: 7px;
-  margin: 0 auto;
   max-width: 104px;
   width: 30%;
 }
 
 .confidence-progress__pill {
   background: rgba(139, 117, 105, 0.2);
+  border: 0;
   border-radius: 999px;
+  cursor: pointer;
   display: block;
   flex: 1 1 0;
   height: 7px;
   overflow: hidden;
+  padding: 0;
+  transition:
+    background 160ms ease,
+    width 160ms ease;
 }
 
-.confidence-progress__fill {
+.confidence-progress__pill[aria-pressed="true"] {
   background: #8b7569;
-  border-radius: inherit;
-  display: block;
-  height: 100%;
-  transition: width 160ms linear;
+  width: 18px;
 }
 
 .collection-carousel__hint {
@@ -1345,18 +1335,14 @@ h1 {
 .review-carousel__track {
   -webkit-overflow-scrolling: touch;
   display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  padding: 6px calc((100% - var(--review-card-width)) / 2) 16px;
-  scroll-padding-inline: calc((100% - var(--review-card-width)) / 2);
-  scroll-snap-type: none;
-  scrollbar-width: none;
+  padding: 6px 0 16px;
   touch-action: pan-x pan-y;
 }
 
-.review-carousel__track::-webkit-scrollbar {
-  display: none;
+.review-carousel__slide {
+  flex: 0 0 var(--review-card-width);
+  min-width: 0;
+  padding-left: 12px;
 }
 
 .review-card {
@@ -1366,7 +1352,6 @@ h1 {
   border-radius: 8px;
   box-shadow: 0 18px 42px rgba(47, 38, 48, 0.08);
   display: flex;
-  flex: 0 0 var(--review-card-width);
   justify-content: center;
   margin: 0;
   min-height: 250px;
@@ -1376,11 +1361,21 @@ h1 {
   transition:
     opacity 180ms ease,
     transform 180ms ease;
+  width: 100%;
 }
 
 .review-card--active {
   opacity: 1;
   transform: none;
+}
+
+.review-carousel__controls {
+  margin-top: 4px;
+}
+
+.review-carousel__dot {
+  height: 6px;
+  width: 6px;
 }
 
 .review-card--product {
@@ -1692,10 +1687,6 @@ h1 {
 .mobile-carousel__dot[aria-pressed="true"] {
   background: #171317;
   width: 18px;
-}
-
-.faq-spare-carousel {
-  margin-bottom: 2px;
 }
 
 .faq-help__intro,
@@ -2226,8 +2217,7 @@ h1 {
   }
 
   .confidence-carousel__track {
-    padding: 6px max(30px, calc((100vw - var(--confidence-card-width)) / 2)) 34px;
-    scroll-padding-inline: max(30px, calc((100vw - var(--confidence-card-width)) / 2));
+    padding: 6px 0 34px;
   }
 
   .confidence-card {
@@ -2311,7 +2301,6 @@ h1 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     overflow: visible;
     padding: 8px 0 0;
-    scroll-snap-type: none;
   }
 
   .confidence-carousel__viewport::after,
@@ -2319,15 +2308,15 @@ h1 {
     display: none;
   }
 
-  .confidence-card {
+  .confidence-carousel__slide {
     flex-basis: auto;
+    padding-left: 0;
+  }
+
+  .confidence-card {
     min-height: 348px;
     opacity: 1;
     transform: none;
-  }
-
-  .confidence-card--loop-buffer {
-    display: none;
   }
 
   .confidence-progress {
@@ -2744,7 +2733,7 @@ body,
 .kit-primary-link,
 .review-proof-row span,
 .collection-pagination__dot--active,
-.confidence-progress__fill {
+.confidence-progress__pill[aria-pressed="true"] {
   background: #000000 !important;
   background-image: none !important;
   border-color: #000000 !important;

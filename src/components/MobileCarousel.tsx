@@ -5,12 +5,23 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 
 type MobileCarouselProps = {
   ariaLabel: string;
+  buttonClassName?: string;
   className?: string;
+  containerClassName?: string;
+  controlsClassName?: string;
+  dataActiveStep?: string;
+  dotClassName?: string;
+  dotLabel?: (index: number) => string;
+  dotsClassName?: string;
+  nextLabel?: string;
+  onSelectedIndexChange?: (index: number) => void;
   options?: EmblaOptionsType;
+  previousLabel?: string;
   showDots?: boolean;
   slideClassName?: string;
   slideCount?: number;
   slides?: ReactNode[];
+  viewportClassName?: string;
 };
 
 function joinClassNames(...classNames: (false | null | string | undefined)[]) {
@@ -19,12 +30,23 @@ function joinClassNames(...classNames: (false | null | string | undefined)[]) {
 
 export function MobileCarousel({
   ariaLabel,
+  buttonClassName,
   className,
+  containerClassName,
+  controlsClassName,
+  dataActiveStep,
+  dotClassName,
+  dotLabel = (index) => `Go to slide ${index + 1}`,
+  dotsClassName,
+  nextLabel = "Next slide",
+  onSelectedIndexChange,
   options,
+  previousLabel = "Previous slide",
   showDots = false,
   slideClassName,
   slideCount = 3,
-  slides
+  slides,
+  viewportClassName
 }: MobileCarouselProps) {
   const renderedSlides = useMemo(() => {
     if (slides?.length) return slides;
@@ -46,11 +68,13 @@ export function MobileCarousel({
   const paginationItems = scrollSnaps.length ? scrollSnaps : renderedSlides;
 
   const updateCarouselState = useCallback((api: EmblaCarouselType) => {
-    setSelectedIndex(api.selectedScrollSnap());
+    const nextSelectedIndex = api.selectedScrollSnap();
+    setSelectedIndex(nextSelectedIndex);
     setScrollSnaps(api.scrollSnapList());
     setCanScrollPrevious(api.canScrollPrev());
     setCanScrollNext(api.canScrollNext());
-  }, []);
+    onSelectedIndexChange?.(nextSelectedIndex);
+  }, [onSelectedIndexChange]);
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -69,9 +93,14 @@ export function MobileCarousel({
   const scrollToNext = () => carouselApi?.scrollNext();
 
   return (
-    <section aria-label={ariaLabel} className={joinClassNames("mobile-carousel", className)} role="region">
-      <div className="mobile-carousel__viewport" ref={viewportRef}>
-        <div className="mobile-carousel__container">
+    <section
+      aria-label={ariaLabel}
+      className={joinClassNames("mobile-carousel", className)}
+      data-active-step={dataActiveStep}
+      role="region"
+    >
+      <div className={joinClassNames("mobile-carousel__viewport", viewportClassName)} ref={viewportRef}>
+        <div className={joinClassNames("mobile-carousel__container", containerClassName)}>
           {renderedSlides.map((slide, index) => (
             <div className={joinClassNames("mobile-carousel__slide", slideClassName)} key={index}>
               {slide}
@@ -80,10 +109,10 @@ export function MobileCarousel({
         </div>
       </div>
 
-      <div className="mobile-carousel__controls">
+      <div className={joinClassNames("mobile-carousel__controls", controlsClassName)}>
         <button
-          aria-label="Previous slide"
-          className="mobile-carousel__button"
+          aria-label={previousLabel}
+          className={joinClassNames("mobile-carousel__button", buttonClassName)}
           disabled={!canScrollPrevious}
           onClick={scrollToPrevious}
           type="button"
@@ -92,12 +121,12 @@ export function MobileCarousel({
         </button>
 
         {showDots ? (
-          <div aria-label="Carousel pagination" className="mobile-carousel__dots" role="group">
+          <div aria-label="Carousel pagination" className={joinClassNames("mobile-carousel__dots", dotsClassName)} role="group">
             {paginationItems.map((_, index) => (
               <button
-                aria-label={`Go to slide ${index + 1}`}
+                aria-label={dotLabel(index)}
                 aria-pressed={index === selectedIndex}
-                className="mobile-carousel__dot"
+                className={joinClassNames("mobile-carousel__dot", dotClassName)}
                 key={index}
                 onClick={() => carouselApi?.scrollTo(index)}
                 type="button"
@@ -107,8 +136,8 @@ export function MobileCarousel({
         ) : null}
 
         <button
-          aria-label="Next slide"
-          className="mobile-carousel__button"
+          aria-label={nextLabel}
+          className={joinClassNames("mobile-carousel__button", buttonClassName)}
           disabled={!canScrollNext}
           onClick={scrollToNext}
           type="button"
