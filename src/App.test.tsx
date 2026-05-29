@@ -10,7 +10,9 @@ describe("App", () => {
   it("renders the YourPrettySets home experience", () => {
     render(<App />);
 
-    expect(screen.getByRole("link", { name: "YourPrettySets home" })).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("banner")).getByRole("link", { name: "YourPrettySets home" })
+    ).toBeInTheDocument();
     expect(
       within(screen.getByRole("navigation", { name: "Primary navigation" })).getByRole("link", {
         name: "Shop Collections"
@@ -19,11 +21,13 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" })).toBeInTheDocument();
   });
 
-  it("renders the email capture system at the bottom without the removed footer", () => {
+  it("renders the approved footer system at the bottom", () => {
     render(<App />);
 
-    expect(screen.getByRole("region", { name: "Get 15% off your first set" })).toBeInTheDocument();
-    expect(screen.queryByRole("contentinfo")).not.toBeInTheDocument();
+    const footer = screen.getByRole("contentinfo");
+
+    expect(within(footer).getByRole("navigation", { name: "Footer shop navigation" })).toBeInTheDocument();
+    expect(within(footer).getByRole("region", { name: "Get 15% off your first set" })).toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Cohesive footer preview" })).not.toBeInTheDocument();
   });
 });

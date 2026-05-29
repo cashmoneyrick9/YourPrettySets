@@ -4,7 +4,100 @@ import { describe, expect, it } from "vitest";
 const styles = readFileSync("src/styles.css", "utf-8");
 const indexHtml = readFileSync("index.html", "utf-8");
 
+function countOneOffTypographyRules(css: string) {
+  const typographyProps = ["font-size", "font-weight", "line-height", "letter-spacing", "font-family"] as const;
+  const tokenizedValue = /var\(|inherit|normal|initial|unset|currentColor|auto/;
+  let count = 0;
+
+  for (const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const body = rule[2];
+    const hasOneOff = typographyProps.some((prop) => {
+      const declarations = body.matchAll(new RegExp(`${prop}\\s*:\\s*([^;]+);`, "g"));
+
+      return Array.from(declarations).some((declaration) => !tokenizedValue.test(declaration[1].trim()));
+    });
+
+    if (hasOneOff) {
+      count += 1;
+    }
+  }
+
+  return count;
+}
+
 describe("small mobile responsive CSS", () => {
+  it("defines the homepage typography system and loads the intended fonts", () => {
+    expect(styles).toContain("@import url(\"https://fonts.googleapis.com/css2?family=Fraunces");
+    expect(styles).toContain("family=Manrope:wght@400..800");
+    expect(styles).toContain("display=swap");
+    expect(styles).toContain("--font-body: \"Manrope\"");
+    expect(styles).toContain("--font-display: \"Fraunces\"");
+    expect(styles).toContain("--type-hero-title:");
+    expect(styles).toContain("--type-section-title:");
+    expect(styles).toContain("--type-subsection-title:");
+    expect(styles).toContain("--type-body:");
+    expect(styles).toContain("--type-caption:");
+    expect(styles).toContain("--type-button:");
+    expect(styles).toContain("--type-nav:");
+    expect(styles).toContain("--weight-display:");
+    expect(styles).toContain("--type-review-quote:");
+    expect(styles).toContain("--weight-body:");
+    expect(styles).toContain("--weight-strong:");
+    expect(styles).toContain("--leading-tight:");
+    expect(styles).toContain("--leading-body:");
+    expect(styles).toContain("--tracking-caption:");
+  });
+
+  it("defines the homepage spacing role system", () => {
+    expect(styles).toContain("--space-page-inline:");
+    expect(styles).toContain("--space-section-y:");
+    expect(styles).toContain("--space-section-y-compact:");
+    expect(styles).toContain("--space-section-y-tight:");
+    expect(styles).toContain("--space-heading-gap:");
+    expect(styles).toContain("--space-card-padding:");
+    expect(styles).toContain("--space-card-padding-tight:");
+    expect(styles).toContain("--space-card-padding-feature:");
+    expect(styles).toContain("--space-card-gap:");
+    expect(styles).toContain("--space-carousel-gap:");
+    expect(styles).toContain("--space-form-gap:");
+    expect(styles).toContain("--space-footer-y:");
+    expect(styles).toContain("--space-footer-card-padding:");
+  });
+
+  it("maps homepage headings, buttons, and nav to typography roles", () => {
+    expect(styles).toContain("font-family: var(--font-body);");
+    expect(styles).toContain("font-family: var(--font-display);");
+    expect(styles).toContain(".brand-header,\n.brand-header button,\n.brand-header a {");
+    expect(styles).toContain(".hero-copy h1 {\n  color: inherit;\n  font-family: var(--font-display);");
+    expect(styles).toContain("font-size: var(--type-hero-title);");
+    expect(styles).toContain(".section-heading h2 {\n  color: #2f2630;\n  font-family: var(--font-display);");
+    expect(styles).toContain("font-size: var(--type-section-title);");
+    expect(styles).toContain(".kit-heading h2 {\n  color: #000000;\n  font-family: var(--font-display);");
+    expect(styles).toContain(".site-footer-email--restored .site-footer-email__title");
+    expect(styles).toContain(".site-footer-email--restored .site-footer-email__button");
+    expect(styles).toContain(".site-footer__shop-link");
+    expect(styles).toContain("font-family: var(--font-cta);");
+    expect(styles).not.toContain("font-family: Georgia, \"Times New Roman\", serif;");
+  });
+
+  it("keeps leftover homepage typography debt bounded and removes dead text selectors", () => {
+    expect(countOneOffTypographyRules(styles)).toBeLessThanOrEqual(40);
+    expect(styles).toContain(".kit-accordion__number {\n  color: #000000;\n  display: block;\n  font-size: var(--type-card-title);");
+    expect(styles).toContain(".review-story-label {\n  color: #241f22;");
+    expect(styles).toContain("font-size: 0.68rem;");
+    expect(styles).not.toContain(".collection-card__mood");
+    expect(styles).not.toContain(".collection-card__title");
+    expect(styles).not.toContain(".collection-card__description");
+    expect(styles).not.toContain(".collection-card__cta");
+    expect(styles).not.toContain(".review-card__number");
+    expect(styles).not.toContain(".reviewed-set__copy");
+    expect(styles).toContain(".site-footer-email--restored");
+    expect(styles).not.toContain(".site-footer-email,\n");
+    expect(styles).not.toContain(".site-footer-system");
+    expect(styles).not.toContain("site-footer__toggle");
+    expect(styles).not.toContain("site-footer__panel");
+  });
+
   it("uses a fixed mobile top bar with safe-area paint and hero offset", () => {
     expect(indexHtml).toContain('name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"');
     expect(styles).toContain("@supports (height: env(safe-area-inset-top))");
@@ -89,8 +182,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--hero-mobile-min-height: 540px;");
     expect(styles).toContain(".confidence-section {\n  background:");
     expect(styles).toContain("margin-top: 0;");
-    expect(styles).toContain("padding: 26px 0 0;");
-    expect(styles).toContain("padding: 28px 0 0;");
+    expect(styles).toContain("padding: var(--space-section-y-tight) 0 var(--space-section-y-compact);");
     expect(styles).not.toContain("margin-top: clamp(-32px, -5vw, -18px)");
     expect(styles).not.toContain("margin-top: -22px");
     expect(styles).not.toContain("margin-top: -18px");
@@ -101,7 +193,6 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain("top: clamp(-52px, -7vw, -34px)");
     expect(styles).not.toContain("height: 72px");
     expect(styles).not.toContain("height: clamp(82px, 12vw, 120px)");
-    expect(styles).toContain("padding: 28px 0 clamp(24px, 6vw, 46px);");
     expect(styles).toContain("linear-gradient(180deg, #fbf6ee 0%, #fbf6ee 34%, #f7f0e6 100%)");
     expect(styles).not.toContain("backdrop-filter: blur(18px) saturate(1.05)");
     expect(styles).not.toContain("backdrop-filter: blur(12px) saturate(1.03)");
@@ -116,9 +207,6 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("height: 52px;");
     expect(styles).toContain("height: 34px;");
     expect(styles).toContain("rgba(251, 246, 238, 0.75) 55%");
-    expect(styles).toContain(".confidence-carousel__controls");
-    expect(styles).toContain("padding: 8px 0 34px;");
-    expect(styles).toContain("padding: 2px 0 24px;");
     expect(styles).toContain("0 10px 20px rgba(92, 65, 50, 0.055),\n    0 3px 8px rgba(92, 65, 50, 0.035)");
     expect(styles).not.toContain("mask-image: linear-gradient(");
     expect(styles).toContain(".confidence-carousel:focus-visible");
@@ -146,8 +234,6 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain("@keyframes confidence-loop");
     expect(styles).not.toContain(".confidence-carousel__track--resetting");
     expect(styles).toContain("overflow: visible;");
-    expect(styles).toContain(".collection-card__visual");
-    expect(styles).toContain("padding: 14px 14px 22px;");
     expect(styles).toContain("--confidence-card-width: min(80vw, 306px);");
     expect(styles).toContain("--confidence-card-width: min(78vw, 282px);");
     expect(styles).toContain("min-height: 154px;");
@@ -167,11 +253,11 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-carousel__hint");
     expect(styles).toContain(".collection-products");
     expect(styles).toContain(".collection-product-row");
-    expect(styles).toContain("margin-inline: calc(-1 * clamp(18px, 4vw, 56px));");
+    expect(styles).toContain("margin-inline: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain("max-width: none;");
     expect(styles).toContain(".collection-carousel__viewport");
     expect(styles).toContain("padding-inline: 18px;");
-    expect(styles).toContain(".collection-carousel,\n  .faq-topic-carousel,\n  .review-carousel {\n    margin-left: calc(-1 * clamp(18px, 4vw, 56px));");
+    expect(styles).toContain(".collection-carousel,\n  .faq-topic-carousel {\n    margin-left: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain("width: auto;");
     expect(styles).not.toContain(".collection-carousel,\n  .faq-topic-carousel {\n    margin-left: calc(50% - 50vw);");
     expect(styles).toContain(".collection-carousel__viewport,\n  .faq-topic-carousel__viewport {\n    padding-inline: 0;");
@@ -182,13 +268,13 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-carousel__slide");
     expect(styles).toContain("flex: 0 0 clamp(132px, 42vw, 168px);");
     expect(styles).toContain("grid-template-columns: repeat(2, 170px);");
-    expect(styles).toContain("column-gap: 20px;");
+    expect(styles).toContain("column-gap: var(--space-grid-gap);");
     expect(styles).toContain("justify-content: center;");
-    expect(styles).toContain("row-gap: 20px;");
+    expect(styles).toContain("row-gap: var(--space-grid-gap);");
     expect(styles).toContain("height: 245px;");
     expect(styles).toContain(".collection-product-teaser");
     expect(styles).toContain("height: 70px;");
-    expect(styles).toContain(".collection-product-teaser {\n  column-gap: 20px;");
+    expect(styles).toContain(".collection-product-teaser {\n  column-gap: var(--space-grid-gap);");
     expect(styles).toContain("height: 70px;\n  justify-content: center;\n  margin-top: 6px;");
     expect(styles).toContain("linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 88%)");
     expect(styles).toContain(".collection-products__more");
@@ -197,34 +283,41 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".carousel-progress__pill");
     expect(styles).not.toContain("grid-auto-columns: minmax(148px, 56vw);");
     expect(styles).not.toContain(".confidence-carousel__hint");
-    expect(styles).toContain("margin-top: 14px;");
     expect(styles).toContain("scrollbar-width: none");
     expect(styles).not.toContain(".shop-more-grid");
     expect(styles).not.toContain(".weekly-set-section");
-    expect(styles).toContain(".collection-section {\n    padding-bottom: 24px;");
-    expect(styles).toContain(".collection-carousel {\n    margin-left: -14px;");
+    expect(styles).toContain(".collection-section {\n    padding-bottom: var(--space-section-y-compact);");
+    expect(styles).toContain(".collection-carousel {\n    margin-left: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain(".collection-products,\n  .collection-products__heading {\n    min-width: 0;");
     expect(styles).toContain(".collection-product-row,\n  .collection-product-teaser {\n    grid-template-columns: repeat(2, minmax(0, 1fr));");
     expect(styles).toContain(".collection-products__more {\n    max-width: 100%;\n    justify-self: center;\n    width: fit-content;");
-    expect(styles).toContain("margin-left: calc(-1 * clamp(18px, 4vw, 56px));");
-    expect(styles).toContain("margin-right: calc(-1 * clamp(18px, 4vw, 56px));");
-    expect(styles).toContain("--review-card-min-height: 452px;");
-    expect(styles).toContain("min-height: var(--review-card-min-height);");
-    expect(styles).toContain(".review-carousel {\n    --review-card-width: min(74vw, 284px);");
+    expect(styles).toContain("margin-left: calc(-1 * var(--space-page-inline));");
+    expect(styles).toContain("margin-right: calc(-1 * var(--space-page-inline));");
+    expect(styles).toContain(".review-story-row {\n  -webkit-overflow-scrolling: touch;");
+    expect(styles).toContain("overflow-x: auto;");
+    expect(styles).toContain(".review-story-item {\n  align-items: center;");
+    expect(styles).toContain("flex: 0 0 68px;");
+    expect(styles).toContain(".review-story-bubble {\n  background: #f5f5f7;");
+    expect(styles).toContain("height: 58px;");
+    expect(styles).not.toContain("--review-card-min-height");
+    expect(styles).not.toContain(".review-card--product");
+    expect(styles).not.toContain(".reviewed-set {");
+    expect(styles).not.toContain(".review-carousel {");
     expect(styles).not.toContain(".review-carousel__button");
     expect(styles).not.toContain(".review-card--peek {\n    display: none;");
     expect(styles).toContain("aspect-ratio: 1020 / 573;");
     expect(styles).not.toContain("min-height: 166px;");
     expect(styles).not.toContain("min-height: 158px;");
     expect(styles).toContain("position: absolute;");
-    expect(styles).toContain("font-size: 1.8rem");
-    expect(styles).toContain("padding: 28px 0 0");
+    expect(styles).toContain("--type-section-title: 1.8rem;");
+    expect(styles).toContain("padding: var(--space-section-y-tight) 0 var(--space-section-y-compact);");
   });
 
   it("does not force tiny mobile viewports wider than the screen", () => {
     expect(styles).not.toContain("min-width: 320px");
     expect(styles).toContain("min-width: 0");
-    expect(styles).toContain(".site-footer {\n    padding: 26px 14px 24px;");
+    expect(styles).toContain("overflow-x: hidden;");
+    expect(styles).toContain(".site-footer {\n    padding: var(--space-footer-y) var(--space-page-inline) var(--space-section-y-compact);");
   });
 
   it("keeps the bare-bones mobile hero copy compact for structure review", () => {
@@ -285,18 +378,20 @@ describe("small mobile responsive CSS", () => {
   });
 
   it("keeps the FAQ Help section black and white", () => {
-    const faqStyles = styles.slice(styles.indexOf(".faq-help-section"), styles.indexOf(".site-footer"));
+    const faqStart = styles.indexOf(".faq-help {");
+    const footerStart = styles.indexOf(".site-shell .site-footer", faqStart);
+    const faqStyles = styles.slice(faqStart, footerStart);
 
     expect(faqStyles).toContain("place-items: center;");
     expect(faqStyles).toContain("font-family: var(--font-display);");
     expect(faqStyles).toContain("font-variation-settings: \"opsz\" 144, \"SOFT\" 72, \"WONK\" 0;");
-    expect(faqStyles).toContain("font-size: clamp(1.65rem, 7vw, 2.25rem);");
+    expect(faqStyles).toContain("font-size: var(--type-section-title);");
     expect(faqStyles).toContain(".faq-help__intro {\n  border-color: transparent;");
     expect(faqStyles).toContain(".faq-topic-carousel");
     expect(faqStyles).toContain(".faq-topic-grid {\n  display: flex;");
-    expect(faqStyles).toContain("margin-inline: calc(-1 * clamp(18px, 4vw, 56px));");
+    expect(faqStyles).toContain("margin-inline: calc(-1 * var(--space-page-inline));");
     expect(faqStyles).toContain(".faq-topic-carousel__viewport");
-    expect(faqStyles).toContain("padding-inline: clamp(18px, 4vw, 56px);");
+    expect(faqStyles).toContain("padding-inline: var(--space-page-inline);");
     expect(faqStyles).toContain("padding: 10px 0 8px;");
     expect(faqStyles).toContain("touch-action: pan-y pinch-zoom;");
     expect(faqStyles).toContain("flex: 0 0 clamp(116px, 31vw, 136px);");
@@ -314,39 +409,24 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).not.toMatch(/#(?:df7f91|e58a9b|dc5875|d94e73|fff7f8|fff5f6|fff0f1|fff6f7|f9d5d8)/i);
   });
 
-  it("keeps the approved mobile footer system black and white", () => {
-    const footerStyles = styles.slice(styles.lastIndexOf("@media (max-width: 720px)"));
-
-    expect(styles).toContain(".site-footer-system {");
-    expect(styles).toContain(".site-footer-email,\n.site-shell--barebones .site-footer-email,\n.site-footer,\n.site-shell--barebones .site-footer");
-    expect(styles).toContain("background: #ffffff !important;");
-    expect(styles).toContain("border: 0 !important;");
-    expect(styles).toContain(".site-footer .site-footer__social a");
-    expect(styles).toContain("color: #000000;");
-    expect(styles).toContain(".site-footer .site-footer__groups {\n  border: 1px solid rgba(0, 0, 0, 0.16) !important;");
-    expect(footerStyles).toContain(".site-footer-system {\n    border-bottom: 0;");
-    expect(footerStyles).toContain("border-left: 0;");
-    expect(footerStyles).toContain("width: 100%;");
-    expect(footerStyles).not.toMatch(/#(?:fffaf4|fff7ef|bf6f72|bd6c70|7c6862|735852|4c3d39|725d57|8d7a74|b7656d)/i);
+  it("keeps the approved footer mobile-first and softly separated", () => {
+    expect(styles).toContain(".site-shell .site-footer,\n.site-shell--barebones .site-footer {");
+    expect(styles).toContain("--footer-blush: #f5f5f7;");
+    expect(styles).toContain("background-image: linear-gradient(180deg, #ffffff 0%, #fff9f7 100%) !important;");
+    expect(styles).toContain(".site-footer-email--restored");
+    expect(styles).toContain(".site-footer-email--restored .site-footer-email__form");
+    expect(styles).toContain(".site-footer__shop-link");
+    expect(styles).toContain("min-height: 49px;");
+    expect(styles).toContain(".site-footer__policy-bar");
+    expect(styles).toContain("grid-template-columns: repeat(4, minmax(0, 1fr));");
+    expect(styles).toContain(".site-footer__social-links");
+    expect(styles).toContain(".site-footer__love-note");
+    expect(styles).toContain(".site-footer__copyright");
   });
 
-  it("keeps the footer email card compact and neutral on mobile", () => {
-    const footerStyles = styles.slice(styles.lastIndexOf("@media (max-width: 720px)"));
-
-    expect(styles).toContain(".site-footer-email,\n.site-shell--barebones .site-footer-email,");
-    expect(styles).toContain(".site-footer-email__form {\n  border: 1px solid rgba(0, 0, 0, 0.34);");
-    expect(styles).toContain("grid-template-columns: minmax(0, 1fr) auto;");
-    expect(styles).toContain(".site-footer-email__button,\n.site-footer-email__button[data-slot=\"button\"] {\n  background: #000000;");
-    expect(styles).toContain("color: #ffffff !important;");
-    expect(footerStyles).toContain(".site-footer-email__content {\n    gap: 5px;");
-    expect(footerStyles).toContain("padding: 14px 20px;");
-    expect(footerStyles).toContain("font-size: clamp(1.68rem, 6.8vw, 1.92rem);");
-    expect(footerStyles).toContain("min-height: 48px;");
-    expect(footerStyles).toContain("min-height: 44px;");
-    expect(footerStyles).toContain(".site-footer .site-footer__group > h3");
-    expect(footerStyles).toContain(".site-footer .site-footer__panel[data-state=\"closed\"]");
-    expect(styles).toContain("@media (max-width: 360px)");
-    expect(styles).toContain(".site-footer-email__form {\n    border: 0;\n    gap: 8px;\n    grid-template-columns: 1fr;");
+  it("keeps removed footer trust-strip CSS out of the current footer", () => {
+    expect(styles).not.toContain(".site-footer__trust-strip");
+    expect(styles).not.toContain(".site-footer__trust-item");
     expect(styles).not.toContain(".footer-email-capture");
     expect(styles).not.toContain(".cohesive-footer-preview");
   });

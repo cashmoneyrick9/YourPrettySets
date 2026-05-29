@@ -87,64 +87,40 @@ describe("HomePage", () => {
     expect(document.querySelector(".hero-photo")).not.toHaveAttribute("aria-label");
   });
 
-  it("shows the review carousel foundation", () => {
+  it("shows a raw Instagram-story-style review placeholder row", () => {
     render(<HomePage />);
 
     expect(screen.getByText("CUSTOMER LOVE")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Loved by first-time press-on buyers" })).toBeInTheDocument();
-    expect(document.querySelector(".review-carousel__track")).toBeInTheDocument();
-    expect(document.querySelector(".review-carousel")).toHaveClass("mobile-carousel");
-    expect(document.querySelector(".review-carousel")).toHaveAttribute("data-auto-rotate", "true");
-    expect(document.querySelector(".review-carousel")).toHaveAttribute("data-loop", "true");
-    expect(document.querySelector(".review-carousel")).toHaveAttribute("data-rotate-speed", "24");
-    expect(document.querySelectorAll(".review-card")).toHaveLength(12);
+    expect(document.querySelector(".review-story-row")).toBeInTheDocument();
+    expect(document.querySelector(".review-story-row")).toHaveAttribute("aria-label", "Review story placeholders");
+    expect(document.querySelectorAll(".review-story-item")).toHaveLength(5);
+    expect(document.querySelectorAll(".review-story-bubble")).toHaveLength(5);
+    expect(screen.getByText("Sarah")).toBeInTheDocument();
+    expect(screen.getByText("Custom Set")).toBeInTheDocument();
+    expect(screen.getByText("Birthday Nails")).toBeInTheDocument();
+    expect(screen.getByText("Etsy Review")).toBeInTheDocument();
+    expect(screen.getByText("Bridal Set")).toBeInTheDocument();
+    expect(document.querySelector(".review-carousel__track")).not.toBeInTheDocument();
+    expect(document.querySelector(".review-carousel")).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".review-card")).toHaveLength(0);
     expect(screen.queryByRole("button", { name: "Previous review" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Next review" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Show review/i })).not.toBeInTheDocument();
-    expect(document.querySelector(".review-carousel__dots")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".review-card--product")).toHaveLength(12);
-    expect(document.querySelectorAll(".review-card__number")).toHaveLength(0);
-    expect(document.querySelectorAll(".review-card__stars--product")).toHaveLength(12);
-    expect(document.querySelectorAll(".reviewed-set")).toHaveLength(12);
-    expect(document.querySelector('[data-review-index="1"]')).toHaveClass("review-card--product");
-    expect(screen.getByText("Taylor K.")).toBeInTheDocument();
-    expect(screen.getByText("Maya R.")).toBeInTheDocument();
-    expect(screen.getAllByText("Verified Buyer")).toHaveLength(12);
-    expect(screen.getAllByText("REVIEWED SET")).toHaveLength(12);
-    expect(screen.getByText("Blush Crush")).toBeInTheDocument();
-    expect(screen.getByText("Sea Glass")).toBeInTheDocument();
-    expect(screen.getAllByText("Square Short · $18")).toHaveLength(2);
-    expect(screen.getByText("Almond Medium · $32")).toBeInTheDocument();
-    expect(screen.getByText(/easy to apply and looked polished all week/i)).toBeInTheDocument();
-    expect(screen.getByText(/survived a beach weekend/i)).toBeInTheDocument();
-    expect(document.querySelector('[data-review-index="1"] .reviewed-set__link')).toHaveAttribute("tabindex", "-1");
-    expect(document.querySelector('[data-review-index="1"] .reviewed-set__link')).toHaveAttribute(
-      "href",
-      "/shop/golden-hour"
-    );
+    expect(document.querySelectorAll(".review-card--product")).toHaveLength(0);
+    expect(document.querySelectorAll(".review-card__stars--product")).toHaveLength(0);
+    expect(document.querySelectorAll(".reviewed-set")).toHaveLength(0);
+    expect(screen.queryByText("Taylor K.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Verified Buyer")).not.toBeInTheDocument();
+    expect(screen.queryByText("REVIEWED SET")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".review-card--loop-buffer")).toHaveLength(0);
     expect(screen.queryByRole("link", { name: "READ MORE REVIEWS" })).not.toBeInTheDocument();
   });
 
-  it("does not render hidden review loop-buffer copies", async () => {
+  it("does not render hidden review loop-buffer copies", () => {
     render(<HomePage />);
-    const cards = [...document.querySelectorAll(".review-card")];
 
-    expect(cards).toHaveLength(12);
-    expect(cards.map((card) => card.getAttribute("data-card-index"))).toEqual([
-      "0",
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11"
-    ]);
+    expect(document.querySelectorAll(".review-card")).toHaveLength(0);
     expect(document.querySelectorAll(".review-card--loop-buffer")).toHaveLength(0);
   });
 
