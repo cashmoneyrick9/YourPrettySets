@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CollectionFilters } from "../components/CollectionFilters";
 import { FaqSection } from "../components/FaqSection";
 import { KitContents } from "../components/KitContents";
@@ -10,10 +10,152 @@ const confidenceSteps = [
   { number: "3" }
 ];
 
-const reviewStoryLabels = ["Sarah", "Custom Set", "Birthday Nails", "Etsy Review", "Bridal Set"];
+const STORY_DURATION_MS = 6000;
+
+const reviewStories = [
+  {
+    id: "sarah",
+    label: "Sarah",
+    title: "Sarah",
+    quote: "Sarah said her first set felt easy to apply, stayed put, and looked polished for the whole weekend.",
+    source: "Verified customer"
+  },
+  {
+    id: "birthday-set",
+    label: "Birthday Set",
+    title: "Birthday Set",
+    quote: "Birthday Set made my plans feel instantly more put together without needing a salon appointment.",
+    source: "Verified customer"
+  },
+  {
+    id: "bridal-nails",
+    label: "Bridal Nails",
+    title: "Bridal Nails",
+    quote: "A soft bridal set with a clean fit, pretty finish, and enough sizes to find the right match.",
+    source: "Verified customer"
+  },
+  {
+    id: "etsy-review",
+    label: "Etsy Review",
+    title: "Etsy Review",
+    quote: "A five-star Etsy note about fast shipping, careful packaging, and nails that looked even better in person.",
+    source: "Etsy review"
+  },
+  {
+    id: "custom-set",
+    label: "Custom Set",
+    title: "Custom Set",
+    quote: "The custom set felt personal without being overdone, with a shape and color that matched the request.",
+    source: "Verified customer"
+  },
+  {
+    id: "sizing-kit",
+    label: "Sizing Kit",
+    title: "Sizing Kit",
+    quote: "The sizing step made ordering feel clear, simple, and less stressful before choosing the final set.",
+    source: "Verified customer"
+  },
+  {
+    id: "vacation-nails",
+    label: "Vacation Nails",
+    title: "Vacation Nails",
+    quote: "Vacation nails that packed easily, photographed beautifully, and held up through a full trip.",
+    source: "Verified customer"
+  },
+  {
+    id: "chrome-set",
+    label: "Chrome Set",
+    title: "Chrome Set",
+    quote: "A clean chrome finish that felt elevated, smooth, and wearable with every outfit.",
+    source: "Verified customer"
+  },
+  {
+    id: "press-on-win",
+    label: "Press-On Win",
+    title: "Press-On Win",
+    quote: "A first press-on win: quick application, no appointment, and a salon-style look at home.",
+    source: "Verified customer"
+  },
+  {
+    id: "five-stars",
+    label: "Five Stars",
+    title: "Five Stars",
+    quote: "Five stars for the fit, finish, and the kind of details that made the set feel special.",
+    source: "Verified customer"
+  }
+];
 
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const [activeStoryIndex, setActiveStoryIndex] = useState<number | null>(null);
+  const activeStory = activeStoryIndex === null ? null : reviewStories[activeStoryIndex];
+  const activeStoryProgressIndex = activeStoryIndex ?? 0;
+  const goToPreviousStory = () => {
+    setActiveStoryIndex((currentIndex) => (currentIndex === null ? null : Math.max(0, currentIndex - 1)));
+  };
+  const goToNextStory = () => {
+    setActiveStoryIndex((currentIndex) =>
+      currentIndex === null ? null : Math.min(reviewStories.length - 1, currentIndex + 1)
+    );
+  };
+
+  useEffect(() => {
+    if (activeStoryIndex === null) {
+      return undefined;
+    }
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setActiveStoryIndex(null);
+        return;
+      }
+
+      if (event.key === "ArrowLeft") {
+        goToPreviousStory();
+        return;
+      }
+
+      if (event.key === "ArrowRight") {
+        goToNextStory();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeStoryIndex]);
+
+  useEffect(() => {
+    if (activeStoryIndex === null) {
+      return undefined;
+    }
+
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+
+    if (reduceMotion) {
+      return undefined;
+    }
+
+    const timerId = window.setTimeout(() => {
+      setActiveStoryIndex((currentIndex) => {
+        if (currentIndex === null) {
+          return null;
+        }
+
+        if (currentIndex >= reviewStories.length - 1) {
+          return null;
+        }
+
+        return currentIndex + 1;
+      });
+    }, STORY_DURATION_MS);
+
+    return () => window.clearTimeout(timerId);
+  }, [activeStoryIndex]);
 
   return (
     <main className="storefront-barebones" id="home">
@@ -82,14 +224,84 @@ export function HomePage() {
           <h2>Loved by first-time press-on buyers</h2>
         </div>
         <div className="review-story-row" aria-label="Review story placeholders">
-          {reviewStoryLabels.map((label) => (
-            <button className="review-story-item" key={label} type="button">
-              <span className="review-story-bubble" aria-hidden="true" />
-              <span className="review-story-label">{label}</span>
-            </button>
+          {reviewStories.map((story, storyIndex) => (
+            <div className="review-story-item" key={story.id}>
+              <button
+                aria-label={`Open ${story.label} review story`}
+                className="review-story-bubble"
+                onClick={() => setActiveStoryIndex(storyIndex)}
+                type="button"
+              />
+              <span className="review-story-label">{story.label}</span>
+            </div>
           ))}
         </div>
       </section>
+
+      {activeStory ? (
+        <div
+          aria-label={`${activeStory.label} review story`}
+          aria-modal="true"
+          className="review-story-viewer"
+          role="dialog"
+        >
+          <div className="review-story-viewer__frame">
+            <div className="review-story-viewer__progress" aria-hidden="true">
+              {reviewStories.map((story, storyIndex) => (
+                <span
+                  className="review-story-viewer__progress-segment"
+                  data-state={
+                    storyIndex < activeStoryProgressIndex
+                      ? "complete"
+                      : storyIndex === activeStoryProgressIndex
+                        ? "active"
+                        : "upcoming"
+                  }
+                  key={story.id}
+                >
+                  {storyIndex === activeStoryProgressIndex ? (
+                    <span className="review-story-viewer__progress-fill" key={story.id} />
+                  ) : null}
+                </span>
+              ))}
+            </div>
+            <div className="review-story-viewer__topbar">
+              <p>{activeStory.label}</p>
+              <button
+                aria-label="Close review story"
+                className="review-story-viewer__close"
+                onClick={() => setActiveStoryIndex(null)}
+                type="button"
+              >
+                ×
+              </button>
+            </div>
+            <div className="review-story-viewer__stage">
+              <button
+                aria-label="Previous review story"
+                className="review-story-viewer__tap-zone review-story-viewer__tap-zone--previous"
+                onClick={goToPreviousStory}
+                type="button"
+              />
+              <article className="review-story-viewer__card">
+                <p className="review-story-viewer__kicker">Temporary review story placeholder</p>
+                <h2 id="review-story-viewer-title">{activeStory.title}</h2>
+                <p className="review-story-viewer__stars" aria-label="Five star review">
+                  ★★★★★
+                </p>
+                <blockquote>{activeStory.quote}</blockquote>
+                <p className="review-story-viewer__source">{activeStory.source}</p>
+              </article>
+              <button
+                aria-label="Next review story"
+                className="review-story-viewer__tap-zone review-story-viewer__tap-zone--next"
+                onClick={goToNextStory}
+                type="button"
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <FaqSection />
     </main>
