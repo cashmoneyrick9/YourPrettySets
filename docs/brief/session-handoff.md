@@ -463,6 +463,7 @@ Current review state:
 - The “What’s Included” structure is now the active section direction. The current prep-kit layout is a static two-column image grid, with no selector, preview swap, or blank icon placeholders.
 - The kit visual is a real PNG asset rather than CSS-built shapes. Future edits should adjust the image/card sizing in `.kit-spread`, `.kit-spread__image`, `.kit-item-card`, and `.kit-item-card__image` before changing the accordion.
 - The current product grid is intentionally placeholder/blank for layout review; do not treat it as final product photography.
+- Reviews story code is now split into reusable `StoryStrip` and `StoryViewer` components under `src/components/story/`. HomePage still owns the placeholder review story data and the active story index; `StoryViewer` owns the approved fullscreen mechanics, timer, progress, hold-to-pause, keyboard controls, body scroll lock, reduced-motion handling, and close behavior. The refactor kept the existing story CSS class names and visual layout unchanged.
 
 ## Suggested Next Agent Flow
 
