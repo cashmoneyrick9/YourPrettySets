@@ -161,7 +161,10 @@ describe("HomePage", () => {
 
     await user.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
 
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
+    const viewer = screen.getByRole("dialog", { name: "Birthday Set review story" });
+
+    expect(viewer).toBeInTheDocument();
+    expect(viewer).not.toHaveClass("story-debug-hitboxes");
     expect(document.body.style.overflow).toBe("hidden");
     expect(screen.getByRole("heading", { name: "Birthday Set" })).toBeInTheDocument();
     expect(screen.getByText("Temporary review story placeholder")).toBeInTheDocument();
@@ -321,6 +324,117 @@ describe("HomePage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Previous review story" }));
 
     expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
+  });
+
+  it("pauses the review story timer while holding a tap zone without navigating", async () => {
+    vi.useFakeTimers();
+    render(<HomePage />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
+
+    const nextTapZone = screen.getByRole("button", { name: "Next review story" });
+
+    fireEvent.pointerDown(nextTapZone, { pointerId: 1, pointerType: "mouse" });
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+    fireEvent.pointerUp(nextTapZone, { pointerId: 1, pointerType: "mouse" });
+
+    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(5999);
+    });
+
+    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
+  });
+
+  it("holds the previous tap zone without navigating backward", async () => {
+    vi.useFakeTimers();
+    render(<HomePage />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
+
+    const previousTapZone = screen.getByRole("button", { name: "Previous review story" });
+
+    fireEvent.pointerDown(previousTapZone, { pointerId: 1, pointerType: "mouse" });
+
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+
+    fireEvent.pointerUp(previousTapZone, { pointerId: 1, pointerType: "mouse" });
+
+    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
+  });
+
+  it("resumes the review story timer after pointer cancel while holding", async () => {
+    vi.useFakeTimers();
+    render(<HomePage />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
+
+    const previousTapZone = screen.getByRole("button", { name: "Previous review story" });
+
+    fireEvent.pointerDown(previousTapZone, { pointerId: 1, pointerType: "touch" });
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
+
+    fireEvent.pointerCancel(previousTapZone, { pointerId: 1, pointerType: "touch" });
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
+  });
+
+  it("pauses and resumes the review story timer while holding the story card", async () => {
+    vi.useFakeTimers();
+    render(<HomePage />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
+
+    const storyCard = document.querySelector(".review-story-viewer__card") as HTMLElement;
+
+    fireEvent.pointerDown(storyCard, { pointerId: 1, pointerType: "touch" });
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
+
+    fireEvent.pointerUp(storyCard, { pointerId: 1, pointerType: "touch" });
 
     act(() => {
       vi.advanceTimersByTime(6000);

@@ -101,7 +101,7 @@ Implemented:
   - sizing-kit language is intentionally excluded for now
   - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
   - the former weekly-set slot is removed for now; the CEO does not want to decide that third section yet
-  - What's included now uses a compact kit summary and grouped accordion rows instead of a long vertical item list
+  - What's included now uses a compact kit summary with an image-tab/detail-panel module instead of bulky accordion rows
   - reviews now use a compact trust-chip row, single featured review carousel, product thumbnail/detail, dots, and a `See more reviews` link
   - FAQ now uses a beginner help strip, accordion answers, a care-tips cue, and a contact CTA
   - footer now uses a compact brand intro, grouped accordion links, and tiny legal text instead of placeholder link piles
@@ -126,6 +126,9 @@ Latest known verification before handoff:
 - Reviews Phase 3 viewer verification on 2026-05-29: in-app browser verification at `375x667` on `http://localhost:5175/` opened `Birthday Set` from its circular story button and found a fullscreen `role="dialog"` named `Birthday Set review story`, a static progress rail, close button, selected placeholder quote, 10 circular story buttons, 0 item-wrapper buttons, a `328px` by `631px` story frame, no page-level horizontal overflow, and the close button removed the viewer. No timer, auto-advance, swipe gestures, product links, or real images were added.
 - Reviews Phase 4 viewer verification on 2026-05-29: in-app browser verification at `375x667` on `http://localhost:5175/` opened `Birthday Set` and found a light near-white fullscreen viewer background, warm-white story frame, 10 segmented progress rails with `complete` / `active` / `upcoming` states, left/right invisible tap-zone buttons, 10 circular strip buttons, 0 item-wrapper buttons, body scroll locked, and no page-level horizontal overflow. The next tap zone moved to `Bridal Nails`, progress updated, repeated previous taps stayed bounded at `Sarah`, and close removed the viewer. Automated tests cover Escape plus ArrowLeft/ArrowRight navigation.
 - Reviews Phase 5 timer verification on 2026-05-29: `npm test -- --run` passed with 12 files and 67 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. In-app browser verification at `375x667` on `http://localhost:5175/` opened `Birthday Set`, found 10 progress segments, active `review-story-progress` animation at `6s`, body scroll locked, no page-level horizontal overflow, and after 6.2 seconds the viewer auto-advanced to `Bridal Nails` with previous segments completed. Closing removed the viewer and restored body overflow.
+- Reviews tap-zone and press-hold pause fix on 2026-05-29 keeps the fullscreen story viewer but makes the left/right tap-zone buttons visually inert in normal, active, focus, and focus-visible states. The root cause was the visible `.review-story-viewer__tap-zone:focus-visible` outline plus missing explicit tap-highlight/active/focus resets for these invisible buttons. The tap zones now keep transparent background, no border, no shadow, no outline, `appearance: none`, and `-webkit-tap-highlight-color: transparent`; the close button keeps its visible focus styling. Pressing and holding a tap zone or the story card pauses the timer/progress, release/cancel/leave resumes it, quick tap zones still navigate, and keyboard/Escape behavior is unchanged. Verification: `npm test` passed with 12 files and 70 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, `git diff --check` passed, and in-app browser verification on `http://localhost:5173/` opened `Birthday Set`, confirmed large transparent tap zones with no border/shadow/outline, next/previous navigation, close cleanup, and body scroll restoration.
+- Reviews long-press selection fix on 2026-05-29 scopes `user-select: none`, `-webkit-user-select: none`, and `-webkit-touch-callout: none` to `.review-story-viewer` and `.review-story-viewer *` only, so press-and-hold pause does not invite text selection/copy UI inside the story overlay. Normal page text outside the viewer remains selectable. Verification: `npm test` passed with 12 files and 70 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, `git diff --check` passed, and in-app browser computed styles showed viewer/story text/tap zones at `user-select: none` while the outside Reviews heading stayed `user-select: auto`.
+- Temporary Reviews hitbox debug mode was removed on 2026-05-29 after the fullscreen layout and 48/4/48 hitbox split were approved. The viewer no longer applies `.story-debug-hitboxes`, and the temporary debug outline/fill CSS was deleted; the invisible tap-zone buttons remain active.
 - Browser/dev server check on 2026-05-22: `http://localhost:5173/` responded from this repo after starting `npm run dev -- --host 0.0.0.0`. In-app browser verification confirmed `.hero-photo` has `aria-hidden="true"` and `background-image: none`, `#home` has `storefront-barebones`, sampled visible page styles resolved only to black, white, or transparent, and the annotated mobile elements computed as requested at the 375px viewport: `.hero-copy` `padding: 23px 29px 1px` with height `263.359px`; `.hero-section` `padding-top: 45px` with height now adjusted to `635px`; `.confidence-section__heading` height `85.047px`; `.confidence-section__heading .eyebrow` height `20.469px` with `translateY(-3px)`; `.brand-mark` font-size `25px`.
 - Browser/dev server check: `http://localhost:5173/` responded. Automated DOM tests confirm the How It Works cards render as blank shells with no visible card copy or code-native visual nodes, continuous drift advances the card lane at a visible 36px/second pace, passive drift still resets at a matching visual loop point, manual/native scroll from slide 3 into the next physical slide 1 keeps the forward scroll position while progress resets, outer-buffer native scroll re-centers before either hard end, drag past slide 3 settles onto the next physical slide 1 instead of snapping back, touch/focus interaction pauses drift for 3 seconds, touch pointers stay out of the custom mouse-drag path, the old dot controls are replaced by three dynamic progress pills, reduced-motion users do not get the drifting class, and initial carousel centering does not call page-scrolling APIs. In-app browser verification at a 390px mobile viewport confirmed repeated drags advance 1 -> 2 -> 3 -> 1 -> 2, then re-center to an equivalent slide-3 position before the hard end instead of exhausting the physical strip.
 - The in-app browser viewport override was reset after verification.
@@ -288,18 +291,19 @@ Latest collection/product flow decision:
 
 Latest What's included decision:
 
-- The CEO liked the accordion-style kit UX direction and later replaced the placeholder prep visuals with real kit asset photos.
+- The CEO replaced the accordion-style kit UX direction with a compact image-first tab/detail module under the existing kit image.
 - The section now uses:
   - eyebrow `THE COMPLETE SET`
   - heading `What’s Included`
   - summary message `Everything you need for your set.`
   - a real kit flat-lay image at `/assets/kit-contents-spread-v2.png`
-  - two accordion rows: `Made to fit` and `Prep + apply kit`
-  - `Made to fit` open by default, with one group open at a time
-  - `Made to fit` uses the real nail-size image at `/assets/nail-size-set.png`, replacing the old CSS-built black size tiles
-  - `Prep + apply kit` shows six static image cards for adhesive tabs, nail glue, nail file, cuticle pusher, alcohol wipe, and storage case/card
+  - four compact visual tabs: `Nails`, `Glue / tabs`, `Prep tools`, and `Case + care`
+  - `Nails` selected by default, with one compact detail panel updating below the tabs
+  - `Nails` uses the real nail-size image at `/assets/nail-size-set.png`, replacing the old CSS-built black size tiles
+  - `Glue / tabs`, `Prep tools`, and `Case + care` reuse the existing individual kit assets without adding new imagery
+  - latest tab-row refinement makes the four tabs image-led mini cards with larger scaled thumbnails, secondary labels, light unselected borders, and a softer detail tray
   - a primary `HOW TO APPLY & CARE` link to `#faq`
-- The latest prep-kit decision removes selector behavior, preview swapping, and blank icon placeholders. All six prep images are visible directly in the grid.
+- The latest prep-kit decision removes the bulky accordion/card area only. Do not redesign the section heading, subtitle, main kit image, or CTA links during this pass.
 
 Latest reviews decision:
 
@@ -455,14 +459,16 @@ Implemented scope:
 - Made the collection selector feel edge-to-edge on mobile.
 - Removed visible black outlines/circles from the mobile header menu and bag controls in barebones review mode.
 - Tightened and resized the collection product card grid, then added the partial/faded teaser row under the visible product cards to imply a larger shop page.
-- Replaced the old `KitContents` / “What’s Included” treatment with the approved compact black-and-white section: centered header, real kit image, two accordion cards, primary care CTA, and required FAQ link.
+- Replaced the old `KitContents` / “What’s Included” accordion area with the approved compact image-tab/detail-panel module while preserving the centered header, real kit image, primary care CTA, and required FAQ link.
 - Added the updated kit image asset at `public/assets/kit-contents-spread-v2.png` plus individual prep-kit assets for adhesive tabs, nail glue, nail file, cuticle pusher, alcohol wipe, and storage case/card.
 
 Current review state:
 
-- The “What’s Included” structure is now the active section direction. The current prep-kit layout is a static two-column image grid, with no selector, preview swap, or blank icon placeholders.
-- The kit visual is a real PNG asset rather than CSS-built shapes. Future edits should adjust the image/card sizing in `.kit-spread`, `.kit-spread__image`, `.kit-item-card`, and `.kit-item-card__image` before changing the accordion.
+- The “What’s Included” structure is now the active section direction. The current kit detail layout is a four-tab selector with one compact detail panel, not an accordion or carousel.
+- The kit visual is a real PNG asset rather than CSS-built shapes. Future edits should adjust the image/card sizing in `.kit-spread`, `.kit-spread__image`, `.kit-detail-tab`, `.kit-detail-tab__visual`, `.kit-detail-panel`, and `.kit-detail-panel__visual` before changing the section structure.
 - The current product grid is intentionally placeholder/blank for layout review; do not treat it as final product photography.
+- Reviews story viewer debug hitbox visuals are now removed. The approved current map at 375px remains a true fullscreen story canvas: viewer/frame/stage/card are 375px by 667px from x0/y0 with no side margin or bottom gap; progress and topbar float over the canvas from x10 to x365; the protected top area is 68px high; previous and next invisible tap zones each cover 48% of the canvas body from y68 to the bottom; and the center no-navigation gap is about 15px wide. Press-and-hold pause remains duration-based across the story body, including the left/right tap zones; holds resume without changing stories.
+- Reviews story controls now suppress the mobile tap/click afterimage only on the story bubble and close controls. `.review-story-bubble` and `.review-story-viewer__close` set transparent WebKit tap highlight and `touch-action: manipulation`; their `:active` states remove shadow/filter artifacts, and the close active state stays transparent. Existing `:focus-visible` accessibility styling remains intact.
 - Reviews story code is now split into reusable `StoryStrip` and `StoryViewer` components under `src/components/story/`. HomePage still owns the placeholder review story data and the active story index; `StoryViewer` owns the approved fullscreen mechanics, timer, progress, hold-to-pause, keyboard controls, body scroll lock, reduced-motion handling, and close behavior. The refactor kept the existing story CSS class names and visual layout unchanged.
 
 ## Suggested Next Agent Flow
