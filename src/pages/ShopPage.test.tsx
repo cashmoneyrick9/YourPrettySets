@@ -30,7 +30,7 @@ describe("ShopPage", () => {
     expect(products).toHaveLength(33);
     expect(screen.getByText("33 sets")).toBeInTheDocument();
     expect(getCatalogCards()).toHaveLength(33);
-    expect(screen.getByPlaceholderText("Search sets")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Search color, occasion, style...")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Filter" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sort Newest" })).toBeInTheDocument();
     expect(screen.queryByRole("radiogroup", { name: "Sort sets" })).not.toBeInTheDocument();
@@ -40,12 +40,58 @@ describe("ShopPage", () => {
     const user = userEvent.setup();
     render(<ShopPage />);
 
-    await user.type(screen.getByPlaceholderText("Search sets"), "sea");
+    await user.type(screen.getByPlaceholderText("Search color, occasion, style..."), "sea");
 
     expect(screen.getByText("2 sets")).toBeInTheDocument();
+    expect(screen.getByText('2 sets found for "sea"')).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Sea Glass" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Seashell Pearl" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Blush Crush" })).not.toBeInTheDocument();
+  });
+
+  it("lets shoppers clear an active search without changing other controls", async () => {
+    const user = userEvent.setup();
+    render(<ShopPage />);
+
+    const searchInput = screen.getByPlaceholderText("Search color, occasion, style...");
+    await user.type(searchInput, "bridal");
+
+    expect(screen.getByRole("button", { name: 'Clear search for "bridal"' })).toBeInTheDocument();
+    expect(screen.getByText('6 sets found for "bridal"')).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: 'Clear search for "bridal"' }));
+
+    expect(searchInput).toHaveValue("");
+    expect(screen.getByText("33 sets")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Clear search for/ })).not.toBeInTheDocument();
+  });
+
+  it("offers starter search chips while the search is empty", async () => {
+    const user = userEvent.setup();
+    render(<ShopPage />);
+
+    expect(screen.getByRole("button", { name: "Search pink" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Search bridal" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Search vacation" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Search simple" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Search under $30" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Search bridal" }));
+
+    expect(screen.getByPlaceholderText("Search color, occasion, style...")).toHaveValue("bridal");
+    expect(screen.queryByRole("button", { name: "Search pink" })).not.toBeInTheDocument();
+    expect(screen.getByText('6 sets found for "bridal"')).toBeInTheDocument();
+  });
+
+  it("shows a useful empty state when search has no matches", async () => {
+    const user = userEvent.setup();
+    render(<ShopPage />);
+
+    await user.type(screen.getByPlaceholderText("Search color, occasion, style..."), "zebra");
+
+    expect(screen.getByText('No sets found for "zebra"')).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Clear search" })).toBeInTheDocument();
+    expect(getCatalogCards()).toHaveLength(0);
   });
 
   it("filters catalog products from the collection tab rail", async () => {

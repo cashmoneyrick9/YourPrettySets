@@ -41,6 +41,7 @@ const sortOptions: { value: SortOption; label: string }[] = [
 ];
 
 const sortLabels = Object.fromEntries(sortOptions.map((option) => [option.value, option.label])) as Record<SortOption, string>;
+const searchSuggestions = ["pink", "bridal", "vacation", "simple", "under $30"];
 
 const tabRailDragThreshold = 12;
 
@@ -52,6 +53,27 @@ function compareDefaultOrder(left: Product, right: Product) {
 
 function formatCount(count: number) {
   return `${count} ${count === 1 ? "set" : "sets"}`;
+}
+
+function normalizeSearchText(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9$]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function getProductSearchText(product: Product) {
+  const matchingPriceLabels = priceFilters.filter((filter) => filter.matches(product)).map((filter) => filter.label);
+  const searchableParts = [
+    product.name,
+    product.description,
+    product.collections.join(" "),
+    detailFilterLabels[product.detailTier],
+    product.detailTier,
+    product.isNew ? "new" : "",
+    product.isPopular ? "popular most popular" : "",
+    `$${product.price}`,
+    ...matchingPriceLabels
+  ];
+
+  return normalizeSearchText(searchableParts.join(" "));
 }
 
 function toggleValue<T>(currentValues: T[], nextValue: T) {
@@ -87,7 +109,7 @@ export function ShopPage() {
   const [sortOption, setSortOption] = useState<SortOption>("newest");
 
   const visibleProducts = useMemo(() => {
-    const normalizedSearch = searchTerm.trim().toLowerCase();
+    const normalizedSearch = normalizeSearchText(searchTerm);
 
     return products
       .filter((product) => {
@@ -121,7 +143,7 @@ export function ShopPage() {
           return true;
         }
 
-        return `${product.name} ${product.description}`.toLowerCase().includes(normalizedSearch);
+        return getProductSearchText(product).includes(normalizedSearch);
       })
       .sort((left, right) => {
         if (sortOption === "price-asc") {
@@ -139,6 +161,8 @@ export function ShopPage() {
         return Number(right.isNew) - Number(left.isNew) || compareDefaultOrder(left, right);
       });
   }, [activeTab, searchTerm, selectedCollections, selectedDetailTiers, selectedPrices, sortOption]);
+
+  const normalizedSearchTerm = searchTerm.trim();
 
   function clearFilters() {
     setSearchTerm("");
@@ -217,17 +241,49 @@ export function ShopPage() {
           <p aria-live="polite">{formatCount(visibleProducts.length)}</p>
         </div>
 
-        <label className="sr-only" htmlFor="shop-search">
-          Search sets
-        </label>
-        <input
-          className="shop-search"
-          id="shop-search"
-          onChange={(event) => setSearchTerm(event.target.value)}
-          placeholder="Search sets"
-          type="search"
-          value={searchTerm}
-        />
+        <div className="shop-search-block">
+          <label className="sr-only" htmlFor="shop-search">
+            Search sets
+          </label>
+          <div className="shop-search-field">
+            <input
+              className="shop-search"
+              id="shop-search"
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search color, occasion, style..."
+              type="search"
+              value={searchTerm}
+            />
+            {normalizedSearchTerm ? (
+              <button
+                aria-label={`Clear search for "${normalizedSearchTerm}"`}
+                className="shop-search-clear"
+                onClick={() => setSearchTerm("")}
+                type="button"
+              >
+                x
+              </button>
+            ) : null}
+          </div>
+          {normalizedSearchTerm ? (
+            <p className="shop-search-status" aria-live="polite">
+              {`${formatCount(visibleProducts.length)} found for "${normalizedSearchTerm}"`}
+            </p>
+          ) : (
+            <div className="shop-search-suggestions" aria-label="Suggested searches">
+              {searchSuggestions.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  onClick={() => setSearchTerm(suggestion)}
+                  type="button"
+                  aria-label={`Search ${suggestion}`}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="shop-controls">
           <button
@@ -355,11 +411,20 @@ export function ShopPage() {
           ))}
         </div>
 
-        <div className="shop-product-grid" aria-live="polite">
-          {visibleProducts.map((product) => (
-            <ShopProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {visibleProducts.length > 0 ? (
+          <div className="shop-product-grid" aria-live="polite">
+            {visibleProducts.map((product) => (
+              <ShopProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="shop-empty-state" aria-live="polite">
+            <p>No sets found for "{normalizedSearchTerm}"</p>
+            <button type="button" onClick={() => setSearchTerm("")}>
+              Clear search
+            </button>
+          </div>
+        )}
       </section>
     </main>
   );
