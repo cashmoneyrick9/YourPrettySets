@@ -19,7 +19,7 @@ describe("CollectionFilters", () => {
     }
 
     const seeAllLink = screen.getByRole("link", { name: "See all" });
-    expect(seeAllLink).toHaveAttribute("href", "#collection-products");
+    expect(seeAllLink).toHaveAttribute("href", "/shop");
     expect(seeAllLink).toHaveClass("collection-heading__link");
     expect(seeAllLink).toHaveAttribute("data-slot", "button");
     expect(screen.queryByRole("link", { name: "New Arrivals" })).not.toBeInTheDocument();
@@ -51,15 +51,15 @@ describe("CollectionFilters", () => {
     expect(screen.queryByRole("heading", { name: "Soft Serve" })).not.toBeInTheDocument();
     expect(screen.queryByText("$20")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".collection-product-card .product-card")).toHaveLength(0);
-    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "#");
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop");
 
     await user.click(screen.getByRole("button", { name: "Bridal" }));
 
     expect(screen.getByRole("button", { name: "Bridal" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: "Bridal sets" })).toBeInTheDocument();
-    expect(screen.getByText("2 available")).toBeInTheDocument();
+    expect(screen.getByText("6 available")).toBeInTheDocument();
     expect(document.querySelectorAll(".collection-product-row > .collection-product-card")).toHaveLength(4);
-    expect(document.querySelectorAll(".collection-product-row > .collection-product-card--placeholder")).toHaveLength(2);
+    expect(document.querySelectorAll(".collection-product-row > .collection-product-card--placeholder")).toHaveLength(0);
     expect(document.querySelectorAll(".collection-product-teaser .collection-product-card")).toHaveLength(2);
     expect(screen.getByRole("link", { name: "View Something Blue" })).toHaveAttribute("href", "#product-something-blue");
     expect(screen.queryByRole("heading", { name: "Something Blue" })).not.toBeInTheDocument();

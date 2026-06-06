@@ -24,9 +24,9 @@ describe("FaqSection", () => {
     }
 
     expect(document.querySelector(".faq-topic-carousel")).toHaveClass("mobile-carousel");
-    expect(document.querySelector(".faq-topic-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-auto-rotate");
     expect(document.querySelector(".faq-topic-carousel")).toHaveAttribute("data-loop", "true");
-    expect(document.querySelector(".faq-topic-carousel")).toHaveAttribute("data-rotate-speed", "24");
+    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-rotate-speed");
     expect(document.querySelector(".faq-topic-grid")).toHaveClass("mobile-carousel__container");
     expect(screen.queryByRole("button", { name: "Previous help topic" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Next help topic" })).not.toBeInTheDocument();
@@ -46,7 +46,7 @@ describe("FaqSection", () => {
     expect(within(supportFooter).queryByText("Find answers fast — or message us anytime.")).not.toBeInTheDocument();
     expect(supportFooter.querySelector(".faq-support-footer__divider")).not.toBeInTheDocument();
 
-    const helpCenterLink = within(supportFooter).getByRole("link", { name: "Visit Help Center →" });
+    const helpCenterLink = within(supportFooter).getByRole("link", { name: "Visit Help Center" });
     expect(helpCenterLink).toHaveAttribute("href", "#help-center");
     expect(helpCenterLink).toHaveClass("faq-support-footer__button");
     expect(helpCenterLink).toHaveAttribute("data-slot", "button");
@@ -57,13 +57,15 @@ describe("FaqSection", () => {
     expect(supportLink).not.toHaveAttribute("data-slot", "button");
   });
 
-  it("keeps Custom Orders as a standard topic card", () => {
+  it("renders text-only chunky topic tabs", () => {
     render(<FaqSection />);
 
     const customOrdersCard = screen.getByRole("button", { name: "Custom Orders" });
 
     expect(customOrdersCard).toHaveClass("faq-topic-card");
     expect(customOrdersCard).not.toHaveClass("faq-topic-card--wide");
+    expect(customOrdersCard.querySelector("svg")).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".faq-topic-card svg")).toHaveLength(0);
   });
 
   it("updates the quick questions when a shopper chooses another topic", async () => {
@@ -80,7 +82,7 @@ describe("FaqSection", () => {
     expect(screen.getByRole("link", { name: "View all shipping questions" })).toHaveAttribute("href", "#help-center");
   });
 
-  it("minimizes the quick questions and resumes topic motion when the active topic is tapped again", async () => {
+  it("minimizes the quick questions when the active topic is tapped again", async () => {
     const user = userEvent.setup();
     render(<FaqSection />);
 
@@ -92,7 +94,7 @@ describe("FaqSection", () => {
     await user.click(screen.getByRole("button", { name: "Sizing" }));
 
     expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
-    expect(document.querySelector(".faq-topic-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-auto-rotate");
     expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
   });
 

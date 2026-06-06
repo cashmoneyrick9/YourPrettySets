@@ -8,9 +8,8 @@ import {
 } from "./products";
 
 describe("product data", () => {
-  it("has a realistic placeholder launch range", () => {
-    expect(products.length).toBeGreaterThanOrEqual(12);
-    expect(products.length).toBeLessThanOrEqual(30);
+  it("has the approved Shop All placeholder catalog count", () => {
+    expect(products).toHaveLength(33);
   });
 
   it("lets every product support every launch length and shape", () => {

@@ -17,7 +17,7 @@ describe("SiteFooter", () => {
 
     expect(within(footer).queryByRole("link", { name: "YourPrettySets home" })).not.toBeInTheDocument();
     expect(within(footer).getByRole("region", { name: "Get 15% off your first set" })).toBeInTheDocument();
-    expect(within(shopNav).getByRole("link", { name: "Shop All" })).toHaveAttribute("href", "#shop-collections");
+    expect(within(shopNav).getByRole("link", { name: "Shop All" })).toHaveAttribute("href", "/shop");
     expect(within(shopNav).getByRole("link", { name: "New Arrivals" })).toBeInTheDocument();
     expect(within(shopNav).getByRole("link", { name: "Best Sellers" })).toBeInTheDocument();
     expect(within(shopNav).getByRole("link", { name: "Accessories" })).toBeInTheDocument();

@@ -466,21 +466,65 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain("margin-inline: calc(-1 * var(--space-page-inline));");
     expect(faqStyles).toContain(".faq-topic-carousel__viewport");
     expect(faqStyles).toContain("padding-inline: var(--space-page-inline);");
-    expect(faqStyles).toContain("padding: 10px 0 8px;");
+    expect(faqStyles).toContain("padding: 4px 0 6px;");
     expect(faqStyles).toContain("touch-action: pan-y pinch-zoom;");
-    expect(faqStyles).toContain("flex: 0 0 clamp(116px, 31vw, 136px);");
+    expect(faqStyles).toContain("flex: 0 0 clamp(138px, 38vw, 166px);");
     expect(faqStyles).not.toContain(".faq-topic-carousel__dots");
-    expect(faqStyles).toContain(".faq-topic-card--active {\n  background: #ffffff;");
+    expect(faqStyles).toContain(".faq-topic-card--active {\n  background: #f5f5f5;");
+    expect(faqStyles).not.toContain(".faq-topic-card svg");
     expect(faqStyles).not.toContain(".faq-cta-card__button--filled {\n  background: #000000;");
     expect(faqStyles).toContain(".faq-support-footer");
     expect(faqStyles).toContain(".faq-support-footer__button");
     expect(faqStyles).toContain("border: 1px solid #000000;");
     expect(faqStyles).toContain(".faq-support-footer__contact");
-    expect(faqStyles).toContain("min-height: 112px;");
-    expect(styles).toContain("flex-basis: clamp(104px, 30vw, 126px);");
-    expect(styles).toContain("min-height: 96px;");
-    expect(faqStyles).toContain("min-height: 44px;");
+    expect(faqStyles).toContain("border-radius: 8px;");
+    expect(faqStyles).toContain("min-height: 54px;");
+    expect(styles).toContain("flex-basis: clamp(132px, 39vw, 158px);");
+    expect(styles).toContain("min-height: 50px;");
+    expect(faqStyles).toContain("min-height: 46px;");
+    expect(faqStyles).toContain("border-left: 0 !important;");
+    expect(faqStyles).toContain("border-right: 0 !important;");
+    expect(faqStyles).toContain("text-decoration: none;");
     expect(faqStyles).not.toMatch(/#(?:df7f91|e58a9b|dc5875|d94e73|fff7f8|fff5f6|fff0f1|fff6f7|f9d5d8)/i);
+  });
+
+  it("keeps the Shop All filter apply button readable in bare-bones mode", () => {
+    expect(styles).toContain(".shop-filter-panel__apply");
+    expect(styles).toContain(".storefront-barebones .shop-filter-panel__apply");
+    expect(styles).toContain("background: #000000 !important;");
+    expect(styles).toContain("color: #ffffff !important;");
+    expect(styles).toContain("-webkit-tap-highlight-color: transparent;");
+  });
+
+  it("makes the Shop All collection tab rail feel like a real horizontal control", () => {
+    const railStart = styles.indexOf(".shop-tab-rail {");
+    const railEnd = styles.indexOf(".shop-tab-rail::-webkit-scrollbar", railStart);
+    const railStyles = styles.slice(railStart, railEnd);
+
+    expect(railStyles).toContain("-webkit-overflow-scrolling: touch;");
+    expect(railStyles).toContain("overscroll-behavior-inline: contain;");
+    expect(railStyles).toContain("touch-action: pan-x pan-y;");
+    expect(styles).toContain(".shop-tab-rail--dragging");
+  });
+
+  it("presents the Shop All sort as a real button with an option panel", () => {
+    const controlsStart = styles.indexOf(".shop-controls {");
+    const controlsEnd = styles.indexOf(".shop-filter-toggle,", controlsStart);
+    const controlsStyles = styles.slice(controlsStart, controlsEnd);
+    const sortButtonStart = styles.indexOf(".shop-sort-button {");
+    const sortButtonEnd = styles.indexOf(".shop-sort-button__label", sortButtonStart);
+    const sortButtonStyles = styles.slice(sortButtonStart, sortButtonEnd);
+
+    expect(controlsStyles).toContain("display: grid;");
+    expect(controlsStyles).toContain("grid-template-columns: minmax(86px, auto) minmax(0, 1fr);");
+    expect(sortButtonStyles).toContain("border: 1px solid #000000;");
+    expect(sortButtonStyles).toContain("display: grid;");
+    expect(sortButtonStyles).toContain("min-height: 42px;");
+    expect(styles).toContain(".shop-sort-panel");
+    expect(styles).toContain(".shop-sort-option[aria-checked=\"true\"]");
+    expect(styles).toContain(".shop-sort-option:hover,\n.shop-sort-option:focus-visible,\n.shop-sort-option[aria-checked=\"true\"]");
+    expect(styles).toContain("color: #ffffff !important;");
+    expect(styles).not.toContain(".shop-sort select");
   });
 
   it("keeps the approved footer mobile-first and softly separated", () => {
@@ -515,5 +559,13 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__desktop-nav {\n    display: none;");
     expect(styles).toContain(".brand-header__mobile-actions {\n    display: contents;");
     expect(styles).toContain(".brand-header__mobile-menu {\n    display: grid;");
+  });
+
+  it("keeps the open mobile menu close button aligned to the right edge", () => {
+    expect(styles).toContain(".brand-header--menu-open .brand-header__mobile-actions {");
+    expect(styles).toContain("right: 8px;");
+    expect(styles).toContain(
+      ".brand-header--menu-open .brand-header__mobile-actions .brand-header__icon-button:last-child {\n    display: none;"
+    );
   });
 });

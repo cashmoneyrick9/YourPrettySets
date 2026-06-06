@@ -25,7 +25,7 @@ export function CollectionFilters() {
           <h2>Browse</h2>
         </div>
         <BrandButton asChild className="collection-heading__link">
-          <a href="#collection-products">
+          <a href="/shop">
             See all <span aria-hidden="true">→</span>
           </a>
         </BrandButton>
@@ -104,7 +104,7 @@ export function CollectionFilters() {
             <span className="collection-product-card__blank" />
           </span>
         </div>
-        <a className="collection-products__more" href="#">
+        <a className="collection-products__more" href="/shop">
           See more
         </a>
       </div>

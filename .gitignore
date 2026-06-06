@@ -30,3 +30,7 @@ pnpm-debug.log*
 coverage/
 .cache/
 .turbo/
+.vite/
+.vitest/
+vite.config.*.timestamp-*
+vite.config.*.mjs

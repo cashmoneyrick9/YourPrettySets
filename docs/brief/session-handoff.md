@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-05-29
+Last updated: 2026-06-06
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -51,6 +51,7 @@ Current CEO direction:
 - Latest true-loop fix on 2026-05-19 keeps the 9-card repeated lane but prevents the physical strip from ending. Native scrolling still passes naturally from slide 3 into the next physical slide 1, then when the shopper reaches the outer buffer near either hard end, the track silently re-centers to the matching middle visual position. This keeps the loop continuous without giving the progress pills or the immediate 3-to-1 boundary control over the lane.
 - Latest mobile safe-area/header pivot on 2026-05-18 keeps `viewport-fit=cover` and body-level header state classes, but no longer lets the mobile header float transparently over the hero. Mobile now uses a fixed cream top nav bar that owns the safe-area/status space, keeps square top corners, stays cream after scroll, and offsets the hero image below the bar so there is no nav/hero overlap. Follow-up tightened the mobile top-bar padding so the notch safe area does not create a double-tall-feeling header, then matched the hero offset to the real header height so no cream sliver shows between the nav and hero.
 - Latest mobile header layout tweak on 2026-05-18 removes the separate mobile `Shop` pill from the top bar and balances the bar as menu / centered brand / bag. Shop access still lives in desktop navigation, the mobile menu, and the hero `Shop sets` CTA.
+- Mobile header menu cleanup on 2026-06-06 replaces the plain dropdown panel with a full-screen blurred overlay. When open, the page behind remains faintly visible through a white translucent blur, the brand mark and bag icon are hidden, only the top-right close `X` and centered destination links are visible, body/root scrolling is locked, Escape closes the overlay, and destination clicks close the menu. The overlay destinations are Home, Shop Collections, How It Works, FAQ, Reviews, and Contact.
 - Latest hero cleanup on 2026-05-18 removes the small berry divider between the hero headline and `Shop sets` CTA so the CTA sits directly under the headline.
 - Latest mobile hero copy-position cleanup on 2026-05-18 keeps the React markup unchanged and uses mobile CSS variables for `--hero-mobile-min-height`, `--hero-copy-top`, `--hero-copy-gap`, and `--hero-button-offset`. The current mobile target moves the headline/CTA block higher into the upper-left/mid-left hero area without changing the nav, image, copy, button styling, or hero/How-It-Works handoff.
 - Implementation note: the drift keeps a virtual scroll position so sub-pixel frame movement accumulates across whole-pixel browser `scrollLeft` updates; the three progress pills are tied to normalized carousel position, not hidden loop-card state.
@@ -66,6 +67,11 @@ Implemented:
 
 - React/Vite/TypeScript app foundation.
 - Central placeholder product data in `src/data/products.ts`.
+- Shop All / Catalog page at `/shop` as the first real destination page after Home.
+- Catalog placeholder data expanded to 33 ready-to-wear products, with all products still supporting every launch length and shape option.
+- Balanced Shop All layout: `Shop All`, search, Filter + Sort row, inline filter panel, collection tab rail, and a practical product grid.
+- Inline filter panel is the approved v1 filter pattern for Shop All; it pushes the catalog down and includes Collection, Price, Detail level, Clear, and Apply controls.
+- Minimal Shop All product cards show only a plain image placeholder, product name, and price. Product detail links are reserved as future `/products/[slug]` metadata, not active destinations yet.
 - Shared components:
   - `BrandHeader`
   - `ProductCard`
@@ -81,7 +87,7 @@ Implemented:
 - Compact mobile header:
   - brand text, menu, and bag stay usable when the viewport is narrow
   - full desktop nav is hidden on mobile
-  - mobile menu opens/closes through a simple panel
+  - mobile menu opens/closes through a full-screen blurred overlay with only destination links and the close `X`
 - Regression test for 320px mobile CSS rules.
 - Mobile Home page shopping path:
   - hero leads with product/lifestyle visual treatment and a direct `Shop sets` CTA
@@ -111,10 +117,24 @@ Implemented:
   - carousel regression cleanup removed the unwanted weekly `Up next` CTA module and kept the weekly carousel as real product slides with simple controls and dots
   - narrow footer overflow cleanup removed the global 320px body minimum so 319px-class in-app browser widths do not clip the footer or show a horizontal scrollbar
   - 2026-05-22 bare-bones review mode strips the visible site to black and white and hides the hero background image from presentation while preserving the asset and hero container for reversibility
-  - 2026-05-22 browser review deleted the `Shop more` section, and the 2026-05-24 refactor deleted `This week's set`; Home now moves from Collections/product browsing to How It Works to What's included, and links no longer target `#shop-more` or `#this-weeks-set`
+- 2026-05-22 browser review deleted the `Shop more` section, and the 2026-05-24 refactor deleted `This week's set`; Home now moves from Collections/product browsing to How It Works to What's included, and links no longer target `#shop-more` or `#this-weeks-set`
+- 2026-06-06 Shop All destination pass adds the first post-Home shopping page without adding `react-router-dom`. `src/App.tsx` uses a lightweight path switch for `/` and `/shop`; Header `Shop Collections`, footer `Shop All`, Home `Shop sets`, Home collection `See all`, and Home collection `See more` now point to `/shop`.
+- 2026-06-06 Shop All browser comment pass fixed two mobile review issues: the inline filter `Apply` button now stays readable as black background with white text under the global bare-bones overrides, and the collection tab rail now supports mouse drag in the in-app review viewport while preserving native horizontal touch scrolling.
+- 2026-06-06 Shop All follow-up fixed the tab rail drag/click conflict by delaying pointer capture until a real drag threshold is crossed, so ordinary tab clicks and tiny pointer drift still select the collection. The Sort control now reads as one compact bordered mobile control with the label inside the field instead of a separate `Sort:` label beside a native select box.
+- 2026-06-06 Shop All Sort UX follow-up replaces the native select with a real `Sort` button. Tapping it opens a compact black-and-white option panel with radio-style choices for Newest, Price: Low to High, Price: High to Low, and Most Popular. Choosing an option updates product order, updates the button value, and closes the panel.
+- 2026-06-06 Shop All Sort panel polish keeps selected, hovered, and keyboard-focused sort options black with white text, overriding bare-bones global text color so the active option stays readable.
+- 2026-06-06 mobile menu close-position follow-up collapses the hidden bag action while the full-screen mobile menu is open and moves the close button container to `right: 8px`, so the 44px close tap target sits near the actual right edge instead of being offset by the hidden bag slot.
+- Product Detail, Bag, checkout, policy pages, Help Center, and Contact remain future pages. Length and shape selection still belong on future Product Detail pages, not Shop All.
 
 Latest known verification before handoff:
 
+- Mobile header menu cleanup verification on 2026-06-06: `npm test` passed with 15 files and 95 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. Browser verification at a 375px viewport on `http://localhost:5173/` confirmed the hamburger opens a fixed full-screen overlay with `backdrop-filter: blur(18px)`, translucent white wash, top-right 44px close `X`, hidden brand/bag, six centered links, no page-level horizontal overflow, scroll gestures do not move the page while open, and tapping Reviews closes the menu and restores body/root overflow. Follow-up font correction lightened the overlay links from the heavier initial treatment to `27px` at `font-weight: 400` on a 375px viewport, then increased link spacing from `24px` to `36px`.
+- Shop All browser comment verification on 2026-06-06: `npm test -- --run` passed with 15 files and 92 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification at a 375px viewport on `http://localhost:5173/shop` confirmed the `Apply` button computed as black background, white text, black border, transparent tap highlight, no page-level horizontal overflow, and the collection tab rail moved from `scrollLeft: 0` to `scrollLeft: 240` under mouse drag.
+- Shop All tab/sort follow-up verification on 2026-06-06: `npm test -- --run` passed with 15 files and 94 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification at a 375px viewport on `http://localhost:5173/shop` confirmed direct `Bridal` tab click filters to 6 sets, a click after 6px pointer drift still filters to `Bridal`, real rail drag still moves to `scrollLeft: 240`, the Sort control computes as a single bordered grid control, and page-level horizontal overflow remains 0.
+- Shop All real Sort button verification on 2026-06-06: `npm test -- --run` passed with 15 files and 95 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification at a 375px viewport on `http://localhost:5173/shop` confirmed `Sort Newest` opens the option panel, Newest is checked by default, Price: Low to High changes the first product to `Glossy Bare` and closes the panel, Most Popular changes the first product to `Blush Crush`, and page-level horizontal overflow remains 0.
+- Shop All Sort panel polish verification on 2026-06-06: `npm test -- --run` passed with 15 files and 95 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification confirmed selected `Newest`, hovered `Price: Low to High`, and selected `Price: Low to High` all compute as black background with white text, with page-level horizontal overflow still 0.
+- Mobile menu close-position verification on 2026-06-06: `npm test -- --run` passed with 15 files and 96 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification at a 375px viewport on `http://localhost:5173/` confirmed the close button rect is `left: 323`, `right: 367`, `width: 44`, with an 8px right gap, the hidden bag action computes `display: none`, and page-level horizontal overflow remains 0.
+- Shop All destination verification on 2026-06-06: `npm test -- --run` passed with 15 files and 89 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. In-app browser verification at a mobile viewport on `http://localhost:5173/shop` found the Shop All page loaded, header visible, search near the top, Filter + Sort row visible, 9 collection tabs in a horizontally scrollable rail, 33 catalog cards, a 2-column mobile grid, only black/white/light-gray visible Shop colors, no page-level horizontal overflow, no checkout/add-to-cart behavior, and minimal product card text limited to name and price. Opening Filter showed the inline panel and pushed the product grid down; selecting Bridal reduced results to 6 sets.
 - `npm test`: 10 files, 46 tests passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: 0 vulnerabilities.
@@ -354,6 +374,7 @@ Latest FAQ decision:
 - Follow-up carousel setup pass on 2026-05-27 installed Embla via `embla-carousel-react`, added reusable `src/components/MobileCarousel.tsx`, and placed a blank spare carousel instance above the FAQ `How Can We Help?` heading for future section/card work. It is intentionally empty content-wise for now.
 - Follow-up support CTA pass on 2026-05-28 removed the two large FAQ CTA cards (`Need more detail?` / `Still need help?`) and replaced them with a lighter centered divider, one short support line, a full-width outlined Help Center button, and a quiet Contact Support text link. The FAQ accordion data and topic behavior stay unchanged.
 - Follow-up FAQ topic behavior pass on 2026-05-28 changed the topic carousel so no topic is selected by default. The `Top questions in ...` card stays hidden until a shopper taps a topic, passive carousel auto-rotation no longer changes FAQ content, selecting a topic freezes carousel auto-rotation, smoothly centers the selected topic card, and tapping the selected topic again clears the selection, hides the questions, and resumes topic motion.
+- FAQ Home section rebuild on 2026-06-05 keeps `How Can We Help?`, the existing seven topic labels, topic selection, and the Radix/shadcn single-open question accordion, but removes topic icons and replaces the old tall icon cards with shorter, wider text-only rounded-square filter tabs. The selected tab uses a subtle light-gray fill and stronger black border with no underline. The question area now reads as a thin divided FAQ tray instead of a large rounded Help Center card, row affordances use one plus/minus marker, `Visit Help Center` is a smaller outlined button, and `Contact Support` remains a quiet text link. FAQ topic auto-rotation is disabled so the tabs behave like stable filters while still using the shared `MobileCarousel` rail for horizontal mobile use and selected-topic centering.
 - This pass intentionally stays section-scoped; it does not create a real Help Center page, full FAQ routes, or finalized policy answers.
 
 Latest footer decision:

@@ -113,7 +113,7 @@ export function HomePage() {
             Ready-to-wear sets for <em className="hero-copy__accent">pretty plans</em>
           </h1>
           <p>Salon quality press-ons that are easy, affordable, and made to last.</p>
-          <a className="primary-button" href="#shop-collections">
+          <a className="primary-button" href="/shop">
             Shop sets
           </a>
         </div>

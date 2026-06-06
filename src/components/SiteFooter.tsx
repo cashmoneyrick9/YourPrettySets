@@ -13,9 +13,9 @@ import {
 } from "lucide-react";
 
 const shopLinks = [
-  { label: "Shop All", href: "#shop-collections" },
-  { label: "New Arrivals", href: "#collection-products" },
-  { label: "Best Sellers", href: "#collection-products" },
+  { label: "Shop All", href: "/shop" },
+  { label: "New Arrivals", href: "/shop" },
+  { label: "Best Sellers", href: "/shop" },
   { label: "Accessories", href: "#kit-heading" }
 ];
 

@@ -1,14 +1,3 @@
-import {
-  ChevronRight,
-  Heart,
-  Pipette,
-  RotateCcw,
-  Ruler,
-  Sparkles,
-  Star,
-  Truck,
-  type LucideIcon
-} from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandButton } from "./BrandButton";
 import { MobileCarousel } from "./MobileCarousel";
@@ -16,7 +5,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./
 import { Button } from "./ui/button";
 
 type FaqTopic = {
-  icon: LucideIcon;
   label: string;
   questions: {
     answer: string;
@@ -26,7 +14,6 @@ type FaqTopic = {
 
 const faqTopics: FaqTopic[] = [
   {
-    icon: Ruler,
     label: "Sizing",
     questions: [
       {
@@ -52,7 +39,6 @@ const faqTopics: FaqTopic[] = [
     ]
   },
   {
-    icon: Pipette,
     label: "Application",
     questions: [
       {
@@ -74,7 +60,6 @@ const faqTopics: FaqTopic[] = [
     ]
   },
   {
-    icon: Heart,
     label: "Wear & Care",
     questions: [
       {
@@ -96,7 +81,6 @@ const faqTopics: FaqTopic[] = [
     ]
   },
   {
-    icon: Truck,
     label: "Shipping",
     questions: [
       {
@@ -118,7 +102,6 @@ const faqTopics: FaqTopic[] = [
     ]
   },
   {
-    icon: RotateCcw,
     label: "Returns",
     questions: [
       {
@@ -140,7 +123,6 @@ const faqTopics: FaqTopic[] = [
     ]
   },
   {
-    icon: Sparkles,
     label: "Removal",
     questions: [
       {
@@ -162,7 +144,6 @@ const faqTopics: FaqTopic[] = [
     ]
   },
   {
-    icon: Star,
     label: "Custom Orders",
     questions: [
       {
@@ -210,7 +191,6 @@ export function FaqSection() {
 
         <MobileCarousel
           ariaLabel="Choose a help topic"
-          autoRotate={activeTopicIndex === null}
           className="faq-topic-carousel"
           containerClassName="faq-topic-grid"
           options={{ align: "center", containScroll: false, loop: true }}
@@ -219,7 +199,6 @@ export function FaqSection() {
           slideClassName="faq-topic-slide"
           viewportClassName="faq-topic-carousel__viewport"
           slides={faqTopics.map((topic, index) => {
-            const Icon = topic.icon;
             const isActive = index === activeTopicIndex;
 
             return (
@@ -230,7 +209,6 @@ export function FaqSection() {
                 onClick={() => setActiveTopicIndex(isActive ? null : index)}
                 type="button"
               >
-                <Icon aria-hidden size={30} strokeWidth={1.8} />
                 <span>{topic.label}</span>
               </button>
             );
@@ -256,7 +234,7 @@ export function FaqSection() {
                   <AccordionItem className="faq-question-item" key={item.question} value={questionValue}>
                     <AccordionTrigger className="faq-question-row [&>svg]:hidden">
                       <span>{item.question}</span>
-                      <ChevronRight aria-hidden className="faq-question-row__icon" size={20} strokeWidth={1.8} />
+                      <span aria-hidden className="faq-question-row__icon" />
                     </AccordionTrigger>
                     <AccordionContent className="faq-question-answer">
                       <p>{item.answer}</p>
@@ -266,16 +244,14 @@ export function FaqSection() {
               })}
             </Accordion>
             <BrandButton asChild className="faq-question-card__link">
-              <a href="#help-center">
-                View all {activeTopicSlug} questions <ChevronRight aria-hidden size={16} strokeWidth={2} />
-              </a>
+              <a href="#help-center">View all {activeTopicSlug} questions</a>
             </BrandButton>
           </div>
         ) : null}
 
         <aside className="faq-support-footer" id="help-center" aria-label="FAQ support" role="region">
           <Button asChild className="faq-support-footer__button" variant="brandSafe">
-            <a href="#help-center">Visit Help Center →</a>
+            <a href="#help-center">Visit Help Center</a>
           </Button>
           {/* TODO: Replace mailto with a real contact page route when that page exists. */}
           <a className="faq-support-footer__contact" href="mailto:hello@yourprettysets.com">

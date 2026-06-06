@@ -7,6 +7,10 @@ afterEach(() => {
 });
 
 describe("App", () => {
+  afterEach(() => {
+    window.history.pushState({}, "", "/");
+  });
+
   it("renders the YourPrettySets home experience", () => {
     render(<App />);
 
@@ -19,6 +23,16 @@ describe("App", () => {
       })
     ).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" })).toBeInTheDocument();
+  });
+
+  it("renders the Shop All page at /shop", () => {
+    window.history.pushState({}, "", "/shop");
+
+    render(<App />);
+
+    expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
+    expect(screen.getByText("33 sets")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Ready-to-wear sets for pretty plans" })).not.toBeInTheDocument();
   });
 
   it("renders the approved footer system at the bottom", () => {

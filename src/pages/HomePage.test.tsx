@@ -51,7 +51,7 @@ describe("HomePage", () => {
     const included = screen.getByRole("heading", { name: "What’s Included" });
 
     expect(hero).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "#shop-collections");
+    expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "/shop");
     expect(screen.getByText("HOW IT WORKS")).toBeInTheDocument();
     expect(screen.queryByText("Pick Your Set")).not.toBeInTheDocument();
     expect(screen.queryByText("Choose your favorite ready-to-wear or custom press-on set.")).not.toBeInTheDocument();
@@ -75,10 +75,10 @@ describe("HomePage", () => {
     expect(screen.queryByRole("heading", { name: "Featured Sets" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "This week's set" })).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Everyday sets" })).toBeInTheDocument();
-    expect(screen.getByText("5 available")).toBeInTheDocument();
+    expect(screen.getByText("10 available")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "#product-blush-crush");
     expect(screen.getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "#product-soft-serve");
-    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "#");
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop");
     expect(screen.queryByRole("heading", { name: "Blush Crush" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Soft Serve" })).not.toBeInTheDocument();
     expect(document.querySelectorAll(".collection-product-row > .collection-product-card")).toHaveLength(4);
@@ -573,7 +573,7 @@ describe("HomePage", () => {
     expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
     expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Visit Help Center →" })).toHaveAttribute("href", "#help-center");
+    expect(screen.getByRole("link", { name: "Visit Help Center" })).toHaveAttribute("href", "#help-center");
     expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
 
     await user.click(screen.getByRole("button", { name: "Application" }));
