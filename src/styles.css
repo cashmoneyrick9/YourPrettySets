@@ -1945,7 +1945,7 @@ h1 {
   :root {
     --hero-button-offset: 4px;
     --hero-copy-gap: 20px;
-    --hero-copy-top: clamp(58px, 8vh, 84px);
+    --hero-copy-top: clamp(46px, 6.5vh, 72px);
     --hero-mobile-min-height: clamp(520px, 68vh, 640px);
     --mobile-header-offset: calc(51px + env(safe-area-inset-top, 0px));
     --space-form-gap: 14px;
