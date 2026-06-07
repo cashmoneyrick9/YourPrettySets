@@ -2057,6 +2057,12 @@ h1 {
     display: contents;
   }
 
+  .brand-header__mobile-actions .brand-header__icon-button {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
   .brand-header__mobile-actions .brand-header__icon-button:first-child {
     grid-column: 1;
     grid-row: 1;
