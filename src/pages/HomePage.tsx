@@ -7,9 +7,21 @@ import { MobileCarousel } from "../components/MobileCarousel";
 import { StoryStrip, StoryViewer, type StoryItem } from "../components/story";
 
 const confidenceSteps = [
-  { number: "1" },
-  { number: "2" },
-  { number: "3" }
+  {
+    number: "1",
+    title: "Pick your set",
+    copy: "Browse the ready-to-wear drops and choose the set that matches your plans."
+  },
+  {
+    number: "2",
+    title: "Choose glue or tabs",
+    copy: "Use nail glue for longer wear or adhesive tabs when you want easier removal."
+  },
+  {
+    number: "3",
+    title: "Apply and wear",
+    copy: "Prep, press, and keep the included tools nearby for touch-ups or reuse."
+  }
 ];
 
 const reviewStories: StoryItem[] = [
@@ -90,7 +102,7 @@ export function HomePage() {
   const [activeStoryIndex, setActiveStoryIndex] = useState<number | null>(null);
 
   return (
-    <main className="storefront-barebones" id="home">
+    <main id="home">
       <section className="hero-section">
         <div className="hero-photo hero-photo--asset-preserved" aria-hidden="true">
           <div className="hero-photo__hand" aria-hidden="true">
@@ -144,7 +156,15 @@ export function HomePage() {
               className={`confidence-card${stepIndex === activeStepIndex ? " confidence-card--active" : ""}`}
               data-step-index={stepIndex}
               key={step.number}
-            />
+            >
+              <span className="confidence-card__number" aria-hidden="true">
+                {step.number}
+              </span>
+              <div className="confidence-card__copy">
+                <h3>{step.title}</h3>
+                <p>{step.copy}</p>
+              </div>
+            </article>
           ))}
         />
       </section>

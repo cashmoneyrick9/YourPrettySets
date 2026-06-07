@@ -70,9 +70,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header,\n.brand-header button,\n.brand-header a {");
     expect(styles).toContain(".hero-copy h1 {\n  color: inherit;\n  font-family: var(--font-display);");
     expect(styles).toContain("font-size: var(--type-hero-title);");
-    expect(styles).toContain(".section-heading h2 {\n  color: #2f2630;\n  font-family: var(--font-display);");
+    expect(styles).toContain(".section-heading h2 {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);");
     expect(styles).toContain("font-size: var(--type-section-title);");
-    expect(styles).toContain(".kit-heading h2 {\n  color: #000000;\n  font-family: var(--font-display);");
+    expect(styles).toContain(".kit-heading h2 {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__title");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__button");
     expect(styles).toContain(".site-footer__shop-link");
@@ -83,7 +83,7 @@ describe("small mobile responsive CSS", () => {
   it("keeps leftover homepage typography debt bounded and removes dead text selectors", () => {
     expect(countOneOffTypographyRules(styles)).toBeLessThanOrEqual(40);
     expect(styles).toContain(".kit-detail-panel__copy h3 {\n  font-size: var(--type-card-title);");
-    expect(styles).toContain(".review-story-label {\n  color: #241f22;");
+    expect(styles).toContain(".review-story-label {\n  color: var(--site-text-primary);");
     expect(styles).toContain("font-size: 0.66rem;");
     expect(styles).not.toContain(".collection-card__mood");
     expect(styles).not.toContain(".collection-card__title");
@@ -106,7 +106,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("body::before");
     expect(styles).toContain("height: env(safe-area-inset-top)");
     expect(styles).toContain("body.header-at-top::before");
-    expect(styles).toContain("background: rgba(255, 253, 249, 0.98);");
+    expect(styles).toContain("background: rgba(255, 254, 253, 0.98);");
     expect(styles).not.toContain("rgba(221, 104, 133, 0.36) 0%");
     expect(styles).not.toContain("padding-top: max(14px, env(safe-area-inset-top))");
     expect(styles).toContain("body.header-scrolled::before");
@@ -118,7 +118,7 @@ describe("small mobile responsive CSS", () => {
 
   it("includes the locked S3 header and hero visual rules", () => {
     expect(styles).toContain("--color-sage-accent");
-    expect(styles).toContain("--color-sage-accent: #adba85;");
+    expect(styles).toContain("--color-sage-accent: var(--site-accent);");
     expect(styles).toContain("--font-cta:");
     expect(styles).toContain("--hero-overlay-bottom");
     expect(styles).toContain("--hero-button-offset: 4px;");
@@ -141,7 +141,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("width: min(100%, 520px)");
     expect(styles).not.toContain(".hero-copy h1::after");
     expect(styles).not.toContain("86px 1px");
-    expect(styles).toContain(".hero-section {\n  display: grid;");
+    expect(styles).toContain(".hero-section {\n  background: var(--site-page-bg);\n  display: grid;");
     expect(styles).toContain("padding: 0;");
     expect(styles).toContain("border-radius: 0;");
     expect(styles).toContain("grid-template-columns: 40px minmax(0, 1fr) 40px;");
@@ -149,7 +149,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("font-size: 21px;");
     expect(styles).toContain("font-family: var(--font-cta);");
     expect(styles).toContain(".brand-header--scrolled .brand-header__icon-button");
-    expect(styles).toContain("background: transparent;");
+    expect(styles).toContain("background: var(--site-surface);");
     expect(styles).toContain("bottom: -1px;");
     expect(styles).toContain("height: clamp(180px, 32vh, 220px);");
     expect(styles).toContain("left: 0;");
@@ -158,11 +158,11 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".hero-section::after,\n  .hero-copy,\n  .hero-photo");
     expect(styles).toContain("@media (max-width: 720px)");
     expect(styles).toContain("height: 105px;");
-    expect(styles).toContain("rgba(251, 246, 238, 0.04) 18%");
-    expect(styles).toContain("rgba(251, 246, 238, 0.14) 35%");
-    expect(styles).toContain("rgba(251, 246, 238, 0.34) 55%");
-    expect(styles).toContain("rgba(251, 246, 238, 0.68) 78%");
-    expect(styles).toContain("#fbf6ee 100%");
+    expect(styles).toContain("rgba(251, 247, 244, 0.04) 18%");
+    expect(styles).toContain("rgba(251, 247, 244, 0.14) 35%");
+    expect(styles).toContain("rgba(251, 247, 244, 0.34) 55%");
+    expect(styles).toContain("rgba(251, 247, 244, 0.68) 78%");
+    expect(styles).toContain("var(--site-page-bg) 100%");
   });
 
   it("includes dedicated layout tightening for 320px screens", () => {
@@ -180,19 +180,19 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("gap: var(--hero-copy-gap);");
     expect(styles).toContain("margin-top: var(--hero-button-offset);");
     expect(styles).toContain("--hero-mobile-min-height: 540px;");
-    expect(styles).toContain(".confidence-section {\n  background:");
+    expect(styles).toContain(".confidence-section {\n  background: var(--site-page-bg);");
     expect(styles).toContain("margin-top: 0;");
     expect(styles).toContain("padding: var(--space-section-y-tight) 0 var(--space-section-y-compact);");
     expect(styles).not.toContain("margin-top: clamp(-32px, -5vw, -18px)");
     expect(styles).not.toContain("margin-top: -22px");
     expect(styles).not.toContain("margin-top: -18px");
-    expect(styles).toContain("--hero-overlay-bottom: rgba(255, 250, 248, 0.58);");
+    expect(styles).toContain("--hero-overlay-bottom: var(--site-page-bg);");
     expect(styles).not.toContain("rgba(255, 250, 248, 0.44) 84%");
     expect(styles).not.toContain(".confidence-section::before");
     expect(styles).not.toContain(".confidence-section::after");
     expect(styles).not.toContain("top: clamp(-52px, -7vw, -34px)");
     expect(styles).not.toContain("height: clamp(82px, 12vw, 120px)");
-    expect(styles).toContain("linear-gradient(180deg, #fbf6ee 0%, #fbf6ee 34%, #f7f0e6 100%)");
+    expect(styles).not.toContain("linear-gradient(180deg, #fbf6ee 0%, #fbf6ee 34%, #f7f0e6 100%)");
     expect(styles).not.toContain("backdrop-filter: blur(18px) saturate(1.05)");
     expect(styles).not.toContain("backdrop-filter: blur(12px) saturate(1.03)");
     expect(styles).not.toContain("rgba(255, 253, 249, 0.55) 28%");
@@ -205,8 +205,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".confidence-carousel__viewport::after");
     expect(styles).toContain("height: 52px;");
     expect(styles).toContain("height: 34px;");
-    expect(styles).toContain("rgba(251, 246, 238, 0.75) 55%");
-    expect(styles).toContain("0 10px 20px rgba(92, 65, 50, 0.055),\n    0 3px 8px rgba(92, 65, 50, 0.035)");
+    expect(styles).toContain("rgba(251, 247, 244, 0.75) 55%");
+    expect(styles).toContain("box-shadow: var(--site-shadow-subtle);");
     expect(styles).not.toContain("mask-image: linear-gradient(");
     expect(styles).toContain(".confidence-carousel:focus-visible");
     expect(styles).not.toContain(".confidence-card--peek");
@@ -235,8 +235,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("overflow: visible;");
     expect(styles).toContain("--confidence-card-width: min(80vw, 306px);");
     expect(styles).toContain("--confidence-card-width: min(78vw, 282px);");
-    expect(styles).toContain("min-height: 154px;");
-    expect(styles).toContain("min-height: 148px;");
+    expect(styles).toContain("min-height: 172px;");
+    expect(styles).toContain("min-height: 170px;");
     expect(styles).not.toContain(".confidence-card__visual");
     expect(styles).not.toContain(".confidence-card__visual--wear");
     expect(styles).not.toContain(".confidence-card__visual--hand");
@@ -244,9 +244,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".confidence-card__tray");
     expect(styles).not.toContain(".confidence-card__glue");
     expect(styles).not.toContain(".confidence-card__hand");
-    expect(styles).not.toContain(".confidence-card__copy");
+    expect(styles).toContain(".confidence-card__copy");
     expect(styles).not.toContain(".confidence-card__body");
-    expect(styles).not.toContain(".confidence-card__number");
+    expect(styles).toContain(".confidence-card__number");
     expect(styles).not.toContain(".confidence-progress");
     expect(styles).not.toContain(".confidence-dots");
     expect(styles).toContain(".collection-carousel__hint");
@@ -275,7 +275,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("height: 70px;");
     expect(styles).toContain(".collection-product-teaser {\n  column-gap: var(--space-grid-gap);");
     expect(styles).toContain("height: 70px;\n  justify-content: center;\n  margin-top: 6px;");
-    expect(styles).toContain("linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 88%)");
+    expect(styles).toContain("linear-gradient(180deg, rgba(251, 247, 244, 0) 0%, var(--site-page-bg) 88%)");
     expect(styles).toContain(".collection-products__more");
     expect(styles).toContain(".collection-products__more {\n  align-self: center;");
     expect(styles).toContain("justify-content: center;\n  margin-top: 6px;");
@@ -300,19 +300,19 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("flex: 0 0 84px;");
     expect(styles).not.toContain(".review-story-item:focus-visible");
     expect(styles).toContain(".review-story-bubble {");
-    expect(styles).toContain("background: #f5f5f7;");
+    expect(styles).toContain("background: var(--site-surface-soft);");
     expect(styles).toContain("cursor: pointer;");
     expect(styles).toContain("height: 82px;");
     expect(styles).toContain("-webkit-tap-highlight-color: transparent;");
     expect(styles).toContain("touch-action: manipulation;");
     expect(styles).toContain("width: 82px;");
-    expect(styles).toContain("border: 1px solid rgba(36, 31, 34, 0.74);");
+    expect(styles).toContain("border: 1px solid var(--site-border-strong);");
     expect(styles).toContain(".review-story-bubble:focus-visible");
     expect(styles).toContain(".review-story-bubble:active {\n  box-shadow: none;\n  filter: none;");
     expect(styles).toContain(".review-story-viewer {");
     expect(styles).toContain("align-items: start;");
     expect(styles).toContain("position: fixed;");
-    expect(styles).toContain("background: #ffffff;");
+    expect(styles).toContain("background: var(--site-surface);");
     expect(styles).toContain("--review-story-top-safe-area: calc(68px + env(safe-area-inset-top, 0px));");
     expect(styles).toContain("padding: 0;");
     expect(styles).toContain("-webkit-touch-callout: none;");
@@ -326,7 +326,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain("linear-gradient(180deg, #ffffff 0%, #fffdfa 100%);");
     expect(styles).not.toContain("linear-gradient(180deg, #ffffff 0%, #fffaf7 100%);");
     expect(styles).toContain(".review-story-viewer__frame");
-    expect(styles).toContain(".review-story-viewer__frame {\n  background: #ffffff;\n  border: 0;");
+    expect(styles).toContain(".review-story-viewer__frame {\n  background: var(--site-surface);\n  border: 0;");
     expect(styles).toContain("box-shadow: none !important;");
     expect(styles).toContain("border-radius: 0;");
     expect(styles).toContain("height: 100svh;");
@@ -358,8 +358,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("appearance: none;");
     expect(styles).toContain("background: transparent;");
     expect(styles).toContain(".review-story-viewer__close:active {\n  background: transparent;\n  box-shadow: none;\n  filter: none;");
-    expect(styles).toContain(".review-story-viewer__close:focus-visible {\n  outline: 2px solid rgba(23, 19, 20, 0.55);");
-    expect(styles).toContain(".review-story-viewer__card {\n  align-content: center;\n  background: #ffffff;");
+    expect(styles).toContain(".review-story-viewer__close:focus-visible {\n  outline: 2px solid color-mix(in srgb, var(--site-accent) 42%, transparent);");
+    expect(styles).toContain(".review-story-viewer__card {\n  align-content: center;\n  background: var(--site-surface);");
     expect(styles).toContain("border: 0 !important;");
     expect(styles).toContain("border-radius: 0;");
     expect(styles).not.toContain("/* Temporary story hitbox debug overlay. */");
@@ -394,50 +394,19 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-footer {\n    padding: var(--space-footer-y) var(--space-page-inline) var(--space-section-y-compact);");
   });
 
-  it("keeps the bare-bones mobile hero copy compact for structure review", () => {
-    expect(styles).toContain("--barebones-mobile-header-offset: 45px;");
-    expect(styles).toContain("--barebones-hero-section-height: 635px;");
-    expect(styles).toContain("--barebones-hero-copy-top: 23px;");
-    expect(styles).toContain("--barebones-hero-copy-inline: 29px;");
-    expect(styles).toContain("--barebones-hero-copy-bottom: 1px;");
-    expect(styles).toContain("--barebones-hero-copy-height: 263.36px;");
-    expect(styles).toContain("@media (max-width: 720px) {");
-    expect(styles).toContain(".storefront-barebones .hero-copy {\n    height: var(--barebones-hero-copy-height);");
-    expect(styles).toContain(
-      "padding: var(--barebones-hero-copy-top) var(--barebones-hero-copy-inline) var(--barebones-hero-copy-bottom);"
-    );
-    expect(styles).toContain("height: var(--barebones-hero-copy-height);");
-    expect(styles).toContain(".storefront-barebones .hero-section {\n    height: var(--barebones-hero-section-height);");
-    expect(styles).toContain("padding-top: var(--barebones-mobile-header-offset);");
-    expect(styles).toContain(".hero-photo--asset-preserved::before");
-    expect(styles).toContain("border-color: transparent !important;");
-  });
-
-  it("sizes the bare-bones How It Works heading from mobile review tokens", () => {
-    expect(styles).toContain("--barebones-confidence-heading-height: 85.06px;");
-    expect(styles).toContain("--barebones-confidence-eyebrow-height: 20.48px;");
-    expect(styles).toContain("--barebones-confidence-eyebrow-offset: -3px;");
-    expect(styles).toContain(".storefront-barebones .confidence-section__heading {\n    height: var(--barebones-confidence-heading-height);");
-    expect(styles).toContain(".storefront-barebones .confidence-section__heading .eyebrow");
-    expect(styles).toContain("height: var(--barebones-confidence-eyebrow-height);");
-    expect(styles).toContain("line-height: var(--barebones-confidence-eyebrow-height);");
-    expect(styles).toContain("transform: translateY(var(--barebones-confidence-eyebrow-offset));");
-  });
-
-  it("keeps bare-bones header action buttons white without circular outlines", () => {
-    expect(styles).toContain("--barebones-mobile-brand-size: 25px;");
-    expect(styles).toContain(".site-shell--barebones .brand-mark {\n    font-size: var(--barebones-mobile-brand-size);");
-    expect(styles).toContain(".site-shell--barebones .brand-header {\n  border-color: transparent !important;");
-    expect(styles).toContain(".site-shell--barebones .brand-header__icon-button");
-    expect(styles).toContain("background: #ffffff !important;");
-    expect(styles).toContain("border-color: transparent !important;");
-    expect(styles).toContain("color: #000000 !important;");
-    expect(styles).toContain(
-      ".site-shell--barebones .brand-header__icon-button svg,\n.site-shell--barebones .brand-header__icon-button svg *"
-    );
-    expect(styles).toContain("stroke: #000000 !important;");
-    expect(styles).toContain(".storefront-barebones .kit-primary-link,\n.storefront-barebones .kit-primary-link span");
-    expect(styles).toContain("color: #ffffff !important;");
+  it("retires bare-bones mode in favor of shared visual tokens", () => {
+    expect(styles).toContain("--site-page-bg: #fbf7f4;");
+    expect(styles).toContain("--site-surface: #fffefd;");
+    expect(styles).toContain("--site-text-primary: #241f22;");
+    expect(styles).toContain("--site-text-muted: #74696d;");
+    expect(styles).toContain("--site-border: rgba(36, 31, 34, 0.14);");
+    expect(styles).toContain("--site-border-strong: rgba(36, 31, 34, 0.34);");
+    expect(styles).toContain("--site-accent: #8f3f61;");
+    expect(styles).toContain("--site-shadow-subtle: 0 12px 28px rgba(72, 52, 58, 0.08);");
+    expect(styles).not.toContain("Temporary bare-bones review mode");
+    expect(styles).not.toContain("--barebones-");
+    expect(styles).not.toContain(".storefront-barebones");
+    expect(styles).not.toContain(".site-shell--barebones");
   });
 
   it("keeps the What’s Included kit image frameless and visually larger", () => {
@@ -451,7 +420,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".collection-card__mood,\n.kit-spread,\n.review-product__art");
   });
 
-  it("keeps the FAQ Help section black and white", () => {
+  it("keeps the FAQ Help section aligned to the shared neutral system", () => {
     const faqStart = styles.indexOf(".faq-help {");
     const footerStart = styles.indexOf(".site-shell .site-footer", faqStart);
     const faqStyles = styles.slice(faqStart, footerStart);
@@ -470,20 +439,21 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain("touch-action: pan-y pinch-zoom;");
     expect(faqStyles).toContain("flex: 0 0 clamp(138px, 38vw, 166px);");
     expect(faqStyles).not.toContain(".faq-topic-carousel__dots");
-    expect(faqStyles).toContain(".faq-topic-card--active {\n  background: #f5f5f5;");
+    expect(faqStyles).toContain(".faq-topic-card--active {\n  background: var(--site-text-primary);");
     expect(faqStyles).not.toContain(".faq-topic-card svg");
     expect(faqStyles).not.toContain(".faq-cta-card__button--filled {\n  background: #000000;");
     expect(faqStyles).toContain(".faq-support-footer");
     expect(faqStyles).toContain(".faq-support-footer__button");
-    expect(faqStyles).toContain("border: 1px solid #000000;");
+    expect(faqStyles).toContain("border: 1px solid var(--site-text-primary);");
     expect(faqStyles).toContain(".faq-support-footer__contact");
     expect(faqStyles).toContain("border-radius: 8px;");
     expect(faqStyles).toContain("min-height: 54px;");
     expect(styles).toContain("flex-basis: clamp(132px, 39vw, 158px);");
     expect(styles).toContain("min-height: 50px;");
     expect(faqStyles).toContain("min-height: 46px;");
-    expect(faqStyles).toContain("border-left: 0 !important;");
-    expect(faqStyles).toContain("border-right: 0 !important;");
+    expect(faqStyles).toContain("border-radius: 8px;");
+    expect(faqStyles).not.toContain("border-left: 0 !important;");
+    expect(faqStyles).not.toContain("border-right: 0 !important;");
     expect(faqStyles).toContain("text-decoration: none;");
     expect(faqStyles).not.toMatch(/#(?:df7f91|e58a9b|dc5875|d94e73|fff7f8|fff5f6|fff0f1|fff6f7|f9d5d8)/i);
   });
@@ -533,15 +503,16 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".shop-sort select");
   });
 
-  it("keeps the approved footer mobile-first and softly separated", () => {
-    expect(styles).toContain(".site-shell .site-footer,\n.site-shell--barebones .site-footer {");
-    expect(styles).toContain("--footer-blush: #f5f5f7;");
-    expect(styles).toContain("background-image: linear-gradient(180deg, #ffffff 0%, #fff9f7 100%) !important;");
+  it("keeps the approved footer mobile-first and tokenized", () => {
+    expect(styles).toContain(".site-shell .site-footer {");
+    expect(styles).toContain("--footer-blush: var(--site-surface-soft);");
+    expect(styles).toContain("background: var(--site-surface);");
     expect(styles).toContain(".site-footer-email--restored");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__form");
     expect(styles).toContain(".site-footer__shop-link");
     expect(styles).toContain(".site-footer__shop-nav {\n    margin-inline: calc(var(--space-footer-inline) * -1);");
-    expect(styles).toContain("border-radius: 0 !important;");
+    expect(styles).toContain("border-radius: 0;");
+    expect(styles).toContain("border-radius: 8px;");
     expect(styles).toContain("min-height: 49px;");
     expect(styles).toContain(".site-footer__policy-bar");
     expect(styles).toContain("grid-template-columns: repeat(4, minmax(0, 1fr));");

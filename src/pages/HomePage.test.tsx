@@ -62,14 +62,14 @@ describe("HomePage", () => {
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "/shop");
     expect(screen.getByText("HOW IT WORKS")).toBeInTheDocument();
-    expect(screen.queryByText("Pick Your Set")).not.toBeInTheDocument();
-    expect(screen.queryByText("Choose your favorite ready-to-wear or custom press-on set.")).not.toBeInTheDocument();
-    expect(screen.queryByText("Choose Glue or Tabs")).not.toBeInTheDocument();
-    expect(screen.queryByText("Pick nail glue for longer wear or adhesive tabs for easy removal.")).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Wear" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Apply in minutes and enjoy salon-quality nails at home.")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(0);
-    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
+    expect(screen.getByRole("heading", { name: "Pick your set" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Choose glue or tabs" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Apply and wear" })).toBeInTheDocument();
+    expect(screen.getByText("Browse the ready-to-wear drops and choose the set that matches your plans.")).toBeInTheDocument();
+    expect(screen.getByText("Use nail glue for longer wear or adhesive tabs when you want easier removal.")).toBeInTheDocument();
+    expect(screen.getByText("Prep, press, and keep the included tools nearby for touch-ups or reuse.")).toBeInTheDocument();
+    expect(document.querySelectorAll(".confidence-card__number")).toHaveLength(3);
+    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(3);
     expect(document.querySelector(".confidence-carousel__track")).toBeInTheDocument();
     expect(document.querySelector(".confidence-progress")).not.toBeInTheDocument();
     expect(document.querySelector(".confidence-carousel__hint")).not.toBeInTheDocument();
@@ -104,10 +104,10 @@ describe("HomePage", () => {
     expect(screen.getByRole("heading", { name: "How Can We Help?" })).toBeInTheDocument();
   });
 
-  it("uses a bare-bones black-and-white presentation without deleting the hero image container", () => {
+  it("uses the polished storefront presentation without deleting the hero image container", () => {
     renderHomePage();
 
-    expect(document.querySelector("#home")).toHaveClass("storefront-barebones");
+    expect(document.querySelector("#home")).not.toHaveClass("storefront-barebones");
     expect(document.querySelector(".hero-photo")).toHaveClass("hero-photo--asset-preserved");
     expect(document.querySelector(".hero-photo")).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector(".hero-photo")).not.toHaveAttribute("aria-label");
@@ -565,10 +565,15 @@ describe("HomePage", () => {
     expect(cards.map((card) => card.getAttribute("data-step-index"))).toEqual(["0", "1", "2"]);
     expect(document.querySelectorAll(".confidence-card--loop-buffer")).toHaveLength(0);
     expect(document.querySelectorAll(".confidence-card--repeat")).toHaveLength(0);
-    expect(cards.map((card) => card.textContent?.trim())).toEqual(["", "", ""]);
+    expect(cards.map((card) => card.querySelector("h3")?.textContent)).toEqual([
+      "Pick your set",
+      "Choose glue or tabs",
+      "Apply and wear"
+    ]);
     expect(document.querySelectorAll(".confidence-card--loop-clone")).toHaveLength(0);
     expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(0);
-    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
+    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(3);
+    expect(document.querySelectorAll(".confidence-card__number")).toHaveLength(3);
     expect(screen.queryByLabelText("Minimal nail tips arranged in a product tray")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Minimal nail glue, adhesive tabs, and cuticle stick")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Minimal hand with finished press-on nails")).not.toBeInTheDocument();

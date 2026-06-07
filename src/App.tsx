@@ -6,7 +6,7 @@ import { ShopPage } from "./pages/ShopPage";
 
 function App() {
   return (
-    <div className="site-shell site-shell--barebones">
+    <div className="site-shell">
       <BrandHeader />
       <Routes>
         <Route path="/" element={<HomePage />} />
