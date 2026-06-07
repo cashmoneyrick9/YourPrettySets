@@ -123,7 +123,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--hero-overlay-bottom");
     expect(styles).toContain("--hero-button-offset: 4px;");
     expect(styles).toContain("--hero-copy-gap: 20px;");
-    expect(styles).toContain("--hero-copy-top: clamp(46px, 6.5vh, 72px);");
+    expect(styles).toContain("--hero-copy-top: clamp(24px, 3.5vh, 42px);");
     expect(styles).toContain("--hero-mobile-min-height: clamp(520px, 68vh, 640px);");
     expect(styles).toContain(".brand-header--at-top");
     expect(styles).toContain(".brand-header--scrolled");
@@ -410,7 +410,7 @@ describe("small mobile responsive CSS", () => {
   });
 
   it("keeps the mobile hero copy lifted into the upper image area", () => {
-    expect(styles).toContain("--hero-copy-top: clamp(46px, 6.5vh, 72px);");
+    expect(styles).toContain("--hero-copy-top: clamp(24px, 3.5vh, 42px);");
   });
 
   it("keeps the What’s Included kit image frameless and visually larger", () => {
