@@ -2039,8 +2039,8 @@ h1 {
     grid-template-columns: 40px minmax(0, 1fr) 40px;
   }
 
-  .brand-mark {
-    font-size: 21px;
+  .brand-header .brand-mark {
+    font-size: 24.92px;
     grid-column: 2;
     grid-row: 1;
     justify-self: center;
@@ -2313,7 +2313,7 @@ h1 {
     grid-template-columns: 34px minmax(0, 1fr) 34px;
   }
 
-  .brand-mark {
+  .brand-header .brand-mark {
     font-size: 21px;
   }
 

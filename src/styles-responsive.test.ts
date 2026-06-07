@@ -137,6 +137,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("min-height: var(--hero-mobile-min-height, clamp(520px, 68vh, 640px))");
     expect(styles).toContain("scroll-padding-top: 84px");
     expect(styles).toContain("justify-self: center");
+    expect(styles).toContain(".brand-header .brand-mark {\n    font-size: 24.92px;");
+    expect(styles).toContain(".brand-header .brand-mark {\n    font-size: 21px;\n  }");
     expect(styles).toContain("max-height: min(650px, calc(94vh - 108px))");
     expect(styles).toContain("width: min(100%, 520px)");
     expect(styles).not.toContain(".hero-copy h1::after");
