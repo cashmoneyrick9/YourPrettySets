@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { collectionLabels, detailTiers, products, type CollectionLabel, type DetailTier, type Product } from "../data/products";
+import { detailTiers, products, type CollectionLabel, type DetailTier, type Product } from "../data/products";
 
 type CollectionTab = "All" | "New" | Exclude<CollectionLabel, "New Arrivals">;
 type PriceFilter = "under-20" | "20-30" | "30-plus";
@@ -16,10 +16,6 @@ const collectionTabs: CollectionTab[] = [
   "Work/Neutral",
   "Statement"
 ];
-
-const filterCollections = collectionLabels.filter(
-  (collection): collection is Exclude<CollectionLabel, "New Arrivals"> => collection !== "New Arrivals"
-);
 
 const priceFilters: { id: PriceFilter; label: string; matches: (product: Product) => boolean }[] = [
   { id: "under-20", label: "Under $20", matches: (product) => product.price < 20 },
@@ -41,7 +37,6 @@ const sortOptions: { value: SortOption; label: string }[] = [
 ];
 
 const sortLabels = Object.fromEntries(sortOptions.map((option) => [option.value, option.label])) as Record<SortOption, string>;
-const searchSuggestions = ["pink", "bridal", "vacation", "simple", "under $30"];
 
 const tabRailDragThreshold = 12;
 
@@ -63,7 +58,6 @@ function getProductSearchText(product: Product) {
   const matchingPriceLabels = priceFilters.filter((filter) => filter.matches(product)).map((filter) => filter.label);
   const searchableParts = [
     product.name,
-    product.description,
     product.collections.join(" "),
     detailFilterLabels[product.detailTier],
     product.detailTier,
@@ -85,9 +79,7 @@ function toggleValue<T>(currentValues: T[], nextValue: T) {
 function ShopProductCard({ product }: { product: Product }) {
   return (
     <article className="shop-product-card" data-future-href={`/products/${product.slug}`}>
-      <div className="shop-product-card__image" role="img" aria-label={product.images.clean}>
-        <span aria-hidden="true" />
-      </div>
+      <div className="shop-product-card__image" role="img" aria-label={product.images.clean} />
       <div className="shop-product-card__body">
         <h3>{product.name}</h3>
         <p>${product.price}</p>
@@ -103,7 +95,6 @@ export function ShopPage() {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isTabRailDragging, setIsTabRailDragging] = useState(false);
   const [activeTab, setActiveTab] = useState<CollectionTab>("All");
-  const [selectedCollections, setSelectedCollections] = useState<CollectionLabel[]>([]);
   const [selectedPrices, setSelectedPrices] = useState<PriceFilter[]>([]);
   const [selectedDetailTiers, setSelectedDetailTiers] = useState<DetailTier[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>("newest");
@@ -118,13 +109,6 @@ export function ShopPage() {
         }
 
         if (activeTab !== "All" && activeTab !== "New" && !product.collections.includes(activeTab)) {
-          return false;
-        }
-
-        if (
-          selectedCollections.length > 0 &&
-          !selectedCollections.some((collection) => product.collections.includes(collection))
-        ) {
           return false;
         }
 
@@ -160,14 +144,13 @@ export function ShopPage() {
 
         return Number(right.isNew) - Number(left.isNew) || compareDefaultOrder(left, right);
       });
-  }, [activeTab, searchTerm, selectedCollections, selectedDetailTiers, selectedPrices, sortOption]);
+  }, [activeTab, searchTerm, selectedDetailTiers, selectedPrices, sortOption]);
 
   const normalizedSearchTerm = searchTerm.trim();
 
   function clearFilters() {
     setSearchTerm("");
     setActiveTab("All");
-    setSelectedCollections([]);
     setSelectedPrices([]);
     setSelectedDetailTiers([]);
   }
@@ -250,7 +233,7 @@ export function ShopPage() {
               className="shop-search"
               id="shop-search"
               onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Search color, occasion, style..."
+              placeholder="Search sets"
               type="search"
               value={searchTerm}
             />
@@ -269,20 +252,7 @@ export function ShopPage() {
             <p className="shop-search-status" aria-live="polite">
               {`${formatCount(visibleProducts.length)} found for "${normalizedSearchTerm}"`}
             </p>
-          ) : (
-            <div className="shop-search-suggestions" aria-label="Suggested searches">
-              {searchSuggestions.map((suggestion) => (
-                <button
-                  key={suggestion}
-                  onClick={() => setSearchTerm(suggestion)}
-                  type="button"
-                  aria-label={`Search ${suggestion}`}
-                >
-                  {suggestion}
-                </button>
-              ))}
-            </div>
-          )}
+          ) : null}
         </div>
 
         <div className="shop-controls">
@@ -335,20 +305,6 @@ export function ShopPage() {
 
         {isFilterOpen ? (
           <section className="shop-filter-panel" id="shop-filter-panel" aria-label="Catalog filters">
-            <fieldset>
-              <legend>Collection</legend>
-              {filterCollections.map((collection) => (
-                <label key={collection}>
-                  <input
-                    checked={selectedCollections.includes(collection)}
-                    onChange={() => setSelectedCollections((currentValues) => toggleValue(currentValues, collection))}
-                    type="checkbox"
-                  />
-                  <span>{collection}</span>
-                </label>
-              ))}
-            </fieldset>
-
             <fieldset>
               <legend>Price</legend>
               {priceFilters.map((filter) => (
