@@ -272,12 +272,18 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("column-gap: var(--space-grid-gap);");
     expect(styles).toContain("justify-content: center;");
     expect(styles).toContain("row-gap: var(--space-grid-gap);");
-    expect(styles).toContain("height: 245px;");
+    expect(styles).toContain(".product-preview-card");
+    expect(styles).toContain(".collection-product-card__image");
+    expect(styles).toContain("aspect-ratio: 4 / 5;");
+    expect(styles).toContain(".collection-product-card__body");
+    expect(styles).toContain("min-height: 245px;");
+    expect(styles).not.toContain(".collection-product-card__blank");
     expect(styles).toContain(".collection-product-teaser");
-    expect(styles).toContain("height: 70px;");
-    expect(styles).toContain(".collection-product-teaser {\n  column-gap: var(--space-grid-gap);");
-    expect(styles).toContain("height: 70px;\n  justify-content: center;\n  margin-top: 6px;");
-    expect(styles).toContain("linear-gradient(180deg, rgba(251, 247, 244, 0) 0%, var(--site-page-bg) 88%)");
+    expect(styles).toContain("height: 96px;");
+    expect(styles).toContain(".collection-product-teaser::after");
+    expect(styles).toContain(
+      "linear-gradient(180deg, rgba(251, 247, 244, 0) 0%, rgba(251, 247, 244, 0) 38%, var(--site-page-bg) 100%)"
+    );
     expect(styles).toContain(".collection-products__more");
     expect(styles).toContain(".collection-products__more {\n  align-self: center;");
     expect(styles).toContain("justify-content: center;\n  margin-top: 6px;");

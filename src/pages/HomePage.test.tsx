@@ -88,9 +88,12 @@ describe("HomePage", () => {
     expect(screen.getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "#product-blush-crush");
     expect(screen.getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "#product-soft-serve");
     expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop");
-    expect(screen.queryByRole("heading", { name: "Blush Crush" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Soft Serve" })).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Soft Serve" })).toBeInTheDocument();
+    expect(screen.getAllByText("$18").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("$20").length).toBeGreaterThan(0);
     expect(document.querySelectorAll(".collection-product-row > .collection-product-card")).toHaveLength(4);
+    expect(document.querySelector(".collection-product-teaser")).toBeInTheDocument();
     expect(document.querySelectorAll(".collection-product-teaser .collection-product-card")).toHaveLength(2);
     expect(document.querySelectorAll(".collection-product-card .product-card")).toHaveLength(0);
     expect(screen.queryByText("1 of 4")).not.toBeInTheDocument();

@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { detailTiers, products, type CollectionLabel, type DetailTier, type Product } from "../data/products";
+import { ProductPreviewCard } from "../components/ProductPreviewCard";
 
 type CollectionTab = "All" | "New" | Exclude<CollectionLabel, "New Arrivals">;
 type PriceFilter = "under-20" | "20-30" | "30-plus";
@@ -74,18 +75,6 @@ function toggleValue<T>(currentValues: T[], nextValue: T) {
   return currentValues.includes(nextValue)
     ? currentValues.filter((currentValue) => currentValue !== nextValue)
     : [...currentValues, nextValue];
-}
-
-function ShopProductCard({ product }: { product: Product }) {
-  return (
-    <article className="shop-product-card" data-future-href={`/products/${product.slug}`}>
-      <div className="shop-product-card__image" role="img" aria-label={product.images.clean} />
-      <div className="shop-product-card__body">
-        <h3>{product.name}</h3>
-        <p>${product.price}</p>
-      </div>
-    </article>
-  );
 }
 
 export function ShopPage() {
@@ -370,7 +359,7 @@ export function ShopPage() {
         {visibleProducts.length > 0 ? (
           <div className="shop-product-grid" aria-live="polite">
             {visibleProducts.map((product) => (
-              <ShopProductCard key={product.id} product={product} />
+              <ProductPreviewCard key={product.id} product={product} />
             ))}
           </div>
         ) : (

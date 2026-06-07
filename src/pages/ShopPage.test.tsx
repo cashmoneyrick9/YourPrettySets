@@ -218,6 +218,7 @@ describe("ShopPage", () => {
 
     const firstCard = getCatalogCards()[0] as HTMLElement;
 
+    expect(firstCard).toHaveClass("product-preview-card");
     expect(within(firstCard).getByRole("img", { name: "Clean background placeholder for Blush Crush" })).toBeInTheDocument();
     expect(within(firstCard).getByRole("img", { name: "Clean background placeholder for Blush Crush" })).toBeEmptyDOMElement();
     expect(within(firstCard).getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();

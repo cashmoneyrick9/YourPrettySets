@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { collectionLabels, products } from "../data/products";
 import { BrandButton } from "./BrandButton";
 import { MobileCarousel } from "./MobileCarousel";
+import { ProductPreviewCard } from "./ProductPreviewCard";
 
 const moodCollections = collectionLabels.filter((label) => label !== "New Arrivals");
 
@@ -16,7 +17,8 @@ export function CollectionFilters() {
   const activeCollection = moodCollections[activeCollectionIndex];
   const activeCollectionProducts = products.filter((product) => product.collections.includes(activeCollection));
   const visibleCollectionProducts = activeCollectionProducts.slice(0, 4);
-  const emptyCollectionSlots = Math.max(0, 4 - visibleCollectionProducts.length);
+  const teaserCollectionProducts = activeCollectionProducts.slice(4, 6);
+  const emptyTeaserSlots = Math.max(0, 2 - teaserCollectionProducts.length);
 
   return (
     <section className="section-block collection-section" id="shop-collections">
@@ -77,33 +79,32 @@ export function CollectionFilters() {
         </div>
         <div className="collection-product-row">
           {visibleCollectionProducts.map((product) => (
-            <a
-              aria-label={`View ${product.name}`}
-              className="collection-product-card"
+            <ProductPreviewCard
               href={`#product-${product.slug}`}
               id={`product-${product.slug}`}
               key={product.id}
-            >
-              <span className="collection-product-card__blank" aria-hidden="true" />
-            </a>
-          ))}
-          {Array.from({ length: emptyCollectionSlots }, (_, index) => (
-            <div
-              aria-hidden="true"
-              className="collection-product-card collection-product-card--placeholder"
-              key={`${activeCollection}-placeholder-${index}`}
-            >
-              <span className="collection-product-card__blank" />
-            </div>
+              product={product}
+              variant="home"
+            />
           ))}
         </div>
         <div className="collection-product-teaser" aria-hidden="true">
-          <span className="collection-product-card collection-product-teaser__card">
-            <span className="collection-product-card__blank" />
-          </span>
-          <span className="collection-product-card collection-product-teaser__card">
-            <span className="collection-product-card__blank" />
-          </span>
+          {teaserCollectionProducts.map((product) => (
+            <ProductPreviewCard
+              className="collection-product-teaser__card"
+              key={`${activeCollection}-teaser-${product.id}`}
+              product={product}
+              variant="home"
+            />
+          ))}
+          {Array.from({ length: emptyTeaserSlots }, (_, index) => (
+            <span
+              className="collection-product-card collection-product-teaser__card collection-product-teaser__placeholder"
+              key={`${activeCollection}-teaser-placeholder-${index}`}
+            >
+              <span className="collection-product-card__image collection-product-teaser__placeholder-well" />
+            </span>
+          ))}
         </div>
         <Link className="collection-products__more" to="/shop">
           See more
