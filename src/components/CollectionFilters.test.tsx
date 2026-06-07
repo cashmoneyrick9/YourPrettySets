@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
+import { BrowserRouter } from "react-router-dom";
 import { CollectionFilters } from "./CollectionFilters";
 
 afterEach(() => {
@@ -8,9 +9,17 @@ afterEach(() => {
 });
 
 describe("CollectionFilters", () => {
+  function renderCollectionFilters() {
+    return render(
+      <BrowserRouter>
+        <CollectionFilters />
+      </BrowserRouter>
+    );
+  }
+
   it("renders slim collection filters followed by products from the active collection", async () => {
     const user = userEvent.setup();
-    render(<CollectionFilters />);
+    renderCollectionFilters();
 
     expect(screen.getByRole("heading", { name: "Browse" })).toBeInTheDocument();
 
@@ -67,7 +76,7 @@ describe("CollectionFilters", () => {
   });
 
   it("uses shared carousel behavior instead of custom pointer-drag handling", () => {
-    render(<CollectionFilters />);
+    renderCollectionFilters();
 
     const carousel = document.querySelector(".collection-carousel") as HTMLElement;
     const track = document.querySelector(".collection-track") as HTMLElement;

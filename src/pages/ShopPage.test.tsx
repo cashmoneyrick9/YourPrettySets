@@ -26,6 +26,8 @@ describe("ShopPage", () => {
   it("renders the full Shop All catalog before filtering", () => {
     render(<ShopPage />);
 
+    expect(document.querySelector("#shop")).toHaveClass("shop-page");
+    expect(document.querySelector("#shop")).not.toHaveClass("storefront-barebones");
     expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
     expect(products).toHaveLength(33);
     expect(screen.getByText("33 sets")).toBeInTheDocument();

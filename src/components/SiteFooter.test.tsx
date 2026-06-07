@@ -1,6 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
+import { BrowserRouter } from "react-router-dom";
 import { SiteFooter } from "./SiteFooter";
 
 afterEach(() => {
@@ -8,8 +9,16 @@ afterEach(() => {
 });
 
 describe("SiteFooter", () => {
+  function renderSiteFooter() {
+    return render(
+      <BrowserRouter>
+        <SiteFooter />
+      </BrowserRouter>
+    );
+  }
+
   it("renders the approved mobile footer navigation and utility sections", () => {
-    render(<SiteFooter />);
+    renderSiteFooter();
 
     const footer = screen.getByRole("contentinfo");
     const shopNav = within(footer).getByRole("navigation", { name: "Footer shop navigation" });
@@ -30,7 +39,7 @@ describe("SiteFooter", () => {
 
   it("restores the old footer email capture and submit feedback", async () => {
     const user = userEvent.setup();
-    render(<SiteFooter />);
+    renderSiteFooter();
 
     const footer = screen.getByRole("contentinfo");
     const emailCapture = within(footer).getByRole("region", { name: "Get 15% off your first set" });
@@ -48,7 +57,7 @@ describe("SiteFooter", () => {
   });
 
   it("renders centered socials, brand note, and copyright without the removed trust strip", () => {
-    render(<SiteFooter />);
+    renderSiteFooter();
 
     const footer = screen.getByRole("contentinfo");
 

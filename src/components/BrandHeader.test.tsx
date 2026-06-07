@@ -1,6 +1,7 @@
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
+import { BrowserRouter } from "react-router-dom";
 import { BrandHeader } from "./BrandHeader";
 
 afterEach(() => {
@@ -9,8 +10,16 @@ afterEach(() => {
 });
 
 describe("BrandHeader", () => {
+  function renderBrandHeader() {
+    return render(
+      <BrowserRouter>
+        <BrandHeader />
+      </BrowserRouter>
+    );
+  }
+
   it("renders the brand, desktop navigation, and compact mobile actions", () => {
-    render(<BrandHeader />);
+    renderBrandHeader();
 
     expect(screen.getByLabelText("YourPrettySets home")).toBeInTheDocument();
 
@@ -31,7 +40,7 @@ describe("BrandHeader", () => {
 
   it("opens a full-screen mobile overlay menu with the approved destinations", async () => {
     const user = userEvent.setup();
-    render(<BrandHeader />);
+    renderBrandHeader();
 
     await user.click(screen.getByRole("button", { name: "Open menu" }));
 
@@ -60,7 +69,7 @@ describe("BrandHeader", () => {
 
   it("closes the overlay menu from a destination link or Escape", async () => {
     const user = userEvent.setup();
-    render(<BrandHeader />);
+    renderBrandHeader();
 
     await user.click(screen.getByRole("button", { name: "Open menu" }));
     await user.click(within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole("link", { name: "FAQ" }));
@@ -86,8 +95,29 @@ describe("BrandHeader", () => {
     expect(document.documentElement.style.overflow).toBe("");
   });
 
+  it("closes the overlay menu when selecting the Shop Collections route", async () => {
+    const user = userEvent.setup();
+    renderBrandHeader();
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    await user.click(
+      within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole("link", {
+        name: "Shop Collections"
+      })
+    );
+
+    expect(window.location.pathname).toBe("/shop");
+    expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
+    expect(document.body).not.toHaveClass("mobile-menu-open");
+    expect(document.body.style.overflow).toBe("");
+    expect(document.body.style.position).toBe("");
+    expect(document.documentElement.style.overflow).toBe("");
+
+    window.history.pushState({}, "", "/");
+  });
+
   it("switches from transparent top state to accent scrolled state", async () => {
-    render(<BrandHeader />);
+    renderBrandHeader();
 
     const header = screen.getByRole("banner");
 
@@ -123,7 +153,7 @@ describe("BrandHeader", () => {
   });
 
   it("cleans up document-level header state classes on unmount", () => {
-    const { unmount } = render(<BrandHeader />);
+    const { unmount } = renderBrandHeader();
 
     expect(document.body).toHaveClass("header-at-top");
 

@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   ChevronRight,
   FileText,
@@ -76,12 +77,19 @@ export function SiteFooter() {
         </section>
 
         <nav className="site-footer__shop-nav" aria-label="Footer shop navigation">
-          {shopLinks.map((link) => (
-            <a className="site-footer__shop-link" href={link.href} key={link.label}>
-              <span>{link.label}</span>
-              <ChevronRight aria-hidden size={18} strokeWidth={1.7} />
-            </a>
-          ))}
+          {shopLinks.map((link) =>
+            link.href === "/shop" ? (
+              <Link className="site-footer__shop-link" to={link.href} key={link.label}>
+                <span>{link.label}</span>
+                <ChevronRight aria-hidden size={18} strokeWidth={1.7} />
+              </Link>
+            ) : (
+              <a className="site-footer__shop-link" href={link.href} key={link.label}>
+                <span>{link.label}</span>
+                <ChevronRight aria-hidden size={18} strokeWidth={1.7} />
+              </a>
+            )
+          )}
         </nav>
 
         <nav className="site-footer__policy-bar" aria-label="Footer policy navigation">

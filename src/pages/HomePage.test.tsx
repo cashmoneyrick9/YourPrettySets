@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { BrowserRouter } from "react-router-dom";
 import { HomePage } from "./HomePage";
 
 const restoreDefaultMatchMedia = () => {
@@ -28,13 +29,21 @@ afterEach(() => {
 });
 
 describe("HomePage", () => {
+  function renderHomePage() {
+    return render(
+      <BrowserRouter>
+        <HomePage />
+      </BrowserRouter>
+    );
+  }
+
   it("does not scroll the page while centering the initial How It Works card", () => {
     const scrollIntoViewSpy = vi.fn();
     Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
       configurable: true,
       value: scrollIntoViewSpy
     });
-    render(<HomePage />);
+    renderHomePage();
 
     const track = document.querySelector(".confidence-carousel__track") as HTMLElement;
     expect(track).toBeInTheDocument();
@@ -43,7 +52,7 @@ describe("HomePage", () => {
   });
 
   it("renders the mobile shopping path before product shopping", () => {
-    render(<HomePage />);
+    renderHomePage();
 
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
     const confidence = screen.getByRole("heading", { name: "3 EASY STEPS" });
@@ -96,7 +105,7 @@ describe("HomePage", () => {
   });
 
   it("uses a bare-bones black-and-white presentation without deleting the hero image container", () => {
-    render(<HomePage />);
+    renderHomePage();
 
     expect(document.querySelector("#home")).toHaveClass("storefront-barebones");
     expect(document.querySelector(".hero-photo")).toHaveClass("hero-photo--asset-preserved");
@@ -105,7 +114,7 @@ describe("HomePage", () => {
   });
 
   it("shows a polished static Instagram-story-style review placeholder row", () => {
-    render(<HomePage />);
+    renderHomePage();
 
     const storyLabels = [
       "Sarah",
@@ -155,7 +164,7 @@ describe("HomePage", () => {
 
   it("opens and closes a static review story viewer from the circular bubble", async () => {
     const user = userEvent.setup();
-    render(<HomePage />);
+    renderHomePage();
 
     expect(screen.queryByRole("dialog", { name: "Birthday Set review story" })).not.toBeInTheDocument();
 
@@ -180,7 +189,7 @@ describe("HomePage", () => {
 
   it("closes the review story viewer when Escape is pressed", async () => {
     const user = userEvent.setup();
-    render(<HomePage />);
+    renderHomePage();
 
     await user.click(screen.getByRole("button", { name: "Open Etsy Review review story" }));
 
@@ -193,7 +202,7 @@ describe("HomePage", () => {
 
   it("navigates review stories with arrow keys and bounded edges", async () => {
     const user = userEvent.setup();
-    render(<HomePage />);
+    renderHomePage();
 
     await user.click(screen.getByRole("button", { name: "Open Sarah review story" }));
 
@@ -224,7 +233,7 @@ describe("HomePage", () => {
 
   it("navigates review stories with left and right tap zones", async () => {
     const user = userEvent.setup();
-    render(<HomePage />);
+    renderHomePage();
 
     await user.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
 
@@ -245,7 +254,7 @@ describe("HomePage", () => {
 
   it("shows segmented review story progress for the active story", async () => {
     const user = userEvent.setup();
-    render(<HomePage />);
+    renderHomePage();
 
     await user.click(screen.getByRole("button", { name: "Open Bridal Nails review story" }));
 
@@ -260,7 +269,7 @@ describe("HomePage", () => {
 
   it("auto-advances review stories after the story timer finishes", async () => {
     vi.useFakeTimers();
-    render(<HomePage />);
+    renderHomePage();
 
     fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
 
@@ -281,7 +290,7 @@ describe("HomePage", () => {
 
   it("auto-closes the viewer when the final story timer finishes", async () => {
     vi.useFakeTimers();
-    render(<HomePage />);
+    renderHomePage();
 
     fireEvent.click(screen.getByRole("button", { name: "Open Five Stars review story" }));
 
@@ -297,7 +306,7 @@ describe("HomePage", () => {
 
   it("restarts the story timer after manual next and previous navigation", async () => {
     vi.useFakeTimers();
-    render(<HomePage />);
+    renderHomePage();
 
     fireEvent.click(screen.getByRole("button", { name: "Open Sarah review story" }));
 
@@ -334,7 +343,7 @@ describe("HomePage", () => {
 
   it("pauses the review story timer while holding a tap zone without navigating", async () => {
     vi.useFakeTimers();
-    render(<HomePage />);
+    renderHomePage();
 
     fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
 
@@ -370,7 +379,7 @@ describe("HomePage", () => {
 
   it("holds the previous tap zone without navigating backward", async () => {
     vi.useFakeTimers();
-    render(<HomePage />);
+    renderHomePage();
 
     fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
 
@@ -395,7 +404,7 @@ describe("HomePage", () => {
 
   it("resumes the review story timer after pointer cancel while holding", async () => {
     vi.useFakeTimers();
-    render(<HomePage />);
+    renderHomePage();
 
     fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
 
@@ -420,7 +429,7 @@ describe("HomePage", () => {
 
   it("pauses and resumes the review story timer while holding the story card", async () => {
     vi.useFakeTimers();
-    render(<HomePage />);
+    renderHomePage();
 
     fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
 
@@ -445,7 +454,7 @@ describe("HomePage", () => {
 
   it("clears story timers after close and Escape", async () => {
     vi.useFakeTimers();
-    render(<HomePage />);
+    renderHomePage();
 
     fireEvent.click(screen.getByRole("button", { name: "Open Sarah review story" }));
     fireEvent.click(screen.getByRole("button", { name: "Close review story" }));
@@ -481,7 +490,7 @@ describe("HomePage", () => {
         removeListener: vi.fn()
       }))
     });
-    render(<HomePage />);
+    renderHomePage();
 
     fireEvent.click(screen.getByRole("button", { name: "Open Sarah review story" }));
 
@@ -493,14 +502,14 @@ describe("HomePage", () => {
   });
 
   it("does not render hidden review loop-buffer copies", () => {
-    render(<HomePage />);
+    renderHomePage();
 
     expect(document.querySelectorAll(".review-card")).toHaveLength(0);
     expect(document.querySelectorAll(".review-card--loop-buffer")).toHaveLength(0);
   });
 
   it("shows a swipe-first How It Works carousel with no visible controls", () => {
-    render(<HomePage />);
+    renderHomePage();
 
     expect(screen.queryByRole("button", { name: "Previous step" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Next step" })).not.toBeInTheDocument();
@@ -529,13 +538,13 @@ describe("HomePage", () => {
         removeListener: vi.fn()
       }))
     });
-    render(<HomePage />);
+    renderHomePage();
 
     expect(document.querySelector(".confidence-carousel")).not.toHaveClass("confidence-carousel--drifting");
   });
 
   it("does not expose the How It Works carousel as a custom arrow-key region", () => {
-    render(<HomePage />);
+    renderHomePage();
 
     const carousel = document.querySelector(".confidence-carousel") as HTMLElement;
     expect(carousel).not.toHaveAttribute("tabindex");
@@ -549,7 +558,7 @@ describe("HomePage", () => {
   });
 
   it("renders one clean How It Works slide per step without loop-buffer copies", () => {
-    render(<HomePage />);
+    renderHomePage();
 
     const cards = [...document.querySelectorAll(".confidence-card")];
     expect(cards).toHaveLength(3);
@@ -567,7 +576,7 @@ describe("HomePage", () => {
 
   it("renders the FAQ Help section with topic cards and support CTAs", async () => {
     const user = userEvent.setup();
-    render(<HomePage />);
+    renderHomePage();
 
     expect(screen.getByRole("heading", { name: "How Can We Help?" })).toBeInTheDocument();
     expect(screen.queryByText("Need help?")).not.toBeInTheDocument();

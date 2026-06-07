@@ -31,6 +31,8 @@ The current goal is not a public launch MVP. The current goal is a structured br
 - For any UI pass, read `section-pass-template.md` and use its CEO checklist before writing a dev handoff.
 - Do not invent new brand directions, collections, pricing systems, or checkout behavior.
 - Pull products from the central product data source once the app exists.
+- Use React Router as the standard page-routing layer. Add new internal pages as routes in `src/App.tsx`; do not reintroduce manual `window.location.pathname` page switching.
+- Use React Router `Link`/`NavLink` for internal page links. Plain `<a>` tags are for external URLs, `mailto:`, `tel:`, and same-page/homepage hash links like `#faq` or `/#reviews`.
 - Keep placeholders easy to replace with real products, photos, and copy later.
 - If a choice is listed in `open-decisions.md`, do not solve it permanently without CEO approval.
 

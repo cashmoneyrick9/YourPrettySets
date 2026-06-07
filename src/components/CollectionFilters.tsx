@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { collectionLabels, products } from "../data/products";
 import { BrandButton } from "./BrandButton";
 import { MobileCarousel } from "./MobileCarousel";
@@ -25,9 +26,9 @@ export function CollectionFilters() {
           <h2>Browse</h2>
         </div>
         <BrandButton asChild className="collection-heading__link">
-          <a href="/shop">
+          <Link to="/shop">
             See all <span aria-hidden="true">→</span>
-          </a>
+          </Link>
         </BrandButton>
       </div>
 
@@ -104,9 +105,9 @@ export function CollectionFilters() {
             <span className="collection-product-card__blank" />
           </span>
         </div>
-        <a className="collection-products__more" href="/shop">
+        <Link className="collection-products__more" to="/shop">
           See more
-        </a>
+        </Link>
       </div>
     </section>
   );

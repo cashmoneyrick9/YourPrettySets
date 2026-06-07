@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { CollectionFilters } from "../components/CollectionFilters";
 import { FaqSection } from "../components/FaqSection";
 import { KitContents } from "../components/KitContents";
@@ -113,9 +114,9 @@ export function HomePage() {
             Ready-to-wear sets for <em className="hero-copy__accent">pretty plans</em>
           </h1>
           <p>Salon quality press-ons that are easy, affordable, and made to last.</p>
-          <a className="primary-button" href="/shop">
+          <Link className="primary-button" to="/shop">
             Shop sets
-          </a>
+          </Link>
         </div>
       </section>
 

@@ -60,6 +60,8 @@ The latest footer decision: no standalone footer `Contact us` button. Contact li
 - Keep changes section-scoped.
 - Prefer existing React/CSS patterns over introducing new architecture.
 - Use central product data instead of hardcoding products in new sections.
+- Add new internal pages through React Router routes in `src/App.tsx`; do not manually switch pages by reading `window.location.pathname`.
+- Use React Router `Link`/`NavLink` for internal page navigation such as `/shop` or future `/products/...` routes. Keep plain anchors only for external URLs, `mailto:`, `tel:`, and same-page/homepage hash links such as `#faq` or `/#reviews`.
 - Do not permanently resolve open business decisions without founder approval.
 - Do not revert unrelated changes or untracked files. `.claude/` has been present as unrelated untracked state.
 - Update `docs/brief/session-handoff.md` before ending substantial work.

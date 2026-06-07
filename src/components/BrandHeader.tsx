@@ -1,5 +1,6 @@
 import { Menu, ShoppingBag, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const desktopNavItems = ["Home", "Shop Collections", "How It Works", "FAQ", "Bag"];
 const mobileMenuItems = ["Home", "Shop Collections", "How It Works", "FAQ", "Reviews", "Contact"];
@@ -122,22 +123,30 @@ export function BrandHeader() {
   return (
     <header className={headerClasses}>
       <div className="brand-header__bar">
-        <a
+        <Link
           aria-hidden={isMenuOpen ? "true" : undefined}
           aria-label="YourPrettySets home"
           className="brand-mark"
-          href="/"
+          to="/"
           tabIndex={isMenuOpen ? -1 : undefined}
         >
           YourPrettySets
-        </a>
+        </Link>
 
         <nav className="brand-header__desktop-nav" aria-label="Primary navigation">
-          {desktopNavItems.map((item) => (
-            <a key={item} href={hrefFor(item)}>
-              {item}
-            </a>
-          ))}
+          {desktopNavItems.map((item) => {
+            const href = hrefFor(item);
+
+            return href === "/" || href === "/shop" ? (
+              <Link key={item} to={href}>
+                {item}
+              </Link>
+            ) : (
+              <a key={item} href={href}>
+                {item}
+              </a>
+            );
+          })}
         </nav>
 
         <div className="brand-header__mobile-actions" aria-label="Mobile header actions">
@@ -169,11 +178,19 @@ export function BrandHeader() {
         aria-label="Mobile navigation"
         hidden={!isMenuOpen}
       >
-        {mobileMenuItems.map((item) => (
-          <a key={item} href={hrefFor(item)} onClick={() => setIsMenuOpen(false)}>
-            {item}
-          </a>
-        ))}
+        {mobileMenuItems.map((item) => {
+          const href = hrefFor(item);
+
+          return href === "/" || href === "/shop" ? (
+            <Link key={item} to={href} onClick={() => setIsMenuOpen(false)}>
+              {item}
+            </Link>
+          ) : (
+            <a key={item} href={href} onClick={() => setIsMenuOpen(false)}>
+              {item}
+            </a>
+          );
+        })}
       </nav>
     </header>
   );

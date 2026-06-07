@@ -488,11 +488,12 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).not.toMatch(/#(?:df7f91|e58a9b|dc5875|d94e73|fff7f8|fff5f6|fff0f1|fff6f7|f9d5d8)/i);
   });
 
-  it("keeps the Shop All filter apply button readable in bare-bones mode", () => {
+  it("keeps the Shop All filter apply button readable outside bare-bones mode", () => {
     expect(styles).toContain(".shop-filter-panel__apply");
-    expect(styles).toContain(".storefront-barebones .shop-filter-panel__apply");
-    expect(styles).toContain("background: #000000 !important;");
-    expect(styles).toContain("color: #ffffff !important;");
+    expect(styles).not.toContain(".storefront-barebones .shop-filter-panel__apply");
+    expect(styles).toContain("background: var(--shop-ink);");
+    expect(styles).toContain("border-color: var(--shop-ink);");
+    expect(styles).toContain("color: #ffffff;");
     expect(styles).toContain("-webkit-tap-highlight-color: transparent;");
   });
 
@@ -505,6 +506,9 @@ describe("small mobile responsive CSS", () => {
     expect(railStyles).toContain("overscroll-behavior-inline: contain;");
     expect(railStyles).toContain("touch-action: pan-x pan-y;");
     expect(styles).toContain(".shop-tab-rail--dragging");
+    expect(styles).toContain(".shop-tab-rail__tab {\n  appearance: none;\n  background: rgba(255, 254, 253, 0.82);");
+    expect(styles).toContain("border-radius: 8px;");
+    expect(styles).toContain(".shop-tab-rail__tab[aria-pressed=\"true\"] {\n  background: var(--shop-ink);");
   });
 
   it("presents the Shop All sort as a real button with an option panel", () => {
@@ -517,13 +521,15 @@ describe("small mobile responsive CSS", () => {
 
     expect(controlsStyles).toContain("display: grid;");
     expect(controlsStyles).toContain("grid-template-columns: minmax(86px, auto) minmax(0, 1fr);");
-    expect(sortButtonStyles).toContain("border: 1px solid #000000;");
+    expect(sortButtonStyles).toContain("border: 1px solid var(--shop-border);");
+    expect(sortButtonStyles).toContain("border-radius: 8px;");
     expect(sortButtonStyles).toContain("display: grid;");
-    expect(sortButtonStyles).toContain("min-height: 42px;");
+    expect(sortButtonStyles).toContain("min-height: 44px;");
     expect(styles).toContain(".shop-sort-panel");
+    expect(styles).toContain("box-shadow: var(--shop-shadow);");
     expect(styles).toContain(".shop-sort-option[aria-checked=\"true\"]");
     expect(styles).toContain(".shop-sort-option:hover,\n.shop-sort-option:focus-visible,\n.shop-sort-option[aria-checked=\"true\"]");
-    expect(styles).toContain("color: #ffffff !important;");
+    expect(styles).toContain("color: #ffffff;");
     expect(styles).not.toContain(".shop-sort select");
   });
 

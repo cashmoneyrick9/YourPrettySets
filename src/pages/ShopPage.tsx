@@ -217,7 +217,7 @@ export function ShopPage() {
   }
 
   return (
-    <main className="shop-page storefront-barebones" id="shop">
+    <main className="shop-page" id="shop">
       <section className="shop-page__inner" aria-labelledby="shop-page-title">
         <div className="shop-page__heading">
           <h1 id="shop-page-title">Shop All</h1>
