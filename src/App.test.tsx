@@ -24,6 +24,7 @@ describe("App", () => {
   it("renders the YourPrettySets home experience", () => {
     renderApp();
 
+    expect(document.querySelector(".site-shell")).not.toHaveClass("site-shell--barebones");
     expect(
       within(screen.getByRole("banner")).getByRole("link", { name: "YourPrettySets home" })
     ).toBeInTheDocument();
