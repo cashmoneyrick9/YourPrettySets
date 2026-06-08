@@ -177,7 +177,7 @@ describe("App", () => {
     const footer = screen.getByRole("contentinfo");
 
     expect(within(footer).getByRole("navigation", { name: "Footer shop navigation" })).toBeInTheDocument();
-    expect(within(footer).getByRole("region", { name: "Get 15% off your first set" })).toBeInTheDocument();
+    expect(within(footer).getByRole("region", { name: "Get 15% off your first order" })).toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Cohesive footer preview" })).not.toBeInTheDocument();
   });
 });

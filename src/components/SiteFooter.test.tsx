@@ -25,7 +25,7 @@ describe("SiteFooter", () => {
     const policyNav = within(footer).getByRole("navigation", { name: "Footer policy navigation" });
 
     expect(within(footer).queryByRole("link", { name: "YourPrettySets home" })).not.toBeInTheDocument();
-    expect(within(footer).getByRole("region", { name: "Get 15% off your first set" })).toBeInTheDocument();
+    expect(within(footer).getByRole("region", { name: "Get 15% off your first order" })).toBeInTheDocument();
     expect(within(shopNav).getByRole("link", { name: "Shop All" })).toHaveAttribute("href", "/shop");
     expect(within(shopNav).getByRole("link", { name: "New Arrivals" })).toBeInTheDocument();
     expect(within(shopNav).getByRole("link", { name: "Best Sellers" })).toBeInTheDocument();
@@ -37,23 +37,28 @@ describe("SiteFooter", () => {
     expect(within(policyNav).getByRole("link", { name: "Terms" })).toBeInTheDocument();
   });
 
-  it("restores the old footer email capture and submit feedback", async () => {
+  it("renders the image-backed footer email capture and submit feedback", async () => {
     const user = userEvent.setup();
     renderSiteFooter();
 
     const footer = screen.getByRole("contentinfo");
-    const emailCapture = within(footer).getByRole("region", { name: "Get 15% off your first set" });
+    const emailCapture = within(footer).getByRole("region", { name: "Get 15% off your first order" });
 
-    expect(within(emailCapture).getByText("YOURPRETTYSETS")).toBeInTheDocument();
-    expect(within(emailCapture).getByText("Join the list for new drops, restocks, and exclusive offers.")).toBeInTheDocument();
+    expect(emailCapture).toHaveClass("site-footer-email--restored");
+    expect(emailCapture).toHaveClass("site-footer-email--image");
+    expect(within(emailCapture).queryByText("YOURPRETTYSETS")).not.toBeInTheDocument();
+    expect(within(emailCapture).getByText("Join our email list for new drops, restocks, and exclusive offers.")).toBeInTheDocument();
     expect(within(emailCapture).getByPlaceholderText("Email address")).toHaveAttribute("type", "email");
-    expect(within(emailCapture).getByRole("button", { name: "Get 15% off" })).toHaveAttribute("type", "submit");
+    expect(within(emailCapture).getByPlaceholderText("Email address")).toHaveAttribute("required");
+    expect(within(emailCapture).getByPlaceholderText("Email address")).toHaveAttribute("autocomplete", "email");
+    expect(within(emailCapture).getByRole("button", { name: "Get 15% Off" })).toHaveAttribute("type", "submit");
+    expect(within(emailCapture).getByText("No spam. Unsubscribe anytime.")).toBeInTheDocument();
     expect(within(emailCapture).queryByText("Early access + exclusive drops")).not.toBeInTheDocument();
 
     await user.type(within(emailCapture).getByPlaceholderText("Email address"), "shopper@example.com");
-    await user.click(within(emailCapture).getByRole("button", { name: "Get 15% off" }));
+    await user.click(within(emailCapture).getByRole("button", { name: "Get 15% Off" }));
 
-    expect(within(emailCapture).getByText("You're on the list. Your code is coming soon.")).toBeInTheDocument();
+    expect(within(emailCapture).getByText("You’re on the list. Your code is coming soon.")).toBeInTheDocument();
   });
 
   it("renders centered socials, brand note, and copyright without the removed trust strip", () => {

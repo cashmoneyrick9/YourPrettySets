@@ -69,6 +69,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("font-family: var(--font-display);");
     expect(styles).toContain(".brand-header,\n.brand-header button,\n.brand-header a {");
     expect(styles).toContain(".hero-copy h1 {\n  color: inherit;\n  font-family: var(--font-display);");
+    expect(styles).toContain(".hero-copy__accent {\n  color: #eab6b4;");
     expect(styles).toContain("font-size: var(--type-hero-title);");
     expect(styles).toContain(".section-heading h2 {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);");
     expect(styles).toContain("font-size: var(--type-section-title);");
@@ -106,7 +107,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("body::before");
     expect(styles).toContain("height: env(safe-area-inset-top)");
     expect(styles).toContain("body.header-at-top::before");
-    expect(styles).toContain("background: rgba(255, 254, 253, 0.98);");
+    expect(styles).toContain("background: rgba(255, 255, 255, 0.98);");
     expect(styles).not.toContain("rgba(221, 104, 133, 0.36) 0%");
     expect(styles).not.toContain("padding-top: max(14px, env(safe-area-inset-top))");
     expect(styles).toContain("body.header-scrolled::before");
@@ -165,10 +166,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".hero-section::after,\n  .hero-copy,\n  .hero-photo");
     expect(styles).toContain("@media (max-width: 720px)");
     expect(styles).toContain("height: 105px;");
-    expect(styles).toContain("rgba(251, 247, 244, 0.04) 18%");
-    expect(styles).toContain("rgba(251, 247, 244, 0.14) 35%");
-    expect(styles).toContain("rgba(251, 247, 244, 0.34) 55%");
-    expect(styles).toContain("rgba(251, 247, 244, 0.68) 78%");
+    expect(styles).toContain("rgba(247, 248, 248, 0.04) 18%");
+    expect(styles).toContain("rgba(247, 248, 248, 0.14) 35%");
+    expect(styles).toContain("rgba(247, 248, 248, 0.34) 55%");
+    expect(styles).toContain("rgba(247, 248, 248, 0.68) 78%");
     expect(styles).toContain("var(--site-page-bg) 100%");
   });
 
@@ -212,7 +213,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".confidence-carousel__viewport::after");
     expect(styles).toContain("height: 52px;");
     expect(styles).toContain("height: 34px;");
-    expect(styles).toContain("rgba(251, 247, 244, 0.75) 55%");
+    expect(styles).toContain("rgba(247, 248, 248, 0.75) 55%");
     expect(styles).toContain("box-shadow: var(--site-shadow-subtle);");
     expect(styles).not.toContain("mask-image: linear-gradient(");
     expect(styles).toContain(".confidence-carousel:focus-visible");
@@ -287,7 +288,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("height: 96px;");
     expect(styles).toContain(".collection-product-teaser::after");
     expect(styles).toContain(
-      "linear-gradient(180deg, rgba(251, 247, 244, 0) 0%, rgba(251, 247, 244, 0) 38%, var(--site-page-bg) 100%)"
+      "linear-gradient(180deg, rgba(247, 248, 248, 0) 0%, rgba(247, 248, 248, 0) 38%, var(--site-page-bg) 100%)"
     );
     expect(styles).toContain(".collection-products__more");
     expect(styles).toContain(".collection-products__more {\n  align-self: center;");
@@ -334,7 +335,6 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".review-story-viewer * {\n  -webkit-touch-callout: none;\n  -webkit-user-select: none;\n  user-select: none;");
     expect(styles).not.toContain("body {\n  -webkit-user-select: none;");
     expect(styles).not.toContain("* {\n  -webkit-user-select: none;");
-    expect(styles).not.toContain("rgba(255, 255, 255, 0.98)");
     expect(styles).not.toContain("rgba(255, 253, 250, 0.98)");
     expect(styles).not.toContain("linear-gradient(180deg, #ffffff 0%, #fffdfa 100%);");
     expect(styles).not.toContain("linear-gradient(180deg, #ffffff 0%, #fffaf7 100%);");
@@ -408,14 +408,21 @@ describe("small mobile responsive CSS", () => {
   });
 
   it("retires bare-bones mode in favor of shared visual tokens", () => {
-    expect(styles).toContain("--site-page-bg: #fbf7f4;");
-    expect(styles).toContain("--site-surface: #fffefd;");
-    expect(styles).toContain("--site-text-primary: #241f22;");
-    expect(styles).toContain("--site-text-muted: #74696d;");
-    expect(styles).toContain("--site-border: rgba(36, 31, 34, 0.14);");
-    expect(styles).toContain("--site-border-strong: rgba(36, 31, 34, 0.34);");
-    expect(styles).toContain("--site-accent: #8f3f61;");
-    expect(styles).toContain("--site-shadow-subtle: 0 12px 28px rgba(72, 52, 58, 0.08);");
+    expect(styles).toContain("--site-page-bg: #f7f8f8;");
+    expect(styles).toContain("--site-surface: #ffffff;");
+    expect(styles).toContain("--site-surface-soft: #eef1f2;");
+    expect(styles).toContain("--site-text-primary: #1f2428;");
+    expect(styles).toContain("--site-text-muted: #667078;");
+    expect(styles).toContain("--site-border: rgba(31, 36, 40, 0.14);");
+    expect(styles).toContain("--site-border-strong: rgba(31, 36, 40, 0.32);");
+    expect(styles).toContain("--site-accent: #5d6f7a;");
+    expect(styles).toContain("--site-shadow-subtle: 0 12px 28px rgba(31, 36, 40, 0.08);");
+    expect(styles).toContain("--site-shadow-soft: 0 8px 22px rgba(31, 36, 40, 0.045);");
+    expect(styles).not.toContain("#fbf7f4");
+    expect(styles).not.toContain("#f6efeb");
+    expect(styles).not.toContain("#8f3f61");
+    expect(styles).not.toContain("rgba(72, 52, 58");
+    expect(styles).not.toContain("rgba(36, 31, 34");
     expect(styles).not.toContain("Temporary bare-bones review mode");
     expect(styles).not.toContain("--barebones-");
     expect(styles).not.toContain(".storefront-barebones");
@@ -493,7 +500,7 @@ describe("small mobile responsive CSS", () => {
     expect(railStyles).toContain("overscroll-behavior-inline: contain;");
     expect(railStyles).toContain("touch-action: pan-x pan-y;");
     expect(styles).toContain(".shop-tab-rail--dragging");
-    expect(styles).toContain(".shop-tab-rail__tab {\n  appearance: none;\n  background: rgba(255, 254, 253, 0.82);");
+    expect(styles).toContain(".shop-tab-rail__tab {\n  appearance: none;\n  background: rgba(255, 255, 255, 0.82);");
     expect(styles).toContain("border-radius: 8px;");
     expect(styles).toContain(".shop-tab-rail__tab[aria-pressed=\"true\"] {\n  background: var(--shop-ink);");
   });
@@ -522,10 +529,17 @@ describe("small mobile responsive CSS", () => {
 
   it("keeps the approved footer mobile-first and tokenized", () => {
     expect(styles).toContain(".site-shell .site-footer {");
-    expect(styles).toContain("--footer-blush: var(--site-surface-soft);");
+    expect(styles).toContain("--footer-soft: var(--site-surface-soft);");
+    expect(styles).not.toContain("--footer-blush");
     expect(styles).toContain("background: var(--site-surface);");
     expect(styles).toContain(".site-footer-email--restored");
+    expect(styles).toContain(".site-footer-email--image::before");
+    expect(styles).toContain('background-image: url("/assets/hero-s3-summer.png");');
+    expect(styles).toContain("filter: grayscale(1) brightness(0.48);");
+    expect(styles).toContain(".site-footer-email--image::after");
+    expect(styles).toContain("background: rgba(6, 10, 13, 0.58);");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__form");
+    expect(styles).toContain("min-height: 48px;");
     expect(styles).toContain(".site-footer__shop-link");
     expect(styles).toContain(".site-footer__shop-nav {\n    margin-inline: calc(var(--space-footer-inline) * -1);");
     expect(styles).toContain("border-radius: 0;");

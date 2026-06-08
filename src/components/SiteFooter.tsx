@@ -47,13 +47,17 @@ export function SiteFooter() {
   return (
     <footer className="site-footer" aria-labelledby="site-footer-title">
       <div className="site-footer__inner">
-        <section className="site-footer-email site-footer-email--restored" aria-labelledby="site-footer-title">
+        <section
+          className="site-footer-email site-footer-email--restored site-footer-email--image"
+          aria-labelledby="site-footer-title"
+        >
           <div className="site-footer-email__content">
-            <p className="site-footer-email__eyebrow">YOURPRETTYSETS</p>
             <h2 className="site-footer-email__title" id="site-footer-title">
-              Get 15% off your first set
+              Get 15% off your first order
             </h2>
-            <p className="site-footer-email__copy">Join the list for new drops, restocks, and exclusive offers.</p>
+            <p className="site-footer-email__copy">
+              Join our email list for new drops, restocks, and exclusive offers.
+            </p>
             <form className="site-footer-email__form" onSubmit={handleSubmit}>
               <label className="sr-only" htmlFor="site-footer-email-input">
                 Email address
@@ -67,11 +71,11 @@ export function SiteFooter() {
                 type="email"
               />
               <button className="site-footer-email__button" type="submit">
-                Get 15% off
+                Get 15% Off
               </button>
             </form>
             <p className="site-footer-email__note">
-              {submitted ? "You're on the list. Your code is coming soon." : "No spam. Just pretty updates."}
+              {submitted ? "You’re on the list. Your code is coming soon." : "No spam. Unsubscribe anytime."}
             </p>
           </div>
         </section>
