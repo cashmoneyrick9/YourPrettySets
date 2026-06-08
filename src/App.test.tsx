@@ -1,6 +1,6 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 
@@ -17,7 +17,12 @@ function renderApp() {
 }
 
 describe("App", () => {
+  beforeEach(() => {
+    vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+  });
+
   afterEach(() => {
+    vi.restoreAllMocks();
     window.history.pushState({}, "", "/");
   });
 
@@ -69,6 +74,36 @@ describe("App", () => {
 
     expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
     expect(window.location.pathname).toBe("/shop");
+  });
+
+  it("resets scroll when navigating from Home collection previews to Shop", async () => {
+    const user = userEvent.setup();
+    const scrollTo = vi.mocked(window.scrollTo);
+    renderApp();
+    scrollTo.mockClear();
+
+    await user.click(screen.getByRole("link", { name: "See more" }));
+
+    expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/shop");
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
+  });
+
+  it("does not reset scroll for hash-only homepage navigation", async () => {
+    const user = userEvent.setup();
+    const scrollTo = vi.mocked(window.scrollTo);
+    renderApp();
+    scrollTo.mockClear();
+
+    await user.click(
+      within(screen.getByRole("navigation", { name: "Primary navigation" })).getByRole("link", {
+        name: "FAQ"
+      })
+    );
+
+    expect(window.location.pathname).toBe("/");
+    expect(window.location.hash).toBe("#faq");
+    expect(scrollTo).not.toHaveBeenCalled();
   });
 
   it("renders the approved footer system at the bottom", () => {
