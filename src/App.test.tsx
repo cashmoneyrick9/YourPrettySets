@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
@@ -51,6 +51,26 @@ describe("App", () => {
     expect(screen.queryByRole("heading", { name: "Ready-to-wear sets for pretty plans" })).not.toBeInTheDocument();
   });
 
+  it("renders a product detail page at /products/:slug", () => {
+    window.history.pushState({}, "", "/products/blush-crush");
+
+    renderApp();
+
+    expect(screen.getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Length" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Shape" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add to cart" })).toBeInTheDocument();
+  });
+
+  it("renders a clean product not-found state for unknown slugs", () => {
+    window.history.pushState({}, "", "/products/unknown-set");
+
+    renderApp();
+
+    expect(screen.getByRole("heading", { name: "Set not found" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Back to shop" })).toHaveAttribute("href", "/shop");
+  });
+
   it("navigates from Home to Shop All without reloading the document", async () => {
     const user = userEvent.setup();
     renderApp();
@@ -87,6 +107,29 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
     expect(window.location.pathname).toBe("/shop");
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
+  });
+
+  it("does not force scroll reset on browser back from Product to Shop", async () => {
+    const user = userEvent.setup();
+    const scrollTo = vi.mocked(window.scrollTo);
+    window.history.pushState({}, "", "/shop");
+    renderApp();
+    scrollTo.mockClear();
+
+    await user.click(screen.getByRole("link", { name: "View Blush Crush" }));
+
+    expect(screen.getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/products/blush-crush");
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
+    scrollTo.mockClear();
+
+    window.history.back();
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
+    });
+    expect(window.location.pathname).toBe("/shop");
+    expect(scrollTo).not.toHaveBeenCalled();
   });
 
   it("does not reset scroll for hash-only homepage navigation", async () => {

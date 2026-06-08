@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
+import { BrowserRouter } from "react-router-dom";
 import { products } from "../data/products";
 import { ShopPage } from "./ShopPage";
 
@@ -10,6 +11,14 @@ afterEach(() => {
 
 function getCatalogCards() {
   return document.querySelectorAll(".shop-product-card");
+}
+
+function renderShopPage() {
+  return render(
+    <BrowserRouter>
+      <ShopPage />
+    </BrowserRouter>
+  );
 }
 
 function dispatchPointerEvent(element: Element, type: string, options: { clientX: number; pointerId: number; pointerType: string }) {
@@ -24,7 +33,7 @@ function dispatchPointerEvent(element: Element, type: string, options: { clientX
 
 describe("ShopPage", () => {
   it("renders the full Shop All catalog before filtering", () => {
-    render(<ShopPage />);
+    renderShopPage();
 
     expect(document.querySelector("#shop")).toHaveClass("shop-page");
     expect(document.querySelector("#shop")).not.toHaveClass("storefront-barebones");
@@ -40,7 +49,7 @@ describe("ShopPage", () => {
 
   it("filters catalog products by search text", async () => {
     const user = userEvent.setup();
-    render(<ShopPage />);
+    renderShopPage();
 
     await user.type(screen.getByPlaceholderText("Search sets"), "sea");
 
@@ -53,7 +62,7 @@ describe("ShopPage", () => {
 
   it("lets shoppers clear an active search without changing other controls", async () => {
     const user = userEvent.setup();
-    render(<ShopPage />);
+    renderShopPage();
 
     const searchInput = screen.getByPlaceholderText("Search sets");
     await user.type(searchInput, "bridal");
@@ -69,7 +78,7 @@ describe("ShopPage", () => {
   });
 
   it("keeps the empty search state free of fake suggestion chips", () => {
-    render(<ShopPage />);
+    renderShopPage();
 
     expect(screen.getByPlaceholderText("Search sets")).toHaveValue("");
     expect(screen.queryByRole("button", { name: /Search pink/i })).not.toBeInTheDocument();
@@ -79,7 +88,7 @@ describe("ShopPage", () => {
 
   it("matches structured collection fields without starter chips", async () => {
     const user = userEvent.setup();
-    render(<ShopPage />);
+    renderShopPage();
 
     await user.type(screen.getByPlaceholderText("Search sets"), "bridal");
 
@@ -91,7 +100,7 @@ describe("ShopPage", () => {
 
   it("shows a useful empty state when search has no matches", async () => {
     const user = userEvent.setup();
-    render(<ShopPage />);
+    renderShopPage();
 
     await user.type(screen.getByPlaceholderText("Search sets"), "zebra");
 
@@ -102,7 +111,7 @@ describe("ShopPage", () => {
 
   it("does not match placeholder product descriptions", async () => {
     const user = userEvent.setup();
-    render(<ShopPage />);
+    renderShopPage();
 
     await user.type(screen.getByPlaceholderText("Search sets"), "glow");
 
@@ -112,7 +121,7 @@ describe("ShopPage", () => {
 
   it("filters catalog products from the collection tab rail", async () => {
     const user = userEvent.setup();
-    render(<ShopPage />);
+    renderShopPage();
 
     await user.click(screen.getByRole("button", { name: "Bridal" }));
 
@@ -124,7 +133,7 @@ describe("ShopPage", () => {
   });
 
   it("lets shoppers drag the collection tab rail with a mouse during review", () => {
-    render(<ShopPage />);
+    renderShopPage();
 
     const rail = document.querySelector(".shop-tab-rail") as HTMLDivElement;
     expect(rail).toBeInTheDocument();
@@ -141,7 +150,7 @@ describe("ShopPage", () => {
   });
 
   it("keeps tab clicks working when a tap has a tiny pointer drift", () => {
-    render(<ShopPage />);
+    renderShopPage();
 
     const rail = document.querySelector(".shop-tab-rail") as HTMLDivElement;
     const bridalTab = screen.getByRole("button", { name: "Bridal" });
@@ -157,7 +166,7 @@ describe("ShopPage", () => {
 
   it("opens and closes the inline filter panel", async () => {
     const user = userEvent.setup();
-    render(<ShopPage />);
+    renderShopPage();
 
     expect(screen.queryByRole("region", { name: "Catalog filters" })).not.toBeInTheDocument();
 
@@ -179,7 +188,7 @@ describe("ShopPage", () => {
 
   it("filters by price and detail level from the inline panel", async () => {
     const user = userEvent.setup();
-    render(<ShopPage />);
+    renderShopPage();
 
     await user.click(screen.getByRole("button", { name: "Filter" }));
     await user.click(screen.getByRole("checkbox", { name: "Under $20" }));
@@ -193,7 +202,7 @@ describe("ShopPage", () => {
 
   it("sorts products by price and popularity", async () => {
     const user = userEvent.setup();
-    render(<ShopPage />);
+    renderShopPage();
 
     await user.click(screen.getByRole("button", { name: "Sort Newest" }));
     const sortPanel = screen.getByRole("radiogroup", { name: "Sort sets" });
@@ -214,11 +223,12 @@ describe("ShopPage", () => {
   });
 
   it("keeps catalog cards minimal", () => {
-    render(<ShopPage />);
+    renderShopPage();
 
     const firstCard = getCatalogCards()[0] as HTMLElement;
 
     expect(firstCard).toHaveClass("product-preview-card");
+    expect(firstCard).toHaveAttribute("href", "/products/blush-crush");
     expect(within(firstCard).getByRole("img", { name: "Clean background placeholder for Blush Crush" })).toBeInTheDocument();
     expect(within(firstCard).getByRole("img", { name: "Clean background placeholder for Blush Crush" })).toBeEmptyDOMElement();
     expect(within(firstCard).getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();

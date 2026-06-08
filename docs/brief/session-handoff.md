@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-06-07
+Last updated: 2026-06-08
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -69,7 +69,7 @@ Implemented:
 - Catalog placeholder data expanded to 33 ready-to-wear products, with all products still supporting every launch length and shape option.
 - Balanced Shop All layout: `Shop All`, search, Filter + Sort row, inline filter panel, collection tab rail, and a practical product grid.
 - Inline filter panel is the approved v1 filter pattern for Shop All; it pushes the catalog down and includes Collection, Price, Detail level, Clear, and Apply controls.
-- Minimal Shop All product cards show only a plain image placeholder, product name, and price. Product detail links are reserved as future `/products/[slug]` metadata, not active destinations yet.
+- Minimal Shop All product cards show only a plain image placeholder, product name, and price. They now navigate through React Router to the first base Product Detail route at `/products/:slug`.
 - Shared components:
   - `BrandHeader`
   - `ProductCard`
@@ -127,7 +127,9 @@ Implemented:
 - 2026-06-06 mobile menu close-position follow-up collapses the hidden bag action while the full-screen mobile menu is open and moves the close button container to `right: 8px`, so the 44px close tap target sits near the actual right edge instead of being offset by the hidden bag slot.
 - 2026-06-07 Shop All visual polish removes `storefront-barebones` from the Shop page and narrows the broad bare-bones CSS flattening so Home can stay in review mode without forcing the Shop page into pure black/white/no-shadow styling. The Shop page skeleton and behavior are unchanged: heading/count, search, Filter, Sort, inline filter panel, tab rail, product grid, and empty state stay in place. Search/filter/sort controls, collection tabs, product cards, and empty state now use a soft neutral shop-specific surface, subtle borders, 8px-or-smaller radius, and restrained shadows without adding product copy, fake recommendations, starter chips, or description-based search matching.
 - 2026-06-07 Home/Header/Footer polish removes `site-shell--barebones` and `storefront-barebones`, deletes the temporary bare-bones CSS overrides, maps the shared visual system to soft neutral tokens, restores the Home hero/image presentation, restyles Collections, How It Works, Kit, Reviews, FAQ, and Footer to match Shop's restrained surfaces, and adds concise 3-step How It Works card content without changing Shop page behavior.
-- Product Detail, Bag, checkout, policy pages, Help Center, and Contact remain future pages. Length and shape selection still belong on future Product Detail pages, not Shop All.
+- 2026-06-08 Product Detail base pass adds `/products/:slug` with the existing product placeholder art, product title, price, one existing data description, length selector, shape selector, add-to-cart/favorite UI buttons without cart infrastructure, compact reassurance, and simple set details. Shop cards link to the route via React Router while Shop search/filter/sort behavior stays unchanged.
+- 2026-06-08 Product Detail return pass adds a visible `Back to shop` control. Shop product links pass `{ fromShop: true }` in React Router state; product pages opened from Shop use browser history for the back control so Shop scroll position can restore, while direct product visits fall back to `/shop`. `ScrollToTop` now skips POP navigations but still resets normal PUSH/REPLACE route changes.
+- Bag, checkout, policy pages, Help Center, and Contact remain future pages. Size and adhesive are not primary Product Detail selectors; length and shape own the base buying flow.
 
 Latest known verification before handoff:
 

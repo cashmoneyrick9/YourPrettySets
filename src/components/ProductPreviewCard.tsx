@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Product } from "../data/products";
 
 type ProductPreviewCardVariant = "shop" | "home";
@@ -59,8 +60,22 @@ export function ProductPreviewCard({
     );
   }
 
+  if (variant === "shop") {
+    return (
+      <Link
+        aria-label={ariaLabel ?? `View ${product.name}`}
+        className={rootClassName}
+        id={id}
+        state={{ fromShop: true }}
+        to={futureHref ?? `/products/${product.slug}`}
+      >
+        {content}
+      </Link>
+    );
+  }
+
   return (
-    <article className={rootClassName} data-future-href={variant === "shop" ? futureHref ?? `/products/${product.slug}` : futureHref}>
+    <article className={rootClassName} data-future-href={futureHref}>
       {content}
     </article>
   );

@@ -1,16 +1,26 @@
-import { useEffect } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Navigate, Route, Routes, useLocation, useNavigationType } from "react-router-dom";
 import { BrandHeader } from "./components/BrandHeader";
 import { SiteFooter } from "./components/SiteFooter";
 import { HomePage } from "./pages/HomePage";
+import { ProductPage } from "./pages/ProductPage";
 import { ShopPage } from "./pages/ShopPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
+  const navigationType = useNavigationType();
+  const previousPathname = useRef(pathname);
 
   useEffect(() => {
+    const pathnameChanged = previousPathname.current !== pathname;
+    previousPathname.current = pathname;
+
+    if (!pathnameChanged || navigationType === "POP") {
+      return;
+    }
+
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [pathname]);
+  }, [navigationType, pathname]);
 
   return null;
 }
@@ -23,6 +33,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ShopPage />} />
+        <Route path="/products/:slug" element={<ProductPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <SiteFooter />
