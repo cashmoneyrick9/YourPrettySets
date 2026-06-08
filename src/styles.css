@@ -3094,15 +3094,15 @@ h1 {
 }
 
 .product-page {
-  background: var(--site-page-bg);
+  background: var(--site-surface-raised);
   color: var(--site-text-primary);
   min-height: 100vh;
-  padding: 92px var(--space-page-inline) 54px;
+  padding: 66px var(--space-page-inline) 54px;
 }
 
 .product-page__inner {
   display: grid;
-  gap: 22px;
+  gap: 13px;
   margin: 0 auto;
   max-width: 1120px;
   width: 100%;
@@ -3895,6 +3895,10 @@ h1 {
     align-items: start;
     gap: 36px;
     grid-template-columns: minmax(0, 1fr) minmax(336px, 440px);
+  }
+
+  .product-page__back-button {
+    grid-column: 1 / -1;
   }
 
   .product-page__buying-panel {

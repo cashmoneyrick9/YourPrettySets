@@ -71,6 +71,15 @@ describe("ProductPage", () => {
     expect(screen.getAllByText("Prep kit included")).toHaveLength(2);
   });
 
+  it("places the back control before the product image", () => {
+    renderProductPage();
+
+    const backButton = screen.getByRole("button", { name: "Back to shop" });
+    const productImage = screen.getByRole("img", { name: products[0].images.clean });
+
+    expect(backButton.compareDocumentPosition(productImage) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it("updates selected length, selected shape, and favorite state", async () => {
     const user = userEvent.setup();
     renderProductPage();

@@ -70,16 +70,16 @@ function ProductBuyingFlow({ product }: { product: Product }) {
   return (
     <main className="product-page">
       <div className="product-page__inner">
+        <button className="product-page__back-button" onClick={handleBackToShop} type="button">
+          <ArrowLeft aria-hidden="true" size={16} strokeWidth={2} />
+          Back to shop
+        </button>
+
         <section className="product-page__media" aria-label={`${product.name} preview`}>
           <ProductArt product={product} />
         </section>
 
         <section className="product-page__buying-panel" aria-labelledby="product-title">
-          <button className="product-page__back-button" onClick={handleBackToShop} type="button">
-            <ArrowLeft aria-hidden="true" size={16} strokeWidth={2} />
-            Back to shop
-          </button>
-
           <div className="product-page__summary">
             <p className="product-page__eyebrow">Ready-to-wear set</p>
             <div className="product-page__title-row">

@@ -116,6 +116,11 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--mobile-header-offset: calc(45px + env(safe-area-inset-top, 0px));");
   });
 
+  it("keeps product page back control spacing compact on mobile", () => {
+    expect(styles).toContain(".product-page {\n  background: var(--site-surface-raised);\n  color: var(--site-text-primary);\n  min-height: 100vh;\n  padding: 66px var(--space-page-inline) 54px;");
+    expect(styles).toContain(".product-page__inner {\n  display: grid;\n  gap: 13px;");
+  });
+
   it("includes the locked S3 header and hero visual rules", () => {
     expect(styles).toContain("--color-sage-accent");
     expect(styles).toContain("--color-sage-accent: var(--site-accent);");
