@@ -56,10 +56,11 @@ function ProductBuyingFlow({ product }: { product: Product }) {
   const [selectedLength, setSelectedLength] = useState(product.lengthOptions[0]);
   const [selectedShape, setSelectedShape] = useState(product.shapeOptions[0]);
   const [isFavorite, setIsFavorite] = useState(false);
-  const openedFromShop = Boolean((location.state as { fromShop?: boolean } | null)?.fromShop);
+  const routeState = location.state as { fromHome?: boolean; fromShop?: boolean } | null;
+  const openedFromPreviousPage = Boolean(routeState?.fromHome || routeState?.fromShop);
 
   function handleBackToShop() {
-    if (openedFromShop) {
+    if (openedFromPreviousPage) {
       navigate(-1);
       return;
     }

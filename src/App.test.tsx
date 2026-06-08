@@ -109,6 +109,28 @@ describe("App", () => {
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
   });
 
+  it("opens Home collection products at top and uses history back without forcing scroll reset", async () => {
+    const user = userEvent.setup();
+    const scrollTo = vi.mocked(window.scrollTo);
+    renderApp();
+    scrollTo.mockClear();
+
+    await user.click(screen.getByRole("link", { name: "View Blush Crush" }));
+
+    expect(screen.getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/products/blush-crush");
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
+    scrollTo.mockClear();
+
+    await user.click(screen.getByRole("button", { name: "Back to shop" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" })).toBeInTheDocument();
+    });
+    expect(window.location.pathname).toBe("/");
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+
   it("does not force scroll reset on browser back from Product to Shop", async () => {
     const user = userEvent.setup();
     const scrollTo = vi.mocked(window.scrollTo);

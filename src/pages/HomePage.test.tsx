@@ -85,8 +85,8 @@ describe("HomePage", () => {
     expect(screen.queryByRole("heading", { name: "This week's set" })).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Everyday sets" })).toBeInTheDocument();
     expect(screen.getByText("10 available")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "#product-blush-crush");
-    expect(screen.getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "#product-soft-serve");
+    expect(screen.getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "/products/blush-crush");
+    expect(screen.getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "/products/soft-serve");
     expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop");
     expect(screen.getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Soft Serve" })).toBeInTheDocument();

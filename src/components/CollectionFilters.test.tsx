@@ -1,7 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { products } from "../data/products";
 import { CollectionFilters } from "./CollectionFilters";
 
@@ -60,7 +60,7 @@ describe("CollectionFilters", () => {
     );
     for (const product of everydayProducts) {
       const card = screen.getByRole("link", { name: `View ${product.name}` });
-      expect(card).toHaveAttribute("href", `#product-${product.slug}`);
+      expect(card).toHaveAttribute("href", `/products/${product.slug}`);
       expect(card).toHaveClass("product-preview-card");
       expect(within(card).getByRole("img", { name: product.images.clean })).toBeInTheDocument();
       expect(within(card).getByRole("heading", { name: product.name })).toBeInTheDocument();
@@ -107,7 +107,7 @@ describe("CollectionFilters", () => {
     );
     for (const product of bridalProducts) {
       const card = screen.getByRole("link", { name: `View ${product.name}` });
-      expect(card).toHaveAttribute("href", `#product-${product.slug}`);
+      expect(card).toHaveAttribute("href", `/products/${product.slug}`);
       expect(within(card).getByRole("img", { name: product.images.clean })).toBeInTheDocument();
       expect(within(card).getByRole("heading", { name: product.name })).toBeInTheDocument();
       expect(within(card).getByText(`$${product.price}`)).toBeInTheDocument();
@@ -124,5 +124,26 @@ describe("CollectionFilters", () => {
     expect(carousel).toHaveClass("mobile-carousel");
     expect(track).toHaveClass("mobile-carousel__container");
     expect(carousel).not.toHaveClass("collection-carousel--interacting");
+  });
+
+  it("passes home-origin state when a visible product card opens product detail", async () => {
+    function ProductRouteStateProbe() {
+      const location = useLocation();
+
+      return <p>fromHome: {String((location.state as { fromHome?: boolean } | null)?.fromHome)}</p>;
+    }
+
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <Routes>
+          <Route path="/" element={<CollectionFilters />} />
+          <Route path="/products/:slug" element={<ProductRouteStateProbe />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await userEvent.click(screen.getByRole("link", { name: "View Blush Crush" }));
+
+    expect(screen.getByText("fromHome: true")).toBeInTheDocument();
   });
 });

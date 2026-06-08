@@ -124,6 +124,32 @@ describe("ProductPage", () => {
     expect(screen.getByText("Current route: /shop")).toBeInTheDocument();
   });
 
+  it("uses browser history when the product was opened from Home", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter
+        initialEntries={[
+          "/",
+          {
+            pathname: `/products/${products[0].slug}`,
+            state: { fromHome: true }
+          }
+        ]}
+        initialIndex={1}
+      >
+        <Routes>
+          <Route path="/" element={<LocationProbe />} />
+          <Route path="/products/:slug" element={<ProductPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await user.click(screen.getByRole("button", { name: "Back to shop" }));
+
+    expect(screen.getByText("Current route: /")).toBeInTheDocument();
+  });
+
   it("falls back to Shop when opened directly without shop-origin state", async () => {
     const user = userEvent.setup();
 

@@ -80,10 +80,11 @@ export function CollectionFilters() {
         <div className="collection-product-row">
           {visibleCollectionProducts.map((product) => (
             <ProductPreviewCard
-              href={`#product-${product.slug}`}
               id={`product-${product.slug}`}
               key={product.id}
               product={product}
+              state={{ fromHome: true }}
+              to={`/products/${product.slug}`}
               variant="home"
             />
           ))}
