@@ -464,6 +464,7 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain("max-width: 1040px;");
     expect(faqStyles).toContain("min-height: clamp(190px, 34vw, 260px);");
     expect(faqStyles).toContain("padding: clamp(28px, 5vw, 44px) clamp(18px, 4vw, 26px);");
+    expect(faqStyles).toContain("font-size: clamp(0.88rem, 2vw, 0.95rem);");
     expect(faqStyles).toContain('url("/assets/hero-s3-summer.png")');
     expect(faqStyles).toContain("linear-gradient(90deg, rgba(16, 24, 32, 0.84)");
     expect(faqStyles).toContain(".faq-card__actions");
@@ -476,9 +477,11 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).not.toContain(".faq-image-header {\n  border-radius: 0;\n  box-shadow:");
     expect(faqStyles).toContain("width: calc(100% + (2 * var(--space-page-inline)));");
     expect(faqStyles).toContain("width: auto;");
-    expect(faqStyles).toContain("min-height: 30px;");
-    expect(faqStyles).toContain("padding: 5px clamp(8px, 2vw, 12px);");
+    expect(faqStyles).toContain("min-height: 40px;");
+    expect(faqStyles).toContain("padding: 8px clamp(12px, 3vw, 16px);");
     expect(faqStyles).toContain("min-height: 34px;");
+    expect(faqStyles).toContain("font-size: var(--type-button);");
+    expect(faqStyles).toContain("font-size: var(--type-body);");
     expect(faqStyles).toContain(".faq-card__actions {\n    align-items: center;");
     expect(faqStyles).not.toContain(".faq-help__intro");
     expect(faqStyles).not.toContain(".faq-help__visual");

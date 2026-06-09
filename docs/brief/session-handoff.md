@@ -402,6 +402,7 @@ Latest FAQ decision:
 - FAQ image-band spacing pass on 2026-06-09 makes the image header taller and vertically balanced by increasing its minimum height and top/bottom padding while centering the heading, copy, and CTAs within the band.
 - FAQ list flattening pass on 2026-06-09 removes the rounded/shadowed FAQ list capsule below the image band. The question fold is separated by a simple top underline and tighter divided rows to reduce wasted vertical space.
 - FAQ white-space pass on 2026-06-09 increases the white gap between the image band and question fold, and also increases the bottom white gap after the final FAQ row before the email capture.
+- FAQ typography regression fix on 2026-06-09 restores readable FAQ question, answer, CTA, and subcopy sizing after the overly compact pass, while keeping the current layout, image header, removed trust badges, and accordion behavior unchanged.
 - This pass intentionally stays section-scoped; it does not create a real Help Center page, full FAQ routes, or finalized policy answers.
 
 Latest footer decision:
