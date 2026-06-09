@@ -397,6 +397,7 @@ Latest FAQ decision:
 - FAQ compact-spacing pass on 2026-06-08 keeps the light card structure but reduces the section/header/button/row/answer/trust-row spacing so the FAQ reads as a compact support section. On mobile, the trust notes remain in one short horizontal rail instead of stacking into three tall rows.
 - FAQ branded-header pass on 2026-06-08 keeps the simplified seven-question accordion but restores an image-backed intro using the existing `/assets/hero-s3-summer.png` brand image behind only the heading/copy/CTA area. It removes the trust badges entirely and tightens the divided FAQ list further so the section reads as branded ecommerce support rather than a generic Help Center card.
 - FAQ full-bleed header pass on 2026-06-09 separates the branded image intro from the FAQ list container. `.faq-image-header` now sits above `.faq-card`, owns the top radius and image treatment, and the compact Radix accordion card below owns only the bottom radius, avoiding the image-trapped-inside-a-card look while keeping trust badges removed.
+- FAQ width correction on 2026-06-09 moves `.faq-image-header` out of the narrow `.faq-help` wrapper. The image header now uses the wider `1040px` homepage section rhythm, while `.faq-help` keeps the compact `760px` accordion list below it; the header no longer has its own competing card shadow.
 - This pass intentionally stays section-scoped; it does not create a real Help Center page, full FAQ routes, or finalized policy answers.
 
 Latest footer decision:

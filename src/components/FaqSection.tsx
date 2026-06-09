@@ -39,25 +39,25 @@ const homepageFaqItems = [
 export function FaqSection() {
   return (
     <section className="section-block faq-help-section" id="faq" aria-labelledby="faq-heading">
-      <div className="faq-help">
-        <div className="faq-image-header">
-          <div className="faq-card__copy">
-            <h2 className="faq-card__heading" id="faq-heading">
-              Questions before you order
-            </h2>
-            <p>Answers on sizing, wear time, application, and custom orders.</p>
-          </div>
-          <div className="faq-card__actions">
-            <a className="faq-card__primary-link" href="mailto:hello@yourprettysets.com">
-              Contact Support
-            </a>
-            {/* TODO: Replace this safe in-page placeholder with the full FAQ route when that page exists. */}
-            <a className="faq-card__secondary-link" href="#faq">
-              View Full FAQ
-            </a>
-          </div>
+      <div className="faq-image-header">
+        <div className="faq-card__copy">
+          <h2 className="faq-card__heading" id="faq-heading">
+            Questions before you order
+          </h2>
+          <p>Answers on sizing, wear time, application, and custom orders.</p>
         </div>
+        <div className="faq-card__actions">
+          <a className="faq-card__primary-link" href="mailto:hello@yourprettysets.com">
+            Contact Support
+          </a>
+          {/* TODO: Replace this safe in-page placeholder with the full FAQ route when that page exists. */}
+          <a className="faq-card__secondary-link" href="#faq">
+            View Full FAQ
+          </a>
+        </div>
+      </div>
 
+      <div className="faq-help">
         <div className="faq-card">
           <Accordion className="faq-question-list" collapsible type="single">
             {homepageFaqItems.map((item, index) => (

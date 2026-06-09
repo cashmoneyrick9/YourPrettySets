@@ -1737,16 +1737,17 @@ h1 {
   border: 1px solid var(--site-border);
   border-radius: 0 0 8px 8px;
   border-top: 0;
-  box-shadow: var(--site-shadow-soft);
+  box-shadow: var(--site-shadow-subtle);
   overflow: hidden;
 }
 
 .faq-image-header {
   border-radius: 8px 8px 0 0;
-  box-shadow: var(--site-shadow-soft);
   color: var(--site-accent-text);
   display: grid;
   gap: 14px;
+  margin: 0 auto;
+  max-width: 1040px;
   min-height: clamp(150px, 28vw, 220px);
   overflow: hidden;
   padding: clamp(18px, 4vw, 26px);

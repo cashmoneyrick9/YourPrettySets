@@ -56,8 +56,9 @@ describe("FaqSection", () => {
     const contactLink = within(actions).getByRole("link", { name: "Contact Support" });
     const fullFaqLink = within(actions).getByRole("link", { name: "View Full FAQ" });
 
-    expect(faqHelp?.firstElementChild).toBe(imageHeader);
-    expect(imageHeader.nextElementSibling).toBe(faqCard);
+    expect(imageHeader.parentElement).not.toBe(faqHelp);
+    expect(imageHeader.nextElementSibling).toBe(faqHelp);
+    expect(faqHelp?.firstElementChild).toBe(faqCard);
     expect(faqCard).toBeInTheDocument();
     expect(imageHeader).toBeInTheDocument();
     expect(imageHeader.querySelector(".faq-card__copy")).toBeInTheDocument();
