@@ -174,10 +174,12 @@ describe("App", () => {
   it("renders the approved footer system at the bottom", () => {
     renderApp();
 
+    const emailCapture = screen.getByRole("region", { name: "Get 15% off your first order" });
     const footer = screen.getByRole("contentinfo");
 
-    expect(within(footer).getByRole("navigation", { name: "Footer shop navigation" })).toBeInTheDocument();
-    expect(within(footer).getByRole("region", { name: "Get 15% off your first order" })).toBeInTheDocument();
+    expect(emailCapture.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(within(footer).getByRole("navigation", { name: "Footer navigation" })).toBeInTheDocument();
+    expect(within(footer).queryByRole("region", { name: "Get 15% off your first order" })).not.toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Cohesive footer preview" })).not.toBeInTheDocument();
   });
 });

@@ -76,7 +76,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".kit-heading h2 {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__title");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__button");
-    expect(styles).toContain(".site-footer__shop-link");
+    expect(styles).toContain(".site-footer__column-title");
+    expect(styles).toContain(".site-footer__text-link");
     expect(styles).toContain("font-family: var(--font-cta);");
     expect(styles).not.toContain("font-family: Georgia, \"Times New Roman\", serif;");
   });
@@ -540,13 +541,25 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("background: rgba(6, 10, 13, 0.58);");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__form");
     expect(styles).toContain("min-height: 48px;");
-    expect(styles).toContain(".site-footer__shop-link");
-    expect(styles).toContain(".site-footer__shop-nav {\n    margin-inline: calc(var(--space-footer-inline) * -1);");
+    expect(styles).toContain(".site-footer__brand-block");
+    expect(styles).toContain(".site-footer__columns");
+    expect(styles).toContain("grid-template-columns: repeat(3, minmax(0, 1fr));");
+    expect(styles).toContain(".site-footer__text-link");
+    expect(styles).toContain(".site-footer__social-link");
     expect(styles).toContain("border-radius: 0;");
     expect(styles).toContain("border-radius: 8px;");
-    expect(styles).toContain("min-height: 49px;");
-    expect(styles).toContain(".site-footer__policy-bar");
-    expect(styles).toContain("grid-template-columns: repeat(4, minmax(0, 1fr));");
+    expect(styles).toContain("min-height: 32px;");
+    expect(styles).toContain("@media (max-width: 480px)");
+    expect(styles).toContain(".site-footer__columns {\n    gap: 10px;\n    grid-template-columns: repeat(3, minmax(0, 1fr));");
+    expect(styles).toContain("white-space: nowrap;");
+    expect(styles).toContain(".site-footer__social-links {\n    column-gap: 13px;\n    display: flex;");
+    expect(styles).not.toContain(".site-footer__column--policies");
+    expect(styles).not.toContain("grid-template-columns: repeat(2, max-content);");
+    expect(styles).not.toContain(".site-footer__policy-bar");
+    expect(styles).not.toContain(".site-footer__shop-link");
+    for (const socialRule of styles.matchAll(/\.site-footer__social-links\s*\{[^}]*\}/g)) {
+      expect(socialRule[0]).not.toContain("border");
+    }
     expect(styles).toContain(".site-footer__social-links");
     expect(styles).toContain(".site-footer__love-note");
     expect(styles).toContain(".site-footer__copyright");

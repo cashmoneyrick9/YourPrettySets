@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigationType } from "react-router-dom";
 import { BrandHeader } from "./components/BrandHeader";
+import { FooterEmailCapture } from "./components/FooterEmailCapture";
 import { SiteFooter } from "./components/SiteFooter";
 import { HomePage } from "./pages/HomePage";
 import { ProductPage } from "./pages/ProductPage";
@@ -36,6 +37,7 @@ function App() {
         <Route path="/products/:slug" element={<ProductPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <FooterEmailCapture />
       <SiteFooter />
     </div>
   );

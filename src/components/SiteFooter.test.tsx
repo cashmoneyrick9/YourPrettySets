@@ -1,5 +1,4 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import { SiteFooter } from "./SiteFooter";
@@ -21,62 +20,51 @@ describe("SiteFooter", () => {
     renderSiteFooter();
 
     const footer = screen.getByRole("contentinfo");
-    const shopNav = within(footer).getByRole("navigation", { name: "Footer shop navigation" });
-    const policyNav = within(footer).getByRole("navigation", { name: "Footer policy navigation" });
+    const footerNav = within(footer).getByRole("navigation", { name: "Footer navigation" });
 
     expect(within(footer).queryByRole("link", { name: "YourPrettySets home" })).not.toBeInTheDocument();
-    expect(within(footer).getByRole("region", { name: "Get 15% off your first order" })).toBeInTheDocument();
-    expect(within(shopNav).getByRole("link", { name: "Shop All" })).toHaveAttribute("href", "/shop");
-    expect(within(shopNav).getByRole("link", { name: "New Arrivals" })).toBeInTheDocument();
-    expect(within(shopNav).getByRole("link", { name: "Best Sellers" })).toBeInTheDocument();
-    expect(within(shopNav).getByRole("link", { name: "Accessories" })).toBeInTheDocument();
+    expect(within(footer).queryByRole("region", { name: "Get 15% off your first order" })).not.toBeInTheDocument();
+    expect(within(footer).getByText("YourPrettySets")).toBeInTheDocument();
+    expect(within(footerNav).getByText("Shop")).toBeInTheDocument();
+    expect(within(footerNav).getByText("Help")).toBeInTheDocument();
+    expect(within(footerNav).getByText("Policies")).toBeInTheDocument();
+    expect(within(footerNav).getByRole("link", { name: "Shop All" })).toHaveAttribute("href", "/shop");
+    expect(within(footerNav).getByRole("link", { name: "New Arrivals" })).toHaveAttribute("href", "/shop");
+    expect(within(footerNav).getByRole("link", { name: "Best Sellers" })).toHaveAttribute("href", "/shop");
 
-    expect(within(policyNav).getByRole("link", { name: "Shipping" })).toBeInTheDocument();
-    expect(within(policyNav).getByRole("link", { name: "Returns" })).toBeInTheDocument();
-    expect(within(policyNav).getByRole("link", { name: "Privacy" })).toBeInTheDocument();
-    expect(within(policyNav).getByRole("link", { name: "Terms" })).toBeInTheDocument();
+    expect(within(footerNav).getByRole("link", { name: "Sizing" })).toHaveAttribute("href", "/#faq");
+    expect(within(footerNav).getByRole("link", { name: "Application" })).toHaveAttribute("href", "/#faq");
+    expect(within(footerNav).getByRole("link", { name: "Contact" })).toHaveAttribute(
+      "href",
+      "mailto:hello@yourprettysets.com"
+    );
+    expect(within(footerNav).getByRole("link", { name: "Shipping" })).toHaveAttribute("href", "/#help-center");
+    expect(within(footerNav).getByRole("link", { name: "Returns" })).toHaveAttribute("href", "/#help-center");
+    expect(within(footerNav).getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/#help-center");
+    expect(within(footerNav).getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/#help-center");
   });
 
-  it("renders the image-backed footer email capture and submit feedback", async () => {
-    const user = userEvent.setup();
+  it("renders text socials, exact love note, and current-year copyright without the removed trust strip", () => {
     renderSiteFooter();
 
     const footer = screen.getByRole("contentinfo");
-    const emailCapture = within(footer).getByRole("region", { name: "Get 15% off your first order" });
+    const currentYear = new Date().getFullYear();
+    const loveNote = within(footer).getByText("made for you, with love");
 
-    expect(emailCapture).toHaveClass("site-footer-email--restored");
-    expect(emailCapture).toHaveClass("site-footer-email--image");
-    expect(within(emailCapture).queryByText("YOURPRETTYSETS")).not.toBeInTheDocument();
-    expect(within(emailCapture).getByText("Join our email list for new drops, restocks, and exclusive offers.")).toBeInTheDocument();
-    expect(within(emailCapture).getByPlaceholderText("Email address")).toHaveAttribute("type", "email");
-    expect(within(emailCapture).getByPlaceholderText("Email address")).toHaveAttribute("required");
-    expect(within(emailCapture).getByPlaceholderText("Email address")).toHaveAttribute("autocomplete", "email");
-    expect(within(emailCapture).getByRole("button", { name: "Get 15% Off" })).toHaveAttribute("type", "submit");
-    expect(within(emailCapture).getByText("No spam. Unsubscribe anytime.")).toBeInTheDocument();
-    expect(within(emailCapture).queryByText("Early access + exclusive drops")).not.toBeInTheDocument();
-
-    await user.type(within(emailCapture).getByPlaceholderText("Email address"), "shopper@example.com");
-    await user.click(within(emailCapture).getByRole("button", { name: "Get 15% Off" }));
-
-    expect(within(emailCapture).getByText("You’re on the list. Your code is coming soon.")).toBeInTheDocument();
-  });
-
-  it("renders centered socials, brand note, and copyright without the removed trust strip", () => {
-    renderSiteFooter();
-
-    const footer = screen.getByRole("contentinfo");
-
-    expect(within(footer).getByText("Follow Us")).toBeInTheDocument();
-    expect(within(footer).getByRole("link", { name: "Instagram" })).toHaveAttribute("href", "#instagram");
-    expect(within(footer).getByRole("link", { name: "TikTok" })).toHaveAttribute("href", "#tiktok");
-    expect(within(footer).getByRole("link", { name: "Pinterest" })).toHaveAttribute("href", "#pinterest");
-    expect(within(footer).getByRole("link", { name: "YouTube" })).toHaveAttribute("href", "#youtube");
+    expect(loveNote).toHaveTextContent(/^made for you, with love$/);
+    expect(loveNote).not.toHaveTextContent("♡");
+    expect(loveNote.textContent?.endsWith(".")).toBe(false);
+    expect(within(footer).queryByText("Follow Us")).not.toBeInTheDocument();
+    expect(within(footer).getByRole("link", { name: "Instagram ↗" })).toHaveAttribute("href", "#instagram");
+    expect(within(footer).getByRole("link", { name: "TikTok ↗" })).toHaveAttribute("href", "#tiktok");
+    expect(within(footer).getByRole("link", { name: "Pinterest ↗" })).toHaveAttribute("href", "#pinterest");
     expect(within(footer).getByRole("link", { name: "Email" })).toHaveAttribute(
       "href",
       "mailto:hello@yourprettysets.com"
     );
-    expect(within(footer).getByText("made for you, with love. ♡")).toBeInTheDocument();
-    expect(within(footer).getByText("© 2024 YourPrettySets. All rights reserved.")).toBeInTheDocument();
+    expect(within(footer).queryByRole("img")).not.toBeInTheDocument();
+    expect(within(footer).queryByRole("separator")).not.toBeInTheDocument();
+    expect(within(footer).getByText(`© ${currentYear} YourPrettySets. All rights reserved.`)).toBeInTheDocument();
     expect(within(footer).queryByLabelText("Footer trust notes")).not.toBeInTheDocument();
     expect(within(footer).queryByText("Mobile First")).not.toBeInTheDocument();
     expect(within(footer).queryByText("Designed for thumb comfort.")).not.toBeInTheDocument();
