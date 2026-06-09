@@ -591,7 +591,8 @@ describe("HomePage", () => {
     expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Sizing" })).not.toBeInTheDocument();
     expect(document.querySelector(".faq-topic-carousel")).not.toBeInTheDocument();
-    expect(document.querySelector(".faq-card__header--image")).toBeInTheDocument();
+    expect(document.querySelector(".faq-image-header")).toBeInTheDocument();
+    expect(document.querySelector(".faq-card__header--image")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
     expect(screen.getByRole("link", { name: "View Full FAQ" })).toHaveAttribute("href", "#faq");

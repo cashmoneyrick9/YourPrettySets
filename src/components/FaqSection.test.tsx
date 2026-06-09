@@ -46,19 +46,23 @@ describe("FaqSection", () => {
     expect(screen.queryByRole("link", { name: /View all .* questions/i })).not.toBeInTheDocument();
   });
 
-  it("renders the CTAs inside one cohesive light FAQ card", () => {
+  it("renders the CTAs inside a full-bleed image header above the FAQ list", () => {
     render(<FaqSection />);
 
+    const faqHelp = document.querySelector(".faq-help");
+    const imageHeader = document.querySelector(".faq-image-header") as HTMLElement;
     const faqCard = document.querySelector(".faq-card");
-    const header = faqCard?.querySelector(".faq-card__header");
-    const actions = faqCard?.querySelector(".faq-card__actions") as HTMLElement;
+    const actions = imageHeader.querySelector(".faq-card__actions") as HTMLElement;
     const contactLink = within(actions).getByRole("link", { name: "Contact Support" });
     const fullFaqLink = within(actions).getByRole("link", { name: "View Full FAQ" });
 
+    expect(faqHelp?.firstElementChild).toBe(imageHeader);
+    expect(imageHeader.nextElementSibling).toBe(faqCard);
     expect(faqCard).toBeInTheDocument();
-    expect(header).toBeInTheDocument();
-    expect(header).toHaveClass("faq-card__header--image");
-    expect(faqCard?.querySelector(".faq-card__copy")).toBeInTheDocument();
+    expect(imageHeader).toBeInTheDocument();
+    expect(imageHeader.querySelector(".faq-card__copy")).toBeInTheDocument();
+    expect(faqCard?.querySelector(".faq-card__copy")).not.toBeInTheDocument();
+    expect(faqCard?.querySelector(".faq-card__actions")).not.toBeInTheDocument();
     expect(contactLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
     expect(fullFaqLink).toHaveAttribute("href", "#faq");
     expect(contactLink).toHaveClass("faq-card__primary-link");
@@ -66,6 +70,7 @@ describe("FaqSection", () => {
     expect(screen.getAllByRole("link", { name: "Contact Support" })).toHaveLength(1);
     expect(screen.getAllByRole("link", { name: "View Full FAQ" })).toHaveLength(1);
     expect(screen.queryByRole("region", { name: "FAQ intro" })).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-card__header--image")).not.toBeInTheDocument();
     expect(document.querySelector(".faq-help__visual")).not.toBeInTheDocument();
     expect(document.querySelector(".faq-help__visual-oval")).not.toBeInTheDocument();
     expect(document.querySelector(".faq-question-card")).not.toBeInTheDocument();

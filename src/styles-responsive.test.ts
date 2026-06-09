@@ -453,9 +453,10 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain("font-variation-settings: \"opsz\" 144, \"SOFT\" 72, \"WONK\" 0;");
     expect(faqStyles).toContain("font-size: clamp(1.45rem, 5vw, 2.05rem);");
     expect(faqStyles).toContain(".faq-card {\n  background: var(--site-surface);");
-    expect(faqStyles).toContain(".faq-card__header {\n  border-bottom: 1px solid var(--site-border);");
+    expect(faqStyles).toContain("border-radius: 0 0 8px 8px;");
+    expect(faqStyles).toContain("border-top: 0;");
+    expect(faqStyles).toContain(".faq-image-header {\n  border-radius: 8px 8px 0 0;");
     expect(faqStyles).toContain("min-height: clamp(150px, 28vw, 220px);");
-    expect(faqStyles).toContain(".faq-card__header--image");
     expect(faqStyles).toContain('url("/assets/hero-s3-summer.png")');
     expect(faqStyles).toContain("linear-gradient(90deg, rgba(16, 24, 32, 0.84)");
     expect(faqStyles).toContain(".faq-card__actions");
@@ -473,6 +474,7 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain(".faq-card__actions {\n    align-items: center;");
     expect(faqStyles).not.toContain(".faq-help__intro");
     expect(faqStyles).not.toContain(".faq-help__visual");
+    expect(faqStyles).not.toContain(".faq-card__header--image");
     expect(faqStyles).not.toContain(".faq-question-card");
     expect(faqStyles).not.toContain(".faq-trust-strip");
     expect(faqStyles).not.toContain(".faq-trust-row");

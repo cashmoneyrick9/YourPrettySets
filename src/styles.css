@@ -1630,7 +1630,7 @@ h1 {
 
 .faq-help {
   display: grid;
-  gap: 12px;
+  gap: 0;
   margin: 0 auto;
   max-width: 760px;
 }
@@ -1735,22 +1735,22 @@ h1 {
 .faq-card {
   background: var(--site-surface);
   border: 1px solid var(--site-border);
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
+  border-top: 0;
   box-shadow: var(--site-shadow-soft);
   overflow: hidden;
 }
 
-.faq-card__header {
-  border-bottom: 1px solid var(--site-border);
+.faq-image-header {
+  border-radius: 8px 8px 0 0;
+  box-shadow: var(--site-shadow-soft);
   color: var(--site-accent-text);
   display: grid;
   gap: 14px;
   min-height: clamp(150px, 28vw, 220px);
+  overflow: hidden;
   padding: clamp(18px, 4vw, 26px);
   position: relative;
-}
-
-.faq-card__header--image {
   background-image:
     linear-gradient(90deg, rgba(16, 24, 32, 0.84) 0%, rgba(16, 24, 32, 0.58) 52%, rgba(16, 24, 32, 0.2) 100%),
     url("/assets/hero-s3-summer.png");
@@ -2168,7 +2168,7 @@ h1 {
     min-height: min(650px, calc(94vh - 108px));
   }
 
-  .faq-card__header {
+  .faq-image-header {
     align-items: center;
     grid-template-columns: minmax(0, 1fr) auto;
   }
