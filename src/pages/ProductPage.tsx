@@ -4,22 +4,6 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { products } from "../data/products";
 import type { Product } from "../data/products";
 
-function ProductArt({ product }: { product: Product }) {
-  return (
-    <div
-      aria-label={product.images.clean}
-      className={`product-page__art product-art product-art--${product.detailTier}`}
-      role="img"
-    >
-      <span className="product-art__nail product-art__nail--one" />
-      <span className="product-art__nail product-art__nail--two" />
-      <span className="product-art__nail product-art__nail--three" />
-      <span className="product-art__nail product-art__nail--four" />
-      <span className="product-art__nail product-art__nail--five" />
-    </div>
-  );
-}
-
 function ProductOptionGroup<Option extends string>({
   label,
   options,
@@ -77,7 +61,11 @@ function ProductBuyingFlow({ product }: { product: Product }) {
         </button>
 
         <section className="product-page__media" aria-label={`${product.name} preview`}>
-          <ProductArt product={product} />
+          <div
+            className="product-page__image-placeholder"
+            role="img"
+            aria-label={`${product.name} image placeholder`}
+          />
         </section>
 
         <section className="product-page__buying-panel" aria-labelledby="product-title">

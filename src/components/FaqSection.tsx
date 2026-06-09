@@ -1,263 +1,102 @@
-import { useEffect, useState } from "react";
-import { BrandButton } from "./BrandButton";
-import { MobileCarousel } from "./MobileCarousel";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
-import { Button } from "./ui/button";
 
-type FaqTopic = {
-  label: string;
-  questions: {
-    answer: string;
-    question: string;
-  }[];
-};
-
-const faqTopics: FaqTopic[] = [
+const homepageFaqItems = [
   {
-    label: "Sizing",
-    questions: [
-      {
-        question: "How do I measure my nails?",
-        answer: "Measure the widest part of each natural nail in millimeters, then match each finger to the closest size."
-      },
-      {
-        question: "What if I’m between sizes?",
-        answer: "Choose the slightly larger size so the press-on can be gently filed down for a cleaner fit."
-      },
-      {
-        question: "Do you offer sample sizing kits?",
-        answer: "Sizing kits are planned for the prototype, so this will become the safest way to confirm your sizes before ordering."
-      },
-      {
-        question: "How do I choose the right shape?",
-        answer: "Start with the length you wear comfortably every day, then choose the shape that best matches your natural nail width."
-      },
-      {
-        question: "Can I resize after I place my order?",
-        answer: "Message support as soon as possible after ordering. Changes may depend on whether the set has already been started."
-      }
-    ]
+    question: "How do I know my size?",
+    answer:
+      "Use a sizing kit for the safest fit, or measure the widest part of each natural nail in millimeters and match each finger to the closest size."
   },
   {
-    label: "Application",
-    questions: [
-      {
-        question: "How do I apply press-on nails?",
-        answer: "Prep, size, add glue or tabs, then press each nail firmly for a short hold so it bonds evenly."
-      },
-      {
-        question: "Should I use glue or adhesive tabs?",
-        answer: "Use glue for longer wear and adhesive tabs when you want a shorter, gentler wear option."
-      },
-      {
-        question: "How long does application take?",
-        answer: "Most applications take about 10 to 15 minutes once your nails are clean, dry, and matched to size."
-      },
-      {
-        question: "How do I prep my nails first?",
-        answer: "Wash and dry your hands, push back cuticles, lightly buff, and wipe away oils before applying."
-      }
-    ]
+    question: "How long do press-ons last?",
+    answer:
+      "Wear time depends on prep and adhesive. Glue is best for longer wear, while tabs are better for shorter wear."
   },
   {
-    label: "Wear & Care",
-    questions: [
-      {
-        question: "How long do press-ons last?",
-        answer: "Wear time depends on prep and adhesive choice. Glue usually lasts longer than tabs."
-      },
-      {
-        question: "Can I shower with press-ons?",
-        answer: "Yes, but avoid soaking them right after application and keep heavy water exposure limited when possible."
-      },
-      {
-        question: "How do I make them last longer?",
-        answer: "Prep carefully, avoid using nails as tools, and wear gloves for cleaning or long water exposure."
-      },
-      {
-        question: "Can I reuse my press-ons?",
-        answer: "Many sets can be reused if removed gently and stored cleanly between wears."
-      }
-    ]
+    question: "Can I reuse them?",
+    answer: "Yes. Many sets can be reused if they are removed gently, cleaned, and stored properly."
   },
   {
-    label: "Shipping",
-    questions: [
-      {
-        question: "When will my order ship?",
-        answer: "Shipping timing is still placeholder for this prototype, but order status should be shared after processing."
-      },
-      {
-        question: "How long does processing take?",
-        answer: "Current placeholder processing is 3 to 7 business days before the package ships."
-      },
-      {
-        question: "Do you offer tracking?",
-        answer: "Tracking is expected once an order ships, but final fulfillment details are not locked yet."
-      },
-      {
-        question: "Do you ship internationally?",
-        answer: "International shipping is not finalized in the prototype and should be confirmed before launch."
-      }
-    ]
+    question: "Should I use glue or tabs?",
+    answer: "Choose glue when you want a stronger hold. Choose tabs when you want easier removal or short-term wear."
   },
   {
-    label: "Returns",
-    questions: [
-      {
-        question: "Do you accept returns?",
-        answer: "Return policy wording is still being finalized, especially because press-ons are a hygiene-sensitive product."
-      },
-      {
-        question: "Can I cancel my order?",
-        answer: "Cancellation rules are not final yet. For now, contact support quickly if something needs to change."
-      },
-      {
-        question: "What if my order arrives damaged?",
-        answer: "Contact support with your order details and photos so the issue can be reviewed."
-      },
-      {
-        question: "Can I exchange a sizing kit?",
-        answer: "Sizing-kit exchange rules are not final in this prototype and should be confirmed before launch."
-      }
-    ]
+    question: "How long does my order take?",
+    answer:
+      "Ready-to-wear processing time should follow the timing shown at checkout or on the product page. Shipping time starts after processing."
   },
   {
-    label: "Removal",
-    questions: [
-      {
-        question: "How do I remove press-ons safely?",
-        answer: "Soak and loosen them gently instead of forcing them off. Removal should feel slow and careful."
-      },
-      {
-        question: "Will removal damage my nails?",
-        answer: "Gentle removal helps protect your natural nails. Avoid pulling or prying."
-      },
-      {
-        question: "Can I reuse nails after removal?",
-        answer: "If the nails come off cleanly and keep their shape, store them for another wear."
-      },
-      {
-        question: "What should I avoid during removal?",
-        answer: "Avoid ripping, bending, or using harsh tools against the natural nail."
-      }
-    ]
+    question: "Do you take custom orders?",
+    answer:
+      "Custom availability depends on the current queue. Customers should contact support or check the custom-order flow when available."
   },
   {
-    label: "Custom Orders",
-    questions: [
-      {
-        question: "How do custom sets work?",
-        answer: "Custom orders are a future direction, so the exact request flow is still being shaped."
-      },
-      {
-        question: "Can I send inspiration photos?",
-        answer: "The planned flow can support inspiration photos, but final custom-order rules are not locked yet."
-      },
-      {
-        question: "How long do custom orders take?",
-        answer: "Custom timing will depend on the design, materials, and order queue once that service is active."
-      },
-      {
-        question: "Can I request specific colors or charms?",
-        answer: "That is the goal for custom sets, with final options depending on available materials."
-      }
-    ]
+    question: "What if my set does not fit?",
+    answer:
+      "Contact support as soon as possible. A sizing kit before ordering is the best way to avoid fit issues."
   }
-];
+] as const;
 
-function topicSlug(label: string) {
-  return label.toLowerCase().replace("&", "and").replace(/\s+/g, "-");
-}
+const faqTrustItems = [
+  {
+    label: "Salon Quality",
+    detail: "Long-lasting wear"
+  },
+  {
+    label: "Fast Shipping",
+    detail: "Quick & reliable"
+  },
+  {
+    label: "Loved by Customers",
+    detail: "Easy to wear"
+  }
+] as const;
 
 export function FaqSection() {
-  const [activeTopicIndex, setActiveTopicIndex] = useState<number | null>(null);
-  const [openQuestionValue, setOpenQuestionValue] = useState<string | undefined>(undefined);
-  const activeTopic = activeTopicIndex === null ? null : faqTopics[activeTopicIndex];
-  const activeTopicSlug = activeTopic ? topicSlug(activeTopic.label) : "";
-
-  useEffect(() => {
-    setOpenQuestionValue(undefined);
-  }, [activeTopicIndex]);
-
   return (
     <section className="section-block faq-help-section" id="faq" aria-labelledby="faq-heading">
       <div className="faq-help">
-        <div className="faq-help__intro">
-          <h2 className="faq-help__heading" id="faq-heading">
-            How Can We Help?
-          </h2>
+        <div className="faq-help__intro" role="region" aria-label="FAQ intro">
+          <div className="faq-help__intro-copy">
+            <h2 className="faq-help__heading" id="faq-heading">
+              Questions before you order
+            </h2>
+            <p>Quick answers on sizing, wear time, application, and custom orders.</p>
+          </div>
+          <div className="faq-help__cta-row">
+            <a className="faq-help__primary-link" href="mailto:hello@yourprettysets.com">
+              Contact Support
+            </a>
+            {/* TODO: Replace this safe in-page placeholder with the full FAQ route when that page exists. */}
+            <a className="faq-help__secondary-link" href="#faq">
+              View Full FAQ
+            </a>
+          </div>
         </div>
 
-        <MobileCarousel
-          ariaLabel="Choose a help topic"
-          className="faq-topic-carousel"
-          containerClassName="faq-topic-grid"
-          options={{ align: "center", containScroll: false, loop: true }}
-          scrollToIndex={activeTopicIndex}
-          showArrows={false}
-          slideClassName="faq-topic-slide"
-          viewportClassName="faq-topic-carousel__viewport"
-          slides={faqTopics.map((topic, index) => {
-            const isActive = index === activeTopicIndex;
+        <div className="faq-question-card">
+          <Accordion className="faq-question-list" collapsible type="single">
+            {homepageFaqItems.map((item, index) => (
+              <AccordionItem className="faq-question-item" key={item.question} value={`homepage-faq-${index}`}>
+                <AccordionTrigger className="faq-question-row [&>svg]:hidden">
+                  <span>{item.question}</span>
+                  <span aria-hidden className="faq-question-row__icon" />
+                </AccordionTrigger>
+                <AccordionContent className="faq-question-answer">
+                  <p>{item.answer}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
 
-            return (
-              <button
-                aria-pressed={isActive}
-                className={`faq-topic-card${isActive ? " faq-topic-card--active" : ""}`}
-                key={topic.label}
-                onClick={() => setActiveTopicIndex(isActive ? null : index)}
-                type="button"
-              >
-                <span>{topic.label}</span>
-              </button>
-            );
-          })}
-        />
-
-        {activeTopic ? (
-          <div className="faq-question-card">
-            <div className="faq-question-card__header">
-              <h3>Top questions in {activeTopic.label}</h3>
-            </div>
-            <Accordion
-              className="faq-question-list"
-              collapsible
-              onValueChange={setOpenQuestionValue}
-              type="single"
-              value={openQuestionValue}
-            >
-              {activeTopic.questions.map((item, index) => {
-                const questionValue = `${activeTopicSlug}-${index}`;
-
-                return (
-                  <AccordionItem className="faq-question-item" key={item.question} value={questionValue}>
-                    <AccordionTrigger className="faq-question-row [&>svg]:hidden">
-                      <span>{item.question}</span>
-                      <span aria-hidden className="faq-question-row__icon" />
-                    </AccordionTrigger>
-                    <AccordionContent className="faq-question-answer">
-                      <p>{item.answer}</p>
-                    </AccordionContent>
-                  </AccordionItem>
-                );
-              })}
-            </Accordion>
-            <BrandButton asChild className="faq-question-card__link">
-              <a href="#help-center">View all {activeTopicSlug} questions</a>
-            </BrandButton>
-          </div>
-        ) : null}
-
-        <aside className="faq-support-footer" id="help-center" aria-label="FAQ support" role="region">
-          <Button asChild className="faq-support-footer__button" variant="brandSafe">
-            <a href="#help-center">Visit Help Center</a>
-          </Button>
-          {/* TODO: Replace mailto with a real contact page route when that page exists. */}
-          <a className="faq-support-footer__contact" href="mailto:hello@yourprettysets.com">
-            Contact Support
-          </a>
-        </aside>
+        <ul className="faq-trust-strip" aria-label="FAQ trust notes">
+          {faqTrustItems.map((item) => (
+            <li className="faq-trust-strip__item" key={item.label}>
+              <span>{item.label}</span>
+              <small>{item.detail}</small>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

@@ -104,7 +104,7 @@ describe("HomePage", () => {
     expect(document.querySelectorAll(".weekly-set-dots__dot")).toHaveLength(0);
     expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Loved by first-time press-on buyers" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "How Can We Help?" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
   });
 
   it("uses the polished storefront presentation without deleting the hero image container", () => {
@@ -582,22 +582,33 @@ describe("HomePage", () => {
     expect(screen.queryByLabelText("Minimal hand with finished press-on nails")).not.toBeInTheDocument();
   });
 
-  it("renders the FAQ Help section with topic cards and support CTAs", async () => {
+  it("renders the refined homepage FAQ with intro CTAs, accordion, and trust strip", async () => {
     const user = userEvent.setup();
     renderHomePage();
 
-    expect(screen.getByRole("heading", { name: "How Can We Help?" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
+    expect(screen.getByText("Quick answers on sizing, wear time, application, and custom orders.")).toBeInTheDocument();
     expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.queryByRole("button", { name: "Sizing" })).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-topic-carousel")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Visit Help Center" })).toHaveAttribute("href", "#help-center");
     expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
+    expect(screen.getByRole("link", { name: "View Full FAQ" })).toHaveAttribute("href", "#faq");
+    expect(screen.getByRole("list", { name: "FAQ trust notes" })).toBeInTheDocument();
+    expect(screen.getByText("Salon Quality")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Application" }));
+    const sizeQuestion = screen.getByRole("button", { name: "How do I know my size?" });
+    const wearQuestion = screen.getByRole("button", { name: "How long do press-ons last?" });
 
-    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
-    expect(screen.getByRole("button", { name: "Application" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("heading", { name: "Top questions in Application" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Should I use glue or adhesive tabs?" })).toBeInTheDocument();
+    await user.click(sizeQuestion);
+
+    expect(sizeQuestion).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText(/Use a sizing kit for the safest fit/i)).toBeInTheDocument();
+
+    await user.click(wearQuestion);
+
+    expect(sizeQuestion).toHaveAttribute("aria-expanded", "false");
+    expect(wearQuestion).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText(/Wear time depends on prep and adhesive/i)).toBeInTheDocument();
   });
 });

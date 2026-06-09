@@ -33,7 +33,11 @@ describe("ProductPage", () => {
     renderProductPage();
 
     expect(screen.getByRole("main")).toHaveClass("product-page");
-    expect(screen.getByRole("img", { name: products[0].images.clean })).toBeInTheDocument();
+    const productImage = screen.getByRole("img", { name: `${products[0].name} image placeholder` });
+    expect(productImage).toHaveClass("product-page__image-placeholder");
+    expect(productImage).toBeEmptyDOMElement();
+    expect(document.querySelector(".product-page__art")).not.toBeInTheDocument();
+    expect(document.querySelector(".product-page__media .product-art__nail")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: products[0].name })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Back to shop" })).toBeInTheDocument();
     expect(screen.getByText(`$${products[0].price}`)).toBeInTheDocument();
@@ -75,7 +79,7 @@ describe("ProductPage", () => {
     renderProductPage();
 
     const backButton = screen.getByRole("button", { name: "Back to shop" });
-    const productImage = screen.getByRole("img", { name: products[0].images.clean });
+    const productImage = screen.getByRole("img", { name: `${products[0].name} image placeholder` });
 
     expect(backButton.compareDocumentPosition(productImage) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });

@@ -8,143 +8,96 @@ afterEach(() => {
 });
 
 describe("FaqSection", () => {
-  it("renders the mobile-first help flow with no topic selected by default", () => {
+  it("renders default homepage FAQ questions immediately", () => {
     render(<FaqSection />);
 
-    const heading = screen.getByRole("heading", { name: "How Can We Help?" });
-    expect(screen.queryByRole("region", { name: "Reusable blank carousel" })).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
+    expect(screen.getByText("Quick answers on sizing, wear time, application, and custom orders.")).toBeInTheDocument();
 
-    expect(heading).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "FAQ & Help" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
-    expect(screen.queryByText("Find quick answers to the most common questions.")).not.toBeInTheDocument();
-
-    for (const topic of ["Sizing", "Application", "Wear & Care", "Shipping", "Returns", "Removal", "Custom Orders"]) {
-      expect(screen.getByRole("button", { name: topic })).toBeInTheDocument();
+    for (const question of [
+      "How do I know my size?",
+      "How long do press-ons last?",
+      "Can I reuse them?",
+      "Should I use glue or tabs?",
+      "How long does my order take?",
+      "Do you take custom orders?",
+      "What if my set does not fit?"
+    ]) {
+      expect(screen.getByRole("button", { name: question })).toBeInTheDocument();
     }
 
-    expect(document.querySelector(".faq-topic-carousel")).toHaveClass("mobile-carousel");
-    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-auto-rotate");
-    expect(document.querySelector(".faq-topic-carousel")).toHaveAttribute("data-loop", "true");
-    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-rotate-speed");
-    expect(document.querySelector(".faq-topic-grid")).toHaveClass("mobile-carousel__container");
-    expect(screen.queryByRole("button", { name: "Previous help topic" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Next help topic" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /Go to help topic/i })).not.toBeInTheDocument();
-    expect(document.querySelector(".faq-topic-carousel__dots")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "How Can We Help?" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: /Top questions in/i })).not.toBeInTheDocument();
-    expect(document.querySelector(".faq-question-list")).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "How do I measure my nails?" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /View all/i })).not.toBeInTheDocument();
-
-    expect(screen.queryByRole("heading", { name: "Need more detail?" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Still need help?" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Browse our Help Center for full guides and tips.")).not.toBeInTheDocument();
-    expect(screen.queryByText("Contact our team — we’re here for you!")).not.toBeInTheDocument();
-
-    const supportFooter = screen.getByRole("region", { name: "FAQ support" });
-    expect(within(supportFooter).queryByText("Find answers fast — or message us anytime.")).not.toBeInTheDocument();
-    expect(supportFooter.querySelector(".faq-support-footer__divider")).not.toBeInTheDocument();
-
-    const helpCenterLink = within(supportFooter).getByRole("link", { name: "Visit Help Center" });
-    expect(helpCenterLink).toHaveAttribute("href", "#help-center");
-    expect(helpCenterLink).toHaveClass("faq-support-footer__button");
-    expect(helpCenterLink).toHaveAttribute("data-slot", "button");
-
-    const supportLink = within(supportFooter).getByRole("link", { name: "Contact Support" });
-    expect(supportLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
-    expect(supportLink).toHaveClass("faq-support-footer__contact");
-    expect(supportLink).not.toHaveAttribute("data-slot", "button");
   });
 
-  it("renders text-only chunky topic tabs", () => {
+  it("removes the topic carousel and category selection behavior", () => {
     render(<FaqSection />);
 
-    const customOrdersCard = screen.getByRole("button", { name: "Custom Orders" });
+    expect(document.querySelector(".faq-topic-carousel")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-topic-card")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-topic-grid")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-topic-slide")).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Choose a help topic" })).not.toBeInTheDocument();
 
-    expect(customOrdersCard).toHaveClass("faq-topic-card");
-    expect(customOrdersCard).not.toHaveClass("faq-topic-card--wide");
-    expect(customOrdersCard.querySelector("svg")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".faq-topic-card svg")).toHaveLength(0);
+    for (const oldTopic of ["Sizing", "Application", "Wear & Care", "Shipping", "Returns", "Removal"]) {
+      expect(screen.queryByRole("button", { name: oldTopic })).not.toBeInTheDocument();
+    }
+
+    expect(screen.queryByRole("link", { name: /View all .* questions/i })).not.toBeInTheDocument();
   });
 
-  it("updates the quick questions when a shopper chooses another topic", async () => {
+  it("renders the intro CTAs inside the dark intro card", () => {
+    render(<FaqSection />);
+
+    const introCard = screen.getByRole("region", { name: "FAQ intro" });
+    const contactLink = within(introCard).getByRole("link", { name: "Contact Support" });
+    const fullFaqLink = within(introCard).getByRole("link", { name: "View Full FAQ" });
+
+    expect(contactLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
+    expect(fullFaqLink).toHaveAttribute("href", "#faq");
+    expect(contactLink).toHaveClass("faq-help__primary-link");
+    expect(fullFaqLink).toHaveClass("faq-help__secondary-link");
+    expect(screen.getAllByRole("link", { name: "Contact Support" })).toHaveLength(1);
+    expect(screen.getAllByRole("link", { name: "View Full FAQ" })).toHaveLength(1);
+  });
+
+  it("renders a compact dark trust strip", () => {
+    render(<FaqSection />);
+
+    const trustStrip = screen.getByRole("list", { name: "FAQ trust notes" });
+
+    for (const item of [
+      ["Salon Quality", "Long-lasting wear"],
+      ["Fast Shipping", "Quick & reliable"],
+      ["Loved by Customers", "Easy to wear"]
+    ]) {
+      const trustItem = within(trustStrip).getByText(item[0]).closest("li");
+      expect(trustItem).toBeInTheDocument();
+      expect(within(trustItem as HTMLElement).getByText(item[1])).toBeInTheDocument();
+    }
+  });
+
+  it("keeps the FAQ accordion keyboard-accessible with one open answer at a time", async () => {
     const user = userEvent.setup();
     render(<FaqSection />);
 
-    await user.click(screen.getByRole("button", { name: "Shipping" }));
+    const sizingQuestion = screen.getByRole("button", { name: "How do I know my size?" });
+    const wearQuestion = screen.getByRole("button", { name: "How long do press-ons last?" });
 
-    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
-    expect(screen.getByRole("button", { name: "Shipping" })).toHaveAttribute("aria-pressed", "true");
-    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-auto-rotate");
-    expect(screen.getByRole("heading", { name: "Top questions in Shipping" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "When will my order ship?" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "View all shipping questions" })).toHaveAttribute("href", "#help-center");
-  });
+    expect(sizingQuestion).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText(/Use a sizing kit for the safest fit/i)).not.toBeInTheDocument();
 
-  it("minimizes the quick questions when the active topic is tapped again", async () => {
-    const user = userEvent.setup();
-    render(<FaqSection />);
+    sizingQuestion.focus();
+    await user.keyboard("{Enter}");
 
-    await user.click(screen.getByRole("button", { name: "Sizing" }));
+    expect(sizingQuestion).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText(/Use a sizing kit for the safest fit/i)).toBeInTheDocument();
 
-    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-auto-rotate");
-    expect(screen.getByRole("heading", { name: "Top questions in Sizing" })).toBeInTheDocument();
+    await user.click(wearQuestion);
 
-    await user.click(screen.getByRole("button", { name: "Sizing" }));
-
-    expect(screen.getByRole("button", { name: "Sizing" })).toHaveAttribute("aria-pressed", "false");
-    expect(document.querySelector(".faq-topic-carousel")).not.toHaveAttribute("data-auto-rotate");
-    expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
-  });
-
-  it("uses shared carousel behavior instead of custom topic drag handling", () => {
-    render(<FaqSection />);
-
-    const carousel = document.querySelector(".faq-topic-carousel") as HTMLElement;
-    const track = document.querySelector(".faq-topic-grid") as HTMLElement;
-
-    expect(carousel).toHaveClass("mobile-carousel");
-    expect(track).toHaveClass("mobile-carousel__container");
-    expect(track).not.toHaveClass("faq-topic-grid--dragging");
-  });
-
-  it("opens one quick answer at a time when a shopper taps questions", async () => {
-    const user = userEvent.setup();
-    render(<FaqSection />);
-
-    await user.click(screen.getByRole("button", { name: "Sizing" }));
-
-    const measuringQuestion = screen.getByRole("button", { name: "How do I measure my nails?" });
-    const betweenSizesQuestion = screen.getByRole("button", { name: "What if I’m between sizes?" });
-
-    expect(measuringQuestion).toHaveAttribute("aria-expanded", "false");
-    expect(screen.queryByText(/Measure the widest part of each natural nail/i)).not.toBeInTheDocument();
-
-    await user.click(measuringQuestion);
-
-    expect(measuringQuestion).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByText(/Measure the widest part of each natural nail/i)).toBeInTheDocument();
-
-    await user.click(betweenSizesQuestion);
-
-    expect(measuringQuestion).toHaveAttribute("aria-expanded", "false");
-    expect(betweenSizesQuestion).toHaveAttribute("aria-expanded", "true");
-    expect(screen.queryByText(/Measure the widest part of each natural nail/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/Choose the slightly larger size/i)).toBeInTheDocument();
-  });
-
-  it("closes the open answer when a shopper chooses a different topic", async () => {
-    const user = userEvent.setup();
-    render(<FaqSection />);
-
-    await user.click(screen.getByRole("button", { name: "Sizing" }));
-    await user.click(screen.getByRole("button", { name: "How do I measure my nails?" }));
-    expect(screen.getByText(/Measure the widest part of each natural nail/i)).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Application" }));
-
-    expect(screen.queryByText(/Measure the widest part of each natural nail/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "How do I apply press-on nails?" })).toHaveAttribute("aria-expanded", "false");
+    expect(sizingQuestion).toHaveAttribute("aria-expanded", "false");
+    expect(wearQuestion).toHaveAttribute("aria-expanded", "true");
+    expect(screen.queryByText(/Use a sizing kit for the safest fit/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Wear time depends on prep and adhesive/i)).toBeInTheDocument();
   });
 });
