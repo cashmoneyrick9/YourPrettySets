@@ -46,35 +46,44 @@ describe("FaqSection", () => {
     expect(screen.queryByRole("link", { name: /View all .* questions/i })).not.toBeInTheDocument();
   });
 
-  it("renders the intro CTAs inside the dark intro card", () => {
+  it("renders the CTAs inside one cohesive light FAQ card", () => {
     render(<FaqSection />);
 
-    const introCard = screen.getByRole("region", { name: "FAQ intro" });
-    const contactLink = within(introCard).getByRole("link", { name: "Contact Support" });
-    const fullFaqLink = within(introCard).getByRole("link", { name: "View Full FAQ" });
-    const visualDetail = introCard.querySelector(".faq-help__visual");
+    const faqCard = document.querySelector(".faq-card");
+    const header = faqCard?.querySelector(".faq-card__header");
+    const actions = faqCard?.querySelector(".faq-card__actions") as HTMLElement;
+    const contactLink = within(actions).getByRole("link", { name: "Contact Support" });
+    const fullFaqLink = within(actions).getByRole("link", { name: "View Full FAQ" });
 
+    expect(faqCard).toBeInTheDocument();
+    expect(header).toBeInTheDocument();
+    expect(faqCard?.querySelector(".faq-card__copy")).toBeInTheDocument();
     expect(contactLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
     expect(fullFaqLink).toHaveAttribute("href", "#faq");
-    expect(contactLink).toHaveClass("faq-help__primary-link");
-    expect(fullFaqLink).toHaveClass("faq-help__secondary-link");
+    expect(contactLink).toHaveClass("faq-card__primary-link");
+    expect(fullFaqLink).toHaveClass("faq-card__secondary-link");
     expect(screen.getAllByRole("link", { name: "Contact Support" })).toHaveLength(1);
     expect(screen.getAllByRole("link", { name: "View Full FAQ" })).toHaveLength(1);
-    expect(visualDetail).toHaveAttribute("aria-hidden", "true");
-    expect(visualDetail?.querySelectorAll(".faq-help__visual-oval")).toHaveLength(4);
+    expect(screen.queryByRole("region", { name: "FAQ intro" })).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-help__visual")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-help__visual-oval")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-question-card")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-trust-strip")).not.toBeInTheDocument();
   });
 
-  it("renders a compact dark trust strip with inline icons", () => {
+  it("renders a light trust row with understated inline icons", () => {
     render(<FaqSection />);
 
-    const trustStrip = screen.getByRole("list", { name: "FAQ trust notes" });
+    const trustRow = screen.getByRole("list", { name: "FAQ trust notes" });
+
+    expect(trustRow).toHaveClass("faq-trust-row");
 
     for (const item of [
       ["Salon Quality", "Long-lasting wear", "shield"],
       ["Fast Shipping", "Quick & reliable", "truck"],
       ["Loved by Customers", "Easy to wear", "heart"]
     ]) {
-      const trustItem = within(trustStrip).getByText(item[0]).closest("li");
+      const trustItem = within(trustRow).getByText(item[0]).closest("li");
       expect(trustItem).toBeInTheDocument();
       expect(within(trustItem as HTMLElement).getByText(item[1])).toBeInTheDocument();
       expect((trustItem as HTMLElement).querySelector(`[data-faq-trust-icon="${item[2]}"]`)).toBeInTheDocument();
