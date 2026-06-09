@@ -1624,7 +1624,7 @@ h1 {
 
 .faq-help-section {
   background: var(--site-page-bg);
-  padding-bottom: clamp(16px, 3vw, 28px);
+  padding-bottom: clamp(32px, 7vw, 56px);
   padding-top: clamp(16px, 3vw, 28px);
 }
 
@@ -1632,6 +1632,7 @@ h1 {
   display: grid;
   gap: 0;
   margin: 0 auto;
+  margin-top: clamp(20px, 5vw, 34px);
   max-width: 760px;
 }
 
@@ -1733,25 +1734,27 @@ h1 {
 }
 
 .faq-card {
-  background: var(--site-surface);
-  border: 1px solid var(--site-border);
-  border-radius: 0 0 8px 8px;
-  border-top: 0;
-  box-shadow: var(--site-shadow-subtle);
-  overflow: hidden;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  border-top: 1px solid var(--site-border-strong);
+  box-shadow: none;
+  overflow: visible;
 }
 
 .faq-image-header {
-  border-radius: 8px 8px 0 0;
+  align-content: center;
+  border-radius: 0;
   color: var(--site-accent-text);
   display: grid;
   gap: 14px;
-  margin: 0 auto;
-  max-width: 1040px;
-  min-height: clamp(150px, 28vw, 220px);
+  margin-inline: calc(-1 * var(--space-page-inline));
+  max-width: none;
+  min-height: clamp(190px, 34vw, 260px);
   overflow: hidden;
-  padding: clamp(18px, 4vw, 26px);
+  padding: clamp(28px, 5vw, 44px) clamp(18px, 4vw, 26px);
   position: relative;
+  width: calc(100% + (2 * var(--space-page-inline)));
   background-image:
     linear-gradient(90deg, rgba(16, 24, 32, 0.84) 0%, rgba(16, 24, 32, 0.58) 52%, rgba(16, 24, 32, 0.2) 100%),
     url("/assets/hero-s3-summer.png");
@@ -1831,6 +1834,10 @@ h1 {
   border-bottom: 1px solid var(--site-border);
 }
 
+.faq-question-item:first-child {
+  border-top: 0;
+}
+
 .faq-question-row {
   align-items: center;
   background: transparent;
@@ -1841,8 +1848,8 @@ h1 {
   font: inherit;
   gap: var(--space-carousel-gap);
   justify-content: space-between;
-  min-height: 38px;
-  padding: 8px clamp(13px, 3vw, 16px);
+  min-height: 30px;
+  padding: 5px clamp(8px, 2vw, 12px);
   text-decoration: none;
   text-align: left;
   width: 100%;
@@ -1883,7 +1890,7 @@ h1 {
 
 .faq-question-answer {
   color: var(--site-text-muted);
-  padding: 0 clamp(34px, 6vw, 44px) 10px clamp(13px, 3vw, 16px);
+  padding: 0 clamp(30px, 5vw, 40px) 6px clamp(8px, 2vw, 12px);
 }
 
 .faq-question-answer p {
@@ -2172,6 +2179,9 @@ h1 {
   .faq-image-header {
     align-items: center;
     grid-template-columns: minmax(0, 1fr) auto;
+    margin: 0 auto;
+    max-width: 1040px;
+    width: auto;
   }
 
   .faq-card__actions {
@@ -2449,6 +2459,12 @@ h1 {
 
   .faq-help-section {
     padding: 16px var(--space-page-inline);
+  }
+
+  .faq-image-header {
+    margin-inline: calc(-1 * var(--space-page-inline));
+    max-width: none;
+    width: calc(100% + (2 * var(--space-page-inline)));
   }
 
   .faq-question-list {
