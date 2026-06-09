@@ -52,6 +52,7 @@ describe("FaqSection", () => {
     const introCard = screen.getByRole("region", { name: "FAQ intro" });
     const contactLink = within(introCard).getByRole("link", { name: "Contact Support" });
     const fullFaqLink = within(introCard).getByRole("link", { name: "View Full FAQ" });
+    const visualDetail = introCard.querySelector(".faq-help__visual");
 
     expect(contactLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
     expect(fullFaqLink).toHaveAttribute("href", "#faq");
@@ -59,21 +60,24 @@ describe("FaqSection", () => {
     expect(fullFaqLink).toHaveClass("faq-help__secondary-link");
     expect(screen.getAllByRole("link", { name: "Contact Support" })).toHaveLength(1);
     expect(screen.getAllByRole("link", { name: "View Full FAQ" })).toHaveLength(1);
+    expect(visualDetail).toHaveAttribute("aria-hidden", "true");
+    expect(visualDetail?.querySelectorAll(".faq-help__visual-oval")).toHaveLength(4);
   });
 
-  it("renders a compact dark trust strip", () => {
+  it("renders a compact dark trust strip with inline icons", () => {
     render(<FaqSection />);
 
     const trustStrip = screen.getByRole("list", { name: "FAQ trust notes" });
 
     for (const item of [
-      ["Salon Quality", "Long-lasting wear"],
-      ["Fast Shipping", "Quick & reliable"],
-      ["Loved by Customers", "Easy to wear"]
+      ["Salon Quality", "Long-lasting wear", "shield"],
+      ["Fast Shipping", "Quick & reliable", "truck"],
+      ["Loved by Customers", "Easy to wear", "heart"]
     ]) {
       const trustItem = within(trustStrip).getByText(item[0]).closest("li");
       expect(trustItem).toBeInTheDocument();
       expect(within(trustItem as HTMLElement).getByText(item[1])).toBeInTheDocument();
+      expect((trustItem as HTMLElement).querySelector(`[data-faq-trust-icon="${item[2]}"]`)).toBeInTheDocument();
     }
   });
 

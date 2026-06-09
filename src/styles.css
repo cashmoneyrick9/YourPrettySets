@@ -1734,6 +1734,7 @@ h1 {
 
 .faq-help__intro {
   background:
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.14), transparent 28%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 44%),
     linear-gradient(145deg, #26313b 0%, #17212a 58%, #101820 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1743,6 +1744,16 @@ h1 {
   display: grid;
   gap: 18px;
   padding: clamp(22px, 6vw, 34px);
+  position: relative;
+  overflow: hidden;
+}
+
+.faq-help__intro-content {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .faq-help__intro-copy {
@@ -1802,6 +1813,64 @@ h1 {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.34);
   color: var(--site-accent-text);
+}
+
+.faq-help__visual {
+  display: none;
+  min-height: 116px;
+  position: relative;
+  z-index: 0;
+}
+
+.faq-help__visual::before {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.13), transparent 68%);
+  border-radius: 999px;
+  content: "";
+  inset: 8px 0 0 auto;
+  position: absolute;
+  width: min(100%, 190px);
+}
+
+.faq-help__visual-oval {
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.19), rgba(255, 255, 255, 0.04)),
+    rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px 999px 34px 34px;
+  box-shadow: inset 0 8px 14px rgba(255, 255, 255, 0.04);
+  display: block;
+  opacity: 0.62;
+  position: absolute;
+  transform-origin: center bottom;
+  width: 26px;
+}
+
+.faq-help__visual-oval--one {
+  height: 84px;
+  right: 118px;
+  top: 24px;
+  transform: rotate(-16deg);
+}
+
+.faq-help__visual-oval--two {
+  height: 104px;
+  right: 82px;
+  top: 9px;
+  transform: rotate(-6deg);
+}
+
+.faq-help__visual-oval--three {
+  height: 96px;
+  right: 46px;
+  top: 18px;
+  transform: rotate(7deg);
+}
+
+.faq-help__visual-oval--four {
+  height: 78px;
+  right: 14px;
+  top: 34px;
+  transform: rotate(17deg);
 }
 
 .faq-question-card {
@@ -1899,23 +1968,37 @@ h1 {
 }
 
 .faq-trust-strip__item {
+  align-items: center;
   display: grid;
-  gap: 3px;
-  padding: 14px 12px;
-  text-align: center;
+  gap: 9px;
+  grid-template-columns: auto minmax(0, max-content);
+  justify-content: center;
+  padding: 13px 12px;
+  text-align: left;
+}
+
+.faq-trust-strip__icon {
+  color: rgba(255, 255, 255, 0.78);
+  flex: 0 0 auto;
 }
 
 .faq-trust-strip__item + .faq-trust-strip__item {
   border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.faq-trust-strip__item span {
+.faq-trust-strip__copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.faq-trust-strip__copy span {
   font-size: var(--type-caption);
   font-weight: var(--weight-black);
   line-height: 1.1;
 }
 
-.faq-trust-strip__item small {
+.faq-trust-strip__copy small {
   color: rgba(255, 255, 255, 0.68);
   font-size: 0.72rem;
   font-weight: var(--weight-medium);
@@ -2197,6 +2280,17 @@ h1 {
     justify-self: center;
     max-height: min(650px, calc(94vh - 108px));
     min-height: min(650px, calc(94vh - 108px));
+  }
+
+  .faq-help__intro {
+    align-items: center;
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 220px);
+  }
+
+  .faq-help__visual {
+    display: block;
+    justify-self: end;
+    width: min(100%, 210px);
   }
 
   .confidence-section {

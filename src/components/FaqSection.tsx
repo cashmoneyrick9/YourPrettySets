@@ -1,3 +1,4 @@
+import { Heart, ShieldCheck, Truck } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 const homepageFaqItems = [
@@ -38,14 +39,20 @@ const homepageFaqItems = [
 
 const faqTrustItems = [
   {
+    icon: ShieldCheck,
+    iconName: "shield",
     label: "Salon Quality",
     detail: "Long-lasting wear"
   },
   {
+    icon: Truck,
+    iconName: "truck",
     label: "Fast Shipping",
     detail: "Quick & reliable"
   },
   {
+    icon: Heart,
+    iconName: "heart",
     label: "Loved by Customers",
     detail: "Easy to wear"
   }
@@ -56,20 +63,28 @@ export function FaqSection() {
     <section className="section-block faq-help-section" id="faq" aria-labelledby="faq-heading">
       <div className="faq-help">
         <div className="faq-help__intro" role="region" aria-label="FAQ intro">
-          <div className="faq-help__intro-copy">
-            <h2 className="faq-help__heading" id="faq-heading">
-              Questions before you order
-            </h2>
-            <p>Quick answers on sizing, wear time, application, and custom orders.</p>
+          <div className="faq-help__intro-content">
+            <div className="faq-help__intro-copy">
+              <h2 className="faq-help__heading" id="faq-heading">
+                Questions before you order
+              </h2>
+              <p>Quick answers on sizing, wear time, application, and custom orders.</p>
+            </div>
+            <div className="faq-help__cta-row">
+              <a className="faq-help__primary-link" href="mailto:hello@yourprettysets.com">
+                Contact Support
+              </a>
+              {/* TODO: Replace this safe in-page placeholder with the full FAQ route when that page exists. */}
+              <a className="faq-help__secondary-link" href="#faq">
+                View Full FAQ
+              </a>
+            </div>
           </div>
-          <div className="faq-help__cta-row">
-            <a className="faq-help__primary-link" href="mailto:hello@yourprettysets.com">
-              Contact Support
-            </a>
-            {/* TODO: Replace this safe in-page placeholder with the full FAQ route when that page exists. */}
-            <a className="faq-help__secondary-link" href="#faq">
-              View Full FAQ
-            </a>
+          <div className="faq-help__visual" aria-hidden="true">
+            <span className="faq-help__visual-oval faq-help__visual-oval--one" />
+            <span className="faq-help__visual-oval faq-help__visual-oval--two" />
+            <span className="faq-help__visual-oval faq-help__visual-oval--three" />
+            <span className="faq-help__visual-oval faq-help__visual-oval--four" />
           </div>
         </div>
 
@@ -90,12 +105,25 @@ export function FaqSection() {
         </div>
 
         <ul className="faq-trust-strip" aria-label="FAQ trust notes">
-          {faqTrustItems.map((item) => (
-            <li className="faq-trust-strip__item" key={item.label}>
-              <span>{item.label}</span>
-              <small>{item.detail}</small>
-            </li>
-          ))}
+          {faqTrustItems.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <li className="faq-trust-strip__item" key={item.label}>
+                <Icon
+                  aria-hidden="true"
+                  className="faq-trust-strip__icon"
+                  data-faq-trust-icon={item.iconName}
+                  size={17}
+                  strokeWidth={2}
+                />
+                <span className="faq-trust-strip__copy">
+                  <span>{item.label}</span>
+                  <small>{item.detail}</small>
+                </span>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
