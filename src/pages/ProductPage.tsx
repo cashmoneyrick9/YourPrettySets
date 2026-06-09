@@ -38,6 +38,7 @@ function ProductOptionGroup<Option extends string>({
   onSelect: (option: Option) => void;
 }) {
   const helpByOption = optionKind === "length" ? lengthOptionHelp : shapeOptionHelp;
+  const showHelperText = false;
 
   return (
     <fieldset className={`product-page__option-group product-page__option-group--${optionKind}`}>
@@ -63,7 +64,7 @@ function ProductOptionGroup<Option extends string>({
               </span>
               <span className="product-page__option-copy">
                 <span className="product-page__option-label">{option}</span>
-                {helperText ? <span className="product-page__option-help">{helperText}</span> : null}
+                {showHelperText && helperText ? <span className="product-page__option-help">{helperText}</span> : null}
               </span>
             </button>
           );
