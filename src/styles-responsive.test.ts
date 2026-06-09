@@ -110,8 +110,15 @@ describe("small mobile responsive CSS", () => {
     expect(countOneOffTypographyRules(styles)).toBeLessThanOrEqual(40);
     expect(styles).toContain(".kit-detail-panel__copy h3 {\n  font-size: var(--type-body);");
     expect(styles).toContain(".confidence-card__copy h3 {\n  color: var(--site-text-primary);\n  font-size: var(--type-body);");
-    expect(styles).toContain(".review-story-label {\n  color: var(--site-text-primary);");
-    expect(styles).toContain("font-size: 0.66rem;");
+    expect(styles).toContain(".kit-detail-tab span:last-child {\n  font-size: var(--type-caption);");
+    expect(styles).toContain(".review-story-label {\n  color: var(--site-text-primary);\n  font-size: var(--type-caption);");
+    expect(styles).toContain(".site-footer__love-note {\n  color: var(--footer-muted);\n  font-family: var(--font-display);\n  font-size: var(--type-body);");
+    expect(styles).toContain(".site-footer__copyright p {\n  color: var(--footer-muted);\n  font-size: var(--type-caption);");
+    expect(styles).toContain(".shop-empty-state button {\n  appearance: none;\n  background: var(--shop-ink);");
+    expect(styles).toContain(".shop-empty-state button {\n  appearance: none;\n  background: var(--shop-ink);\n  border: 1px solid var(--shop-ink);\n  border-radius: 8px;\n  color: #ffffff;\n  cursor: pointer;\n  font: inherit;\n  font-size: var(--type-button);");
+    expect(styles).toContain(".shop-sort-option {\n  appearance: none;\n  background: transparent;\n  border: 0;\n  border-radius: 6px;\n  color: var(--shop-ink);\n  cursor: pointer;\n  font: inherit;\n  font-size: var(--type-button);");
+    expect(styles).not.toContain("font-size: 0.66rem;");
+    expect(styles).not.toContain("font-size: 0.68rem;");
     expect(styles).not.toContain("var(--type-card-title)");
     expect(styles).not.toContain("var(--type-body-large)");
     expect(styles).not.toContain("var(--type-nav)");

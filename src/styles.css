@@ -1022,7 +1022,7 @@ h1 {
 }
 
 .kit-detail-tab span:last-child {
-  font-size: 0.66rem;
+  font-size: var(--type-caption);
   font-weight: inherit;
   line-height: 1.05;
   white-space: nowrap;
@@ -1358,7 +1358,7 @@ h1 {
 
 .review-story-label {
   color: var(--site-text-primary);
-  font-size: 0.66rem;
+  font-size: var(--type-caption);
   font-weight: var(--weight-strong);
   line-height: 1.08;
   min-height: 2.2em;
@@ -2677,7 +2677,7 @@ h1 {
 .site-footer__love-note {
   color: var(--footer-muted);
   font-family: var(--font-display);
-  font-size: 0.86rem;
+  font-size: var(--type-body);
   font-style: italic;
   font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
   line-height: 1.2;
@@ -2761,7 +2761,7 @@ h1 {
 
 .site-footer__copyright p {
   color: var(--footer-muted);
-  font-size: 0.68rem;
+  font-size: var(--type-caption);
   font-weight: 520;
   line-height: 1.25;
   margin: 0;
@@ -3467,7 +3467,7 @@ h1 {
   color: #ffffff;
   cursor: pointer;
   font: inherit;
-  font-size: var(--type-caption);
+  font-size: var(--type-button);
   font-weight: var(--weight-strong);
   min-height: 38px;
   padding: 0 16px;
@@ -3594,7 +3594,7 @@ h1 {
   color: var(--shop-ink);
   cursor: pointer;
   font: inherit;
-  font-size: var(--type-caption);
+  font-size: var(--type-button);
   font-weight: var(--weight-medium);
   min-height: 38px;
   padding: 0 11px;
