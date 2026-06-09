@@ -4,31 +4,70 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { products } from "../data/products";
 import type { Product } from "../data/products";
 
+const lengthOptionHelp: Record<string, string> = {
+  Short: "Easiest everyday wear",
+  Medium: "Most popular",
+  Long: "More dramatic",
+  "Extra Long": "Statement length"
+};
+
+const shapeOptionHelp: Record<string, string> = {
+  Almond: "Soft tapered tip",
+  Coffin: "Tapered flat tip",
+  Oval: "Soft full curve",
+  Round: "Short rounded edge",
+  Square: "Clean flat tip",
+  Stiletto: "Narrow pointed tip"
+};
+
+function optionSlug(option: string) {
+  return option.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
 function ProductOptionGroup<Option extends string>({
   label,
+  optionKind,
   options,
   selectedOption,
   onSelect
 }: {
   label: string;
+  optionKind: "length" | "shape";
   options: readonly Option[];
   selectedOption: Option;
   onSelect: (option: Option) => void;
 }) {
+  const helpByOption = optionKind === "length" ? lengthOptionHelp : shapeOptionHelp;
+
   return (
-    <fieldset className="product-page__option-group">
+    <fieldset className={`product-page__option-group product-page__option-group--${optionKind}`}>
       <legend>{label}</legend>
       <div className="product-page__option-list">
-        {options.map((option) => (
-          <button
-            aria-pressed={selectedOption === option}
-            key={option}
-            onClick={() => onSelect(option)}
-            type="button"
-          >
-            {option}
-          </button>
-        ))}
+        {options.map((option) => {
+          const slug = optionSlug(option);
+          const helperText = helpByOption[option];
+
+          return (
+            <button
+              aria-label={option}
+              aria-pressed={selectedOption === option}
+              className={`product-page__option-tile product-page__option-tile--${optionKind} product-page__option-tile--${slug}`}
+              key={option}
+              onClick={() => onSelect(option)}
+              type="button"
+            >
+              <span className="product-page__option-icon" role="presentation">
+                <span
+                  className={`product-page__nail-icon product-page__nail-icon--${optionKind} product-page__nail-icon--${slug}`}
+                />
+              </span>
+              <span className="product-page__option-copy">
+                <span className="product-page__option-label">{option}</span>
+                {helperText ? <span className="product-page__option-help">{helperText}</span> : null}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </fieldset>
   );
@@ -80,16 +119,22 @@ function ProductBuyingFlow({ product }: { product: Product }) {
 
           <ProductOptionGroup
             label="Length"
+            optionKind="length"
             onSelect={setSelectedLength}
             options={product.lengthOptions}
             selectedOption={selectedLength}
           />
           <ProductOptionGroup
             label="Shape"
+            optionKind="shape"
             onSelect={setSelectedShape}
             options={product.shapeOptions}
             selectedOption={selectedShape}
           />
+
+          <p className="product-page__selected-summary" aria-live="polite">
+            Selected: {selectedLength} {selectedShape}
+          </p>
 
           <div className="product-page__cta-row">
             <button className="product-page__add-button" type="button">

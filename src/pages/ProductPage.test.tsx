@@ -54,8 +54,11 @@ describe("ProductPage", () => {
       expect(within(shapeGroup).getByRole("button", { name: option })).toBeInTheDocument();
     }
 
+    expect(within(lengthGroup).getAllByRole("presentation")).toHaveLength(products[0].lengthOptions.length);
+    expect(within(shapeGroup).getAllByRole("presentation")).toHaveLength(products[0].shapeOptions.length);
     expect(within(lengthGroup).getByRole("button", { name: products[0].lengthOptions[0] })).toHaveAttribute("aria-pressed", "true");
     expect(within(shapeGroup).getByRole("button", { name: products[0].shapeOptions[0] })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("Selected: Short Almond")).toBeInTheDocument();
     expect(screen.queryByRole("group", { name: /size/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("group", { name: /adhesive|glue|tabs/i })).not.toBeInTheDocument();
 
@@ -99,6 +102,7 @@ describe("ProductPage", () => {
     expect(within(lengthGroup).getByRole("button", { name: "Medium" })).toHaveAttribute("aria-pressed", "true");
     expect(within(shapeGroup).getByRole("button", { name: "Almond" })).toHaveAttribute("aria-pressed", "false");
     expect(within(shapeGroup).getByRole("button", { name: "Coffin" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("Selected: Medium Coffin")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: `Favorite ${products[0].name}` })).toHaveAttribute("aria-pressed", "true");
   });
 
