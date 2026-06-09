@@ -1,6 +1,6 @@
 # Session Handoff
 
-Last updated: 2026-06-08
+Last updated: 2026-06-09
 
 This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
 
@@ -35,6 +35,7 @@ Current CEO direction:
 - Phase 4C FAQ cleanup replaces the FAQ topic picker’s custom drag/click-suppression logic with the shared Embla-backed `MobileCarousel` foundation. Topic cards keep the same visual style, active topic behavior, question open/close behavior, `View all ... questions`, Help Center, and Contact Support CTAs.
 - Follow-up FAQ cleanup replaces the FAQ question-row `openQuestionIndex` logic with the shared shadcn/Radix Accordion foundation. The list still allows one open answer at a time, clears the open answer when the active topic changes, preserves the right-chevron row treatment, and keeps the `View all ... questions`, Help Center, and Contact Support CTAs unchanged.
 - 2026-06-08 Homepage FAQ refinement replaces the mini-help-center topic carousel with a compact conversion-focused FAQ layout: dark slate intro/CTA card, white Radix accordion card with seven immediate ordering questions, and compact dark trust strip. The old topic selection behavior, `Top questions in ...` heading, fake `View all ... questions` link, and placeholder/future-direction wording are removed; `Contact Support` remains `mailto:hello@yourprettysets.com`, while `View Full FAQ` is a safe in-page placeholder until a real route exists.
+- 2026-06-09 homepage typography-token cleanup reduces the active `--type-*` roles to eight shared sizes: hero title, section title, subsection title, product title, body, caption, button, and display special. `--type-card-title`, `--type-body-large`, `--type-nav`, `--type-footer-title`, and `--type-review-quote` are retired. Header nav/menu links now use `--type-button`, footer brand and review quote share `--type-display-special`, and FAQ heading/subcopy/questions/answers/buttons use existing title/body/button roles instead of FAQ-specific font-size clamps.
 - Phase 4D footer cleanup replaces the footer’s custom open-group state with the shared shadcn/Radix Accordion foundation. The footer still defaults to `Shop`, keeps one group open at a time, preserves the same group labels and links, and keeps the current dark footer styling rather than default shadcn visuals.
 - Follow-up carousel controls cleanup on 2026-05-28 removed the visible progress bars/dots and arrow buttons from the How It Works, Collections, Reviews, and FAQ topic carousels. The carousels keep their cards, native swipe/drag behavior, labels, and section layout.
 - Follow-up carousel motion cleanup on 2026-05-28 turns on Embla `loop: true` and shared continuous auto-rotation for the How It Works, Collections, Reviews, and FAQ topic carousels. There are still no visible arrows or progress bars. Auto-rotation moves the Embla location at the shared `24px/second` speed, pauses immediately on pointer, hover, or focus interaction, resumes after a short delay, and stays off for reduced-motion users. Do not reintroduce manual loop-buffer DOM copies for this pass.

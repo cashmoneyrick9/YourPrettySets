@@ -3,6 +3,20 @@ import { describe, expect, it } from "vitest";
 
 const styles = readFileSync("src/styles.css", "utf-8");
 const indexHtml = readFileSync("index.html", "utf-8");
+const expectedTypeRoles = [
+  "--type-hero-title",
+  "--type-section-title",
+  "--type-subsection-title",
+  "--type-product-title",
+  "--type-body",
+  "--type-caption",
+  "--type-button",
+  "--type-display-special"
+];
+
+function getDefinedTypeRoles(css: string) {
+  return Array.from(new Set(Array.from(css.matchAll(/(--type-[\w-]+)\s*:/g), ([, token]) => token))).sort();
+}
 
 function countOneOffTypographyRules(css: string) {
   const typographyProps = ["font-size", "font-weight", "line-height", "letter-spacing", "font-family"] as const;
@@ -35,12 +49,18 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--type-hero-title:");
     expect(styles).toContain("--type-section-title:");
     expect(styles).toContain("--type-subsection-title:");
+    expect(styles).toContain("--type-product-title:");
     expect(styles).toContain("--type-body:");
     expect(styles).toContain("--type-caption:");
     expect(styles).toContain("--type-button:");
-    expect(styles).toContain("--type-nav:");
+    expect(styles).toContain("--type-display-special:");
+    expect(getDefinedTypeRoles(styles)).toEqual([...expectedTypeRoles].sort());
+    expect(styles).not.toContain("--type-card-title:");
+    expect(styles).not.toContain("--type-body-large:");
+    expect(styles).not.toContain("--type-nav:");
+    expect(styles).not.toContain("--type-footer-title:");
+    expect(styles).not.toContain("--type-review-quote:");
     expect(styles).toContain("--weight-display:");
-    expect(styles).toContain("--type-review-quote:");
     expect(styles).toContain("--weight-body:");
     expect(styles).toContain("--weight-strong:");
     expect(styles).toContain("--leading-tight:");
@@ -78,15 +98,23 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__button");
     expect(styles).toContain(".site-footer__column-title");
     expect(styles).toContain(".site-footer__text-link");
+    expect(styles).toContain(".brand-header__desktop-nav a {\n  color: var(--site-text-muted);\n  font-size: var(--type-button);");
+    expect(styles).toContain(".brand-header__mobile-menu a {\n  border-radius: 6px;\n  color: var(--site-text-primary);\n  font-size: var(--type-button);");
+    expect(styles).toContain(".review-story-viewer__card blockquote {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);\n  font-size: var(--type-display-special);");
+    expect(styles).toContain(".site-footer__brand {\n  color: var(--footer-ink);\n  font-family: var(--font-display);\n  font-size: var(--type-display-special);");
     expect(styles).toContain("font-family: var(--font-cta);");
     expect(styles).not.toContain("font-family: Georgia, \"Times New Roman\", serif;");
   });
 
   it("keeps leftover homepage typography debt bounded and removes dead text selectors", () => {
     expect(countOneOffTypographyRules(styles)).toBeLessThanOrEqual(40);
-    expect(styles).toContain(".kit-detail-panel__copy h3 {\n  font-size: var(--type-card-title);");
+    expect(styles).toContain(".kit-detail-panel__copy h3 {\n  font-size: var(--type-body);");
+    expect(styles).toContain(".confidence-card__copy h3 {\n  color: var(--site-text-primary);\n  font-size: var(--type-body);");
     expect(styles).toContain(".review-story-label {\n  color: var(--site-text-primary);");
     expect(styles).toContain("font-size: 0.66rem;");
+    expect(styles).not.toContain("var(--type-card-title)");
+    expect(styles).not.toContain("var(--type-body-large)");
+    expect(styles).not.toContain("var(--type-nav)");
     expect(styles).not.toContain(".collection-card__mood");
     expect(styles).not.toContain(".collection-card__title");
     expect(styles).not.toContain(".collection-card__description");
@@ -452,7 +480,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("padding-bottom: clamp(32px, 7vw, 56px);");
     expect(faqStyles).toContain("font-family: var(--font-display);");
     expect(faqStyles).toContain("font-variation-settings: \"opsz\" 144, \"SOFT\" 72, \"WONK\" 0;");
-    expect(faqStyles).toContain("font-size: clamp(1.45rem, 5vw, 2.05rem);");
+    expect(faqStyles).toContain("font-size: var(--type-subsection-title);");
     expect(faqStyles).toContain("margin-top: clamp(20px, 5vw, 34px);");
     expect(faqStyles).toContain(".faq-card {\n  background: transparent;");
     expect(faqStyles).toContain("border-radius: 0;");
@@ -464,7 +492,9 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain("max-width: 1040px;");
     expect(faqStyles).toContain("min-height: clamp(190px, 34vw, 260px);");
     expect(faqStyles).toContain("padding: clamp(28px, 5vw, 44px) clamp(18px, 4vw, 26px);");
-    expect(faqStyles).toContain("font-size: clamp(0.88rem, 2vw, 0.95rem);");
+    expect(faqStyles).toContain(".faq-card__copy p {\n  color: rgba(255, 255, 255, 0.82);\n  font-size: var(--type-body);");
+    expect(faqStyles).not.toContain("font-size: clamp(1.45rem, 5vw, 2.05rem);");
+    expect(faqStyles).not.toContain("font-size: clamp(0.88rem, 2vw, 0.95rem);");
     expect(faqStyles).toContain('url("/assets/hero-s3-summer.png")');
     expect(faqStyles).toContain("linear-gradient(90deg, rgba(16, 24, 32, 0.84)");
     expect(faqStyles).toContain(".faq-card__actions");

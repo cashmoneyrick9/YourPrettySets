@@ -97,16 +97,12 @@
   --font-display: "Fraunces", "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --type-hero-title: clamp(2.75rem, 7vw, 3.3rem);
   --type-section-title: clamp(2rem, 6vw, 3.15rem);
-  --type-subsection-title: clamp(1.35rem, 4vw, 2rem);
-  --type-card-title: clamp(1rem, 3.2vw, 1.2rem);
+  --type-subsection-title: clamp(1.45rem, 5vw, 2.05rem);
   --type-product-title: clamp(1.25rem, 5vw, 1.7rem);
   --type-body: 0.95rem;
-  --type-body-large: clamp(0.95rem, 2vw, 1.05rem);
   --type-caption: 0.78rem;
   --type-button: 0.94rem;
-  --type-nav: 0.92rem;
-  --type-footer-title: clamp(2.2rem, 4.4vw, 3.45rem);
-  --type-review-quote: clamp(1.25rem, 4.8vw, 1.55rem);
+  --type-display-special: clamp(1.45rem, 5vw, 1.9rem);
   --space-page-inline: clamp(18px, 4vw, 56px);
   --space-section-y: clamp(48px, 7vw, 86px);
   --space-section-y-compact: clamp(24px, 4vw, 42px);
@@ -236,7 +232,7 @@ a {
 
 .brand-header__desktop-nav a {
   color: var(--site-text-muted);
-  font-size: var(--type-nav);
+  font-size: var(--type-button);
   font-weight: var(--weight-strong);
 }
 
@@ -305,7 +301,7 @@ a {
 .brand-header__mobile-menu a {
   border-radius: 6px;
   color: var(--site-text-primary);
-  font-size: var(--type-nav);
+  font-size: var(--type-button);
   font-weight: var(--weight-strong);
   padding: 10px 12px;
 }
@@ -905,7 +901,7 @@ h1 {
 
 .kit-heading p {
   color: var(--site-text-muted);
-  font-size: var(--type-body-large);
+  font-size: var(--type-body);
   line-height: var(--leading-body);
   margin: 0;
   max-width: 420px;
@@ -1080,7 +1076,7 @@ h1 {
 }
 
 .kit-detail-panel__copy h3 {
-  font-size: var(--type-card-title);
+  font-size: var(--type-body);
   font-weight: var(--weight-black);
   line-height: 1.08;
   margin: 0;
@@ -1263,7 +1259,7 @@ h1 {
 
 .confidence-card__copy h3 {
   color: var(--site-text-primary);
-  font-size: var(--type-card-title);
+  font-size: var(--type-body);
   line-height: var(--leading-snug);
   margin: 0;
 }
@@ -1487,7 +1483,7 @@ h1 {
 
 .review-story-viewer__topbar p {
   color: var(--site-text-primary);
-  font-size: 0.75rem;
+  font-size: var(--type-caption);
   font-weight: var(--weight-strong);
   letter-spacing: 0.08em;
   margin: 0;
@@ -1565,7 +1561,7 @@ h1 {
 .review-story-viewer__kicker,
 .review-story-viewer__source {
   color: var(--site-text-muted);
-  font-size: 0.7rem;
+  font-size: var(--type-caption);
   font-weight: var(--weight-strong);
   letter-spacing: 0.1em;
   line-height: 1.25;
@@ -1586,7 +1582,7 @@ h1 {
 
 .review-story-viewer__stars {
   color: var(--site-text-primary);
-  font-size: 1rem;
+  font-size: var(--type-body);
   letter-spacing: 0.18em;
   line-height: 1;
   margin: 0;
@@ -1595,7 +1591,7 @@ h1 {
 .review-story-viewer__card blockquote {
   color: var(--site-text-primary);
   font-family: var(--font-display);
-  font-size: clamp(1.25rem, 6vw, 2rem);
+  font-size: var(--type-display-special);
   font-variation-settings: "opsz" 144, "SOFT" 78, "WONK" 0;
   font-weight: var(--weight-display);
   line-height: 1.14;
@@ -1774,7 +1770,7 @@ h1 {
   color: inherit;
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-size: clamp(1.45rem, 5vw, 2.05rem);
+  font-size: var(--type-subsection-title);
   font-variation-settings: "opsz" 144, "SOFT" 72, "WONK" 0;
   font-weight: var(--weight-display);
   letter-spacing: 0;
@@ -1784,7 +1780,7 @@ h1 {
 
 .faq-card__copy p {
   color: rgba(255, 255, 255, 0.82);
-  font-size: clamp(0.88rem, 2vw, 0.95rem);
+  font-size: var(--type-body);
   line-height: var(--leading-body);
   margin: 0;
   max-width: 31rem;
@@ -1917,7 +1913,6 @@ h1 {
     --mobile-header-offset: calc(51px + env(safe-area-inset-top, 0px));
     --space-form-gap: 14px;
     --space-footer-card-padding: 30px 20px 28px;
-    --type-footer-title: clamp(1.68rem, 6.8vw, 1.92rem);
   }
 
   .brand-header {
@@ -2492,7 +2487,6 @@ h1 {
 }
 
 .site-shell .site-footer {
-  --footer-brand-size: clamp(1.45rem, 5vw, 1.9rem);
   --footer-ink: var(--site-text-primary);
   --footer-link-size: 0.86rem;
   --footer-social-size: calc(var(--footer-link-size) - 0.06rem);
@@ -2672,7 +2666,7 @@ h1 {
 .site-footer__brand {
   color: var(--footer-ink);
   font-family: var(--font-display);
-  font-size: var(--footer-brand-size);
+  font-size: var(--type-display-special);
   font-variation-settings: "opsz" 144, "SOFT" 72, "WONK" 0;
   font-weight: var(--weight-display);
   letter-spacing: 0;
@@ -2883,7 +2877,6 @@ h1 {
   }
 
   .site-footer-email-shell + .site-footer {
-    --footer-brand-size: clamp(1.42rem, 6vw, 1.7rem);
     --footer-link-size: 0.78rem;
     padding-bottom: max(22px, env(safe-area-inset-bottom, 0px));
     padding-top: 24px;
@@ -3145,7 +3138,7 @@ h1 {
 
 .product-page__price {
   color: var(--site-text-primary);
-  font-size: var(--type-body-large);
+  font-size: var(--type-body);
   font-weight: var(--weight-black);
   line-height: var(--leading-tight);
   margin: 7px 0 0;
