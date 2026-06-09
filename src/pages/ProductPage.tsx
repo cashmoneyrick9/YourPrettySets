@@ -4,22 +4,6 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { products } from "../data/products";
 import type { Product } from "../data/products";
 
-const lengthOptionHelp: Record<string, string> = {
-  Short: "Easiest everyday wear",
-  Medium: "Most popular",
-  Long: "More dramatic",
-  "Extra Long": "Statement length"
-};
-
-const shapeOptionHelp: Record<string, string> = {
-  Almond: "Soft tapered tip",
-  Coffin: "Tapered flat tip",
-  Oval: "Soft full curve",
-  Round: "Short rounded edge",
-  Square: "Clean flat tip",
-  Stiletto: "Narrow pointed tip"
-};
-
 function optionSlug(option: string) {
   return option.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
@@ -37,16 +21,12 @@ function ProductOptionGroup<Option extends string>({
   selectedOption: Option;
   onSelect: (option: Option) => void;
 }) {
-  const helpByOption = optionKind === "length" ? lengthOptionHelp : shapeOptionHelp;
-  const showHelperText = false;
-
   return (
     <fieldset className={`product-page__option-group product-page__option-group--${optionKind}`}>
       <legend>{label}</legend>
       <div className="product-page__option-list">
         {options.map((option) => {
           const slug = optionSlug(option);
-          const helperText = helpByOption[option];
 
           return (
             <button
@@ -64,7 +44,6 @@ function ProductOptionGroup<Option extends string>({
               </span>
               <span className="product-page__option-copy">
                 <span className="product-page__option-label">{option}</span>
-                {showHelperText && helperText ? <span className="product-page__option-help">{helperText}</span> : null}
               </span>
             </button>
           );
@@ -133,9 +112,16 @@ function ProductBuyingFlow({ product }: { product: Product }) {
             selectedOption={selectedShape}
           />
 
-          <p className="product-page__selected-summary" aria-live="polite">
-            Selected: {selectedLength} {selectedShape}
-          </p>
+          <div
+            aria-label={`Selected style: ${selectedLength} length, ${selectedShape} shape`}
+            aria-live="polite"
+            className="product-page__selected-summary"
+          >
+            <span className="product-page__selected-summary-eyebrow">Selected style</span>
+            <span className="product-page__selected-summary-value">
+              {selectedLength} length · {selectedShape} shape
+            </span>
+          </div>
 
           <div className="product-page__cta-row">
             <button className="product-page__add-button" type="button">
