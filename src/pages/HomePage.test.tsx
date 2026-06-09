@@ -582,20 +582,22 @@ describe("HomePage", () => {
     expect(screen.queryByLabelText("Minimal hand with finished press-on nails")).not.toBeInTheDocument();
   });
 
-  it("renders the refined homepage FAQ with intro CTAs, accordion, and trust strip", async () => {
+  it("renders the branded homepage FAQ with intro CTAs and compact accordion", async () => {
     const user = userEvent.setup();
     renderHomePage();
 
     expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
-    expect(screen.getByText("Quick answers on sizing, wear time, application, and custom orders.")).toBeInTheDocument();
+    expect(screen.getByText("Answers on sizing, wear time, application, and custom orders.")).toBeInTheDocument();
     expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Sizing" })).not.toBeInTheDocument();
     expect(document.querySelector(".faq-topic-carousel")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-card__header--image")).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
     expect(screen.getByRole("link", { name: "View Full FAQ" })).toHaveAttribute("href", "#faq");
-    expect(screen.getByRole("list", { name: "FAQ trust notes" })).toBeInTheDocument();
-    expect(screen.getByText("Salon Quality")).toBeInTheDocument();
+    expect(screen.queryByRole("list", { name: "FAQ trust notes" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Salon Quality")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-trust-row")).not.toBeInTheDocument();
 
     const sizeQuestion = screen.getByRole("button", { name: "How do I know my size?" });
     const wearQuestion = screen.getByRole("button", { name: "How long do press-ons last?" });

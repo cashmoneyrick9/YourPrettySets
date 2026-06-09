@@ -12,7 +12,7 @@ describe("FaqSection", () => {
     render(<FaqSection />);
 
     expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
-    expect(screen.getByText("Quick answers on sizing, wear time, application, and custom orders.")).toBeInTheDocument();
+    expect(screen.getByText("Answers on sizing, wear time, application, and custom orders.")).toBeInTheDocument();
 
     for (const question of [
       "How do I know my size?",
@@ -57,6 +57,7 @@ describe("FaqSection", () => {
 
     expect(faqCard).toBeInTheDocument();
     expect(header).toBeInTheDocument();
+    expect(header).toHaveClass("faq-card__header--image");
     expect(faqCard?.querySelector(".faq-card__copy")).toBeInTheDocument();
     expect(contactLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
     expect(fullFaqLink).toHaveAttribute("href", "#faq");
@@ -69,25 +70,17 @@ describe("FaqSection", () => {
     expect(document.querySelector(".faq-help__visual-oval")).not.toBeInTheDocument();
     expect(document.querySelector(".faq-question-card")).not.toBeInTheDocument();
     expect(document.querySelector(".faq-trust-strip")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-trust-row")).not.toBeInTheDocument();
   });
 
-  it("renders a light trust row with understated inline icons", () => {
+  it("does not render trust badges in the compact homepage FAQ", () => {
     render(<FaqSection />);
 
-    const trustRow = screen.getByRole("list", { name: "FAQ trust notes" });
-
-    expect(trustRow).toHaveClass("faq-trust-row");
-
-    for (const item of [
-      ["Salon Quality", "Long-lasting wear", "shield"],
-      ["Fast Shipping", "Quick & reliable", "truck"],
-      ["Loved by Customers", "Easy to wear", "heart"]
-    ]) {
-      const trustItem = within(trustRow).getByText(item[0]).closest("li");
-      expect(trustItem).toBeInTheDocument();
-      expect(within(trustItem as HTMLElement).getByText(item[1])).toBeInTheDocument();
-      expect((trustItem as HTMLElement).querySelector(`[data-faq-trust-icon="${item[2]}"]`)).toBeInTheDocument();
-    }
+    expect(screen.queryByRole("list", { name: "FAQ trust notes" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Salon Quality")).not.toBeInTheDocument();
+    expect(screen.queryByText("Fast Shipping")).not.toBeInTheDocument();
+    expect(screen.queryByText("Loved by Customers")).not.toBeInTheDocument();
+    expect(document.querySelector("[data-faq-trust-icon]")).not.toBeInTheDocument();
   });
 
   it("keeps the FAQ accordion keyboard-accessible with one open answer at a time", async () => {

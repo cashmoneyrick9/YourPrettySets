@@ -1,4 +1,3 @@
-import { Heart, ShieldCheck, Truck } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 const homepageFaqItems = [
@@ -37,38 +36,17 @@ const homepageFaqItems = [
   }
 ] as const;
 
-const faqTrustItems = [
-  {
-    icon: ShieldCheck,
-    iconName: "shield",
-    label: "Salon Quality",
-    detail: "Long-lasting wear"
-  },
-  {
-    icon: Truck,
-    iconName: "truck",
-    label: "Fast Shipping",
-    detail: "Quick & reliable"
-  },
-  {
-    icon: Heart,
-    iconName: "heart",
-    label: "Loved by Customers",
-    detail: "Easy to wear"
-  }
-] as const;
-
 export function FaqSection() {
   return (
     <section className="section-block faq-help-section" id="faq" aria-labelledby="faq-heading">
       <div className="faq-help">
         <div className="faq-card">
-          <div className="faq-card__header">
+          <div className="faq-card__header faq-card__header--image">
             <div className="faq-card__copy">
               <h2 className="faq-card__heading" id="faq-heading">
                 Questions before you order
               </h2>
-              <p>Quick answers on sizing, wear time, application, and custom orders.</p>
+              <p>Answers on sizing, wear time, application, and custom orders.</p>
             </div>
             <div className="faq-card__actions">
               <a className="faq-card__primary-link" href="mailto:hello@yourprettysets.com">
@@ -94,28 +72,6 @@ export function FaqSection() {
               </AccordionItem>
             ))}
           </Accordion>
-
-          <ul className="faq-trust-row" aria-label="FAQ trust notes">
-            {faqTrustItems.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <li className="faq-trust-row__item" key={item.label}>
-                  <Icon
-                    aria-hidden="true"
-                    className="faq-trust-row__icon"
-                    data-faq-trust-icon={item.iconName}
-                    size={17}
-                    strokeWidth={2}
-                  />
-                  <span className="faq-trust-row__copy">
-                    <span>{item.label}</span>
-                    <small>{item.detail}</small>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
         </div>
       </div>
     </section>
