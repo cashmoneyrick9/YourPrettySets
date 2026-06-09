@@ -451,9 +451,10 @@ describe("small mobile responsive CSS", () => {
 
     expect(faqStyles).toContain("font-family: var(--font-display);");
     expect(faqStyles).toContain("font-variation-settings: \"opsz\" 144, \"SOFT\" 72, \"WONK\" 0;");
-    expect(faqStyles).toContain("font-size: clamp(2rem, 8vw, var(--type-section-title));");
+    expect(faqStyles).toContain("font-size: clamp(1.45rem, 5vw, 2.05rem);");
     expect(faqStyles).toContain(".faq-card {\n  background: var(--site-surface);");
     expect(faqStyles).toContain(".faq-card__header {\n  border-bottom: 1px solid var(--site-border);");
+    expect(faqStyles).toContain("padding: clamp(16px, 4vw, 22px);");
     expect(faqStyles).toContain(".faq-card__actions");
     expect(faqStyles).toContain(".faq-card__primary-link");
     expect(faqStyles).toContain(".faq-card__secondary-link");
@@ -466,9 +467,12 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain("grid-template-columns: repeat(3, minmax(0, 1fr));");
     expect(faqStyles).toContain(".faq-trust-row__item + .faq-trust-row__item");
     expect(faqStyles).toContain("border-radius: 8px;");
-    expect(faqStyles).toContain("min-height: 54px;");
-    expect(faqStyles).toContain(".faq-card__actions {\n    align-items: stretch;");
-    expect(faqStyles).toContain(".faq-trust-row {\n    grid-template-columns: 1fr;");
+    expect(faqStyles).toContain("min-height: 42px;");
+    expect(faqStyles).toContain("padding: 10px clamp(14px, 3vw, 18px);");
+    expect(faqStyles).toContain("min-height: 34px;");
+    expect(faqStyles).toContain(".faq-card__actions {\n    align-items: center;");
+    expect(faqStyles).toContain(".faq-trust-row {\n    display: flex;");
+    expect(faqStyles).toContain("overflow-x: auto;");
     expect(faqStyles).not.toContain(".faq-help__intro");
     expect(faqStyles).not.toContain(".faq-help__visual");
     expect(faqStyles).not.toContain(".faq-question-card");
