@@ -54,8 +54,17 @@ describe("ProductPage", () => {
       expect(within(shapeGroup).getByRole("button", { name: option })).toBeInTheDocument();
     }
 
-    expect(within(lengthGroup).getAllByRole("presentation")).toHaveLength(products[0].lengthOptions.length);
-    expect(within(shapeGroup).getAllByRole("presentation")).toHaveLength(products[0].shapeOptions.length);
+    const lengthPlaceholders = lengthGroup.querySelectorAll(
+      '.product-page__option-placeholder[aria-hidden="true"][role="presentation"]'
+    );
+    const shapePlaceholders = shapeGroup.querySelectorAll(
+      '.product-page__option-placeholder[aria-hidden="true"][role="presentation"]'
+    );
+
+    expect(lengthPlaceholders).toHaveLength(products[0].lengthOptions.length);
+    expect(shapePlaceholders).toHaveLength(products[0].shapeOptions.length);
+    expect(document.querySelector(".product-page__option-icon")).not.toBeInTheDocument();
+    expect(document.querySelector(".product-page__nail-icon")).not.toBeInTheDocument();
     expect(within(lengthGroup).getByRole("button", { name: products[0].lengthOptions[0] })).toHaveAttribute("aria-pressed", "true");
     expect(within(shapeGroup).getByRole("button", { name: products[0].shapeOptions[0] })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText("Selected style")).toBeInTheDocument();
@@ -70,17 +79,20 @@ describe("ProductPage", () => {
     expect(screen.getByRole("button", { name: "Add to cart" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: `Favorite ${products[0].name}` })).toHaveAttribute("aria-pressed", "false");
 
-    for (const detail of [
+    for (const removedDetail of [
       "Made to order",
+      "Prep kit included",
       "Choose length + shape",
       "Sizing handled separately",
+      "Set details",
       "10 handmade nails",
       "Reusable with tabs",
       "Handmade finish"
     ]) {
-      expect(screen.getByText(detail)).toBeInTheDocument();
+      expect(screen.queryByText(removedDetail)).not.toBeInTheDocument();
     }
-    expect(screen.getAllByText("Prep kit included")).toHaveLength(2);
+    expect(document.querySelector(".product-page__reassurance")).not.toBeInTheDocument();
+    expect(document.querySelector(".product-page__details")).not.toBeInTheDocument();
   });
 
   it("places the back control before the product image", () => {

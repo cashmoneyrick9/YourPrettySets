@@ -4,10 +4,6 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { products } from "../data/products";
 import type { Product } from "../data/products";
 
-function optionSlug(option: string) {
-  return option.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-}
-
 function ProductOptionGroup<Option extends string>({
   label,
   optionKind,
@@ -25,29 +21,21 @@ function ProductOptionGroup<Option extends string>({
     <fieldset className={`product-page__option-group product-page__option-group--${optionKind}`}>
       <legend>{label}</legend>
       <div className="product-page__option-list">
-        {options.map((option) => {
-          const slug = optionSlug(option);
-
-          return (
-            <button
-              aria-label={option}
-              aria-pressed={selectedOption === option}
-              className={`product-page__option-tile product-page__option-tile--${optionKind} product-page__option-tile--${slug}`}
-              key={option}
-              onClick={() => onSelect(option)}
-              type="button"
-            >
-              <span className="product-page__option-icon" role="presentation">
-                <span
-                  className={`product-page__nail-icon product-page__nail-icon--${optionKind} product-page__nail-icon--${slug}`}
-                />
-              </span>
-              <span className="product-page__option-copy">
-                <span className="product-page__option-label">{option}</span>
-              </span>
-            </button>
-          );
-        })}
+        {options.map((option) => (
+          <button
+            aria-label={option}
+            aria-pressed={selectedOption === option}
+            className={`product-page__option-tile product-page__option-tile--${optionKind}`}
+            key={option}
+            onClick={() => onSelect(option)}
+            type="button"
+          >
+            <span className="product-page__option-placeholder" role="presentation" aria-hidden="true" />
+            <span className="product-page__option-copy">
+              <span className="product-page__option-label">{option}</span>
+            </span>
+          </button>
+        ))}
       </div>
     </fieldset>
   );
@@ -138,23 +126,6 @@ function ProductBuyingFlow({ product }: { product: Product }) {
               <Heart aria-hidden="true" fill={isFavorite ? "currentColor" : "none"} size={19} strokeWidth={2} />
             </button>
           </div>
-
-          <ul className="product-page__reassurance" aria-label="Product reassurance">
-            <li>Made to order</li>
-            <li>Prep kit included</li>
-            <li>Choose length + shape</li>
-            <li>Sizing handled separately</li>
-          </ul>
-
-          <section className="product-page__details" aria-labelledby="set-details-title">
-            <h2 id="set-details-title">Set details</h2>
-            <ul>
-              <li>10 handmade nails</li>
-              <li>Prep kit included</li>
-              <li>Reusable with tabs</li>
-              <li>Handmade finish</li>
-            </ul>
-          </section>
         </section>
       </div>
     </main>
