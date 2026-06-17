@@ -1,5 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import { HomePage } from "./HomePage";
@@ -57,7 +56,6 @@ describe("HomePage", () => {
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
     const confidence = screen.getByRole("heading", { name: "3 EASY STEPS" });
     const collections = screen.getByRole("heading", { name: "Browse" });
-    const included = screen.getByRole("heading", { name: "What’s Included" });
 
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "/shop");
@@ -79,7 +77,6 @@ describe("HomePage", () => {
 
     expect(hero.compareDocumentPosition(collections) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(collections.compareDocumentPosition(confidence) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(confidence.compareDocumentPosition(included) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "New Arrivals" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Featured Sets" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "This week's set" })).not.toBeInTheDocument();
@@ -103,8 +100,9 @@ describe("HomePage", () => {
     expect(screen.queryByText("Up next")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".weekly-set-dots__dot")).toHaveLength(0);
     expect(screen.queryByText(/Clean background placeholder/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Loved by first-time press-on buyers" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "What’s Included" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Loved by first-time press-on buyers" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Questions before you order" })).not.toBeInTheDocument();
   });
 
   it("uses the polished storefront presentation without deleting the hero image container", () => {
@@ -116,399 +114,23 @@ describe("HomePage", () => {
     expect(document.querySelector(".hero-photo")).not.toHaveAttribute("aria-label");
   });
 
-  it("shows a polished static Instagram-story-style review placeholder row", () => {
+  it("hides kit contents, customer love stories, and FAQ from the Home route", () => {
     renderHomePage();
 
-    const storyLabels = [
-      "Sarah",
-      "Birthday Set",
-      "Bridal Nails",
-      "Etsy Review",
-      "Custom Set",
-      "Sizing Kit",
-      "Vacation Nails",
-      "Chrome Set",
-      "Press-On Win",
-      "Five Stars"
-    ];
-
-    expect(screen.getByText("CUSTOMER LOVE")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Loved by first-time press-on buyers" })).toBeInTheDocument();
-    expect(document.querySelector(".review-story-row")).toBeInTheDocument();
-    expect(document.querySelector(".review-story-row")).toHaveAttribute("aria-label", "Review story placeholders");
-    expect(document.querySelectorAll(".review-story-item")).toHaveLength(storyLabels.length);
-    expect(document.querySelectorAll(".review-story-bubble")).toHaveLength(storyLabels.length);
-    storyLabels.forEach((label) => {
-      const item = screen.getByText(label).closest(".review-story-item");
-      const bubble = screen.getByRole("button", { name: `Open ${label} review story` });
-
-      expect(item).toBeInTheDocument();
-      expect(item?.tagName).toBe("DIV");
-      expect(bubble).toHaveClass("review-story-bubble");
-      expect(item).toContainElement(bubble);
-      expect(bubble).not.toContainElement(screen.getByText(label));
-      expect(screen.getByText(label).tagName).toBe("SPAN");
-    });
-    expect(document.querySelector(".review-carousel__track")).not.toBeInTheDocument();
-    expect(document.querySelector(".review-carousel")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".review-card")).toHaveLength(0);
-    expect(screen.queryByRole("button", { name: "Previous review" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Next review" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /Show review/i })).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".review-card--product")).toHaveLength(0);
-    expect(document.querySelectorAll(".review-card__stars--product")).toHaveLength(0);
-    expect(document.querySelectorAll(".reviewed-set")).toHaveLength(0);
-    expect(screen.queryByText("Taylor K.")).not.toBeInTheDocument();
-    expect(screen.queryByText("Verified Buyer")).not.toBeInTheDocument();
-    expect(screen.queryByText("REVIEWED SET")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".review-card--loop-buffer")).toHaveLength(0);
-    expect(screen.queryByRole("link", { name: "READ MORE REVIEWS" })).not.toBeInTheDocument();
-  });
-
-  it("opens and closes a static review story viewer from the circular bubble", async () => {
-    const user = userEvent.setup();
-    renderHomePage();
-
-    expect(screen.queryByRole("dialog", { name: "Birthday Set review story" })).not.toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
-
-    const viewer = screen.getByRole("dialog", { name: "Birthday Set review story" });
-
-    expect(viewer).toBeInTheDocument();
-    expect(viewer).not.toHaveClass("story-debug-hitboxes");
-    expect(document.body.style.overflow).toBe("hidden");
-    expect(screen.getByRole("heading", { name: "Birthday Set" })).toBeInTheDocument();
-    expect(screen.getByText("Temporary review story placeholder")).toBeInTheDocument();
-    expect(screen.getByText("★★★★★")).toBeInTheDocument();
-    expect(screen.getByText(/Birthday Set made my plans feel/i)).toBeInTheDocument();
-    expect(screen.getByText("Verified customer")).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Close review story" }));
-
-    expect(screen.queryByRole("dialog", { name: "Birthday Set review story" })).not.toBeInTheDocument();
-    expect(document.body.style.overflow).toBe("");
-  });
-
-  it("closes the review story viewer when Escape is pressed", async () => {
-    const user = userEvent.setup();
-    renderHomePage();
-
-    await user.click(screen.getByRole("button", { name: "Open Etsy Review review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Etsy Review review story" })).toBeInTheDocument();
-
-    await user.keyboard("{Escape}");
-
-    expect(screen.queryByRole("dialog", { name: "Etsy Review review story" })).not.toBeInTheDocument();
-  });
-
-  it("navigates review stories with arrow keys and bounded edges", async () => {
-    const user = userEvent.setup();
-    renderHomePage();
-
-    await user.click(screen.getByRole("button", { name: "Open Sarah review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Sarah review story" })).toBeInTheDocument();
-
-    await user.keyboard("{ArrowLeft}");
-
-    expect(screen.getByRole("dialog", { name: "Sarah review story" })).toBeInTheDocument();
-
-    await user.keyboard("{ArrowRight}");
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-    expect(screen.getByText(/Birthday Set made my plans feel/i)).toBeInTheDocument();
-
-    await user.keyboard("{ArrowLeft}");
-
-    expect(screen.getByRole("dialog", { name: "Sarah review story" })).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Close review story" }));
-    await user.click(screen.getByRole("button", { name: "Open Five Stars review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Five Stars review story" })).toBeInTheDocument();
-
-    await user.keyboard("{ArrowRight}");
-
-    expect(screen.getByRole("dialog", { name: "Five Stars review story" })).toBeInTheDocument();
-  });
-
-  it("navigates review stories with left and right tap zones", async () => {
-    const user = userEvent.setup();
-    renderHomePage();
-
-    await user.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Next review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Previous review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Close review story" }));
-
-    expect(screen.queryByRole("dialog", { name: "Birthday Set review story" })).not.toBeInTheDocument();
-  });
-
-  it("shows segmented review story progress for the active story", async () => {
-    const user = userEvent.setup();
-    renderHomePage();
-
-    await user.click(screen.getByRole("button", { name: "Open Bridal Nails review story" }));
-
-    const progressSegments = document.querySelectorAll(".review-story-viewer__progress-segment");
-
-    expect(progressSegments).toHaveLength(10);
-    expect(progressSegments[0]).toHaveAttribute("data-state", "complete");
-    expect(progressSegments[1]).toHaveAttribute("data-state", "complete");
-    expect(progressSegments[2]).toHaveAttribute("data-state", "active");
-    expect(progressSegments[3]).toHaveAttribute("data-state", "upcoming");
-  });
-
-  it("auto-advances review stories after the story timer finishes", async () => {
-    vi.useFakeTimers();
-    renderHomePage();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(5999);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
-  });
-
-  it("auto-closes the viewer when the final story timer finishes", async () => {
-    vi.useFakeTimers();
-    renderHomePage();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Five Stars review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Five Stars review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.queryByRole("dialog", { name: "Five Stars review story" })).not.toBeInTheDocument();
-    expect(document.body.style.overflow).toBe("");
-  });
-
-  it("restarts the story timer after manual next and previous navigation", async () => {
-    vi.useFakeTimers();
-    renderHomePage();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Sarah review story" }));
-
-    act(() => {
-      vi.advanceTimersByTime(3000);
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Next review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(5999);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "Previous review story" }));
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
-  });
-
-  it("pauses the review story timer while holding a tap zone without navigating", async () => {
-    vi.useFakeTimers();
-    renderHomePage();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
-
-    const nextTapZone = screen.getByRole("button", { name: "Next review story" });
-
-    fireEvent.pointerDown(nextTapZone, { pointerId: 1, pointerType: "mouse" });
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(300);
-    });
-    fireEvent.pointerUp(nextTapZone, { pointerId: 1, pointerType: "mouse" });
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(5999);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
-  });
-
-  it("holds the previous tap zone without navigating backward", async () => {
-    vi.useFakeTimers();
-    renderHomePage();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
-
-    const previousTapZone = screen.getByRole("button", { name: "Previous review story" });
-
-    fireEvent.pointerDown(previousTapZone, { pointerId: 1, pointerType: "mouse" });
-
-    act(() => {
-      vi.advanceTimersByTime(300);
-    });
-
-    fireEvent.pointerUp(previousTapZone, { pointerId: 1, pointerType: "mouse" });
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
-  });
-
-  it("resumes the review story timer after pointer cancel while holding", async () => {
-    vi.useFakeTimers();
-    renderHomePage();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
-
-    const previousTapZone = screen.getByRole("button", { name: "Previous review story" });
-
-    fireEvent.pointerDown(previousTapZone, { pointerId: 1, pointerType: "touch" });
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    fireEvent.pointerCancel(previousTapZone, { pointerId: 1, pointerType: "touch" });
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
-  });
-
-  it("pauses and resumes the review story timer while holding the story card", async () => {
-    vi.useFakeTimers();
-    renderHomePage();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Birthday Set review story" }));
-
-    const storyCard = document.querySelector(".review-story-viewer__card") as HTMLElement;
-
-    fireEvent.pointerDown(storyCard, { pointerId: 1, pointerType: "touch" });
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Birthday Set review story" })).toBeInTheDocument();
-
-    fireEvent.pointerUp(storyCard, { pointerId: 1, pointerType: "touch" });
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Bridal Nails review story" })).toBeInTheDocument();
-  });
-
-  it("clears story timers after close and Escape", async () => {
-    vi.useFakeTimers();
-    renderHomePage();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Sarah review story" }));
-    fireEvent.click(screen.getByRole("button", { name: "Close review story" }));
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Sarah review story" }));
-    fireEvent.keyDown(document, { key: "Escape" });
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  });
-
-  it("does not auto-advance review stories for reduced-motion shoppers", async () => {
-    vi.useFakeTimers();
-    Object.defineProperty(window, "matchMedia", {
-      configurable: true,
-      value: vi.fn((query: string) => ({
-        addEventListener: vi.fn(),
-        addListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-        matches: query === "(prefers-reduced-motion: reduce)",
-        media: query,
-        onchange: null,
-        removeEventListener: vi.fn(),
-        removeListener: vi.fn()
-      }))
-    });
-    renderHomePage();
-
-    fireEvent.click(screen.getByRole("button", { name: "Open Sarah review story" }));
-
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
-    expect(screen.getByRole("dialog", { name: "Sarah review story" })).toBeInTheDocument();
-  });
-
-  it("does not render hidden review loop-buffer copies", () => {
-    renderHomePage();
-
+    expect(screen.queryByText("THE COMPLETE SET")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "What’s Included" })).not.toBeInTheDocument();
+    expect(document.querySelector(".kit-section")).not.toBeInTheDocument();
+    expect(screen.queryByText("CUSTOMER LOVE")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Loved by first-time press-on buyers" })).not.toBeInTheDocument();
+    expect(document.querySelector(".reviews-section")).not.toBeInTheDocument();
+    expect(document.querySelector(".review-story-row")).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".review-story-item")).toHaveLength(0);
+    expect(document.querySelectorAll(".review-story-bubble")).toHaveLength(0);
+    expect(screen.queryByRole("dialog", { name: /review story/i })).not.toBeInTheDocument();
     expect(document.querySelectorAll(".review-card")).toHaveLength(0);
     expect(document.querySelectorAll(".review-card--loop-buffer")).toHaveLength(0);
+    expect(screen.queryByRole("heading", { name: "Questions before you order" })).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-help-section")).not.toBeInTheDocument();
   });
 
   it("shows a swipe-first How It Works carousel with no visible controls", () => {
@@ -582,37 +204,17 @@ describe("HomePage", () => {
     expect(screen.queryByLabelText("Minimal hand with finished press-on nails")).not.toBeInTheDocument();
   });
 
-  it("renders the branded homepage FAQ with intro CTAs and compact accordion", async () => {
-    const user = userEvent.setup();
+  it("does not render the FAQ on the Home route", () => {
     renderHomePage();
 
-    expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
-    expect(screen.getByText("Answers on sizing, wear time, application, and custom orders.")).toBeInTheDocument();
-    expect(screen.queryByText("Need help?")).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Sizing" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Questions before you order" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Answers on sizing, wear time, application, and custom orders.")).not.toBeInTheDocument();
     expect(document.querySelector(".faq-topic-carousel")).not.toBeInTheDocument();
-    expect(document.querySelector(".faq-image-header")).toBeInTheDocument();
-    expect(document.querySelector(".faq-help")?.contains(document.querySelector(".faq-image-header"))).toBe(false);
+    expect(document.querySelector(".faq-image-header")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-help")).not.toBeInTheDocument();
     expect(document.querySelector(".faq-card__header--image")).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Top questions in Sizing" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
-    expect(screen.getByRole("link", { name: "View Full FAQ" })).toHaveAttribute("href", "#faq");
-    expect(screen.queryByRole("list", { name: "FAQ trust notes" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Salon Quality")).not.toBeInTheDocument();
-    expect(document.querySelector(".faq-trust-row")).not.toBeInTheDocument();
-
-    const sizeQuestion = screen.getByRole("button", { name: "How do I know my size?" });
-    const wearQuestion = screen.getByRole("button", { name: "How long do press-ons last?" });
-
-    await user.click(sizeQuestion);
-
-    expect(sizeQuestion).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByText(/Use a sizing kit for the safest fit/i)).toBeInTheDocument();
-
-    await user.click(wearQuestion);
-
-    expect(sizeQuestion).toHaveAttribute("aria-expanded", "false");
-    expect(wearQuestion).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByText(/Wear time depends on prep and adhesive/i)).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Contact Support" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "View Full FAQ" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "How do I know my size?" })).not.toBeInTheDocument();
   });
 });

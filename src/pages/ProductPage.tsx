@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ArrowLeft, Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { FaqSection } from "../components/FaqSection";
+import { KitContents } from "../components/KitContents";
 import { products } from "../data/products";
 import type { Product } from "../data/products";
 
@@ -128,6 +130,8 @@ function ProductBuyingFlow({ product }: { product: Product }) {
           </div>
         </section>
       </div>
+      <KitContents />
+      <FaqSection />
     </main>
   );
 }

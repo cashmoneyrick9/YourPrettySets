@@ -156,6 +156,7 @@ describe("small mobile responsive CSS", () => {
   it("keeps product page back control spacing compact on mobile", () => {
     expect(styles).toContain(".product-page {\n  background: var(--site-surface-raised);\n  color: var(--site-text-primary);\n  min-height: 100vh;\n  padding: 66px var(--space-page-inline) 54px;");
     expect(styles).toContain(".product-page__inner {\n  display: grid;\n  gap: 13px;");
+    expect(styles).toContain(".product-page .faq-help-section {\n  margin-inline: calc(-1 * var(--space-page-inline));");
   });
 
   it("includes the locked S3 header and hero visual rules", () => {
@@ -488,23 +489,29 @@ describe("small mobile responsive CSS", () => {
     expect(faqStyles).toContain("font-family: var(--font-display);");
     expect(faqStyles).toContain("font-variation-settings: \"opsz\" 144, \"SOFT\" 72, \"WONK\" 0;");
     expect(faqStyles).toContain("font-size: var(--type-subsection-title);");
-    expect(faqStyles).toContain("margin-top: clamp(20px, 5vw, 34px);");
+    expect(faqStyles).toContain("margin-top: 0;");
+    expect(faqStyles).not.toContain("margin-top: clamp(20px, 5vw, 34px);");
     expect(faqStyles).toContain(".faq-card {\n  background: transparent;");
     expect(faqStyles).toContain("border-radius: 0;");
-    expect(faqStyles).toContain("border-top: 1px solid var(--site-border-strong);");
+    expect(faqStyles).toContain("border-top: 0;");
+    expect(faqStyles).not.toContain("border-top: 1px solid var(--site-border-strong);");
     expect(faqStyles).toContain("box-shadow: none;");
     expect(faqStyles).toContain(".faq-image-header {\n  align-content: center;");
     expect(faqStyles).toContain("border-radius: 0;");
+    expect(faqStyles).toContain("justify-items: center;");
     expect(faqStyles).toContain("margin-inline: calc(-1 * var(--space-page-inline));");
     expect(faqStyles).toContain("max-width: 1040px;");
     expect(faqStyles).toContain("min-height: clamp(190px, 34vw, 260px);");
     expect(faqStyles).toContain("padding: clamp(28px, 5vw, 44px) clamp(18px, 4vw, 26px);");
+    expect(faqStyles).toContain("text-align: center;");
+    expect(faqStyles).toContain(".faq-card__copy {\n  display: grid;\n  gap: 6px;\n  justify-items: center;");
     expect(faqStyles).toContain(".faq-card__copy p {\n  color: rgba(255, 255, 255, 0.82);\n  font-size: var(--type-body);");
     expect(faqStyles).not.toContain("font-size: clamp(1.45rem, 5vw, 2.05rem);");
     expect(faqStyles).not.toContain("font-size: clamp(0.88rem, 2vw, 0.95rem);");
     expect(faqStyles).toContain('url("/assets/hero-s3-summer.png")');
     expect(faqStyles).toContain("linear-gradient(90deg, rgba(16, 24, 32, 0.84)");
     expect(faqStyles).toContain(".faq-card__actions");
+    expect(faqStyles).toContain("justify-content: center;");
     expect(faqStyles).toContain(".faq-card__primary-link");
     expect(faqStyles).toContain(".faq-card__secondary-link");
     expect(faqStyles).not.toContain(".faq-topic-carousel");

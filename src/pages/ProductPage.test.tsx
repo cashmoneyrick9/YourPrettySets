@@ -104,6 +104,22 @@ describe("ProductPage", () => {
     expect(backButton.compareDocumentPosition(productImage) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
+  it("renders kit contents and FAQ below the main buying panel", () => {
+    renderProductPage();
+
+    const buyingPanel = document.querySelector(".product-page__buying-panel") as HTMLElement;
+    const kitSection = document.querySelector(".kit-section") as HTMLElement;
+    const faqSection = document.querySelector(".faq-help-section") as HTMLElement;
+
+    expect(buyingPanel).toBeInTheDocument();
+    expect(kitSection).toBeInTheDocument();
+    expect(faqSection).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "What’s Included" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
+    expect(buyingPanel.compareDocumentPosition(kitSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(kitSection.compareDocumentPosition(faqSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it("updates selected length, selected shape, and favorite state", async () => {
     const user = userEvent.setup();
     renderProductPage();

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CollectionFilters } from "../components/CollectionFilters";
-import { FaqSection } from "../components/FaqSection";
-import { KitContents } from "../components/KitContents";
 import { MobileCarousel } from "../components/MobileCarousel";
-import { StoryStrip, StoryViewer, type StoryItem } from "../components/story";
+// hidden — pending redesign.
+// import { StoryStrip, StoryViewer, type StoryItem } from "../components/story";
 
 const confidenceSteps = [
   {
@@ -24,82 +23,84 @@ const confidenceSteps = [
   }
 ];
 
-const reviewStories: StoryItem[] = [
-  {
-    id: "sarah",
-    label: "Sarah",
-    title: "Sarah",
-    quote: "Sarah said her first set felt easy to apply, stayed put, and looked polished for the whole weekend.",
-    source: "Verified customer"
-  },
-  {
-    id: "birthday-set",
-    label: "Birthday Set",
-    title: "Birthday Set",
-    quote: "Birthday Set made my plans feel instantly more put together without needing a salon appointment.",
-    source: "Verified customer"
-  },
-  {
-    id: "bridal-nails",
-    label: "Bridal Nails",
-    title: "Bridal Nails",
-    quote: "A soft bridal set with a clean fit, pretty finish, and enough sizes to find the right match.",
-    source: "Verified customer"
-  },
-  {
-    id: "etsy-review",
-    label: "Etsy Review",
-    title: "Etsy Review",
-    quote: "A five-star Etsy note about fast shipping, careful packaging, and nails that looked even better in person.",
-    source: "Etsy review"
-  },
-  {
-    id: "custom-set",
-    label: "Custom Set",
-    title: "Custom Set",
-    quote: "The custom set felt personal without being overdone, with a shape and color that matched the request.",
-    source: "Verified customer"
-  },
-  {
-    id: "sizing-kit",
-    label: "Sizing Kit",
-    title: "Sizing Kit",
-    quote: "The sizing step made ordering feel clear, simple, and less stressful before choosing the final set.",
-    source: "Verified customer"
-  },
-  {
-    id: "vacation-nails",
-    label: "Vacation Nails",
-    title: "Vacation Nails",
-    quote: "Vacation nails that packed easily, photographed beautifully, and held up through a full trip.",
-    source: "Verified customer"
-  },
-  {
-    id: "chrome-set",
-    label: "Chrome Set",
-    title: "Chrome Set",
-    quote: "A clean chrome finish that felt elevated, smooth, and wearable with every outfit.",
-    source: "Verified customer"
-  },
-  {
-    id: "press-on-win",
-    label: "Press-On Win",
-    title: "Press-On Win",
-    quote: "A first press-on win: quick application, no appointment, and a salon-style look at home.",
-    source: "Verified customer"
-  },
-  {
-    id: "five-stars",
-    label: "Five Stars",
-    title: "Five Stars",
-    quote: "Five stars for the fit, finish, and the kind of details that made the set feel special.",
-    source: "Verified customer"
-  }
-];
+// hidden — pending redesign.
+// const reviewStories: StoryItem[] = [
+//   {
+//     id: "sarah",
+//     label: "Sarah",
+//     title: "Sarah",
+//     quote: "Sarah said her first set felt easy to apply, stayed put, and looked polished for the whole weekend.",
+//     source: "Verified customer"
+//   },
+//   {
+//     id: "birthday-set",
+//     label: "Birthday Set",
+//     title: "Birthday Set",
+//     quote: "Birthday Set made my plans feel instantly more put together without needing a salon appointment.",
+//     source: "Verified customer"
+//   },
+//   {
+//     id: "bridal-nails",
+//     label: "Bridal Nails",
+//     title: "Bridal Nails",
+//     quote: "A soft bridal set with a clean fit, pretty finish, and enough sizes to find the right match.",
+//     source: "Verified customer"
+//   },
+//   {
+//     id: "etsy-review",
+//     label: "Etsy Review",
+//     title: "Etsy Review",
+//     quote: "A five-star Etsy note about fast shipping, careful packaging, and nails that looked even better in person.",
+//     source: "Etsy review"
+//   },
+//   {
+//     id: "custom-set",
+//     label: "Custom Set",
+//     title: "Custom Set",
+//     quote: "The custom set felt personal without being overdone, with a shape and color that matched the request.",
+//     source: "Verified customer"
+//   },
+//   {
+//     id: "sizing-kit",
+//     label: "Sizing Kit",
+//     title: "Sizing Kit",
+//     quote: "The sizing step made ordering feel clear, simple, and less stressful before choosing the final set.",
+//     source: "Verified customer"
+//   },
+//   {
+//     id: "vacation-nails",
+//     label: "Vacation Nails",
+//     title: "Vacation Nails",
+//     quote: "Vacation nails that packed easily, photographed beautifully, and held up through a full trip.",
+//     source: "Verified customer"
+//   },
+//   {
+//     id: "chrome-set",
+//     label: "Chrome Set",
+//     title: "Chrome Set",
+//     quote: "A clean chrome finish that felt elevated, smooth, and wearable with every outfit.",
+//     source: "Verified customer"
+//   },
+//   {
+//     id: "press-on-win",
+//     label: "Press-On Win",
+//     title: "Press-On Win",
+//     quote: "A first press-on win: quick application, no appointment, and a salon-style look at home.",
+//     source: "Verified customer"
+//   },
+//   {
+//     id: "five-stars",
+//     label: "Five Stars",
+//     title: "Five Stars",
+//     quote: "Five stars for the fit, finish, and the kind of details that made the set feel special.",
+//     source: "Verified customer"
+//   }
+// ];
 
 export function HomePage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
-  const [activeStoryIndex, setActiveStoryIndex] = useState<number | null>(null);
+  // hidden — pending redesign.
+  // const [activeStoryIndex, setActiveStoryIndex] = useState<number | null>(null);
 
   return (
     <main id="home">
@@ -168,26 +169,27 @@ export function HomePage() {
           ))}
         />
       </section>
-      <KitContents />
 
-      <section className="section-block reviews-section" id="reviews">
-        <div className="section-heading review-heading">
-          <p className="eyebrow">CUSTOMER LOVE</p>
-          <h2>Loved by first-time press-on buyers</h2>
-        </div>
-        <StoryStrip stories={reviewStories} onOpenStory={setActiveStoryIndex} />
-      </section>
+      {/* hidden — pending redesign.
+        <section className="section-block reviews-section" id="reviews">
+          <div className="section-heading review-heading">
+            <p className="eyebrow">CUSTOMER LOVE</p>
+            <h2>Loved by first-time press-on buyers</h2>
+          </div>
+          <StoryStrip stories={reviewStories} onOpenStory={setActiveStoryIndex} />
+        </section>
+      */}
 
-      {activeStoryIndex !== null ? (
-        <StoryViewer
-          activeIndex={activeStoryIndex}
-          onActiveIndexChange={setActiveStoryIndex}
-          onClose={() => setActiveStoryIndex(null)}
-          stories={reviewStories}
-        />
-      ) : null}
-
-      <FaqSection />
+      {/* hidden — pending redesign.
+        {activeStoryIndex !== null ? (
+          <StoryViewer
+            activeIndex={activeStoryIndex}
+            onActiveIndexChange={setActiveStoryIndex}
+            onClose={() => setActiveStoryIndex(null)}
+            stories={reviewStories}
+          />
+        ) : null}
+      */}
     </main>
   );
 }
