@@ -6,7 +6,43 @@ Move an item to `session-handoff.md` "What Has Been Built" once it ships, and de
 
 ---
 
+## Bug Fix: Reviews Polaroid Card Renders Oversized
+
+## Current Status
+- Built: `ReviewsPolaroidStrip` (`src/components/ReviewsPolaroidStrip.tsx`) shipped on `main` in commit `e7453e4` ("Add shop order-type routes and custom orders page"), bundled in alongside unrelated shop/custom-orders work.
+- Broken: at a 390px mobile viewport, each polaroid card renders at roughly 529px wide by 580px tall (measured via headless browser) instead of the intended ~210px-wide card. The card overflows past the viewport width, the whole `#reviews` section balloons to ~750px tall, and only one giant card is visible at a time with no neighboring peeks.
+
+## Root Cause
+CSS specificity/order collision in `src/styles.css`. Every slide rendered by the shared `MobileCarousel` component gets both the generic `mobile-carousel__slide` class and the carousel-specific `slideClassName` (here, `reviews-polaroid-carousel__slide`). Both selectors are single-class (equal specificity), so the one declared later in the file wins ties:
+
+```css
+.reviews-polaroid-carousel__slide {        /* ~line 1384, declared first */
+  flex: 0 0 var(--review-polaroid-width);  /* intended: clamp(168px, 54vw, 230px) */
+}
+...
+.mobile-carousel__slide {                  /* ~line 1804, declared later, wins the tie */
+  flex: 0 0 82%;
+}
+```
+
+`flex: 0 0 82%` wins and the card's `aspect-ratio: 1 / 1` photo box scales up proportionally with the wider flex-basis, producing the oversized card and section height.
+
+## Fix
+Increase the specificity of the polaroid slide width rule so it reliably wins regardless of source order, e.g. scope it to the carousel root (`.reviews-polaroid-carousel .mobile-carousel__slide` or `.reviews-polaroid-carousel__slide.mobile-carousel__slide`) instead of relying on a same-specificity, declaration-order tiebreak. Do not change `.mobile-carousel__slide`'s base 82% rule, since other carousels (Collections, How It Works) rely on it.
+
+## Verify
+After the fix, re-check at a 390px mobile viewport that:
+- Card width is close to the intended `clamp(168px, 54vw, 230px)` (roughly 200-230px), not 500px+.
+- Multiple cards and side peeks are visible at once, matching How It Works/Collections carousel scale.
+- `#reviews` section height is back in line with the other compact Home sections, not ~750px.
+
+Run the standard checks from `AGENTS.md` (`npm test`, `npm run build`, `npm audit --audit-level=moderate`, `git diff --check`) plus a browser check at `http://localhost:5173/` before calling this done. Update `docs/brief/session-handoff.md` and remove this item from `docs/brief/backlog.md` once fixed and verified.
+
+---
+
 ## Section Pass: Reviews Polaroid Strip
+
+## Note: This section already shipped on `main` (commit `e7453e4`) with the oversized-card bug described above. Treat the bug fix item above as the active work; this section pass is kept below for the original spec/intent reference only.
 
 ## Current Status
 - Built: nothing yet. The old story-bubble viewer (`src/components/story/`) and the older star-rating review-card carousel are both superseded directions; do not revive either.
