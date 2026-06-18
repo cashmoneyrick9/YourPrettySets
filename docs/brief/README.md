@@ -23,6 +23,7 @@ The current goal is not a public launch MVP. The current goal is a structured br
 - [page-home.md](page-home.md) - Home page section-by-section build brief.
 - [open-decisions.md](open-decisions.md) - unresolved decisions that should not block the first prototype.
 - [section-pass-template.md](section-pass-template.md) - repeatable CEO checklist for UI section passes and mockup planning.
+- [backlog.md](backlog.md) - approved section passes that are ready to build but not started yet.
 - [session-handoff.md](session-handoff.md) - latest build state, CEO feedback, and next recommended work.
 
 ## Agent Rules

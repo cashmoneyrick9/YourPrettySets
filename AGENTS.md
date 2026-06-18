@@ -14,6 +14,7 @@ Before changing code, read:
 - `docs/brief/page-home.md`
 - `docs/brief/open-decisions.md`
 - `docs/brief/section-pass-template.md`
+- `docs/brief/backlog.md`
 
 The handoff file is the fastest source of current state. If it conflicts with live code, verify the code and update the handoff before ending your work.
 For UI section passes, use `docs/brief/section-pass-template.md` as the repeatable CEO checklist before writing a web-dev handoff.
