@@ -42,3 +42,44 @@ Should feel like a handful of real customer keepsake photos scattered on a table
 
 ## Dev Handoff
 Build a new Home section component (new file, e.g. `src/components/ReviewsPolaroidStrip.tsx`) rendered in `src/pages/HomePage.tsx` directly below the How It Works section. Use the shared `MobileCarousel` component the same way How It Works/Collections do (loop, auto-rotate, pause-on-interaction, respects reduced-motion) for the underlying carousel mechanics. Render 7 cards styled as polaroids per the "Change / Explore" notes above: white frame, bottom caption strip, randomized per-card rotation, placeholder color-block photo area, caption text `[Name]'s [Occasion] set` using occasion labels already defined for Collections. No tap/expand/shop interaction on the cards. Follow existing code patterns (central data arrays like `confidenceSteps` in `HomePage.tsx`, existing CSS token usage in `src/styles.css`) rather than introducing new architecture. Update `docs/brief/session-handoff.md` and remove this item from `docs/brief/backlog.md` once shipped and verified per the `AGENTS.md` Verification section.
+
+---
+
+## Section Pass: Trust Strip
+
+## Current Status
+- Built: nothing yet.
+- Approved: a compact 4-point trust/logistics strip, placed directly below the Reviews Polaroid Strip section (or below How It Works if the Reviews Polaroid Strip has not shipped yet — Trust Strip is always the last section before the footer/email capture).
+- Not approved yet: final icon set/style, final copy wording (current wording is placeholder, pulled from `docs/brief/open-decisions.md` shipping/return placeholders).
+
+## CEO Judgment Needed
+- Judge next: does the strip read as quick reassurance without feeling like a wall of legal/policy text.
+- Main question: does icon + short label scan fast on mobile at this section's compact scale.
+- Decision type: visual styling judgment once built.
+
+## Keep
+- Page order: Hero -> Collections -> How It Works -> Reviews -> Trust Strip -> footer/email capture.
+- Compact scale similar to the existing How It Works confidence strip — this is not a full feature section.
+- Exactly 4 points, in this order:
+  1. Free shipping over $50 ($5.99 otherwise)
+  2. Ships in 3-7 days, arrives 3-5 days after
+  3. Damaged or wrong order? Fixed within 7 days
+  4. Handmade in small batches
+
+## Change / Explore
+- Small icon above or beside each short bolded label (not text-only).
+- Horizontal row layout; on mobile this can be a simple wrapping/scrollable row rather than a full carousel — no auto-rotate/loop behavior needed since there's nothing to cycle through (only 4 static points).
+- Icons can be simple inline SVG/code-native glyphs for now (truck, clock, shield, hand), consistent with the rest of the site's placeholder-friendly visual approach. Do not source final icon imagery.
+
+## Do Not Touch
+- Header, footer, hero, Collections, How It Works, Reviews structure/behavior.
+- Checkout, final shipping/return policy wording (these 4 copy lines are explicitly placeholders per `docs/brief/open-decisions.md` and may change later), final photography/copy elsewhere.
+
+## Creative Note
+Should feel like a quick, confident reassurance row — calm and minimal, not a legal disclaimer block. Think "quick facts," not "terms and conditions."
+
+## Mockups Needed
+- No. Direction and copy are specific enough to build directly; founder will judge the live build.
+
+## Dev Handoff
+Add a new compact section component (new file, e.g. `src/components/TrustStrip.tsx`) rendered in `src/pages/HomePage.tsx` directly below the Reviews Polaroid Strip section (or below How It Works if Reviews has not shipped yet in this codebase — check current `HomePage.tsx` section order first). Render exactly 4 static points using a central data array (same pattern as `confidenceSteps` in `HomePage.tsx`): each with a small icon (simple inline SVG, consistent with existing code-native placeholder visuals) and a short bolded label, using the 4 copy lines listed in "Keep" above verbatim. Lay out as a simple horizontal row (wrap or scroll on narrow mobile is fine) — do not use `MobileCarousel`/Embla here since there is nothing to loop or auto-rotate. Follow existing CSS token usage in `src/styles.css` rather than introducing new design tokens. Update `docs/brief/session-handoff.md` and remove this item from `docs/brief/backlog.md` once shipped and verified per the `AGENTS.md` Verification section.
