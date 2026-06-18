@@ -62,10 +62,12 @@ describe("BrandHeader", () => {
     const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
     expect(mobileNav).toHaveClass("brand-header__mobile-menu");
 
-    for (const label of ["Home", "Shop", "Help"]) {
-      expect(within(mobileNav).getByRole("link", { name: label })).toBeInTheDocument();
-    }
-    expect(within(mobileNav).getByRole("link", { name: "Shop" })).toHaveAttribute("href", "/shop");
+    expect(within(mobileNav).getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+    expect(within(mobileNav).getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "false");
+    expect(within(mobileNav).getByRole("link", { name: "Help" })).toHaveAttribute("href", "/help");
+    expect(within(mobileNav).queryByRole("link", { name: "Ready to Ship" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Made to Order" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Custom Orders" })).not.toBeInTheDocument();
     expect(within(mobileNav).getByRole("link", { name: "Help" })).toHaveAttribute("href", "/help");
     expect(within(mobileNav).queryByRole("link", { name: "FAQ" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Reviews" })).not.toBeInTheDocument();
@@ -73,6 +75,40 @@ describe("BrandHeader", () => {
     expect(screen.getByLabelText("YourPrettySets home")).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("expands the mobile Shop submenu and closes after choosing a submenu route", async () => {
+    const user = userEvent.setup();
+    renderBrandHeader();
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+
+    const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+    const shopToggle = within(mobileNav).getByRole("button", { name: "Shop" });
+
+    await user.click(shopToggle);
+
+    expect(shopToggle).toHaveAttribute("aria-expanded", "true");
+    expect(within(mobileNav).getByRole("link", { name: "Ready to Ship" })).toHaveAttribute(
+      "href",
+      "/shop/ready-to-ship"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "Made to Order" })).toHaveAttribute(
+      "href",
+      "/shop/made-to-order"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "Custom Orders" })).toHaveAttribute(
+      "href",
+      "/shop/custom-orders"
+    );
+
+    await user.click(within(mobileNav).getByRole("link", { name: "Ready to Ship" }));
+
+    expect(window.location.pathname).toBe("/shop/ready-to-ship");
+    expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
+    expect(document.body).not.toHaveClass("mobile-menu-open");
+
+    window.history.pushState({}, "", "/");
   });
 
   it("closes the overlay menu from a destination link or Escape", async () => {
@@ -103,18 +139,19 @@ describe("BrandHeader", () => {
     expect(document.documentElement.style.overflow).toBe("");
   });
 
-  it("closes the overlay menu when selecting the Shop route", async () => {
+  it("closes the overlay menu when selecting the Home route", async () => {
     const user = userEvent.setup();
     renderBrandHeader();
+    window.history.pushState({}, "", "/help");
 
     await user.click(screen.getByRole("button", { name: "Open menu" }));
     await user.click(
       within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole("link", {
-        name: "Shop"
+        name: "Home"
       })
     );
 
-    expect(window.location.pathname).toBe("/shop");
+    expect(window.location.pathname).toBe("/");
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
     expect(document.body).not.toHaveClass("mobile-menu-open");
     expect(document.body.style.overflow).toBe("");

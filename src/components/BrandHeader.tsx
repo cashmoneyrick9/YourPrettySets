@@ -3,6 +3,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const mainNavItems = ["Home", "Shop", "Help"];
+const shopSubmenuItems = [
+  { href: "/shop/ready-to-ship", label: "Ready to Ship" },
+  { href: "/shop/made-to-order", label: "Made to Order" },
+  { href: "/shop/custom-orders", label: "Custom Orders" }
+];
 const headerAtTopBodyClass = "header-at-top";
 const headerScrolledBodyClass = "header-scrolled";
 const mobileMenuOpenBodyClass = "mobile-menu-open";
@@ -25,6 +30,7 @@ function hrefFor(item: string) {
 
 export function BrandHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isShopMenuOpen, setIsShopMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -51,6 +57,10 @@ export function BrandHeader() {
 
   useEffect(() => {
     document.body.classList.toggle(mobileMenuOpenBodyClass, isMenuOpen);
+
+    if (!isMenuOpen) {
+      setIsShopMenuOpen(false);
+    }
 
     if (!isMenuOpen) {
       return;
@@ -167,15 +177,35 @@ export function BrandHeader() {
         aria-label="Mobile navigation"
         hidden={!isMenuOpen}
       >
-        {mainNavItems.map((item) => {
-          const href = hrefFor(item);
+        <Link to="/" onClick={() => setIsMenuOpen(false)}>
+          Home
+        </Link>
 
-          return (
-            <Link key={item} to={href} onClick={() => setIsMenuOpen(false)}>
-              {item}
-            </Link>
-          );
-        })}
+        <div className="brand-header__mobile-shop-group">
+          <button
+            aria-controls="mobile-shop-submenu"
+            aria-expanded={isShopMenuOpen}
+            className="brand-header__mobile-shop-toggle"
+            type="button"
+            onClick={() => setIsShopMenuOpen((current) => !current)}
+          >
+            Shop
+          </button>
+
+          {isShopMenuOpen ? (
+            <div className="brand-header__mobile-submenu" id="mobile-shop-submenu">
+              {shopSubmenuItems.map((item) => (
+                <Link key={item.href} to={item.href} onClick={() => setIsMenuOpen(false)}>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        <Link to="/help" onClick={() => setIsMenuOpen(false)}>
+          Help
+        </Link>
       </nav>
     </header>
   );

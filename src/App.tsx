@@ -6,6 +6,7 @@ import { SiteFooter } from "./components/SiteFooter";
 import { HelpHubPage, HelpSubpage, PolicyPlaceholderPage } from "./pages/HelpPage";
 import { HomePage } from "./pages/HomePage";
 import { ProductPage } from "./pages/ProductPage";
+import { ShopLandingPage } from "./pages/ShopLandingPage";
 import { ShopPage } from "./pages/ShopPage";
 
 function ScrollToTop() {
@@ -35,6 +36,33 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ShopPage />} />
+        <Route
+          path="/shop/ready-to-ship"
+          element={
+            <ShopLandingPage
+              title="Ready to Ship"
+              body="A simple destination for in-stock sets that can ship first. Product filtering can be wired here when fulfillment rules are final."
+            />
+          }
+        />
+        <Route
+          path="/shop/made-to-order"
+          element={
+            <ShopLandingPage
+              title="Made to Order"
+              body="A placeholder destination for designs made after purchase. Final timing and product grouping can be added when production rules are set."
+            />
+          }
+        />
+        <Route
+          path="/shop/custom-orders"
+          element={
+            <ShopLandingPage
+              title="Custom Orders"
+              body="A simple route for custom-order interest while the full request flow is still being shaped."
+            />
+          }
+        />
         <Route path="/products/:slug" element={<ProductPage />} />
         <Route path="/help" element={<HelpHubPage />} />
         <Route path="/help/sizing" element={<HelpSubpage page="sizing" />} />

@@ -84,6 +84,18 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--space-footer-card-padding:");
   });
 
+  it("tightens the mobile hero-to-Collections handoff without changing the hero fade", () => {
+    const mobileRules = styles.slice(
+      styles.indexOf("@media (max-width: 720px)"),
+      styles.indexOf("@media (max-width: 360px)")
+    );
+
+    expect(mobileRules).toContain(".hero-section::after {");
+    expect(mobileRules).toContain("height: 105px;");
+    expect(mobileRules).toContain(".collection-section {\n    padding-top: 16px;\n  }");
+    expect(mobileRules).not.toContain("margin-top: -");
+  });
+
   it("maps homepage headings, buttons, and nav to typography roles", () => {
     expect(styles).toContain("font-family: var(--font-body);");
     expect(styles).toContain("font-family: var(--font-display);");
@@ -154,9 +166,12 @@ describe("small mobile responsive CSS", () => {
   });
 
   it("keeps product page back control spacing compact on mobile", () => {
-    expect(styles).toContain(".product-page {\n  background: var(--site-surface-raised);\n  color: var(--site-text-primary);\n  min-height: 100vh;\n  padding: 66px var(--space-page-inline) 54px;");
+    expect(styles).toContain(".product-page {\n  background: var(--site-surface-raised);\n  color: var(--site-text-primary);\n  min-height: 100vh;\n  padding: 66px var(--space-page-inline) 0;");
     expect(styles).toContain(".product-page__inner {\n  display: grid;\n  gap: 13px;");
     expect(styles).toContain(".product-page .faq-help-section {\n  margin-inline: calc(-1 * var(--space-page-inline));");
+    expect(styles).toContain("padding-bottom: 0;");
+    expect(styles).toContain(".product-page .kit-section {\n  margin-top: 18px;");
+    expect(styles).toContain(".product-page + .site-footer-email-shell {\n  padding-top: 0;");
   });
 
   it("includes the locked S3 header and hero visual rules", () => {
@@ -336,6 +351,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".shop-more-grid");
     expect(styles).not.toContain(".weekly-set-section");
     expect(styles).toContain(".collection-section {\n    padding-bottom: var(--space-section-y-compact);");
+    expect(styles).toContain("padding-top: 16px;");
     expect(styles).toContain(".collection-carousel {\n    margin-left: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain(".collection-products,\n  .collection-products__heading {\n    min-width: 0;");
     expect(styles).toContain(".collection-product-row,\n  .collection-product-teaser {\n    grid-template-columns: repeat(2, minmax(0, 1fr));");

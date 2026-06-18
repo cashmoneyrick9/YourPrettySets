@@ -51,6 +51,19 @@ describe("App", () => {
     expect(screen.queryByRole("heading", { name: "Ready-to-wear sets for pretty plans" })).not.toBeInTheDocument();
   });
 
+  it.each([
+    ["/shop/ready-to-ship", "Ready to Ship"],
+    ["/shop/made-to-order", "Made to Order"],
+    ["/shop/custom-orders", "Custom Orders"]
+  ])("renders the %s shop landing page", (path, heading) => {
+    window.history.pushState({}, "", path);
+
+    renderApp();
+
+    expect(screen.getByRole("heading", { name: heading })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Shop all sets" })).toHaveAttribute("href", "/shop");
+  });
+
   it("renders a product detail page at /products/:slug", () => {
     window.history.pushState({}, "", "/products/blush-crush");
 
