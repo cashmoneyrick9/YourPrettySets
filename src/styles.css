@@ -1326,8 +1326,12 @@ h1 {
 }
 
 .reviews-section {
-  background: var(--site-surface);
+  background:
+    linear-gradient(180deg, rgba(247, 248, 248, 0) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(247, 248, 248, 0) 100%),
+    var(--site-page-bg);
   overflow: hidden;
+  padding-bottom: var(--space-section-y-tight);
+  padding-top: var(--space-section-y-compact);
 }
 
 .review-heading {
@@ -1347,6 +1351,118 @@ h1 {
   font-optical-sizing: auto;
   font-variation-settings: "opsz" 144, "SOFT" 72, "WONK" 0;
   font-weight: var(--weight-display);
+}
+
+.reviews-polaroid-strip__heading {
+  margin-bottom: calc(var(--space-card-padding-feature) + 4px);
+}
+
+.reviews-polaroid-carousel {
+  --review-polaroid-width: clamp(168px, 54vw, 230px);
+  --review-polaroid-gap: 6px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  display: block;
+  margin: 0 auto;
+  max-width: 940px;
+}
+
+.reviews-polaroid-carousel__viewport {
+  overflow: visible;
+  padding: 8px 0 18px;
+}
+
+.reviews-polaroid-carousel__track {
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  padding: 10px 0 22px;
+  touch-action: pan-x pan-y;
+}
+
+.reviews-polaroid-carousel__slide {
+  flex: 0 0 var(--review-polaroid-width);
+  min-width: 0;
+  padding-left: var(--review-polaroid-gap);
+}
+
+.review-polaroid-card {
+  background: #ffffff;
+  border: 1px solid rgba(31, 36, 40, 0.09);
+  border-radius: 6px;
+  box-shadow: 0 15px 34px rgba(31, 36, 40, 0.12);
+  color: var(--site-text-primary);
+  display: grid;
+  gap: 0;
+  min-height: 236px;
+  padding: 10px 10px 18px;
+  transform: rotate(var(--review-polaroid-rotation, 0deg));
+  transform-origin: center 72%;
+}
+
+.review-polaroid-card__photo {
+  align-items: end;
+  aspect-ratio: 1 / 1;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0) 52%),
+    var(--review-polaroid-photo-bg, var(--site-surface-soft));
+  border: 1px solid rgba(31, 36, 40, 0.08);
+  border-radius: 4px;
+  display: flex;
+  overflow: hidden;
+  padding: 12px;
+}
+
+.review-polaroid-card__photo span {
+  background: rgba(255, 255, 255, 0.74);
+  border-radius: 999px 999px 18px 18px;
+  display: block;
+  height: 36%;
+  margin-left: auto;
+  width: 34%;
+}
+
+.review-polaroid-card__caption {
+  color: var(--site-text-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+  font-variation-settings: "opsz" 144, "SOFT" 70, "WONK" 0;
+  font-weight: var(--weight-display);
+  line-height: 1.12;
+  margin: 0;
+  min-height: 3.05em;
+  padding: 15px 4px 0;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.review-polaroid-card--peach {
+  --review-polaroid-photo-bg: linear-gradient(135deg, #f8cbb8 0%, #f3e0b9 100%);
+}
+
+.review-polaroid-card--rose {
+  --review-polaroid-photo-bg: linear-gradient(135deg, #f5b5c7 0%, #ead9f7 100%);
+}
+
+.review-polaroid-card--seafoam {
+  --review-polaroid-photo-bg: linear-gradient(135deg, #bdebdc 0%, #bcdff4 100%);
+}
+
+.review-polaroid-card--lilac {
+  --review-polaroid-photo-bg: linear-gradient(135deg, #d8c4f2 0%, #f0d4dc 100%);
+}
+
+.review-polaroid-card--butter {
+  --review-polaroid-photo-bg: linear-gradient(135deg, #f6e7a8 0%, #cde8c9 100%);
+}
+
+.review-polaroid-card--sky {
+  --review-polaroid-photo-bg: linear-gradient(135deg, #c7e5f8 0%, #e8edf0 100%);
+}
+
+.review-polaroid-card--coral {
+  --review-polaroid-photo-bg: linear-gradient(135deg, #f5a99d 0%, #ffd7a8 100%);
 }
 
 .review-story-row {
@@ -2169,6 +2285,37 @@ h1 {
     box-shadow: var(--site-shadow-subtle);
   }
 
+  .reviews-section {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .reviews-polaroid-strip__heading {
+    padding: 0 var(--space-page-inline);
+  }
+
+  .reviews-polaroid-carousel {
+    --review-polaroid-width: min(56vw, 212px);
+    margin-left: calc(-1 * var(--space-page-inline));
+    margin-right: calc(-1 * var(--space-page-inline));
+    max-width: none;
+    width: auto;
+  }
+
+  .reviews-polaroid-carousel__viewport {
+    overflow: visible;
+    padding: 4px var(--space-page-inline) 18px;
+  }
+
+  .reviews-polaroid-carousel__track {
+    padding: 8px 0 20px;
+  }
+
+  .review-polaroid-card {
+    min-height: 218px;
+    padding: 9px 9px 16px;
+  }
+
   .collection-products,
   .collection-products__heading {
     min-width: 0;
@@ -2282,6 +2429,14 @@ h1 {
 
   .collection-carousel__hint {
     display: none;
+  }
+
+  .reviews-polaroid-carousel {
+    padding: 0 32px;
+  }
+
+  .reviews-polaroid-carousel__track {
+    padding-bottom: 34px;
   }
 
   .collection-product-row {
@@ -2493,6 +2648,20 @@ h1 {
 
   .reviews-section {
     padding-bottom: var(--space-section-y-compact);
+  }
+
+  .reviews-polaroid-carousel {
+    --review-polaroid-width: min(58vw, 196px);
+  }
+
+  .review-polaroid-card {
+    min-height: 200px;
+  }
+
+  .review-polaroid-card__caption {
+    font-size: var(--type-caption);
+    min-height: 3.1em;
+    padding-top: 13px;
   }
 
   .faq-help-section {
@@ -3577,53 +3746,120 @@ h1 {
   white-space: nowrap;
 }
 
-.shop-landing-page {
-  background: var(--site-page-bg);
+.custom-orders-page {
+  align-items: center;
+  background: #ffffff;
   color: var(--site-text-primary);
+  display: grid;
   min-height: 100vh;
-  padding: 112px var(--space-page-inline) 52px;
+  padding: max(28px, env(safe-area-inset-top, 0px)) var(--space-page-inline) max(28px, env(safe-area-inset-bottom, 0px));
+  position: relative;
 }
 
-.shop-landing-page__inner {
+.custom-orders-page__close {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--site-text-primary);
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  padding: 0;
+  position: fixed;
+  right: 8px;
+  text-decoration: none;
+  top: max(4px, env(safe-area-inset-top, 0px));
+  width: 44px;
+  z-index: 2;
+}
+
+.custom-orders-page__card {
   display: grid;
-  gap: 20px;
+  gap: 14px;
+  justify-items: center;
   margin: 0 auto;
-  max-width: 720px;
+  max-width: 430px;
+  text-align: center;
   width: 100%;
 }
 
-.shop-landing-page__heading {
-  display: grid;
-  gap: 10px;
+.custom-orders-page__eyebrow,
+.custom-orders-page__confirmation {
+  font-size: var(--type-caption);
+  font-weight: var(--weight-strong);
+  letter-spacing: var(--tracking-caption);
+  margin: 0;
+  text-transform: uppercase;
 }
 
-.shop-landing-page__heading h1 {
+.custom-orders-page h1 {
+  color: var(--site-text-primary);
   font-family: var(--font-display);
   font-size: var(--type-section-title);
+  font-variation-settings: "opsz" 144, "SOFT" 90, "WONK" 1;
   font-weight: var(--weight-display);
+  letter-spacing: normal;
   line-height: var(--leading-tight);
   margin: 0;
 }
 
-.shop-landing-page__heading p:not(.eyebrow) {
+.custom-orders-page__copy {
   color: var(--site-text-muted);
   font-size: var(--type-body);
   line-height: var(--leading-body);
   margin: 0;
-  max-width: 58ch;
+  max-width: 28rem;
 }
 
-.shop-landing-page__link {
-  color: var(--site-text-primary);
-  font-family: var(--font-cta);
+.custom-orders-page__form {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+  width: min(100%, 350px);
+}
+
+.custom-orders-page__form input,
+.custom-orders-page__form button {
+  appearance: none;
+  border-radius: 8px;
+  font: inherit;
   font-size: var(--type-button);
-  font-weight: var(--weight-strong);
-  justify-self: start;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  min-height: 48px;
 }
 
-.shop-landing-page__link:focus-visible {
+.custom-orders-page__form input {
+  background: #ffffff;
+  border: 1px solid var(--site-border);
+  color: var(--site-text-primary);
+  padding: 0 14px;
+  text-align: center;
+}
+
+.custom-orders-page__form input::placeholder {
+  color: var(--site-text-muted);
+  opacity: 1;
+}
+
+.custom-orders-page__form button {
+  background: var(--site-text-primary);
+  border: 1px solid var(--site-text-primary);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: var(--font-cta);
+  font-weight: var(--weight-strong);
+  padding: 0 18px;
+}
+
+.custom-orders-page__confirmation {
+  color: var(--site-text-muted);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.custom-orders-page__form input:focus-visible,
+.custom-orders-page__form button:focus-visible,
+.custom-orders-page__close:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--site-accent) 42%, transparent);
   outline-offset: 3px;
 }

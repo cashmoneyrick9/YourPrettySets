@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import { products } from "./data/products";
 
 afterEach(() => {
   cleanup();
@@ -52,16 +53,56 @@ describe("App", () => {
   });
 
   it.each([
-    ["/shop/ready-to-ship", "Ready to Ship"],
-    ["/shop/made-to-order", "Made to Order"],
-    ["/shop/custom-orders", "Custom Orders"]
-  ])("renders the %s shop landing page", (path, heading) => {
+    ["/shop/ready-to-ship", "Ready to Ship", "ready-to-ship"],
+    ["/shop/made-to-order", "Made to Order", "made-to-order"]
+  ] as const)("renders the %s filtered shop category page", (path, heading, orderType) => {
     window.history.pushState({}, "", path);
+    const matchingProducts = products.filter((product) => product.orderType === orderType);
+    const excludedProducts = products.filter((product) => product.orderType !== orderType);
 
     renderApp();
 
     expect(screen.getByRole("heading", { name: heading })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Shop all sets" })).toHaveAttribute("href", "/shop");
+    expect(screen.getByText(`${matchingProducts.length} sets`)).toBeInTheDocument();
+    expect(document.querySelectorAll(".shop-product-card")).toHaveLength(matchingProducts.length);
+    expect(screen.getByRole("button", { name: "Filter" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sort Newest" })).toBeInTheDocument();
+
+    for (const product of matchingProducts) {
+      expect(screen.getByRole("heading", { name: product.name })).toBeInTheDocument();
+    }
+
+    for (const product of excludedProducts) {
+      expect(screen.queryByRole("heading", { name: product.name })).not.toBeInTheDocument();
+    }
+  });
+
+  it("renders Custom Orders as a fullscreen coming-soon page without normal site chrome", async () => {
+    const user = userEvent.setup();
+    window.history.pushState({}, "", "/shop/custom-orders");
+
+    renderApp();
+
+    expect(document.querySelector(".site-shell")).not.toBeInTheDocument();
+    expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+    expect(screen.queryByRole("contentinfo")).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Get 15% off your first order" })).not.toBeInTheDocument();
+    expect(screen.getByRole("main")).toHaveClass("custom-orders-page");
+    expect(screen.getByRole("heading", { name: "Custom Orders Coming Soon" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Close custom orders and return to shop" })).toHaveAttribute(
+      "href",
+      "/shop"
+    );
+
+    await user.type(screen.getByLabelText("Email address"), "custom@example.com");
+    await user.click(screen.getByRole("button", { name: "Notify me" }));
+
+    expect(screen.getByText("You’re on the list.")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("link", { name: "Close custom orders and return to shop" }));
+
+    expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/shop");
   });
 
   it("renders a product detail page at /products/:slug", () => {

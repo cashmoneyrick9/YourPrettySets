@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter } from "react-router-dom";
+import type { ComponentProps } from "react";
 import { products } from "../data/products";
 import { ShopPage } from "./ShopPage";
 
@@ -13,10 +14,10 @@ function getCatalogCards() {
   return document.querySelectorAll(".shop-product-card");
 }
 
-function renderShopPage() {
+function renderShopPage(props?: ComponentProps<typeof ShopPage>) {
   return render(
     <BrowserRouter>
-      <ShopPage />
+      <ShopPage {...props} />
     </BrowserRouter>
   );
 }
@@ -45,6 +46,52 @@ describe("ShopPage", () => {
     expect(screen.getByRole("button", { name: "Filter" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sort Newest" })).toBeInTheDocument();
     expect(screen.queryByRole("radiogroup", { name: "Sort sets" })).not.toBeInTheDocument();
+  });
+
+  it("renders only ready-to-ship products on the Ready to Ship category page", () => {
+    const readyProducts = products.filter((product) => product.orderType === "ready-to-ship");
+    const madeToOrderProducts = products.filter((product) => product.orderType === "made-to-order");
+
+    renderShopPage({ orderType: "ready-to-ship" });
+
+    expect(screen.getByRole("heading", { name: "Ready to Ship" })).toBeInTheDocument();
+    expect(screen.getByText(`${readyProducts.length} sets`)).toBeInTheDocument();
+    expect(getCatalogCards()).toHaveLength(readyProducts.length);
+
+    for (const product of readyProducts) {
+      expect(screen.getByRole("heading", { name: product.name })).toBeInTheDocument();
+    }
+
+    for (const product of madeToOrderProducts) {
+      expect(screen.queryByRole("heading", { name: product.name })).not.toBeInTheDocument();
+    }
+  });
+
+  it("renders only made-to-order products on the Made to Order category page", () => {
+    const readyProducts = products.filter((product) => product.orderType === "ready-to-ship");
+    const madeToOrderProducts = products.filter((product) => product.orderType === "made-to-order");
+
+    renderShopPage({ orderType: "made-to-order" });
+
+    expect(screen.getByRole("heading", { name: "Made to Order" })).toBeInTheDocument();
+    expect(screen.getByText(`${madeToOrderProducts.length} sets`)).toBeInTheDocument();
+    expect(getCatalogCards()).toHaveLength(madeToOrderProducts.length);
+
+    for (const product of madeToOrderProducts) {
+      expect(screen.getByRole("heading", { name: product.name })).toBeInTheDocument();
+    }
+
+    for (const product of readyProducts) {
+      expect(screen.queryByRole("heading", { name: product.name })).not.toBeInTheDocument();
+    }
+  });
+
+  it("does not use custom orders as product metadata", () => {
+    const orderTypes = products.map((product) => product.orderType) as string[];
+
+    expect(products.some((product) => product.orderType === "ready-to-ship")).toBe(true);
+    expect(products.some((product) => product.orderType === "made-to-order")).toBe(true);
+    expect(orderTypes).not.toContain("custom-orders");
   });
 
   it("filters catalog products by search text", async () => {

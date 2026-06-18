@@ -3,10 +3,10 @@ import { Navigate, Route, Routes, useLocation, useNavigationType } from "react-r
 import { BrandHeader } from "./components/BrandHeader";
 import { FooterEmailCapture } from "./components/FooterEmailCapture";
 import { SiteFooter } from "./components/SiteFooter";
+import { CustomOrdersPage } from "./pages/CustomOrdersPage";
 import { HelpHubPage, HelpSubpage, PolicyPlaceholderPage } from "./pages/HelpPage";
 import { HomePage } from "./pages/HomePage";
 import { ProductPage } from "./pages/ProductPage";
-import { ShopLandingPage } from "./pages/ShopLandingPage";
 import { ShopPage } from "./pages/ShopPage";
 
 function ScrollToTop() {
@@ -29,6 +29,20 @@ function ScrollToTop() {
 }
 
 function App() {
+  const { pathname } = useLocation();
+
+  if (pathname === "/shop/custom-orders") {
+    return (
+      <>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/shop/custom-orders" element={<CustomOrdersPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </>
+    );
+  }
+
   return (
     <div className="site-shell">
       <BrandHeader />
@@ -36,33 +50,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ShopPage />} />
-        <Route
-          path="/shop/ready-to-ship"
-          element={
-            <ShopLandingPage
-              title="Ready to Ship"
-              body="A simple destination for in-stock sets that can ship first. Product filtering can be wired here when fulfillment rules are final."
-            />
-          }
-        />
-        <Route
-          path="/shop/made-to-order"
-          element={
-            <ShopLandingPage
-              title="Made to Order"
-              body="A placeholder destination for designs made after purchase. Final timing and product grouping can be added when production rules are set."
-            />
-          }
-        />
-        <Route
-          path="/shop/custom-orders"
-          element={
-            <ShopLandingPage
-              title="Custom Orders"
-              body="A simple route for custom-order interest while the full request flow is still being shaped."
-            />
-          }
-        />
+        <Route path="/shop/ready-to-ship" element={<ShopPage orderType="ready-to-ship" />} />
+        <Route path="/shop/made-to-order" element={<ShopPage orderType="made-to-order" />} />
         <Route path="/products/:slug" element={<ProductPage />} />
         <Route path="/help" element={<HelpHubPage />} />
         <Route path="/help/sizing" element={<HelpSubpage page="sizing" />} />

@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { detailTiers, products, type CollectionLabel, type DetailTier, type Product } from "../data/products";
+import { detailTiers, products, type CollectionLabel, type DetailTier, type OrderType, type Product } from "../data/products";
 import { ProductPreviewCard } from "../components/ProductPreviewCard";
 
 type CollectionTab = "All" | "New" | Exclude<CollectionLabel, "New Arrivals">;
@@ -43,6 +43,11 @@ const tabRailDragThreshold = 12;
 
 const productOrder = new Map(products.map((product, index) => [product.id, index]));
 
+const orderTypeLabels: Record<OrderType, string> = {
+  "made-to-order": "Made to Order",
+  "ready-to-ship": "Ready to Ship"
+};
+
 function compareDefaultOrder(left: Product, right: Product) {
   return (productOrder.get(left.id) ?? 0) - (productOrder.get(right.id) ?? 0);
 }
@@ -77,7 +82,11 @@ function toggleValue<T>(currentValues: T[], nextValue: T) {
     : [...currentValues, nextValue];
 }
 
-export function ShopPage() {
+type ShopPageProps = {
+  orderType?: OrderType;
+};
+
+export function ShopPage({ orderType }: ShopPageProps) {
   const tabRailDrag = useRef({ hasDragged: false, isDragging: false, startScrollLeft: 0, startX: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -90,8 +99,9 @@ export function ShopPage() {
 
   const visibleProducts = useMemo(() => {
     const normalizedSearch = normalizeSearchText(searchTerm);
+    const categoryProducts = orderType ? products.filter((product) => product.orderType === orderType) : products;
 
-    return products
+    return categoryProducts
       .filter((product) => {
         if (activeTab === "New" && !product.isNew) {
           return false;
@@ -133,9 +143,10 @@ export function ShopPage() {
 
         return Number(right.isNew) - Number(left.isNew) || compareDefaultOrder(left, right);
       });
-  }, [activeTab, searchTerm, selectedDetailTiers, selectedPrices, sortOption]);
+  }, [activeTab, orderType, searchTerm, selectedDetailTiers, selectedPrices, sortOption]);
 
   const normalizedSearchTerm = searchTerm.trim();
+  const pageTitle = orderType ? orderTypeLabels[orderType] : "Shop All";
 
   function clearFilters() {
     setSearchTerm("");
@@ -209,7 +220,7 @@ export function ShopPage() {
     <main className="shop-page" id="shop">
       <section className="shop-page__inner" aria-labelledby="shop-page-title">
         <div className="shop-page__heading">
-          <h1 id="shop-page-title">Shop All</h1>
+          <h1 id="shop-page-title">{pageTitle}</h1>
           <p aria-live="polite">{formatCount(visibleProducts.length)}</p>
         </div>
 
