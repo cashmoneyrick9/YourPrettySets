@@ -37,6 +37,7 @@ describe("BrandHeader", () => {
       "aria-expanded",
       "false"
     );
+    expect(screen.getByRole("button", { name: "Bag coming soon" })).toHaveAttribute("aria-disabled", "true");
     expect(screen.queryByRole("link", { name: "View bag" })).not.toBeInTheDocument();
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
   });
@@ -70,7 +71,8 @@ describe("BrandHeader", () => {
     expect(within(mobileNav).queryByRole("link", { name: "Reviews" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Contact" })).not.toBeInTheDocument();
     expect(screen.getByLabelText("YourPrettySets home")).toHaveAttribute("aria-hidden", "true");
-    expect(document.querySelector('[aria-label="View bag"]')).not.toBeInTheDocument();
+    expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("aria-hidden", "true");
+    expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("tabindex", "-1");
   });
 
   it("closes the overlay menu from a destination link or Escape", async () => {

@@ -283,6 +283,10 @@ a {
   width: 38px;
 }
 
+.brand-header__icon-button[aria-disabled="true"] {
+  cursor: default;
+}
+
 .brand-header__mobile-menu {
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid var(--site-border);
@@ -2035,6 +2039,12 @@ h1 {
     justify-self: start;
   }
 
+  .brand-header__mobile-actions .brand-header__icon-button:last-child {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+
   .brand-header__mobile-menu {
     display: grid;
   }
@@ -2975,6 +2985,10 @@ h1 {
     right: 8px;
     top: calc(8px + env(safe-area-inset-top, 0px));
     z-index: 63;
+  }
+
+  .brand-header--menu-open .brand-header__mobile-actions .brand-header__icon-button:last-child {
+    display: none;
   }
 
   .brand-header--menu-open .brand-header__mobile-actions .brand-header__icon-button:first-child {

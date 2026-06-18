@@ -1,4 +1,4 @@
-import { Menu, X } from "lucide-react";
+import { Menu, ShoppingBag, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -146,6 +146,17 @@ export function BrandHeader() {
             onClick={() => setIsMenuOpen((current) => !current)}
           >
             {isMenuOpen ? <X aria-hidden="true" size={18} /> : <Menu aria-hidden="true" size={18} />}
+          </button>
+          <button
+            aria-disabled="true"
+            aria-hidden={isMenuOpen ? "true" : undefined}
+            aria-label="Bag coming soon"
+            className="brand-header__icon-button"
+            tabIndex={isMenuOpen ? -1 : undefined}
+            title="Bag coming soon"
+            type="button"
+          >
+            <ShoppingBag aria-hidden="true" size={18} />
           </button>
         </div>
       </div>

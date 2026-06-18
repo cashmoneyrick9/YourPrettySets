@@ -659,6 +659,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(
       ".brand-header--menu-open .brand-header__mobile-actions .brand-header__icon-button:first-child {\n    background: transparent;"
     );
-    expect(styles).not.toContain(".brand-header--menu-open .brand-header__mobile-actions .brand-header__icon-button:last-child");
+    expect(styles).toContain(
+      ".brand-header--menu-open .brand-header__mobile-actions .brand-header__icon-button:last-child {\n    display: none;"
+    );
   });
 });
