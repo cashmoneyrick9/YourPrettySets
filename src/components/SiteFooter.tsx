@@ -7,16 +7,16 @@ const shopLinks = [
 ];
 
 const helpLinks = [
-  { label: "Sizing", href: "/#faq" },
-  { label: "Application", href: "/#faq" },
-  { label: "Contact", href: "mailto:hello@yourprettysets.com" }
+  { label: "Sizing", href: "/help/sizing" },
+  { label: "Application", href: "/help/how-to-apply" },
+  { label: "Contact", href: "/help/contact" }
 ];
 
 const policyLinks = [
-  { label: "Shipping", href: "/#help-center" },
-  { label: "Returns", href: "/#help-center" },
-  { label: "Privacy", href: "/#help-center" },
-  { label: "Terms", href: "/#help-center" }
+  { label: "Shipping", href: "/help/shipping-returns" },
+  { label: "Returns", href: "/help/shipping-returns" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" }
 ];
 
 // TODO: Replace placeholder social hrefs with real brand URLs when accounts are available.
@@ -51,7 +51,7 @@ export function SiteFooter() {
               <ul className="site-footer__link-list">
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    {link.href === "/shop" ? (
+                    {link.href.startsWith("/") ? (
                       <Link className="site-footer__text-link" to={link.href}>
                         {link.label}
                       </Link>

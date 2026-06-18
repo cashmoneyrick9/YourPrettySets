@@ -1,4 +1,5 @@
 import { useState, type KeyboardEvent } from "react";
+import { Link } from "react-router-dom";
 import { BrandButton } from "./BrandButton";
 
 type KitDetailId = "nails" | "adhesive" | "prep" | "case";
@@ -135,12 +136,12 @@ export function KitContents() {
         </div>
 
         <BrandButton asChild className="kit-primary-link">
-          <a href="#faq">
+          <Link to="/help/how-to-apply">
             HOW TO APPLY &amp; CARE <span aria-hidden="true">→</span>
-          </a>
+          </Link>
         </BrandButton>
         <BrandButton asChild className="kit-faq-link">
-          <a href="#faq">Have a question? Visit our FAQ</a>
+          <Link to="/help/faq">Have a question? Visit our FAQ</Link>
         </BrandButton>
       </div>
     </section>

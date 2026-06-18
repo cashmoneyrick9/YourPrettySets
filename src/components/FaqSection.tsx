@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 const homepageFaqItems = [
@@ -47,13 +48,12 @@ export function FaqSection() {
           <p>Answers on sizing, wear time, application, and custom orders.</p>
         </div>
         <div className="faq-card__actions">
-          <a className="faq-card__primary-link" href="mailto:hello@yourprettysets.com">
+          <Link className="faq-card__primary-link" to="/help/contact">
             Contact Support
-          </a>
-          {/* TODO: Replace this safe in-page placeholder with the full FAQ route when that page exists. */}
-          <a className="faq-card__secondary-link" href="#faq">
+          </Link>
+          <Link className="faq-card__secondary-link" to="/help/faq">
             View Full FAQ
-          </a>
+          </Link>
         </div>
       </div>
 

@@ -24,17 +24,20 @@ describe("BrandHeader", () => {
     expect(screen.getByLabelText("YourPrettySets home")).toBeInTheDocument();
 
     const desktopNav = screen.getByRole("navigation", { name: "Primary navigation" });
-    for (const label of ["Home", "Shop Collections", "How It Works", "FAQ", "Bag"]) {
+    for (const label of ["Home", "Shop", "Help"]) {
       expect(within(desktopNav).getByRole("link", { name: label })).toBeInTheDocument();
     }
-    expect(within(desktopNav).getByRole("link", { name: "Shop Collections" })).toHaveAttribute("href", "/shop");
+    expect(within(desktopNav).getByRole("link", { name: "Shop" })).toHaveAttribute("href", "/shop");
+    expect(within(desktopNav).getByRole("link", { name: "Help" })).toHaveAttribute("href", "/help");
+    expect(within(desktopNav).queryByRole("link", { name: "FAQ" })).not.toBeInTheDocument();
+    expect(within(desktopNav).queryByRole("link", { name: "Reviews" })).not.toBeInTheDocument();
+    expect(within(desktopNav).queryByRole("link", { name: "Bag" })).not.toBeInTheDocument();
 
     expect(screen.getByRole("button", { name: "Open menu" })).toHaveAttribute(
       "aria-expanded",
       "false"
     );
-    expect(screen.queryByRole("link", { name: "Shop" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "View bag" })).toHaveAttribute("href", "#faq");
+    expect(screen.queryByRole("link", { name: "View bag" })).not.toBeInTheDocument();
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
   });
 
@@ -58,13 +61,16 @@ describe("BrandHeader", () => {
     const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
     expect(mobileNav).toHaveClass("brand-header__mobile-menu");
 
-    for (const label of ["Home", "Shop Collections", "How It Works", "FAQ", "Reviews", "Contact"]) {
+    for (const label of ["Home", "Shop", "Help"]) {
       expect(within(mobileNav).getByRole("link", { name: label })).toBeInTheDocument();
     }
-    expect(within(mobileNav).getByRole("link", { name: "Shop Collections" })).toHaveAttribute("href", "/shop");
+    expect(within(mobileNav).getByRole("link", { name: "Shop" })).toHaveAttribute("href", "/shop");
+    expect(within(mobileNav).getByRole("link", { name: "Help" })).toHaveAttribute("href", "/help");
+    expect(within(mobileNav).queryByRole("link", { name: "FAQ" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Reviews" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Contact" })).not.toBeInTheDocument();
     expect(screen.getByLabelText("YourPrettySets home")).toHaveAttribute("aria-hidden", "true");
-    expect(document.querySelector('[aria-label="View bag"]')).toHaveAttribute("aria-hidden", "true");
-    expect(document.querySelector('[aria-label="View bag"]')).toHaveAttribute("tabindex", "-1");
+    expect(document.querySelector('[aria-label="View bag"]')).not.toBeInTheDocument();
   });
 
   it("closes the overlay menu from a destination link or Escape", async () => {
@@ -72,7 +78,7 @@ describe("BrandHeader", () => {
     renderBrandHeader();
 
     await user.click(screen.getByRole("button", { name: "Open menu" }));
-    await user.click(within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole("link", { name: "FAQ" }));
+    await user.click(within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole("link", { name: "Help" }));
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Open menu" })).toHaveAttribute("aria-expanded", "false");
@@ -95,14 +101,14 @@ describe("BrandHeader", () => {
     expect(document.documentElement.style.overflow).toBe("");
   });
 
-  it("closes the overlay menu when selecting the Shop Collections route", async () => {
+  it("closes the overlay menu when selecting the Shop route", async () => {
     const user = userEvent.setup();
     renderBrandHeader();
 
     await user.click(screen.getByRole("button", { name: "Open menu" }));
     await user.click(
       within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole("link", {
-        name: "Shop Collections"
+        name: "Shop"
       })
     );
 

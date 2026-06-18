@@ -1,9 +1,8 @@
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const desktopNavItems = ["Home", "Shop Collections", "How It Works", "FAQ", "Bag"];
-const mobileMenuItems = ["Home", "Shop Collections", "How It Works", "FAQ", "Reviews", "Contact"];
+const mainNavItems = ["Home", "Shop", "Help"];
 const headerAtTopBodyClass = "header-at-top";
 const headerScrolledBodyClass = "header-scrolled";
 const mobileMenuOpenBodyClass = "mobile-menu-open";
@@ -13,23 +12,15 @@ function hrefFor(item: string) {
     return "/";
   }
 
-  if (item === "Shop Collections") {
+  if (item === "Shop") {
     return "/shop";
   }
 
-  if (item === "How It Works" || item === "FAQ") {
-    return `/#${item.toLowerCase().replace(/\s+/g, "-")}`;
+  if (item === "Help") {
+    return "/help";
   }
 
-  if (item === "Reviews") {
-    return "/#reviews";
-  }
-
-  if (item === "Contact") {
-    return "mailto:hello@yourprettysets.com";
-  }
-
-  return `#${item.toLowerCase().replace(/\s+/g, "-")}`;
+  return "/";
 }
 
 export function BrandHeader() {
@@ -134,17 +125,13 @@ export function BrandHeader() {
         </Link>
 
         <nav className="brand-header__desktop-nav" aria-label="Primary navigation">
-          {desktopNavItems.map((item) => {
+          {mainNavItems.map((item) => {
             const href = hrefFor(item);
 
-            return href === "/" || href === "/shop" ? (
+            return (
               <Link key={item} to={href}>
                 {item}
               </Link>
-            ) : (
-              <a key={item} href={href}>
-                {item}
-              </a>
             );
           })}
         </nav>
@@ -160,15 +147,6 @@ export function BrandHeader() {
           >
             {isMenuOpen ? <X aria-hidden="true" size={18} /> : <Menu aria-hidden="true" size={18} />}
           </button>
-          <a
-            aria-hidden={isMenuOpen ? "true" : undefined}
-            aria-label="View bag"
-            className="brand-header__icon-button"
-            href="#faq"
-            tabIndex={isMenuOpen ? -1 : undefined}
-          >
-            <ShoppingBag aria-hidden="true" size={18} />
-          </a>
         </div>
       </div>
 
@@ -178,17 +156,13 @@ export function BrandHeader() {
         aria-label="Mobile navigation"
         hidden={!isMenuOpen}
       >
-        {mobileMenuItems.map((item) => {
+        {mainNavItems.map((item) => {
           const href = hrefFor(item);
 
-          return href === "/" || href === "/shop" ? (
+          return (
             <Link key={item} to={href} onClick={() => setIsMenuOpen(false)}>
               {item}
             </Link>
-          ) : (
-            <a key={item} href={href} onClick={() => setIsMenuOpen(false)}>
-              {item}
-            </a>
           );
         })}
       </nav>

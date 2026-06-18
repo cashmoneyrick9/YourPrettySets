@@ -35,7 +35,7 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(
       within(screen.getByRole("navigation", { name: "Primary navigation" })).getByRole("link", {
-        name: "Shop Collections"
+        name: "Shop"
       })
     ).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" })).toBeInTheDocument();
@@ -77,7 +77,7 @@ describe("App", () => {
 
     await user.click(
       within(screen.getByRole("navigation", { name: "Primary navigation" })).getByRole("link", {
-        name: "Shop Collections"
+        name: "Shop"
       })
     );
 
@@ -154,7 +154,41 @@ describe("App", () => {
     expect(scrollTo).not.toHaveBeenCalled();
   });
 
-  it("does not reset scroll for hash-only homepage navigation", async () => {
+  it("renders the Help hub at /help", () => {
+    window.history.pushState({}, "", "/help");
+
+    renderApp();
+
+    expect(screen.getByRole("heading", { name: "The Press-On Guide" })).toBeInTheDocument();
+
+    for (const [name, href] of [
+      ["Sizing Guide", "/help/sizing"],
+      ["How to Apply & Remove", "/help/how-to-apply"],
+      ["Shipping & Returns", "/help/shipping-returns"],
+      ["FAQ", "/help/faq"],
+      ["Contact Support", "/help/contact"]
+    ] as const) {
+      expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
+    }
+  });
+
+  it.each([
+    ["/help/sizing", "Sizing Guide"],
+    ["/help/how-to-apply", "How to Apply & Remove"],
+    ["/help/shipping-returns", "Shipping & Returns"],
+    ["/help/faq", "FAQ"],
+    ["/help/contact", "Contact Support"],
+    ["/privacy", "Privacy"],
+    ["/terms", "Terms"]
+  ])("renders %s", (path, heading) => {
+    window.history.pushState({}, "", path);
+
+    renderApp();
+
+    expect(screen.getByRole("heading", { name: heading })).toBeInTheDocument();
+  });
+
+  it("navigates from the primary Help link to the Help hub", async () => {
     const user = userEvent.setup();
     const scrollTo = vi.mocked(window.scrollTo);
     renderApp();
@@ -162,13 +196,13 @@ describe("App", () => {
 
     await user.click(
       within(screen.getByRole("navigation", { name: "Primary navigation" })).getByRole("link", {
-        name: "FAQ"
+        name: "Help"
       })
     );
 
-    expect(window.location.pathname).toBe("/");
-    expect(window.location.hash).toBe("#faq");
-    expect(scrollTo).not.toHaveBeenCalled();
+    expect(screen.getByRole("heading", { name: "The Press-On Guide" })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/help");
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
   });
 
   it("renders the approved footer system at the bottom", () => {

@@ -32,16 +32,13 @@ describe("SiteFooter", () => {
     expect(within(footerNav).getByRole("link", { name: "New Arrivals" })).toHaveAttribute("href", "/shop");
     expect(within(footerNav).getByRole("link", { name: "Best Sellers" })).toHaveAttribute("href", "/shop");
 
-    expect(within(footerNav).getByRole("link", { name: "Sizing" })).toHaveAttribute("href", "/#faq");
-    expect(within(footerNav).getByRole("link", { name: "Application" })).toHaveAttribute("href", "/#faq");
-    expect(within(footerNav).getByRole("link", { name: "Contact" })).toHaveAttribute(
-      "href",
-      "mailto:hello@yourprettysets.com"
-    );
-    expect(within(footerNav).getByRole("link", { name: "Shipping" })).toHaveAttribute("href", "/#help-center");
-    expect(within(footerNav).getByRole("link", { name: "Returns" })).toHaveAttribute("href", "/#help-center");
-    expect(within(footerNav).getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/#help-center");
-    expect(within(footerNav).getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/#help-center");
+    expect(within(footerNav).getByRole("link", { name: "Sizing" })).toHaveAttribute("href", "/help/sizing");
+    expect(within(footerNav).getByRole("link", { name: "Application" })).toHaveAttribute("href", "/help/how-to-apply");
+    expect(within(footerNav).getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/help/contact");
+    expect(within(footerNav).getByRole("link", { name: "Shipping" })).toHaveAttribute("href", "/help/shipping-returns");
+    expect(within(footerNav).getByRole("link", { name: "Returns" })).toHaveAttribute("href", "/help/shipping-returns");
+    expect(within(footerNav).getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
+    expect(within(footerNav).getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
   });
 
   it("renders text socials, exact love note, and current-year copyright without the removed trust strip", () => {

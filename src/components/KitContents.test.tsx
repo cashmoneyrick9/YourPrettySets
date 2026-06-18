@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
+import { BrowserRouter } from "react-router-dom";
 import { KitContents } from "./KitContents";
 
 afterEach(() => {
@@ -8,8 +9,16 @@ afterEach(() => {
 });
 
 describe("KitContents", () => {
+  function renderKitContents() {
+    return render(
+      <BrowserRouter>
+        <KitContents />
+      </BrowserRouter>
+    );
+  }
+
   it("renders the approved mobile-first What’s Included section with compact detail tabs", () => {
-    render(<KitContents />);
+    renderKitContents();
 
     expect(screen.getByText("THE COMPLETE SET")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "What’s Included" })).toBeInTheDocument();
@@ -36,11 +45,11 @@ describe("KitContents", () => {
     );
 
     const applyCareLink = screen.getByRole("link", { name: /HOW TO APPLY & CARE/i });
-    expect(applyCareLink).toHaveAttribute("href", "#faq");
+    expect(applyCareLink).toHaveAttribute("href", "/help/how-to-apply");
     expect(applyCareLink).toHaveClass("kit-primary-link");
     expect(applyCareLink).toHaveAttribute("data-slot", "button");
     const faqLink = screen.getByRole("link", { name: "Have a question? Visit our FAQ" });
-    expect(faqLink).toHaveAttribute("href", "#faq");
+    expect(faqLink).toHaveAttribute("href", "/help/faq");
     expect(faqLink).toHaveClass("kit-faq-link");
     expect(faqLink).toHaveAttribute("data-slot", "button");
 
@@ -53,7 +62,7 @@ describe("KitContents", () => {
 
   it("switches the compact detail panel from the visual tabs", async () => {
     const user = userEvent.setup();
-    render(<KitContents />);
+    renderKitContents();
 
     await user.click(screen.getByRole("tab", { name: "Glue / tabs" }));
 
@@ -80,7 +89,7 @@ describe("KitContents", () => {
   });
 
   it("does not render the old accordion controls or care tips CTA", () => {
-    render(<KitContents />);
+    renderKitContents();
 
     expect(document.querySelector('[data-slot="accordion"].kit-accordion')).not.toBeInTheDocument();
     expect(document.querySelector(".kit-accordion__item")).not.toBeInTheDocument();
@@ -93,7 +102,7 @@ describe("KitContents", () => {
 
   it("supports simple arrow-key movement between tabs", async () => {
     const user = userEvent.setup();
-    render(<KitContents />);
+    renderKitContents();
 
     const nailsTab = screen.getByRole("tab", { name: "Nails" });
     nailsTab.focus();

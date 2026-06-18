@@ -1,6 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
+import { BrowserRouter } from "react-router-dom";
 import { FaqSection } from "./FaqSection";
 
 afterEach(() => {
@@ -8,8 +9,16 @@ afterEach(() => {
 });
 
 describe("FaqSection", () => {
+  function renderFaqSection() {
+    return render(
+      <BrowserRouter>
+        <FaqSection />
+      </BrowserRouter>
+    );
+  }
+
   it("renders default homepage FAQ questions immediately", () => {
-    render(<FaqSection />);
+    renderFaqSection();
 
     expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
     expect(screen.getByText("Answers on sizing, wear time, application, and custom orders.")).toBeInTheDocument();
@@ -31,7 +40,7 @@ describe("FaqSection", () => {
   });
 
   it("removes the topic carousel and category selection behavior", () => {
-    render(<FaqSection />);
+    renderFaqSection();
 
     expect(document.querySelector(".faq-topic-carousel")).not.toBeInTheDocument();
     expect(document.querySelector(".faq-topic-card")).not.toBeInTheDocument();
@@ -47,7 +56,7 @@ describe("FaqSection", () => {
   });
 
   it("renders the CTAs inside a full-bleed image header above the FAQ list", () => {
-    render(<FaqSection />);
+    renderFaqSection();
 
     const faqHelp = document.querySelector(".faq-help");
     const imageHeader = document.querySelector(".faq-image-header") as HTMLElement;
@@ -64,8 +73,8 @@ describe("FaqSection", () => {
     expect(imageHeader.querySelector(".faq-card__copy")).toBeInTheDocument();
     expect(faqCard?.querySelector(".faq-card__copy")).not.toBeInTheDocument();
     expect(faqCard?.querySelector(".faq-card__actions")).not.toBeInTheDocument();
-    expect(contactLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
-    expect(fullFaqLink).toHaveAttribute("href", "#faq");
+    expect(contactLink).toHaveAttribute("href", "/help/contact");
+    expect(fullFaqLink).toHaveAttribute("href", "/help/faq");
     expect(contactLink).toHaveClass("faq-card__primary-link");
     expect(fullFaqLink).toHaveClass("faq-card__secondary-link");
     expect(screen.getAllByRole("link", { name: "Contact Support" })).toHaveLength(1);
@@ -80,7 +89,7 @@ describe("FaqSection", () => {
   });
 
   it("does not render trust badges in the compact homepage FAQ", () => {
-    render(<FaqSection />);
+    renderFaqSection();
 
     expect(screen.queryByRole("list", { name: "FAQ trust notes" })).not.toBeInTheDocument();
     expect(screen.queryByText("Salon Quality")).not.toBeInTheDocument();
@@ -91,7 +100,7 @@ describe("FaqSection", () => {
 
   it("keeps the FAQ accordion keyboard-accessible with one open answer at a time", async () => {
     const user = userEvent.setup();
-    render(<FaqSection />);
+    renderFaqSection();
 
     const sizingQuestion = screen.getByRole("button", { name: "How do I know my size?" });
     const wearQuestion = screen.getByRole("button", { name: "How long do press-ons last?" });
