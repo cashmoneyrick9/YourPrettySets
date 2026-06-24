@@ -121,7 +121,7 @@ describe("small mobile responsive CSS", () => {
   it("keeps leftover homepage typography debt bounded and removes dead text selectors", () => {
     expect(countOneOffTypographyRules(styles)).toBeLessThanOrEqual(40);
     expect(styles).toContain(".kit-detail-panel__copy h3 {\n  font-size: var(--type-body);");
-    expect(styles).toContain(".confidence-card__copy h3 {\n  color: var(--site-text-primary);\n  font-size: var(--type-body);");
+    expect(styles).not.toContain(".confidence-card__copy h3");
     expect(styles).toContain(".kit-detail-tab span:last-child {\n  font-size: var(--type-caption);");
     expect(styles).toContain(".review-story-label {\n  color: var(--site-text-primary);\n  font-size: var(--type-caption);");
     expect(styles).toContain(".site-footer__love-note {\n  color: var(--footer-muted);\n  font-family: var(--font-display);\n  font-size: var(--type-body);");
@@ -188,7 +188,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("border-radius: 8px;");
     expect(styles).toContain("position: fixed;");
     expect(styles).toContain("backdrop-filter: blur(14px);");
-    expect(styles).toContain("background-image: url(\"/assets/hero-s3-summer.png\")");
+    expect(styles).toContain(".hero-photo {\n  aspect-ratio: 9 / 14;\n  background-color: var(--site-page-bg);\n  background-image: none;");
     expect(styles).toContain(".hero-photo__hand {\n  display: none;");
     expect(styles).toContain(".hero-section::after");
     expect(styles).toContain("min-height: var(--hero-mobile-min-height)");
@@ -218,10 +218,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".hero-section::after,\n  .hero-copy,\n  .hero-photo");
     expect(styles).toContain("@media (max-width: 720px)");
     expect(styles).toContain("height: 105px;");
-    expect(styles).toContain("rgba(247, 248, 248, 0.04) 18%");
-    expect(styles).toContain("rgba(247, 248, 248, 0.14) 35%");
-    expect(styles).toContain("rgba(247, 248, 248, 0.34) 55%");
-    expect(styles).toContain("rgba(247, 248, 248, 0.68) 78%");
+    expect(styles).toContain("rgba(255, 255, 255, 0.04) 18%");
+    expect(styles).toContain("rgba(255, 255, 255, 0.14) 35%");
+    expect(styles).toContain("rgba(255, 255, 255, 0.34) 55%");
+    expect(styles).toContain("rgba(255, 255, 255, 0.68) 78%");
     expect(styles).toContain("var(--site-page-bg) 100%");
   });
 
@@ -265,7 +265,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".confidence-carousel__viewport::after");
     expect(styles).toContain("height: 52px;");
     expect(styles).toContain("height: 34px;");
-    expect(styles).toContain("rgba(247, 248, 248, 0.75) 55%");
+    expect(styles).toContain("rgba(255, 255, 255, 0.75) 55%");
     expect(styles).toContain("box-shadow: var(--site-shadow-subtle);");
     expect(styles).not.toContain("mask-image: linear-gradient(");
     expect(styles).toContain(".confidence-carousel:focus-visible");
@@ -304,9 +304,15 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".confidence-card__tray");
     expect(styles).not.toContain(".confidence-card__glue");
     expect(styles).not.toContain(".confidence-card__hand");
-    expect(styles).toContain(".confidence-card__copy");
+    expect(styles).not.toContain(".confidence-card__copy");
     expect(styles).not.toContain(".confidence-card__body");
     expect(styles).toContain(".confidence-card__number");
+    expect(styles).toContain(".confidence-card {\n  align-content: center;");
+    expect(styles).toContain(".confidence-card__number {\n  align-items: center;\n  background: transparent;\n  border-radius: 0;\n  color: var(--site-text-primary);");
+    expect(styles).toContain("justify-self: center;");
+    expect(styles).toContain("align-self: center;");
+    expect(styles).not.toContain(".confidence-card__number {\n  align-items: center;\n  background: var(--site-text-primary);");
+    expect(styles).not.toContain("height: 34px;\n  justify-content: center;\n  width: 34px;");
     expect(styles).not.toContain(".confidence-progress");
     expect(styles).not.toContain(".confidence-dots");
     expect(styles).toContain(".collection-carousel__hint");
@@ -339,7 +345,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("height: 96px;");
     expect(styles).toContain(".collection-product-teaser::after");
     expect(styles).toContain(
-      "linear-gradient(180deg, rgba(247, 248, 248, 0) 0%, rgba(247, 248, 248, 0) 38%, var(--site-page-bg) 100%)"
+      "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 38%, var(--site-page-bg) 100%)"
     );
     expect(styles).toContain(".collection-products__more");
     expect(styles).toContain(".collection-products__more {\n  align-self: center;");
@@ -358,6 +364,17 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-products__more {\n    max-width: 100%;\n    justify-self: center;\n    width: fit-content;");
     expect(styles).toContain("margin-left: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain("margin-right: calc(-1 * var(--space-page-inline));");
+    expect(styles).toContain(".reviews-polaroid-carousel .reviews-polaroid-carousel__slide");
+    expect(styles).toContain(".reviews-polaroid-carousel__viewport {\n  min-width: 0;\n  overflow: visible;");
+    expect(styles).toContain("width: 100%;");
+    expect(styles).toContain(".reviews-polaroid-carousel .reviews-polaroid-carousel__track");
+    expect(styles).toContain("margin-left: calc(-1 * var(--review-polaroid-gap));");
+    expect(styles).toContain("background: #d9dde0;");
+    expect(styles).not.toContain("--review-polaroid-photo-bg: linear-gradient");
+    expect(styles).not.toContain(".review-polaroid-card__photo span");
+    expect(styles).toContain("--review-polaroid-width: clamp(144px, 42vw, 170px);");
+    expect(styles).toContain("--review-polaroid-width: clamp(128px, 45vw, 154px);");
+    expect(styles).toContain(".review-polaroid-card {\n    min-height: 0;");
     expect(styles).toContain(".review-story-row {\n  -webkit-overflow-scrolling: touch;");
     expect(styles).toContain("margin-inline: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain("overflow-x: auto;");
@@ -460,7 +477,7 @@ describe("small mobile responsive CSS", () => {
   });
 
   it("retires bare-bones mode in favor of shared visual tokens", () => {
-    expect(styles).toContain("--site-page-bg: #f7f8f8;");
+    expect(styles).toContain("--site-page-bg: #ffffff;");
     expect(styles).toContain("--site-surface: #ffffff;");
     expect(styles).toContain("--site-surface-soft: #eef1f2;");
     expect(styles).toContain("--site-text-primary: #1f2428;");
@@ -635,9 +652,15 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-footer__columns {\n    gap: 8px;\n    grid-template-columns: repeat(3, minmax(0, 1fr));");
     expect(styles).toContain("white-space: nowrap;");
     expect(styles).toContain(".site-footer__social-links {\n    column-gap: 11px;\n    display: flex;");
-    expect(styles).toContain("--footer-social-size: calc(var(--footer-link-size) - 0.06rem);");
-    expect(styles).toContain("--footer-social-tracking: 0.04em;");
-    expect(styles).toContain(".site-footer__social-link {\n  font-size: var(--footer-social-size);");
+    expect(styles).toContain("--footer-social-size: var(--type-button);");
+    expect(styles).toContain("--footer-social-tracking: 0;");
+    expect(styles).toContain(".site-footer__social-link {\n  background: var(--site-surface);");
+    expect(styles).toContain("border: 1px solid var(--site-border);");
+    expect(styles).toContain("color: var(--footer-ink);");
+    expect(styles).toContain("font-weight: var(--weight-black);");
+    expect(styles).toContain("height: 36px;");
+    expect(styles).toContain("width: 36px;");
+    expect(styles).toContain(".site-footer__social-link:hover");
     expect(styles).not.toContain(".site-footer__column--policies");
     expect(styles).not.toContain("grid-template-columns: repeat(2, max-content);");
     expect(styles).not.toContain(".site-footer__policy-bar");

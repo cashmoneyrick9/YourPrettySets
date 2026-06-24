@@ -60,14 +60,17 @@ describe("HomePage", () => {
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "/shop");
     expect(screen.getByText("HOW IT WORKS")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Pick your set" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Choose glue or tabs" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Apply and wear" })).toBeInTheDocument();
-    expect(screen.getByText("Browse the ready-to-wear drops and choose the set that matches your plans.")).toBeInTheDocument();
-    expect(screen.getByText("Use nail glue for longer wear or adhesive tabs when you want easier removal.")).toBeInTheDocument();
-    expect(screen.getByText("Prep, press, and keep the included tools nearby for touch-ups or reuse.")).toBeInTheDocument();
     expect(document.querySelectorAll(".confidence-card__number")).toHaveLength(3);
-    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(3);
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Pick your set" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Choose glue or tabs" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Apply and wear" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Browse the ready-to-wear drops and choose the set that matches your plans.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Use nail glue for longer wear or adhesive tabs when you want easier removal.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Prep, press, and keep the included tools nearby for touch-ups or reuse.")).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
     expect(document.querySelector(".confidence-carousel__track")).toBeInTheDocument();
     expect(document.querySelector(".confidence-progress")).not.toBeInTheDocument();
     expect(document.querySelector(".confidence-carousel__hint")).not.toBeInTheDocument();
@@ -105,11 +108,11 @@ describe("HomePage", () => {
     expect(screen.queryByRole("heading", { name: "Questions before you order" })).not.toBeInTheDocument();
   });
 
-  it("uses the polished storefront presentation without deleting the hero image container", () => {
+  it("uses the polished storefront presentation without a hero background image", () => {
     renderHomePage();
 
     expect(document.querySelector("#home")).not.toHaveClass("storefront-barebones");
-    expect(document.querySelector(".hero-photo")).toHaveClass("hero-photo--asset-preserved");
+    expect(document.querySelector(".hero-photo")).not.toHaveClass("hero-photo--asset-preserved");
     expect(document.querySelector(".hero-photo")).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector(".hero-photo")).not.toHaveAttribute("aria-label");
   });
@@ -130,6 +133,9 @@ describe("HomePage", () => {
     expect(document.querySelectorAll(".review-polaroid-card")).toHaveLength(7);
     expect(document.querySelectorAll(".review-polaroid-card__photo")).toHaveLength(7);
     expect(document.querySelectorAll(".review-polaroid-card__caption")).toHaveLength(7);
+    expect(Array.from(document.querySelectorAll(".review-polaroid-card__photo")).every((photo) => photo.childElementCount === 0)).toBe(true);
+    expect(document.querySelector(".review-polaroid-card--peach")).not.toBeInTheDocument();
+    expect(document.querySelector(".review-polaroid-card--rose")).not.toBeInTheDocument();
     expect(screen.getByText("Sarah's birthday set")).toBeInTheDocument();
     expect(screen.getByText("Mia's vacation set")).toBeInTheDocument();
     expect(screen.getByText("Jade's work/neutral set")).toBeInTheDocument();
@@ -217,14 +223,10 @@ describe("HomePage", () => {
     expect(cards.map((card) => card.getAttribute("data-step-index"))).toEqual(["0", "1", "2"]);
     expect(document.querySelectorAll(".confidence-card--loop-buffer")).toHaveLength(0);
     expect(document.querySelectorAll(".confidence-card--repeat")).toHaveLength(0);
-    expect(cards.map((card) => card.querySelector("h3")?.textContent)).toEqual([
-      "Pick your set",
-      "Choose glue or tabs",
-      "Apply and wear"
-    ]);
+    expect(cards.map((card) => card.textContent?.trim())).toEqual(["1", "2", "3"]);
     expect(document.querySelectorAll(".confidence-card--loop-clone")).toHaveLength(0);
     expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(0);
-    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(3);
+    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
     expect(document.querySelectorAll(".confidence-card__number")).toHaveLength(3);
     expect(screen.queryByLabelText("Minimal nail tips arranged in a product tray")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Minimal nail glue, adhesive tabs, and cuticle stick")).not.toBeInTheDocument();

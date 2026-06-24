@@ -41,7 +41,7 @@ describe("SiteFooter", () => {
     expect(within(footerNav).getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
   });
 
-  it("renders text socials, exact love note, and current-year copyright without the removed trust strip", () => {
+  it("renders boxed social initials, exact love note, and current-year copyright without the removed trust strip", () => {
     renderSiteFooter();
 
     const footer = screen.getByRole("contentinfo");
@@ -52,13 +52,20 @@ describe("SiteFooter", () => {
     expect(loveNote).not.toHaveTextContent("♡");
     expect(loveNote.textContent?.endsWith(".")).toBe(false);
     expect(within(footer).queryByText("Follow Us")).not.toBeInTheDocument();
-    expect(within(footer).getByRole("link", { name: "Instagram ↗" })).toHaveAttribute("href", "#instagram");
-    expect(within(footer).getByRole("link", { name: "TikTok ↗" })).toHaveAttribute("href", "#tiktok");
-    expect(within(footer).getByRole("link", { name: "Pinterest ↗" })).toHaveAttribute("href", "#pinterest");
+    expect(within(footer).getByRole("link", { name: "Instagram" })).toHaveAttribute("href", "#instagram");
+    expect(within(footer).getByRole("link", { name: "TikTok" })).toHaveAttribute("href", "#tiktok");
+    expect(within(footer).getByRole("link", { name: "Pinterest" })).toHaveAttribute("href", "#pinterest");
     expect(within(footer).getByRole("link", { name: "Email" })).toHaveAttribute(
       "href",
       "mailto:hello@yourprettysets.com"
     );
+    expect(within(footer).queryByText("Instagram ↗")).not.toBeInTheDocument();
+    expect(within(footer).queryByText("TikTok ↗")).not.toBeInTheDocument();
+    expect(within(footer).queryByText("Pinterest ↗")).not.toBeInTheDocument();
+    expect(within(footer).getByText("I")).toBeInTheDocument();
+    expect(within(footer).getByText("T")).toBeInTheDocument();
+    expect(within(footer).getByText("P")).toBeInTheDocument();
+    expect(within(footer).getByText("E")).toBeInTheDocument();
     expect(within(footer).queryByRole("img")).not.toBeInTheDocument();
     expect(within(footer).queryByRole("separator")).not.toBeInTheDocument();
     expect(within(footer).getByText(`© ${currentYear} YourPrettySets. All rights reserved.`)).toBeInTheDocument();

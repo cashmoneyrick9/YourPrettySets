@@ -21,10 +21,10 @@ const policyLinks = [
 
 // TODO: Replace placeholder social hrefs with real brand URLs when accounts are available.
 const socialLinks = [
-  { label: "Instagram ↗", href: "#instagram" },
-  { label: "TikTok ↗", href: "#tiktok" },
-  { label: "Pinterest ↗", href: "#pinterest" },
-  { label: "Email", href: "mailto:hello@yourprettysets.com" }
+  { label: "Instagram", initial: "I", href: "#instagram" },
+  { label: "TikTok", initial: "T", href: "#tiktok" },
+  { label: "Pinterest", initial: "P", href: "#pinterest" },
+  { label: "Email", initial: "E", href: "mailto:hello@yourprettysets.com" }
 ];
 
 const footerColumns = [
@@ -69,8 +69,8 @@ export function SiteFooter() {
 
         <nav className="site-footer__social-links" aria-label="Footer social and contact links">
           {socialLinks.map((link) => (
-            <a className="site-footer__social-link" href={link.href} key={link.label}>
-              {link.label}
+            <a aria-label={link.label} className="site-footer__social-link" href={link.href} key={link.label}>
+              {link.initial}
             </a>
           ))}
         </nav>

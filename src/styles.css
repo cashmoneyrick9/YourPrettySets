@@ -70,7 +70,7 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --site-page-bg: #f7f8f8;
+  --site-page-bg: #ffffff;
   --site-surface: #ffffff;
   --site-surface-soft: #eef1f2;
   --site-surface-raised: #ffffff;
@@ -408,9 +408,9 @@ h1 {
   background:
     linear-gradient(
       to bottom,
-      rgba(247, 248, 248, 0) 0%,
-      rgba(247, 248, 248, 0.45) 40%,
-      rgba(247, 248, 248, 0.88) 74%,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.45) 40%,
+      rgba(255, 255, 255, 0.88) 74%,
       var(--site-page-bg) 100%
     );
   border-radius: 0;
@@ -473,8 +473,8 @@ h1 {
 
 .hero-photo {
   aspect-ratio: 9 / 14;
-  background-color: var(--site-surface-soft);
-  background-image: url("/assets/hero-s3-summer.png");
+  background-color: var(--site-page-bg);
+  background-image: none;
   background-position: center 38%;
   background-size: cover;
   border: 0;
@@ -863,7 +863,7 @@ h1 {
 }
 
 .collection-product-teaser::after {
-  background: linear-gradient(180deg, rgba(247, 248, 248, 0) 0%, rgba(247, 248, 248, 0) 38%, var(--site-page-bg) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 38%, var(--site-page-bg) 100%);
   content: "";
   inset: 0;
   pointer-events: none;
@@ -1211,8 +1211,8 @@ h1 {
 .confidence-carousel__viewport::after {
   background: linear-gradient(
     to bottom,
-    rgba(247, 248, 248, 0) 0%,
-    rgba(247, 248, 248, 0.75) 55%,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.75) 55%,
     var(--site-page-bg) 100%
   );
   bottom: 0;
@@ -1247,6 +1247,7 @@ h1 {
 }
 
 .confidence-card {
+  align-content: center;
   background: var(--site-surface);
   border: 1px solid var(--site-border);
   border-radius: 8px;
@@ -1254,7 +1255,6 @@ h1 {
   display: grid;
   gap: var(--space-heading-gap);
   height: 100%;
-  align-content: start;
   min-width: 0;
   min-height: 230px;
   opacity: 0.72;
@@ -1276,34 +1276,14 @@ h1 {
 
 .confidence-card__number {
   align-items: center;
-  background: var(--site-text-primary);
-  border-radius: 8px;
-  color: var(--site-accent-text);
+  background: transparent;
+  border-radius: 0;
+  color: var(--site-text-primary);
   display: inline-flex;
   font-size: var(--type-caption);
   font-weight: var(--weight-strong);
-  height: 34px;
-  justify-content: center;
-  width: 34px;
-}
-
-.confidence-card__copy {
-  display: grid;
-  gap: 8px;
-}
-
-.confidence-card__copy h3 {
-  color: var(--site-text-primary);
-  font-size: var(--type-body);
-  line-height: var(--leading-snug);
-  margin: 0;
-}
-
-.confidence-card__copy p {
-  color: var(--site-text-muted);
-  font-size: var(--type-body);
-  line-height: var(--leading-body);
-  margin: 0;
+  align-self: center;
+  justify-self: center;
 }
 
 .collection-carousel__hint {
@@ -1327,7 +1307,7 @@ h1 {
 
 .reviews-section {
   background:
-    linear-gradient(180deg, rgba(247, 248, 248, 0) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(247, 248, 248, 0) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0) 100%),
     var(--site-page-bg);
   overflow: hidden;
   padding-bottom: var(--space-section-y-tight);
@@ -1370,18 +1350,21 @@ h1 {
 }
 
 .reviews-polaroid-carousel__viewport {
+  min-width: 0;
   overflow: visible;
   padding: 8px 0 18px;
+  width: 100%;
 }
 
-.reviews-polaroid-carousel__track {
+.reviews-polaroid-carousel .reviews-polaroid-carousel__track {
   -webkit-overflow-scrolling: touch;
   display: flex;
+  margin-left: calc(-1 * var(--review-polaroid-gap));
   padding: 10px 0 22px;
   touch-action: pan-x pan-y;
 }
 
-.reviews-polaroid-carousel__slide {
+.reviews-polaroid-carousel .reviews-polaroid-carousel__slide {
   flex: 0 0 var(--review-polaroid-width);
   min-width: 0;
   padding-left: var(--review-polaroid-gap);
@@ -1402,25 +1385,11 @@ h1 {
 }
 
 .review-polaroid-card__photo {
-  align-items: end;
   aspect-ratio: 1 / 1;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0) 52%),
-    var(--review-polaroid-photo-bg, var(--site-surface-soft));
+  background: #d9dde0;
   border: 1px solid rgba(31, 36, 40, 0.08);
   border-radius: 4px;
-  display: flex;
   overflow: hidden;
-  padding: 12px;
-}
-
-.review-polaroid-card__photo span {
-  background: rgba(255, 255, 255, 0.74);
-  border-radius: 999px 999px 18px 18px;
-  display: block;
-  height: 36%;
-  margin-left: auto;
-  width: 34%;
 }
 
 .review-polaroid-card__caption {
@@ -1435,34 +1404,6 @@ h1 {
   padding: 15px 4px 0;
   text-align: center;
   text-wrap: balance;
-}
-
-.review-polaroid-card--peach {
-  --review-polaroid-photo-bg: linear-gradient(135deg, #f8cbb8 0%, #f3e0b9 100%);
-}
-
-.review-polaroid-card--rose {
-  --review-polaroid-photo-bg: linear-gradient(135deg, #f5b5c7 0%, #ead9f7 100%);
-}
-
-.review-polaroid-card--seafoam {
-  --review-polaroid-photo-bg: linear-gradient(135deg, #bdebdc 0%, #bcdff4 100%);
-}
-
-.review-polaroid-card--lilac {
-  --review-polaroid-photo-bg: linear-gradient(135deg, #d8c4f2 0%, #f0d4dc 100%);
-}
-
-.review-polaroid-card--butter {
-  --review-polaroid-photo-bg: linear-gradient(135deg, #f6e7a8 0%, #cde8c9 100%);
-}
-
-.review-polaroid-card--sky {
-  --review-polaroid-photo-bg: linear-gradient(135deg, #c7e5f8 0%, #e8edf0 100%);
-}
-
-.review-polaroid-card--coral {
-  --review-polaroid-photo-bg: linear-gradient(135deg, #f5a99d 0%, #ffd7a8 100%);
 }
 
 .review-story-row {
@@ -2140,11 +2081,11 @@ h1 {
     background:
       linear-gradient(
         to bottom,
-        rgba(247, 248, 248, 0) 0%,
-        rgba(247, 248, 248, 0.04) 18%,
-        rgba(247, 248, 248, 0.14) 35%,
-        rgba(247, 248, 248, 0.34) 55%,
-        rgba(247, 248, 248, 0.68) 78%,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.04) 18%,
+        rgba(255, 255, 255, 0.14) 35%,
+        rgba(255, 255, 255, 0.34) 55%,
+        rgba(255, 255, 255, 0.68) 78%,
         var(--site-page-bg) 100%
       );
     height: 105px;
@@ -2295,7 +2236,7 @@ h1 {
   }
 
   .reviews-polaroid-carousel {
-    --review-polaroid-width: min(56vw, 212px);
+    --review-polaroid-width: clamp(144px, 42vw, 170px);
     margin-left: calc(-1 * var(--space-page-inline));
     margin-right: calc(-1 * var(--space-page-inline));
     max-width: none;
@@ -2312,8 +2253,18 @@ h1 {
   }
 
   .review-polaroid-card {
-    min-height: 218px;
-    padding: 9px 9px 16px;
+    min-height: 0;
+    padding: 8px 8px 13px;
+  }
+
+  .review-polaroid-card__photo {
+    padding: 10px;
+  }
+
+  .review-polaroid-card__caption {
+    font-size: var(--type-caption);
+    min-height: 2.75em;
+    padding-top: 11px;
   }
 
   .collection-products,
@@ -2651,17 +2602,15 @@ h1 {
   }
 
   .reviews-polaroid-carousel {
-    --review-polaroid-width: min(58vw, 196px);
+    --review-polaroid-width: clamp(128px, 45vw, 154px);
   }
 
   .review-polaroid-card {
-    min-height: 200px;
+    min-height: 0;
   }
 
   .review-polaroid-card__caption {
-    font-size: var(--type-caption);
-    min-height: 3.1em;
-    padding-top: 13px;
+    min-height: 2.85em;
   }
 
   .faq-help-section {
@@ -2701,8 +2650,8 @@ h1 {
 .site-shell .site-footer {
   --footer-ink: var(--site-text-primary);
   --footer-link-size: 0.86rem;
-  --footer-social-size: calc(var(--footer-link-size) - 0.06rem);
-  --footer-social-tracking: 0.04em;
+  --footer-social-size: var(--type-button);
+  --footer-social-tracking: 0;
   --footer-muted: var(--site-text-muted);
   --footer-soft: var(--site-surface-soft);
   --footer-line: var(--site-border);
@@ -2950,12 +2899,21 @@ h1 {
 }
 
 .site-footer__social-link {
+  background: var(--site-surface);
+  border: 1px solid var(--site-border);
+  border-radius: 8px;
+  color: var(--footer-ink);
   font-size: var(--footer-social-size);
+  font-weight: var(--weight-black);
+  height: 36px;
   letter-spacing: var(--footer-social-tracking);
+  min-height: 36px;
+  width: 36px;
 }
 
 .site-footer__text-link:hover,
 .site-footer__social-link:hover {
+  border-color: var(--site-border-strong);
   color: var(--footer-ink);
 }
 
@@ -3116,6 +3074,13 @@ h1 {
   .site-footer__social-link {
     font-weight: var(--weight-body);
     min-height: 29px;
+  }
+
+  .site-footer__social-link {
+    font-weight: var(--weight-black);
+    height: 36px;
+    min-height: 36px;
+    width: 36px;
   }
 
   .site-footer__social-links {

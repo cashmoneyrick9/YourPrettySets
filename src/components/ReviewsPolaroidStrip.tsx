@@ -6,17 +6,16 @@ type ReviewPolaroid = {
   name: string;
   occasion: (typeof collectionLabels)[number];
   rotation: string;
-  tone: string;
 };
 
 const reviewPolaroids: ReviewPolaroid[] = [
-  { name: "Sarah", occasion: "Birthday", rotation: "-2.5deg", tone: "peach" },
-  { name: "Ava", occasion: "Date Night", rotation: "2deg", tone: "rose" },
-  { name: "Mia", occasion: "Vacation", rotation: "-1deg", tone: "seafoam" },
-  { name: "Lina", occasion: "Bridal", rotation: "3.25deg", tone: "lilac" },
-  { name: "Noor", occasion: "Everyday", rotation: "-3deg", tone: "butter" },
-  { name: "Jade", occasion: "Work/Neutral", rotation: "1.5deg", tone: "sky" },
-  { name: "Zoe", occasion: "Statement", rotation: "4deg", tone: "coral" }
+  { name: "Sarah", occasion: "Birthday", rotation: "-2.5deg" },
+  { name: "Ava", occasion: "Date Night", rotation: "2deg" },
+  { name: "Mia", occasion: "Vacation", rotation: "-1deg" },
+  { name: "Lina", occasion: "Bridal", rotation: "3.25deg" },
+  { name: "Noor", occasion: "Everyday", rotation: "-3deg" },
+  { name: "Jade", occasion: "Work/Neutral", rotation: "1.5deg" },
+  { name: "Zoe", occasion: "Statement", rotation: "4deg" }
 ];
 
 function captionFor(polaroid: ReviewPolaroid) {
@@ -42,13 +41,11 @@ export function ReviewsPolaroidStrip() {
         viewportClassName="reviews-polaroid-carousel__viewport"
         slides={reviewPolaroids.map((polaroid) => (
           <article
-            className={`review-polaroid-card review-polaroid-card--${polaroid.tone}`}
+            className="review-polaroid-card"
             key={`${polaroid.name}-${polaroid.occasion}`}
             style={{ "--review-polaroid-rotation": polaroid.rotation } as CSSProperties}
           >
-            <div className="review-polaroid-card__photo" aria-hidden="true">
-              <span />
-            </div>
+            <div className="review-polaroid-card__photo" aria-hidden="true" />
             <p className="review-polaroid-card__caption">{captionFor(polaroid)}</p>
           </article>
         ))}

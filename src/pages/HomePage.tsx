@@ -6,19 +6,13 @@ import { ReviewsPolaroidStrip } from "../components/ReviewsPolaroidStrip";
 
 const confidenceSteps = [
   {
-    number: "1",
-    title: "Pick your set",
-    copy: "Browse the ready-to-wear drops and choose the set that matches your plans."
+    number: "1"
   },
   {
-    number: "2",
-    title: "Choose glue or tabs",
-    copy: "Use nail glue for longer wear or adhesive tabs when you want easier removal."
+    number: "2"
   },
   {
-    number: "3",
-    title: "Apply and wear",
-    copy: "Prep, press, and keep the included tools nearby for touch-ups or reuse."
+    number: "3"
   }
 ];
 
@@ -28,7 +22,7 @@ export function HomePage() {
   return (
     <main id="home">
       <section className="hero-section">
-        <div className="hero-photo hero-photo--asset-preserved" aria-hidden="true">
+        <div className="hero-photo" aria-hidden="true">
           <div className="hero-photo__hand" aria-hidden="true">
             <span className="hero-photo__finger hero-photo__finger--one">
               <span className="hero-photo__nail hero-photo__nail--one" />
@@ -81,13 +75,9 @@ export function HomePage() {
               data-step-index={stepIndex}
               key={step.number}
             >
-              <span className="confidence-card__number" aria-hidden="true">
+              <span className="confidence-card__number">
                 {step.number}
               </span>
-              <div className="confidence-card__copy">
-                <h3>{step.title}</h3>
-                <p>{step.copy}</p>
-              </div>
             </article>
           ))}
         />
