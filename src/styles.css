@@ -103,7 +103,7 @@
   --type-caption: 0.78rem;
   --type-button: 0.94rem;
   --type-display-special: clamp(1.45rem, 5vw, 1.9rem);
-  --mobile-shop-submenu-type: clamp(1rem, 4.4vw, 1.2rem);
+  --mobile-nav-submenu-type: clamp(1rem, 4.4vw, 1.2rem);
   --space-page-inline: clamp(18px, 4vw, 56px);
   --space-section-y: clamp(48px, 7vw, 86px);
   --space-section-y-compact: clamp(24px, 4vw, 42px);
@@ -311,13 +311,13 @@ a {
   padding: 10px 12px;
 }
 
-.brand-header__mobile-shop-group {
+.brand-header__mobile-nav-group {
   display: grid;
   gap: 8px;
   justify-items: center;
 }
 
-.brand-header__mobile-shop-toggle {
+.brand-header__mobile-nav-toggle {
   appearance: none;
   background: transparent;
   border: 0;
@@ -342,7 +342,7 @@ a {
 
 .brand-header__mobile-submenu a {
   color: var(--site-text-muted);
-  font-size: var(--mobile-shop-submenu-type);
+  font-size: var(--mobile-nav-submenu-type);
   font-weight: var(--weight-medium);
   line-height: var(--leading-snug);
   padding: 0;
@@ -351,7 +351,7 @@ a {
 
 .brand-header__icon-button:focus-visible,
 .brand-header__mobile-menu a:focus-visible,
-.brand-header__mobile-shop-toggle:focus-visible,
+.brand-header__mobile-nav-toggle:focus-visible,
 .brand-mark:focus-visible,
 .brand-header__desktop-nav a:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--site-accent) 42%, transparent);
@@ -360,7 +360,7 @@ a {
 
 .brand-header--scrolled .brand-header__icon-button:focus-visible,
 .brand-header--scrolled .brand-header__mobile-menu a:focus-visible,
-.brand-header--scrolled .brand-header__mobile-shop-toggle:focus-visible,
+.brand-header--scrolled .brand-header__mobile-nav-toggle:focus-visible,
 .brand-header--scrolled .brand-mark:focus-visible,
 .brand-header--scrolled .brand-header__desktop-nav a:focus-visible {
   outline-color: color-mix(in srgb, var(--site-accent) 42%, transparent);
@@ -3296,7 +3296,7 @@ h1 {
   }
 
   .brand-header--menu-open .brand-header__mobile-menu a,
-  .brand-header--menu-open .brand-header__mobile-shop-toggle {
+  .brand-header--menu-open .brand-header__mobile-nav-toggle {
     background: transparent;
     border: 0;
     border-radius: 0;
@@ -3308,7 +3308,7 @@ h1 {
     text-align: center;
   }
 
-  .brand-header--menu-open .brand-header__mobile-shop-group {
+  .brand-header--menu-open .brand-header__mobile-nav-group {
     gap: 11px;
   }
 
@@ -3320,7 +3320,7 @@ h1 {
 
   .brand-header--menu-open .brand-header__mobile-submenu a {
     color: var(--site-text-muted);
-    font-size: var(--mobile-shop-submenu-type);
+    font-size: var(--mobile-nav-submenu-type);
     font-weight: var(--weight-medium);
     line-height: var(--leading-snug);
     text-align: center;
@@ -3328,7 +3328,7 @@ h1 {
 
   .brand-header--menu-open .brand-header__icon-button:focus-visible,
   .brand-header--menu-open .brand-header__mobile-menu a:focus-visible,
-  .brand-header--menu-open .brand-header__mobile-shop-toggle:focus-visible {
+  .brand-header--menu-open .brand-header__mobile-nav-toggle:focus-visible {
     outline: 2px solid var(--site-text-primary);
     outline-offset: 7px;
   }

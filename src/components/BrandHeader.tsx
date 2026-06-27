@@ -2,35 +2,43 @@ import { Menu, ShoppingBag, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const mainNavItems = ["Home", "Shop", "Help"];
-const shopSubmenuItems = [
-  { href: "/shop/ready-to-ship", label: "Ready to Ship" },
-  { href: "/shop/made-to-order", label: "Made to Order" },
-  { href: "/shop/custom-orders", label: "Custom Orders" }
+type NavItem = {
+  children?: { href: string; label: string }[];
+  href: string;
+  label: string;
+};
+
+const mainNavItems: NavItem[] = [
+  { href: "/", label: "Home" },
+  {
+    href: "/shop",
+    label: "Shop",
+    children: [
+      { href: "/shop/ready-to-ship", label: "Ready to Ship" },
+      { href: "/shop/made-to-order", label: "Made to Order" },
+      { href: "/shop/custom-orders", label: "Custom Orders" }
+    ]
+  },
+  {
+    href: "/help",
+    label: "Help",
+    children: [
+      { href: "/help", label: "Help Center" },
+      { href: "/help/sizing", label: "Sizing Guide" },
+      { href: "/help/how-to-apply", label: "How to Apply" },
+      { href: "/help/shipping-returns", label: "Shipping & Returns" },
+      { href: "/help/faq", label: "FAQ" },
+      { href: "/help/contact", label: "Contact" }
+    ]
+  }
 ];
 const headerAtTopBodyClass = "header-at-top";
 const headerScrolledBodyClass = "header-scrolled";
 const mobileMenuOpenBodyClass = "mobile-menu-open";
 
-function hrefFor(item: string) {
-  if (item === "Home") {
-    return "/";
-  }
-
-  if (item === "Shop") {
-    return "/shop";
-  }
-
-  if (item === "Help") {
-    return "/help";
-  }
-
-  return "/";
-}
-
 export function BrandHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isShopMenuOpen, setIsShopMenuOpen] = useState(false);
+  const [openMobileNavGroups, setOpenMobileNavGroups] = useState<Record<string, boolean>>({});
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -59,7 +67,7 @@ export function BrandHeader() {
     document.body.classList.toggle(mobileMenuOpenBodyClass, isMenuOpen);
 
     if (!isMenuOpen) {
-      setIsShopMenuOpen(false);
+      setOpenMobileNavGroups({});
     }
 
     if (!isMenuOpen) {
@@ -136,11 +144,9 @@ export function BrandHeader() {
 
         <nav className="brand-header__desktop-nav" aria-label="Primary navigation">
           {mainNavItems.map((item) => {
-            const href = hrefFor(item);
-
             return (
-              <Link key={item} to={href}>
-                {item}
+              <Link key={item.href} to={item.href}>
+                {item.label}
               </Link>
             );
           })}
@@ -181,31 +187,49 @@ export function BrandHeader() {
           Home
         </Link>
 
-        <div className="brand-header__mobile-shop-group">
-          <button
-            aria-controls="mobile-shop-submenu"
-            aria-expanded={isShopMenuOpen}
-            className="brand-header__mobile-shop-toggle"
-            type="button"
-            onClick={() => setIsShopMenuOpen((current) => !current)}
-          >
-            Shop
-          </button>
+        {mainNavItems
+          .filter((item) => item.href !== "/")
+          .map((item) => {
+            const submenuId = `mobile-${item.label.toLowerCase().replace(/\s+/g, "-")}-submenu`;
+            const isSubmenuOpen = Boolean(openMobileNavGroups[item.href]);
 
-          {isShopMenuOpen ? (
-            <div className="brand-header__mobile-submenu" id="mobile-shop-submenu">
-              {shopSubmenuItems.map((item) => (
+            if (!item.children) {
+              return (
                 <Link key={item.href} to={item.href} onClick={() => setIsMenuOpen(false)}>
                   {item.label}
                 </Link>
-              ))}
-            </div>
-          ) : null}
-        </div>
+              );
+            }
 
-        <Link to="/help" onClick={() => setIsMenuOpen(false)}>
-          Help
-        </Link>
+            return (
+              <div className="brand-header__mobile-nav-group" key={item.href}>
+                <button
+                  aria-controls={submenuId}
+                  aria-expanded={isSubmenuOpen}
+                  className="brand-header__mobile-nav-toggle"
+                  type="button"
+                  onClick={() =>
+                    setOpenMobileNavGroups((current) => ({
+                      ...current,
+                      [item.href]: !current[item.href]
+                    }))
+                  }
+                >
+                  {item.label}
+                </button>
+
+                {isSubmenuOpen ? (
+                  <div className="brand-header__mobile-submenu" id={submenuId}>
+                    {item.children.map((child) => (
+                      <Link key={child.href} to={child.href} onClick={() => setIsMenuOpen(false)}>
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
       </nav>
     </header>
   );

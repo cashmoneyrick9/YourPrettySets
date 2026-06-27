@@ -112,8 +112,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-footer__text-link");
     expect(styles).toContain(".brand-header__desktop-nav a {\n  color: var(--site-text-muted);\n  font-size: var(--type-button);");
     expect(styles).toContain(".brand-header__mobile-menu a {\n  border-radius: 6px;\n  color: var(--site-text-primary);\n  font-size: var(--type-button);");
-    expect(styles).toContain("--mobile-shop-submenu-type: clamp(1rem, 4.4vw, 1.2rem);");
-    expect(styles).toContain(".brand-header__mobile-submenu a {\n  color: var(--site-text-muted);\n  font-size: var(--mobile-shop-submenu-type);");
+    expect(styles).toContain("--mobile-nav-submenu-type: clamp(1rem, 4.4vw, 1.2rem);");
+    expect(styles).toContain(".brand-header__mobile-submenu a {\n  color: var(--site-text-muted);\n  font-size: var(--mobile-nav-submenu-type);");
     expect(styles).toContain(".review-story-viewer__card blockquote {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);\n  font-size: var(--type-display-special);");
     expect(styles).toContain(".site-footer__brand {\n  color: var(--footer-ink);\n  font-family: var(--font-display);\n  font-size: var(--type-display-special);");
     expect(styles).toContain("font-family: var(--font-cta);");
@@ -709,14 +709,14 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__mobile-menu {\n    display: grid;");
   });
 
-  it("presents the open Shop submenu as centered subheading links without a container", () => {
+  it("presents open mobile nav submenus as centered subheading links without a container", () => {
     expect(styles).toContain(".brand-header__mobile-submenu {\n  border-left: 0;");
     expect(styles).toContain("justify-items: center;");
     expect(styles).toContain("margin-left: 0;");
     expect(styles).toContain("padding-left: 0;");
     expect(styles).not.toContain(".brand-header__mobile-submenu {\n  border-left: 1px solid");
     expect(styles).not.toContain(".brand-header--menu-open .brand-header__mobile-submenu {\n    margin-left: 16px;");
-    expect(styles).toContain(".brand-header--menu-open .brand-header__mobile-submenu a {\n    color: var(--site-text-muted);\n    font-size: var(--mobile-shop-submenu-type);");
+    expect(styles).toContain(".brand-header--menu-open .brand-header__mobile-submenu a {\n    color: var(--site-text-muted);\n    font-size: var(--mobile-nav-submenu-type);");
     expect(styles).toContain("text-align: center;");
   });
 

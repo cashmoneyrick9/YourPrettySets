@@ -64,11 +64,14 @@ describe("BrandHeader", () => {
 
     expect(within(mobileNav).getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
     expect(within(mobileNav).getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "false");
-    expect(within(mobileNav).getByRole("link", { name: "Help" })).toHaveAttribute("href", "/help");
+    expect(within(mobileNav).getByRole("button", { name: "Help" })).toHaveAttribute("aria-expanded", "false");
     expect(within(mobileNav).queryByRole("link", { name: "Ready to Ship" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Made to Order" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Custom Orders" })).not.toBeInTheDocument();
-    expect(within(mobileNav).getByRole("link", { name: "Help" })).toHaveAttribute("href", "/help");
+    expect(within(mobileNav).queryByRole("link", { name: "Help Center" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Sizing Guide" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "How to Apply" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Shipping & Returns" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "FAQ" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Reviews" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Contact" })).not.toBeInTheDocument();
@@ -111,12 +114,55 @@ describe("BrandHeader", () => {
     window.history.pushState({}, "", "/");
   });
 
+  it("expands the mobile Help submenu and closes after choosing a help route", async () => {
+    const user = userEvent.setup();
+    renderBrandHeader();
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+
+    const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+    const helpToggle = within(mobileNav).getByRole("button", { name: "Help" });
+
+    await user.click(helpToggle);
+
+    expect(helpToggle).toHaveAttribute("aria-expanded", "true");
+    expect(within(mobileNav).getByRole("link", { name: "Help Center" })).toHaveAttribute(
+      "href",
+      "/help"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "Sizing Guide" })).toHaveAttribute(
+      "href",
+      "/help/sizing"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "How to Apply" })).toHaveAttribute(
+      "href",
+      "/help/how-to-apply"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "Shipping & Returns" })).toHaveAttribute(
+      "href",
+      "/help/shipping-returns"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "FAQ" })).toHaveAttribute("href", "/help/faq");
+    expect(within(mobileNav).getByRole("link", { name: "Contact" })).toHaveAttribute(
+      "href",
+      "/help/contact"
+    );
+
+    await user.click(within(mobileNav).getByRole("link", { name: "Help Center" }));
+
+    expect(window.location.pathname).toBe("/help");
+    expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
+    expect(document.body).not.toHaveClass("mobile-menu-open");
+
+    window.history.pushState({}, "", "/");
+  });
+
   it("closes the overlay menu from a destination link or Escape", async () => {
     const user = userEvent.setup();
     renderBrandHeader();
 
     await user.click(screen.getByRole("button", { name: "Open menu" }));
-    await user.click(within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole("link", { name: "Help" }));
+    await user.click(within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole("link", { name: "Home" }));
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Open menu" })).toHaveAttribute("aria-expanded", "false");
