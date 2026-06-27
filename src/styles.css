@@ -690,32 +690,45 @@ h1 {
 
 .collection-card {
   align-items: center;
-  background: var(--site-surface);
-  border: 1px solid var(--site-border);
+  background: var(--site-surface-soft);
+  border: 0;
   border-radius: 8px;
   box-shadow: var(--site-shadow-soft);
-  color: var(--site-text-muted);
+  color: var(--site-accent-text);
   cursor: pointer;
   display: flex;
-  flex-direction: column;
   font: inherit;
-  gap: calc(var(--space-card-padding-tight) / 2);
   justify-content: center;
-  min-height: 70px;
+  min-height: 62px;
   overflow: hidden;
-  padding: var(--space-card-padding-tight);
+  padding: 0;
+  position: relative;
   text-align: center;
   transition:
-    border-color 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease;
   width: 100%;
   -webkit-user-drag: none;
 }
 
+.collection-card::after {
+  background: rgba(31, 36, 40, 0.42);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.collection-card__image {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(31, 36, 40, 0.08)),
+    var(--site-surface-soft);
+  inset: 0;
+  position: absolute;
+}
+
 .collection-card:hover,
 .collection-card:focus-visible {
-  border-color: var(--site-border-strong);
   box-shadow: var(--site-shadow-subtle);
   transform: translateY(-2px);
 }
@@ -732,16 +745,17 @@ h1 {
 
 .collection-card--active,
 .collection-card[aria-pressed="true"] {
-  background: var(--site-text-primary);
-  border-color: var(--site-text-primary);
-  box-shadow: none;
-  color: var(--site-accent-text);
+  box-shadow: var(--site-shadow-soft);
 }
 
-.collection-card span {
+.collection-card__label {
   font-size: var(--type-button);
   font-weight: var(--weight-black);
   line-height: 1.08;
+  padding: 8px 10px;
+  position: relative;
+  text-shadow: 0 1px 7px rgba(0, 0, 0, 0.38);
+  z-index: 1;
 }
 
 .collection-products {
@@ -901,6 +915,86 @@ h1 {
 .collection-products__more:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--site-accent) 38%, transparent);
   outline-offset: 3px;
+}
+
+.featured-sets-section {
+  padding-top: var(--space-section-y-compact);
+}
+
+.featured-sets-heading {
+  margin-bottom: var(--space-heading-gap);
+}
+
+.featured-sets-carousel {
+  margin-inline: calc(-1 * var(--space-page-inline));
+  max-width: none;
+}
+
+.featured-sets-carousel__viewport {
+  overflow: hidden;
+  padding-inline: 18px;
+}
+
+.featured-sets-carousel__track {
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  margin-left: -10px;
+  padding: 2px 0 12px;
+  touch-action: pan-y pinch-zoom;
+}
+
+.featured-sets-carousel__slide {
+  flex: 0 0 clamp(132px, 42vw, 168px);
+  min-width: 0;
+  padding-left: 10px;
+}
+
+.featured-set-card {
+  background: var(--site-surface);
+  border: 1px solid var(--site-border);
+  border-radius: 8px;
+  box-shadow: var(--site-shadow-soft);
+  color: var(--site-text-primary);
+  display: grid;
+  gap: 9px;
+  min-height: 214px;
+  min-width: 0;
+  overflow: hidden;
+  text-decoration: none;
+  transition:
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.featured-set-card:hover,
+.featured-set-card:focus-visible {
+  border-color: var(--site-border-strong);
+  transform: translateY(-1px);
+}
+
+.featured-set-card:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--site-accent) 38%, transparent);
+  outline-offset: 3px;
+}
+
+.featured-set-card__image {
+  aspect-ratio: 4 / 5;
+  background: var(--site-surface-soft);
+  border-bottom: 1px solid rgba(31, 36, 40, 0.08);
+  display: block;
+  margin: 8px 8px 0;
+}
+
+.featured-set-card__body {
+  display: grid;
+  padding: 0 11px 13px;
+}
+
+.featured-set-card h3 {
+  color: var(--site-text-primary);
+  font-size: var(--type-body);
+  line-height: var(--leading-snug);
+  margin: 0;
 }
 
 .kit-section {
@@ -2375,7 +2469,7 @@ h1 {
   }
 
   .collection-card {
-    min-height: 68px;
+    min-height: 62px;
   }
 
   .collection-carousel__hint {
@@ -2552,12 +2646,10 @@ h1 {
   }
 
   .collection-card {
-    gap: calc(var(--space-card-padding-tight) - 4px);
-    min-height: 66px;
-    padding: var(--space-card-padding-tight);
+    min-height: 58px;
   }
 
-  .collection-card span {
+  .collection-card__label {
     font-size: var(--type-button);
   }
 

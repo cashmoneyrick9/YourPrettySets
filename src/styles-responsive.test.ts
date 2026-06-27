@@ -138,6 +138,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".collection-card__title");
     expect(styles).not.toContain(".collection-card__description");
     expect(styles).not.toContain(".collection-card__cta");
+    expect(styles).not.toContain(".collection-card span");
     expect(styles).not.toContain(".review-card__number");
     expect(styles).not.toContain(".reviewed-set__copy");
     expect(styles).toContain(".site-footer-email--restored");
@@ -318,6 +319,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-carousel__hint");
     expect(styles).toContain(".collection-products");
     expect(styles).toContain(".collection-product-row");
+    expect(styles).toContain(".collection-card__image");
+    expect(styles).toContain(".collection-card__label");
+    expect(styles).toContain(".collection-card[aria-pressed=\"true\"] {\n  box-shadow: var(--site-shadow-soft);");
+    expect(styles).not.toContain(".collection-card[aria-pressed=\"true\"] {\n  background: var(--site-text-primary);");
     expect(styles).toContain("margin-inline: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain("max-width: none;");
     expect(styles).toContain(".collection-carousel__viewport");
@@ -350,6 +355,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-products__more");
     expect(styles).toContain(".collection-products__more {\n  align-self: center;");
     expect(styles).toContain("justify-content: center;\n  margin-top: 6px;");
+    expect(styles).toContain(".featured-sets-section");
+    expect(styles).toContain(".featured-sets-carousel");
+    expect(styles).toContain(".featured-set-card");
+    expect(styles).toContain(".featured-set-card__image");
     expect(styles).not.toContain(".carousel-progress__pill");
     expect(styles).not.toContain("grid-auto-columns: minmax(148px, 56vw);");
     expect(styles).not.toContain(".confidence-carousel__hint");

@@ -156,6 +156,7 @@ describe("App", () => {
     renderApp();
     scrollTo.mockClear();
 
+    await user.click(screen.getByRole("button", { name: "Everyday" }));
     await user.click(screen.getByRole("link", { name: "See more" }));
 
     expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
@@ -169,6 +170,7 @@ describe("App", () => {
     renderApp();
     scrollTo.mockClear();
 
+    await user.click(screen.getByRole("button", { name: "Everyday" }));
     await user.click(screen.getByRole("link", { name: "View Blush Crush" }));
 
     expect(screen.getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 type MobileCarouselProps = {
   ariaLabel: string;
   autoRotate?: boolean;
+  autoRotateStopped?: boolean;
   autoRotateSpeedPxPerSecond?: number;
   buttonClassName?: string;
   className?: string;
@@ -36,6 +37,7 @@ function joinClassNames(...classNames: (false | null | string | undefined)[]) {
 export function MobileCarousel({
   ariaLabel,
   autoRotate = false,
+  autoRotateStopped = false,
   autoRotateSpeedPxPerSecond = 24,
   buttonClassName,
   className,
@@ -135,7 +137,7 @@ export function MobileCarousel({
   const startAutoRotate = useCallback(() => {
     clearAutoRotateFrame();
 
-    if (!autoRotate || prefersReducedMotion || isPausedRef.current || !carouselApi) return;
+    if (!autoRotate || autoRotateStopped || prefersReducedMotion || isPausedRef.current || !carouselApi) return;
 
     const step = (timestamp: number) => {
       if (isPausedRef.current) {
@@ -168,6 +170,7 @@ export function MobileCarousel({
     autoRotateFrameRef.current = window.requestAnimationFrame(step);
   }, [
     autoRotate,
+    autoRotateStopped,
     autoRotateSpeedPxPerSecond,
     carouselApi,
     clearAutoRotateFrame,
@@ -184,22 +187,28 @@ export function MobileCarousel({
   const resumeAutoRotate = useCallback(() => {
     clearResumeTimer();
 
-    if (!autoRotate || prefersReducedMotion) return;
+    if (!autoRotate || autoRotateStopped || prefersReducedMotion) return;
 
     resumeTimerRef.current = window.setTimeout(() => {
       isPausedRef.current = false;
       startAutoRotate();
     }, resumeDelayMs);
-  }, [autoRotate, clearResumeTimer, prefersReducedMotion, resumeDelayMs, startAutoRotate]);
+  }, [autoRotate, autoRotateStopped, clearResumeTimer, prefersReducedMotion, resumeDelayMs, startAutoRotate]);
 
   useEffect(() => {
+    if (autoRotateStopped) {
+      clearAutoRotateFrame();
+      clearResumeTimer();
+      return;
+    }
+
     startAutoRotate();
 
     return () => {
       clearAutoRotateFrame();
       clearResumeTimer();
     };
-  }, [clearAutoRotateFrame, clearResumeTimer, startAutoRotate]);
+  }, [autoRotateStopped, clearAutoRotateFrame, clearResumeTimer, startAutoRotate]);
 
   useEffect(() => {
     if (!carouselApi || scrollToIndex === null || scrollToIndex === undefined) return;
@@ -215,7 +224,7 @@ export function MobileCarousel({
       aria-label={ariaLabel}
       className={joinClassNames("mobile-carousel", className)}
       data-active-step={dataActiveStep}
-      data-auto-rotate={autoRotate ? "true" : undefined}
+      data-auto-rotate={autoRotate && !autoRotateStopped ? "true" : undefined}
       data-loop={options?.loop ? "true" : undefined}
       data-rotate-speed={autoRotate ? autoRotateSpeedPxPerSecond : undefined}
       onBlurCapture={resumeAutoRotate}

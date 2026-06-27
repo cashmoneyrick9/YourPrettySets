@@ -1,4 +1,5 @@
 import { act, cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import { HomePage } from "./HomePage";
@@ -50,7 +51,8 @@ describe("HomePage", () => {
     expect(scrollIntoViewSpy).not.toHaveBeenCalled();
   });
 
-  it("renders the mobile shopping path before product shopping", () => {
+  it("renders the mobile shopping path before product shopping", async () => {
+    const user = userEvent.setup();
     renderHomePage();
 
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
@@ -81,8 +83,14 @@ describe("HomePage", () => {
     expect(hero.compareDocumentPosition(collections) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(collections.compareDocumentPosition(confidence) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "New Arrivals" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Featured Sets" })).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Featured sets" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "View Glazed Petal" })).toHaveAttribute("href", "/shop");
     expect(screen.queryByRole("heading", { name: "This week's set" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Everyday sets" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "View Blush Crush" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Everyday" }));
+
     expect(screen.getByRole("heading", { name: "Everyday sets" })).toBeInTheDocument();
     expect(screen.getByText("10 available")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "/products/blush-crush");

@@ -18,7 +18,7 @@ describe("CollectionFilters", () => {
     );
   }
 
-  it("renders slim collection filters followed by products from the active collection", async () => {
+  it("starts Browse unselected, then shows collection products after selection", async () => {
     const user = userEvent.setup();
     renderCollectionFilters();
 
@@ -50,45 +50,19 @@ describe("CollectionFilters", () => {
     expect(screen.queryByRole("button", { name: /Go to collection/i })).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel__hint")).toHaveTextContent("Swipe to explore");
     expect(screen.queryByText(/\d+ sets/)).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Everyday" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("heading", { name: "Everyday sets" })).toBeInTheDocument();
-    const everydayProducts = products.filter((product) => product.collections.includes("Everyday")).slice(0, 4);
-    const everydayCards = Array.from(document.querySelectorAll(".collection-product-row > .collection-product-card"));
-    expect(everydayCards).toHaveLength(4);
-    expect(everydayCards.map((card) => within(card as HTMLElement).getByRole("heading", { level: 3 }).textContent)).toEqual(
-      everydayProducts.map((product) => product.name)
-    );
-    for (const product of everydayProducts) {
-      const card = screen.getByRole("link", { name: `View ${product.name}` });
-      expect(card).toHaveAttribute("href", `/products/${product.slug}`);
-      expect(card).toHaveClass("product-preview-card");
-      expect(within(card).getByRole("img", { name: product.images.clean })).toBeInTheDocument();
-      expect(within(card).getByRole("heading", { name: product.name })).toBeInTheDocument();
-      expect(within(card).getByText(`$${product.price}`)).toBeInTheDocument();
-      expect(within(card).queryByText(product.description)).not.toBeInTheDocument();
+    for (const collection of ["Everyday", "Date Night", "Vacation", "Bridal", "Birthday", "Work/Neutral", "Statement"]) {
+      expect(screen.getByRole("button", { name: collection })).toHaveAttribute("aria-pressed", "false");
     }
-    expect(document.querySelectorAll(".collection-product-row > .collection-product-card--placeholder")).toHaveLength(0);
-    const everydayTeaser = document.querySelector(".collection-product-teaser") as HTMLElement;
-    const seeMoreLink = screen.getByRole("link", { name: "See more" });
-    const everydayTeaserProducts = products.filter((product) => product.collections.includes("Everyday")).slice(4, 6);
-    expect(everydayTeaser).toBeInTheDocument();
-    expect(everydayTeaser).toHaveAttribute("aria-hidden", "true");
-    expect(everydayTeaser.compareDocumentPosition(seeMoreLink) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(everydayTeaser.querySelectorAll(".collection-product-card")).toHaveLength(2);
-    expect(everydayTeaser.textContent?.replace(/\s+/g, " ").trim()).toBe(
-      everydayTeaserProducts.map((product) => `${product.name}$${product.price}`).join("")
-    );
-    for (const product of everydayTeaserProducts) {
-      expect(everydayTeaser).toHaveTextContent(product.name);
-      expect(everydayTeaser).toHaveTextContent(`$${product.price}`);
-    }
+    expect(screen.queryByRole("heading", { name: "Everyday sets" })).not.toBeInTheDocument();
+    expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".collection-product-card__blank")).toHaveLength(0);
-    expect(seeMoreLink).toHaveAttribute("href", "/shop");
 
     await user.click(screen.getByRole("button", { name: "Bridal" }));
 
     const bridalProducts = products.filter((product) => product.collections.includes("Bridal")).slice(0, 4);
     const bridalCards = Array.from(document.querySelectorAll(".collection-product-row > .collection-product-card"));
+    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
+    expect(screen.getByRole("button", { name: "Everyday" })).toHaveAttribute("aria-pressed", "false");
     expect(screen.getByRole("button", { name: "Bridal" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: "Bridal sets" })).toBeInTheDocument();
     expect(screen.getByText("6 available")).toBeInTheDocument();
@@ -112,6 +86,23 @@ describe("CollectionFilters", () => {
       expect(within(card).getByRole("heading", { name: product.name })).toBeInTheDocument();
       expect(within(card).getByText(`$${product.price}`)).toBeInTheDocument();
       expect(within(card).queryByText(product.description)).not.toBeInTheDocument();
+    }
+  });
+
+  it("renders featured placeholder set cards below Browse before any collection is selected", () => {
+    renderCollectionFilters();
+
+    const browseHeading = screen.getByRole("heading", { name: "Browse" });
+    const featuredHeading = screen.getByRole("heading", { name: "Featured sets" });
+    expect(browseHeading.compareDocumentPosition(featuredHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(document.querySelector(".featured-sets-carousel")).toHaveClass("mobile-carousel");
+
+    for (const name of ["Glazed Petal", "Sunset Sprinkle", "Pearl Wink", "Poolside Pop"]) {
+      const card = screen.getByRole("link", { name: `View ${name}` });
+      expect(card).toHaveAttribute("href", "/shop");
+      expect(card).toHaveClass("featured-set-card");
+      expect(within(card).getByRole("img", { name: `${name} placeholder image` })).toBeInTheDocument();
+      expect(within(card).getByRole("heading", { name })).toBeInTheDocument();
     }
   });
 
@@ -142,6 +133,7 @@ describe("CollectionFilters", () => {
       </MemoryRouter>
     );
 
+    await userEvent.click(screen.getByRole("button", { name: "Everyday" }));
     await userEvent.click(screen.getByRole("link", { name: "View Blush Crush" }));
 
     expect(screen.getByText("fromHome: true")).toBeInTheDocument();
