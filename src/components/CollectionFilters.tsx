@@ -65,7 +65,7 @@ export function CollectionFilters() {
                 aria-pressed={isSelected}
                 className={`collection-card collection-card--${slug}${isSelected ? " collection-card--active" : ""}`}
                 key={collection}
-                onClick={() => setSelectedCollectionIndex(index)}
+                onClick={() => setSelectedCollectionIndex(isSelected ? null : index)}
                 type="button"
               >
                 <span className="collection-card__image" aria-hidden="true" />

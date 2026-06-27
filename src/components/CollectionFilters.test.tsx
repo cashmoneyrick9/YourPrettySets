@@ -106,6 +106,25 @@ describe("CollectionFilters", () => {
     }
   });
 
+  it("clears the selected collection when the selected tile is tapped again", async () => {
+    const user = userEvent.setup();
+    renderCollectionFilters();
+
+    await user.click(screen.getByRole("button", { name: "Bridal" }));
+
+    expect(screen.getByRole("button", { name: "Bridal" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: "Bridal sets" })).toBeInTheDocument();
+    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
+
+    await user.click(screen.getByRole("button", { name: "Bridal" }));
+
+    expect(screen.getByRole("button", { name: "Bridal" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.queryByRole("heading", { name: "Bridal sets" })).not.toBeInTheDocument();
+    expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
+    expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(screen.getByRole("heading", { name: "Featured sets" })).toBeInTheDocument();
+  });
+
   it("uses shared carousel behavior instead of custom pointer-drag handling", () => {
     renderCollectionFilters();
 
