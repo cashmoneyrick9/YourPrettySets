@@ -1432,7 +1432,7 @@ h1 {
 }
 
 .reviews-polaroid-carousel {
-  --review-polaroid-width: clamp(168px, 54vw, 230px);
+  --review-polaroid-width: 170px;
   --review-polaroid-gap: 6px;
   background: transparent;
   border: 0;
@@ -1465,39 +1465,43 @@ h1 {
 }
 
 .review-polaroid-card {
-  background: #ffffff;
-  border: 1px solid rgba(31, 36, 40, 0.09);
-  border-radius: 6px;
-  box-shadow: 0 15px 34px rgba(31, 36, 40, 0.12);
+  background: var(--site-surface);
+  border: 1px solid var(--site-border);
+  border-radius: 8px;
+  box-shadow: var(--site-shadow-soft);
   color: var(--site-text-primary);
   display: grid;
-  gap: 0;
-  min-height: 236px;
-  padding: 10px 10px 18px;
+  gap: 9px;
+  min-height: 245px;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
   transform: rotate(var(--review-polaroid-rotation, 0deg));
   transform-origin: center 72%;
 }
 
 .review-polaroid-card__photo {
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   background: #d9dde0;
   border: 1px solid rgba(31, 36, 40, 0.08);
-  border-radius: 4px;
+  border-radius: 0;
+  border-width: 0 0 1px;
+  margin: 8px 8px 0;
   overflow: hidden;
+}
+
+.review-polaroid-card__body {
+  display: grid;
+  gap: 4px;
+  padding: 0 11px 13px;
 }
 
 .review-polaroid-card__caption {
   color: var(--site-text-primary);
-  font-family: var(--font-display);
   font-size: var(--type-body);
-  font-variation-settings: "opsz" 144, "SOFT" 70, "WONK" 0;
-  font-weight: var(--weight-display);
-  line-height: 1.12;
+  line-height: var(--leading-snug);
   margin: 0;
-  min-height: 3.05em;
-  padding: 15px 4px 0;
   text-align: center;
-  text-wrap: balance;
 }
 
 .review-story-row {
@@ -2330,7 +2334,7 @@ h1 {
   }
 
   .reviews-polaroid-carousel {
-    --review-polaroid-width: clamp(144px, 42vw, 170px);
+    --review-polaroid-width: clamp(154px, 44vw, 170px);
     margin-left: calc(-1 * var(--space-page-inline));
     margin-right: calc(-1 * var(--space-page-inline));
     max-width: none;
@@ -2347,18 +2351,11 @@ h1 {
   }
 
   .review-polaroid-card {
-    min-height: 0;
-    padding: 8px 8px 13px;
-  }
-
-  .review-polaroid-card__photo {
-    padding: 10px;
+    min-height: 245px;
   }
 
   .review-polaroid-card__caption {
-    font-size: var(--type-caption);
-    min-height: 2.75em;
-    padding-top: 11px;
+    font-size: var(--type-body);
   }
 
   .collection-products,
@@ -2694,15 +2691,11 @@ h1 {
   }
 
   .reviews-polaroid-carousel {
-    --review-polaroid-width: clamp(128px, 45vw, 154px);
+    --review-polaroid-width: clamp(140px, 45vw, 154px);
   }
 
   .review-polaroid-card {
-    min-height: 0;
-  }
-
-  .review-polaroid-card__caption {
-    min-height: 2.85em;
+    min-height: 224px;
   }
 
   .faq-help-section {

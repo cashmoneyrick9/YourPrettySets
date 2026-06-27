@@ -125,12 +125,12 @@ describe("HomePage", () => {
     expect(document.querySelector(".hero-photo")).not.toHaveAttribute("aria-label");
   });
 
-  it("renders the decorative Reviews polaroid strip after How It Works", () => {
+  it("renders the decorative Reviews keepsake carousel after How It Works", () => {
     renderHomePage();
 
     const confidence = screen.getByRole("heading", { name: "3 EASY STEPS" });
     const reviews = screen.getByRole("heading", { name: "Customer keepsakes" });
-    const carousel = screen.getByRole("region", { name: "Customer review polaroid strip" });
+    const carousel = screen.getByRole("region", { name: "Customer review keepsake carousel" });
 
     expect(confidence.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.getByText("CUSTOMER LOVE")).toBeInTheDocument();
@@ -140,8 +140,10 @@ describe("HomePage", () => {
     expect(carousel).toHaveAttribute("data-rotate-speed", "24");
     expect(document.querySelectorAll(".review-polaroid-card")).toHaveLength(7);
     expect(document.querySelectorAll(".review-polaroid-card__photo")).toHaveLength(7);
+    expect(document.querySelectorAll(".review-polaroid-card__body")).toHaveLength(7);
     expect(document.querySelectorAll(".review-polaroid-card__caption")).toHaveLength(7);
     expect(Array.from(document.querySelectorAll(".review-polaroid-card__photo")).every((photo) => photo.childElementCount === 0)).toBe(true);
+    expect(Array.from(document.querySelectorAll(".review-polaroid-card")).every((card) => card.getAttribute("style")?.includes("--review-polaroid-rotation"))).toBe(true);
     expect(document.querySelector(".review-polaroid-card--peach")).not.toBeInTheDocument();
     expect(document.querySelector(".review-polaroid-card--rose")).not.toBeInTheDocument();
     expect(screen.getByText("Sarah's birthday set")).toBeInTheDocument();

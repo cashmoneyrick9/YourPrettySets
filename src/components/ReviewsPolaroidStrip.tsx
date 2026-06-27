@@ -31,7 +31,7 @@ export function ReviewsPolaroidStrip() {
       </div>
 
       <MobileCarousel
-        ariaLabel="Customer review polaroid strip"
+        ariaLabel="Customer review keepsake carousel"
         autoRotate
         className="reviews-polaroid-carousel"
         containerClassName="reviews-polaroid-carousel__track"
@@ -46,7 +46,9 @@ export function ReviewsPolaroidStrip() {
             style={{ "--review-polaroid-rotation": polaroid.rotation } as CSSProperties}
           >
             <div className="review-polaroid-card__photo" aria-hidden="true" />
-            <p className="review-polaroid-card__caption">{captionFor(polaroid)}</p>
+            <div className="review-polaroid-card__body">
+              <p className="review-polaroid-card__caption">{captionFor(polaroid)}</p>
+            </div>
           </article>
         ))}
       />
