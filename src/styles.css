@@ -2785,7 +2785,7 @@ h1 {
   --site-footer-email-title-size: clamp(1.9rem, 3.4vw, 2.6rem);
   background: #101417;
   border: 1px solid var(--site-border);
-  border-radius: 8px;
+  border-radius: clamp(24px, 5vw, 36px);
   box-shadow: none;
   color: #ffffff;
   isolation: isolate;
@@ -3065,7 +3065,7 @@ h1 {
     --site-footer-email-title-size: clamp(1.72rem, 7.2vw, 2rem);
     background: #101417;
     border: 0;
-    border-radius: 0;
+    border-radius: clamp(24px, 5vw, 36px);
     color: #ffffff;
     margin-inline: calc(var(--space-footer-inline) * -1);
     padding: clamp(28px, 9vw, 38px) var(--space-footer-inline);
