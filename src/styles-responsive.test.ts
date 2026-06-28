@@ -39,6 +39,13 @@ function countOneOffTypographyRules(css: string) {
   return count;
 }
 
+function getRuleBody(css: string, selector: string) {
+  const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = css.match(new RegExp(`${escapedSelector}\\s*\\{([^{}]*)\\}`));
+
+  return match?.[1] ?? "";
+}
+
 describe("small mobile responsive CSS", () => {
   it("defines the homepage typography system and loads the intended fonts", () => {
     expect(styles).toContain("@import url(\"https://fonts.googleapis.com/css2?family=Fraunces");
@@ -120,13 +127,39 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain("font-family: Georgia, \"Times New Roman\", serif;");
   });
 
+  it("keeps the lower footer panel square against the viewport edges", () => {
+    const footerRule = getRuleBody(styles, ".site-shell .site-footer");
+
+    expect(footerRule).toContain("--footer-ink: #ffffff;");
+    expect(footerRule).toContain("--footer-accent: #dbe4da;");
+    expect(footerRule).toContain("background: #101417;");
+    expect(footerRule).toContain("border-radius: 0;");
+    expect(footerRule).toContain("color: var(--footer-ink);");
+    expect(footerRule).toContain("overflow: hidden;");
+    expect(footerRule).toContain("padding: clamp(62px, 10vw, 104px) 0 max(42px, env(safe-area-inset-bottom, 0px));");
+  });
+
+  it("backs the email card bottom corners with the footer panel color", () => {
+    const shellRule = getRuleBody(styles, ".site-footer-email-shell");
+    const shellBackingRule = getRuleBody(styles, ".site-footer-email-shell::after");
+    const shellInnerRule = getRuleBody(styles, ".site-footer-email-shell > .site-footer__inner");
+
+    expect(shellRule).toContain("background: var(--site-surface);");
+    expect(shellRule).toContain("position: relative;");
+    expect(shellBackingRule).toContain("background: #101417;");
+    expect(shellBackingRule).toContain("bottom: 0;");
+    expect(shellBackingRule).toContain("height: clamp(24px, 5vw, 36px);");
+    expect(shellInnerRule).toContain("position: relative;");
+    expect(shellInnerRule).toContain("z-index: 1;");
+  });
+
   it("keeps leftover homepage typography debt bounded and removes dead text selectors", () => {
     expect(countOneOffTypographyRules(styles)).toBeLessThanOrEqual(40);
     expect(styles).toContain(".kit-detail-panel__copy h3 {\n  font-size: var(--type-body);");
     expect(styles).not.toContain(".confidence-card__copy h3");
     expect(styles).toContain(".kit-detail-tab span:last-child {\n  font-size: var(--type-caption);");
     expect(styles).toContain(".review-story-label {\n  color: var(--site-text-primary);\n  font-size: var(--type-caption);");
-    expect(styles).toContain(".site-footer__love-note {\n  color: var(--footer-muted);\n  font-family: var(--font-display);\n  font-size: var(--type-body);");
+    expect(styles).toContain(".site-footer__love-note {\n  color: var(--footer-accent);\n  font-family: var(--font-display);\n  font-size: var(--type-body);");
     expect(styles).toContain(".site-footer__copyright p {\n  color: var(--footer-muted);\n  font-size: var(--type-caption);");
     expect(styles).toContain(".shop-empty-state button {\n  appearance: none;\n  background: var(--shop-ink);");
     expect(styles).toContain(".shop-empty-state button {\n  appearance: none;\n  background: var(--shop-ink);\n  border: 1px solid var(--shop-ink);\n  border-radius: 8px;\n  color: #ffffff;\n  cursor: pointer;\n  font: inherit;\n  font-size: var(--type-button);");
@@ -642,38 +675,45 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-shell .site-footer {");
     expect(styles).toContain("--footer-soft: var(--site-surface-soft);");
     expect(styles).not.toContain("--footer-blush");
-    expect(styles).toContain("background: var(--site-surface);");
+    expect(styles).toContain("background: #101417;");
+    expect(styles).toContain("--footer-muted: rgba(255, 255, 255, 0.72);");
+    expect(styles).toContain(".site-footer__love-note {\n  color: var(--footer-accent);");
     expect(styles).toContain(".site-footer-email--restored");
     expect(styles).toContain(".site-footer-email--image::before");
     expect(styles).toContain('background-image: url("/assets/hero-s3-summer.png");');
     expect(styles).toContain("filter: grayscale(1) brightness(0.48);");
     expect(styles).toContain(".site-footer-email--image::after");
-    expect(styles).toContain("background: rgba(6, 10, 13, 0.58);");
+    expect(styles).toContain("background: rgba(6, 10, 13, 0.34);");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__form");
     expect(styles).toContain("min-height: 48px;");
     expect(styles).toContain(".site-footer__brand-block");
     expect(styles).toContain(".site-footer__columns");
     expect(styles).toContain("grid-template-columns: repeat(3, minmax(0, 1fr));");
-    expect(styles).toContain(".site-footer__column {\n  align-items: center;");
+    expect(styles).toContain(".site-footer__inner {\n  display: grid;\n  gap: clamp(38px, 7vw, 62px);");
+    expect(styles).toContain(".site-footer__brand-block {\n  display: grid;\n  gap: 9px;");
+    expect(styles).toContain(".site-footer__columns {\n  display: grid;\n  gap: clamp(18px, 6vw, 40px);");
+    expect(styles).toContain(".site-footer__column {\n  align-items: center;\n  display: grid;\n  gap: 12px;");
     expect(styles).toContain(".site-footer__column-title");
+    expect(styles).toContain(".site-footer__column-title {\n  color: var(--footer-accent);");
     expect(styles).toContain("text-align: center;");
-    expect(styles).toContain(".site-footer__link-list {\n  align-items: center;");
+    expect(styles).toContain(".site-footer__link-list {\n  align-items: center;\n  display: grid;\n  gap: 4px;");
     expect(styles).toContain(".site-footer__text-link");
+    expect(styles).toContain(".site-footer__social-link {\n  background: var(--footer-accent);");
     expect(styles).toContain("justify-content: center;");
     expect(styles).toContain(".site-footer__text-link");
     expect(styles).toContain(".site-footer__social-link");
     expect(styles).toContain("border-radius: 0;");
     expect(styles).toContain("border-radius: 8px;");
-    expect(styles).toContain("min-height: 32px;");
+    expect(styles).toContain("min-height: 36px;");
     expect(styles).toContain("@media (max-width: 480px)");
-    expect(styles).toContain(".site-footer__columns {\n    gap: 8px;\n    grid-template-columns: repeat(3, minmax(0, 1fr));");
+    expect(styles).toContain(".site-footer__columns {\n    gap: 12px;\n    grid-template-columns: repeat(3, minmax(0, 1fr));");
     expect(styles).toContain("white-space: nowrap;");
-    expect(styles).toContain(".site-footer__social-links {\n    column-gap: 11px;\n    display: flex;");
+    expect(styles).toContain(".site-footer__social-links {\n    column-gap: 14px;\n    display: flex;");
     expect(styles).toContain("--footer-social-size: var(--type-button);");
     expect(styles).toContain("--footer-social-tracking: 0;");
-    expect(styles).toContain(".site-footer__social-link {\n  background: var(--site-surface);");
-    expect(styles).toContain("border: 1px solid var(--site-border);");
-    expect(styles).toContain("color: var(--footer-ink);");
+    expect(styles).toContain(".site-footer__social-link {\n  background: var(--footer-accent);");
+    expect(styles).toContain("border: 1px solid var(--footer-line);");
+    expect(styles).toContain("color: #101417;");
     expect(styles).toContain("font-weight: var(--weight-black);");
     expect(styles).toContain("height: 36px;");
     expect(styles).toContain("width: 36px;");
