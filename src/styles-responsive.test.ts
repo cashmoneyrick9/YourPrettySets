@@ -131,7 +131,8 @@ describe("small mobile responsive CSS", () => {
     const footerRule = getRuleBody(styles, ".site-shell .site-footer");
 
     expect(footerRule).toContain("--footer-ink: #ffffff;");
-    expect(footerRule).toContain("--footer-accent: #dbe4da;");
+    expect(footerRule).toContain("--footer-accent: #ffffff;");
+    expect(footerRule).toContain("--footer-line: rgba(255, 255, 255, 0.26);");
     expect(footerRule).toContain("background: #101417;");
     expect(footerRule).toContain("border-radius: 0;");
     expect(footerRule).toContain("color: var(--footer-ink);");
@@ -698,12 +699,12 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("text-align: center;");
     expect(styles).toContain(".site-footer__link-list {\n  align-items: center;\n  display: grid;\n  gap: 4px;");
     expect(styles).toContain(".site-footer__text-link");
-    expect(styles).toContain(".site-footer__social-link {\n  background: var(--footer-accent);");
+    expect(styles).toContain(".site-footer__social-link {\n  background: transparent;");
     expect(styles).toContain("justify-content: center;");
     expect(styles).toContain(".site-footer__text-link");
     expect(styles).toContain(".site-footer__social-link");
     expect(styles).toContain("border-radius: 0;");
-    expect(styles).toContain("border-radius: 8px;");
+    expect(styles).toContain("border-radius: 50%;");
     expect(styles).toContain("min-height: 36px;");
     expect(styles).toContain("@media (max-width: 480px)");
     expect(styles).toContain(".site-footer__columns {\n    gap: 12px;\n    grid-template-columns: repeat(3, minmax(0, 1fr));");
@@ -711,12 +712,15 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-footer__social-links {\n    column-gap: 14px;\n    display: flex;");
     expect(styles).toContain("--footer-social-size: var(--type-button);");
     expect(styles).toContain("--footer-social-tracking: 0;");
-    expect(styles).toContain(".site-footer__social-link {\n  background: var(--footer-accent);");
-    expect(styles).toContain("border: 1px solid var(--footer-line);");
-    expect(styles).toContain("color: #101417;");
-    expect(styles).toContain("font-weight: var(--weight-black);");
+    expect(styles).toContain(".site-footer__social-link {\n  background: transparent;");
+    expect(styles).toContain("border: 0;");
+    expect(styles).toContain("color: var(--footer-accent);");
+    expect(styles).toContain("padding: 0;");
     expect(styles).toContain("height: 36px;");
     expect(styles).toContain("width: 36px;");
+    expect(styles).toContain(".site-footer__social-icon");
+    expect(styles).toContain("height: 22px;");
+    expect(styles).toContain("width: 22px;");
     expect(styles).toContain(".site-footer__social-link:hover");
     expect(styles).not.toContain(".site-footer__column--policies");
     expect(styles).not.toContain("grid-template-columns: repeat(2, max-content);");

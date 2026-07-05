@@ -41,10 +41,14 @@ describe("SiteFooter", () => {
     expect(within(footerNav).getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
   });
 
-  it("renders boxed social initials, exact love note, and current-year copyright without the removed trust strip", () => {
+  it("renders icon-only social links, exact love note, and current-year copyright without the removed trust strip", () => {
     renderSiteFooter();
 
     const footer = screen.getByRole("contentinfo");
+    const instagramLink = within(footer).getByRole("link", { name: "Instagram" });
+    const tiktokLink = within(footer).getByRole("link", { name: "TikTok" });
+    const pinterestLink = within(footer).getByRole("link", { name: "Pinterest" });
+    const emailLink = within(footer).getByRole("link", { name: "Email" });
     const currentYear = new Date().getFullYear();
     const loveNote = within(footer).getByText("made for you, with love");
 
@@ -52,20 +56,21 @@ describe("SiteFooter", () => {
     expect(loveNote).not.toHaveTextContent("♡");
     expect(loveNote.textContent?.endsWith(".")).toBe(false);
     expect(within(footer).queryByText("Follow Us")).not.toBeInTheDocument();
-    expect(within(footer).getByRole("link", { name: "Instagram" })).toHaveAttribute("href", "#instagram");
-    expect(within(footer).getByRole("link", { name: "TikTok" })).toHaveAttribute("href", "#tiktok");
-    expect(within(footer).getByRole("link", { name: "Pinterest" })).toHaveAttribute("href", "#pinterest");
-    expect(within(footer).getByRole("link", { name: "Email" })).toHaveAttribute(
-      "href",
-      "mailto:hello@yourprettysets.com"
-    );
+    expect(instagramLink).toHaveAttribute("href", "#instagram");
+    expect(tiktokLink).toHaveAttribute("href", "#tiktok");
+    expect(pinterestLink).toHaveAttribute("href", "#pinterest");
+    expect(emailLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
     expect(within(footer).queryByText("Instagram ↗")).not.toBeInTheDocument();
     expect(within(footer).queryByText("TikTok ↗")).not.toBeInTheDocument();
     expect(within(footer).queryByText("Pinterest ↗")).not.toBeInTheDocument();
-    expect(within(footer).getByText("I")).toBeInTheDocument();
-    expect(within(footer).getByText("T")).toBeInTheDocument();
-    expect(within(footer).getByText("P")).toBeInTheDocument();
-    expect(within(footer).getByText("E")).toBeInTheDocument();
+    expect(instagramLink).toContainHTML("svg");
+    expect(tiktokLink).toContainHTML("svg");
+    expect(pinterestLink).toContainHTML("svg");
+    expect(emailLink).toContainHTML("svg");
+    expect(within(footer).queryByText("I")).not.toBeInTheDocument();
+    expect(within(footer).queryByText("T")).not.toBeInTheDocument();
+    expect(within(footer).queryByText("P")).not.toBeInTheDocument();
+    expect(within(footer).queryByText("E")).not.toBeInTheDocument();
     expect(within(footer).queryByRole("img")).not.toBeInTheDocument();
     expect(within(footer).queryByRole("separator")).not.toBeInTheDocument();
     expect(within(footer).getByText(`© ${currentYear} YourPrettySets. All rights reserved.`)).toBeInTheDocument();
