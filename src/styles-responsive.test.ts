@@ -707,7 +707,13 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("border-radius: 50%;");
     expect(styles).toContain("min-height: 36px;");
     expect(styles).toContain("@media (max-width: 480px)");
-    expect(styles).toContain(".site-footer__columns {\n    gap: 12px;\n    grid-template-columns: repeat(3, minmax(0, 1fr));");
+    expect(styles).toContain(".site-footer-email-shell + .site-footer {\n    --footer-link-size: 0.78rem;\n    padding-top: 46px;");
+    expect(styles).toContain(".site-footer__inner {\n    gap: 28px;\n    padding-inline: 16px;");
+    expect(styles).toContain(".site-footer__brand-block {\n    gap: 5px;");
+    expect(styles).toContain(".site-footer__columns {\n    gap: 14px;\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n    justify-self: center;\n    width: min(100%, 306px);");
+    expect(styles).toContain(".site-footer__column {\n    gap: 12px;");
+    expect(styles).toContain(".site-footer__column-title {\n    font-size: 0.74rem;\n    font-weight: 760;\n    letter-spacing: 0.06em;");
+    expect(styles).toContain(".site-footer__link-list {\n    gap: 5px;");
     expect(styles).toContain("white-space: nowrap;");
     expect(styles).toContain(".site-footer__social-links {\n    column-gap: 14px;\n    display: flex;");
     expect(styles).toContain("--footer-social-size: var(--type-button);");

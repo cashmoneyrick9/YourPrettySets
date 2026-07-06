@@ -31,10 +31,15 @@ describe("SiteFooter", () => {
     expect(within(footerNav).getByRole("link", { name: "Shop All" })).toHaveAttribute("href", "/shop");
     expect(within(footerNav).getByRole("link", { name: "New Arrivals" })).toHaveAttribute("href", "/shop");
     expect(within(footerNav).getByRole("link", { name: "Best Sellers" })).toHaveAttribute("href", "/shop");
+    expect(within(footerNav).getByRole("link", { name: "Ready to Ship" })).toHaveAttribute(
+      "href",
+      "/shop/ready-to-ship"
+    );
 
     expect(within(footerNav).getByRole("link", { name: "Sizing" })).toHaveAttribute("href", "/help/sizing");
     expect(within(footerNav).getByRole("link", { name: "Application" })).toHaveAttribute("href", "/help/how-to-apply");
     expect(within(footerNav).getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/help/contact");
+    expect(within(footerNav).getByRole("link", { name: "FAQ" })).toHaveAttribute("href", "/help/faq");
     expect(within(footerNav).getByRole("link", { name: "Shipping" })).toHaveAttribute("href", "/help/shipping-returns");
     expect(within(footerNav).getByRole("link", { name: "Returns" })).toHaveAttribute("href", "/help/shipping-returns");
     expect(within(footerNav).getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");

@@ -3170,24 +3170,37 @@ h1 {
 
   .site-footer-email-shell + .site-footer {
     --footer-link-size: 0.78rem;
+    padding-top: 46px;
   }
 
   .site-footer__inner {
-    gap: 34px;
+    gap: 28px;
     padding-inline: 16px;
   }
 
   .site-footer__brand-block {
-    gap: 8px;
+    gap: 5px;
   }
 
   .site-footer__columns {
-    gap: 12px;
+    gap: 14px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-self: center;
+    width: min(100%, 306px);
   }
 
   .site-footer__column {
-    gap: 10px;
+    gap: 12px;
+  }
+
+  .site-footer__column-title {
+    font-size: 0.74rem;
+    font-weight: 760;
+    letter-spacing: 0.06em;
+  }
+
+  .site-footer__link-list {
+    gap: 5px;
   }
 
   .site-footer__text-link,

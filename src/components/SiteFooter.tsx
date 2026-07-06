@@ -4,13 +4,15 @@ import { Mail } from "lucide-react";
 const shopLinks = [
   { label: "Shop All", href: "/shop" },
   { label: "New Arrivals", href: "/shop" },
-  { label: "Best Sellers", href: "/shop" }
+  { label: "Best Sellers", href: "/shop" },
+  { label: "Ready to Ship", href: "/shop/ready-to-ship" }
 ];
 
 const helpLinks = [
   { label: "Sizing", href: "/help/sizing" },
   { label: "Application", href: "/help/how-to-apply" },
-  { label: "Contact", href: "/help/contact" }
+  { label: "Contact", href: "/help/contact" },
+  { label: "FAQ", href: "/help/faq" }
 ];
 
 const policyLinks = [

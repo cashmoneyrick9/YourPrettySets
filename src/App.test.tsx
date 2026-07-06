@@ -215,7 +215,9 @@ describe("App", () => {
 
     renderApp();
 
-    expect(screen.getByRole("heading", { name: "The Press-On Guide" })).toBeInTheDocument();
+    const main = screen.getByRole("main");
+
+    expect(within(main).getByRole("heading", { name: "The Press-On Guide" })).toBeInTheDocument();
 
     for (const [name, href] of [
       ["Sizing Guide", "/help/sizing"],
@@ -224,7 +226,7 @@ describe("App", () => {
       ["FAQ", "/help/faq"],
       ["Contact Support", "/help/contact"]
     ] as const) {
-      expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
+      expect(within(main).getByRole("link", { name })).toHaveAttribute("href", href);
     }
   });
 
