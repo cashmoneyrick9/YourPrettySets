@@ -386,37 +386,41 @@ export function BrandHeader() {
                   onClick={() => selectMobileContentSection(contentSectionId)}
                   type="button"
                 >
-                  {isActive ? section.label.toUpperCase() : section.label}
+                  {section.label}
                 </button>
               );
             })}
           </div>
 
-          {mobileMenuMode === "expanded" ? (
-            <div className="brand-header__mobile-menu-content">
-              {activeMobileSection ? (
-                <div
-                  className="brand-header__mobile-submenu-panel"
-                  key={activeMobileSection.id}
-                  data-active-section={activeMobileSection.id}
-                >
-                  <p className="brand-header__mobile-submenu-eyebrow">{activeMobileSection.eyebrow}</p>
-                  <div className="brand-header__mobile-submenu-links">
-                    {activeMobileSection.children?.map((child) => (
-                      <Link
-                        className="brand-header__mobile-submenu-link"
-                        key={child.href}
-                        onClick={closeMobileMenu}
-                        to={child.href}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
+          <div
+            aria-hidden={mobileMenuMode === "default" ? "true" : undefined}
+            className={[
+              "brand-header__mobile-menu-content",
+              `brand-header__mobile-menu-content--${mobileMenuMode}`
+            ].join(" ")}
+          >
+            {activeMobileSection ? (
+              <div
+                className="brand-header__mobile-submenu-panel"
+                key={activeMobileSection.id}
+                data-active-section={activeMobileSection.id}
+              >
+                <p className="brand-header__mobile-submenu-eyebrow">{activeMobileSection.eyebrow}</p>
+                <div className="brand-header__mobile-submenu-links">
+                  {activeMobileSection.children?.map((child) => (
+                    <Link
+                      className="brand-header__mobile-submenu-link"
+                      key={child.href}
+                      onClick={closeMobileMenu}
+                      to={child.href}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
                 </div>
-              ) : null}
-            </div>
-          ) : null}
+              </div>
+            ) : null}
+          </div>
         </nav>
       </div>
     </header>

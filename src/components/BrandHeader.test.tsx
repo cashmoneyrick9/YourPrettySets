@@ -78,7 +78,10 @@ describe("BrandHeader", () => {
     expect(within(selector).getByRole("button", { name: "Shop" })).not.toHaveClass(
       "brand-header__mobile-selector-item--active"
     );
-    expect(mobileNav.querySelector(".brand-header__mobile-menu-content")).toBeNull();
+    const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
+    expect(content).not.toBeNull();
+    expect(content).toHaveClass("brand-header__mobile-menu-content--default");
+    expect(content).toHaveAttribute("aria-hidden", "true");
     expect(within(mobileNav).queryByRole("link", { name: "Ready to Ship" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Made to Order" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Custom Orders" })).not.toBeInTheDocument();
@@ -92,6 +95,29 @@ describe("BrandHeader", () => {
     expect(screen.getByLabelText("YourPrettySets home")).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("ignores wheel and touch selector gestures while the mobile menu is in default mode", async () => {
+    const user = userEvent.setup();
+    renderBrandHeader();
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+
+    const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+    const selector = within(mobileNav).getByLabelText("Menu sections");
+
+    fireEvent.wheel(selector, { deltaY: 42 });
+    fireEvent.touchStart(selector, { touches: [{ clientY: 220 }] });
+    fireEvent.touchEnd(selector, { changedTouches: [{ clientY: 132 }] });
+
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
+    expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--expanded");
+    expect(within(selector).getByRole("button", { name: "Shop" })).not.toHaveAttribute("aria-current");
+    expect(within(selector).getByRole("button", { name: "Help" })).not.toHaveAttribute("aria-current");
+    const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
+    expect(content).not.toBeNull();
+    expect(content).toHaveClass("brand-header__mobile-menu-content--default");
+    expect(content).toHaveAttribute("aria-hidden", "true");
   });
 
   it("expands from the default menu into the Shop split-screen submenu", async () => {
@@ -112,12 +138,15 @@ describe("BrandHeader", () => {
       "aria-current",
       "page"
     );
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveTextContent("Shop");
     expect(within(selector).getByRole("button", { name: "Help" })).not.toHaveAttribute(
       "aria-current"
     );
 
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
+    expect(content).toHaveClass("brand-header__mobile-menu-content--expanded");
+    expect(content).not.toHaveAttribute("aria-hidden");
     expect(within(content as HTMLElement).getByText("SHOP")).toHaveClass(
       "brand-header__mobile-submenu-eyebrow"
     );
@@ -183,9 +212,12 @@ describe("BrandHeader", () => {
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--expanded");
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
     expect(helpToggle).toHaveAttribute("aria-current", "page");
+    expect(helpToggle).toHaveTextContent("Help");
     expect(shopToggle).not.toHaveAttribute("aria-current");
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
+    expect(content).toHaveClass("brand-header__mobile-menu-content--expanded");
+    expect(content).not.toHaveAttribute("aria-hidden");
     expect(within(content as HTMLElement).getByText("HELP")).toHaveClass(
       "brand-header__mobile-submenu-eyebrow"
     );

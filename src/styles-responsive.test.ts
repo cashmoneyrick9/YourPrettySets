@@ -46,6 +46,15 @@ function getRuleBody(css: string, selector: string) {
   return match?.[1] ?? "";
 }
 
+function getRuleBodies(css: string, selector: string) {
+  const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  return Array.from(
+    css.matchAll(new RegExp(`(?:^|\\n)\\s*${escapedSelector}\\s*\\{([^{}]*)\\}`, "g")),
+    ([, body]) => body
+  );
+}
+
 describe("small mobile responsive CSS", () => {
   it("defines the homepage typography system and loads the intended fonts", () => {
     expect(styles).toContain("@import url(\"https://fonts.googleapis.com/css2?family=Fraunces");
@@ -775,15 +784,78 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("grid-template-columns: minmax(0, 38%) minmax(0, 62%);");
     expect(styles).toContain(".brand-header__mobile-menu-selector--default");
     expect(styles).toContain(".brand-header__mobile-menu-selector--expanded");
-    expect(styles).toContain("background: #fbf4f3;");
+    expect(styles).toContain("background: #eab6b4;");
     expect(styles).toContain("background: #fffdfb;");
     expect(styles).toContain("border-left: 1px solid rgba(31, 36, 40, 0.13);");
+    expect(styles).toContain(".brand-header__mobile-menu-content--default");
+    expect(styles).toContain(".brand-header__mobile-menu-content--expanded");
     expect(styles).toContain(".brand-header__mobile-selector-indicator");
-    expect(styles).toContain(".brand-header__mobile-menu-selector--default .brand-header__mobile-selector-indicator");
-    expect(styles).toContain("display: none;");
+    expect(styles).toContain(".brand-header__mobile-menu--default .brand-header__mobile-selector-indicator");
+    expect(styles).toContain(".brand-header__mobile-menu--expanded .brand-header__mobile-selector-indicator");
+    expect(styles).toContain("opacity: 0;");
+    expect(styles).toContain("opacity: 1;");
     expect(styles).toContain("height: clamp(32px, 10vw, 48px);");
     expect(styles).not.toContain(".brand-header__mobile-submenu {\n  border-left: 1px solid");
     expect(styles).not.toContain(".brand-header__mobile-menu-content {\n    border-radius:");
+  });
+
+  it("separates default centered menu layout from expanded wheel selector CSS", () => {
+    const rootSelectorItemRule = getRuleBody(styles, ".brand-header__mobile-selector-item");
+    expect(rootSelectorItemRule).toContain("font-family: var(--font-display);");
+    expect(rootSelectorItemRule).not.toContain("font-family: var(--font-body);");
+    expect(styles).toContain(
+      ".brand-header .brand-header__mobile-selector-item {\n  font-family: var(--font-display);"
+    );
+
+    const activeSelectorItemRule = getRuleBody(styles, ".brand-header__mobile-selector-item--active");
+    expect(activeSelectorItemRule).toContain("text-transform: none;");
+    expect(activeSelectorItemRule).not.toContain("text-transform: uppercase;");
+
+    const baseSelectorItemRules = getRuleBodies(styles, ".brand-header__mobile-selector-item");
+
+    for (const ruleBody of baseSelectorItemRules) {
+      expect(ruleBody).not.toContain("position: absolute;");
+      expect(ruleBody).not.toContain("transform: translate(-50%");
+      expect(ruleBody).not.toContain("left: 57%;");
+    }
+
+    const defaultSelectorItemRule = getRuleBody(
+      styles,
+      ".brand-header__mobile-menu--default .brand-header__mobile-selector-item"
+    );
+    expect(defaultSelectorItemRule).toContain("position: static;");
+    expect(defaultSelectorItemRule).toContain("transform: none;");
+
+    const expandedSelectorItemRule = getRuleBody(
+      styles,
+      ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item"
+    );
+    expect(expandedSelectorItemRule).toContain("position: absolute;");
+    expect(expandedSelectorItemRule).toContain("transform: translate(-50%");
+
+    expect(styles).toContain(
+      ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0"
+    );
+    expect(styles).not.toContain("\n  .brand-header__mobile-selector-item--offset-0 {");
+    expect(styles).toContain(
+      ".brand-header__mobile-menu--default .brand-header__mobile-selector-indicator {\n    opacity: 0;"
+    );
+    expect(styles).toContain(
+      ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-indicator {\n    opacity: 1;"
+    );
+
+    const defaultContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--default");
+    expect(defaultContentRule).toContain("opacity: 0;");
+    expect(defaultContentRule).toContain("pointer-events: none;");
+    expect(defaultContentRule).toContain("position: absolute;");
+    expect(defaultContentRule).toContain("transform: translateX(32px);");
+    expect(defaultContentRule).toContain("visibility: hidden;");
+
+    const expandedContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--expanded");
+    expect(expandedContentRule).toContain("opacity: 1;");
+    expect(expandedContentRule).toContain("position: relative;");
+    expect(expandedContentRule).toContain("transform: translateX(0);");
+    expect(expandedContentRule).toContain("visibility: visible;");
   });
 
   it("keeps the mobile selector motion calm and respects reduced motion", () => {
@@ -800,9 +872,12 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(
       "transition:\n    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);"
     );
+    expect(styles).toContain(
+      "transition:\n      opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),\n      transform 540ms cubic-bezier(0.22, 1, 0.36, 1),\n      visibility 0ms linear 540ms;"
+    );
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
     expect(styles).toContain(".brand-header__mobile-menu-selector,\n  .brand-header__mobile-selector-item");
-    expect(styles).toContain(".brand-header__mobile-selector-item,\n  .brand-header__mobile-submenu-panel");
+    expect(styles).toContain(".brand-header__mobile-selector-item,\n  .brand-header__mobile-menu-content,\n  .brand-header__mobile-submenu-panel");
     expect(styles).toContain("animation: none;");
     expect(styles).toContain("transition: opacity 120ms ease;");
   });
