@@ -45,6 +45,7 @@ const mobileMenuSections: MobileMenuSection[] = mainNavItems.map((item) => ({
 }));
 
 type MobileContentSectionId = Exclude<MobileMenuSection["id"], "home">;
+type MobileMenuMode = "default" | "expanded";
 
 const mobileContentSectionIds: MobileContentSectionId[] = ["shop", "help"];
 const headerAtTopBodyClass = "header-at-top";
@@ -53,7 +54,9 @@ const mobileMenuOpenBodyClass = "mobile-menu-open";
 
 export function BrandHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeMobileSectionId, setActiveMobileSectionId] = useState<MobileContentSectionId>("shop");
+  const [mobileMenuMode, setMobileMenuMode] = useState<MobileMenuMode>("default");
+  const [activeMobileSectionId, setActiveMobileSectionId] =
+    useState<MobileContentSectionId | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const touchStartYRef = useRef<number | null>(null);
   const wheelLockRef = useRef(false);
@@ -158,7 +161,8 @@ export function BrandHeader() {
       window.clearTimeout(wheelLockTimeoutRef.current);
       wheelLockTimeoutRef.current = null;
     }
-    setActiveMobileSectionId("shop");
+    setMobileMenuMode("default");
+    setActiveMobileSectionId(null);
     setIsMenuOpen(true);
   };
 
@@ -173,6 +177,10 @@ export function BrandHeader() {
 
   const rotateMobileSection = (direction: 1 | -1) => {
     setActiveMobileSectionId((current) => {
+      if (!current) {
+        return "shop";
+      }
+
       const currentIndex = mobileContentSectionIds.indexOf(current);
       const nextIndex =
         (currentIndex + direction + mobileContentSectionIds.length) % mobileContentSectionIds.length;
@@ -182,6 +190,10 @@ export function BrandHeader() {
   };
 
   const handleSelectorWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (mobileMenuMode !== "expanded") {
+      return;
+    }
+
     if (Math.abs(event.deltaY) < 8) {
       return;
     }
@@ -200,10 +212,18 @@ export function BrandHeader() {
   };
 
   const handleSelectorTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    if (mobileMenuMode !== "expanded") {
+      return;
+    }
+
     touchStartYRef.current = event.touches[0]?.clientY ?? null;
   };
 
   const handleSelectorTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    if (mobileMenuMode !== "expanded") {
+      return;
+    }
+
     const touchStartY = touchStartYRef.current;
     const touchEndY = event.changedTouches[0]?.clientY ?? null;
     touchStartYRef.current = null;
@@ -215,9 +235,18 @@ export function BrandHeader() {
     rotateMobileSection(touchEndY < touchStartY ? 1 : -1);
   };
 
+  const selectMobileContentSection = (sectionId: MobileContentSectionId) => {
+    setActiveMobileSectionId(sectionId);
+    setMobileMenuMode("expanded");
+  };
+
   const activeMobileSection = mobileMenuSections.find((section) => section.id === activeMobileSectionId);
 
   const getSelectorOffset = (sectionId: MobileMenuSection["id"]) => {
+    if (!activeMobileSectionId) {
+      return 0;
+    }
+
     if (sectionId === activeMobileSectionId) {
       return 0;
     }
@@ -300,11 +329,20 @@ export function BrandHeader() {
       >
         <nav
           aria-label="Mobile navigation"
-          className={`brand-header__mobile-menu brand-header__mobile-menu--active-${activeMobileSectionId}`}
+          className={[
+            "brand-header__mobile-menu",
+            `brand-header__mobile-menu--${mobileMenuMode}`,
+            activeMobileSectionId ? `brand-header__mobile-menu--active-${activeMobileSectionId}` : ""
+          ]
+            .filter(Boolean)
+            .join(" ")}
         >
           <div
             aria-label="Menu sections"
-            className="brand-header__mobile-menu-selector"
+            className={[
+              "brand-header__mobile-menu-selector",
+              `brand-header__mobile-menu-selector--${mobileMenuMode}`
+            ].join(" ")}
             onTouchEnd={handleSelectorTouchEnd}
             onTouchStart={handleSelectorTouchStart}
             onWheel={handleSelectorWheel}
@@ -312,7 +350,7 @@ export function BrandHeader() {
             <span className="brand-header__mobile-selector-indicator" aria-hidden="true" />
             {mobileMenuSections.map((section) => {
               const selectorOffset = getSelectorOffset(section.id);
-              const isActive = section.id === activeMobileSectionId;
+              const isActive = mobileMenuMode === "expanded" && section.id === activeMobileSectionId;
               const selectorClasses = [
                 "brand-header__mobile-selector-item",
                 isActive ? "brand-header__mobile-selector-item--active" : "",
@@ -345,7 +383,7 @@ export function BrandHeader() {
                   className={selectorClasses}
                   data-offset={selectorOffset}
                   key={section.id}
-                  onClick={() => setActiveMobileSectionId(contentSectionId)}
+                  onClick={() => selectMobileContentSection(contentSectionId)}
                   type="button"
                 >
                   {isActive ? section.label.toUpperCase() : section.label}
@@ -354,29 +392,31 @@ export function BrandHeader() {
             })}
           </div>
 
-          <div className="brand-header__mobile-menu-content">
-            {activeMobileSection ? (
-              <div
-                className="brand-header__mobile-submenu-panel"
-                key={activeMobileSection.id}
-                data-active-section={activeMobileSection.id}
-              >
-                <p className="brand-header__mobile-submenu-eyebrow">{activeMobileSection.eyebrow}</p>
-                <div className="brand-header__mobile-submenu-links">
-                  {activeMobileSection.children?.map((child) => (
-                    <Link
-                      className="brand-header__mobile-submenu-link"
-                      key={child.href}
-                      onClick={closeMobileMenu}
-                      to={child.href}
-                    >
-                      {child.label}
-                    </Link>
-                  ))}
+          {mobileMenuMode === "expanded" ? (
+            <div className="brand-header__mobile-menu-content">
+              {activeMobileSection ? (
+                <div
+                  className="brand-header__mobile-submenu-panel"
+                  key={activeMobileSection.id}
+                  data-active-section={activeMobileSection.id}
+                >
+                  <p className="brand-header__mobile-submenu-eyebrow">{activeMobileSection.eyebrow}</p>
+                  <div className="brand-header__mobile-submenu-links">
+                    {activeMobileSection.children?.map((child) => (
+                      <Link
+                        className="brand-header__mobile-submenu-link"
+                        key={child.href}
+                        onClick={closeMobileMenu}
+                        to={child.href}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ) : null}
-          </div>
+              ) : null}
+            </div>
+          ) : null}
         </nav>
       </div>
     </header>

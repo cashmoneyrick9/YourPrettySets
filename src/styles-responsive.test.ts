@@ -769,11 +769,18 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__mobile-menu-dialog");
     expect(styles).toContain(".brand-header__mobile-menu-selector");
     expect(styles).toContain(".brand-header__mobile-menu-content");
+    expect(styles).toContain(".brand-header--menu-open .brand-header__mobile-menu--default");
+    expect(styles).toContain("grid-template-columns: 1fr;");
+    expect(styles).toContain(".brand-header--menu-open .brand-header__mobile-menu--expanded");
     expect(styles).toContain("grid-template-columns: minmax(0, 38%) minmax(0, 62%);");
+    expect(styles).toContain(".brand-header__mobile-menu-selector--default");
+    expect(styles).toContain(".brand-header__mobile-menu-selector--expanded");
     expect(styles).toContain("background: #fbf4f3;");
     expect(styles).toContain("background: #fffdfb;");
     expect(styles).toContain("border-left: 1px solid rgba(31, 36, 40, 0.13);");
     expect(styles).toContain(".brand-header__mobile-selector-indicator");
+    expect(styles).toContain(".brand-header__mobile-menu-selector--default .brand-header__mobile-selector-indicator");
+    expect(styles).toContain("display: none;");
     expect(styles).toContain("height: clamp(32px, 10vw, 48px);");
     expect(styles).not.toContain(".brand-header__mobile-submenu {\n  border-left: 1px solid");
     expect(styles).not.toContain(".brand-header__mobile-menu-content {\n    border-radius:");
@@ -781,8 +788,12 @@ describe("small mobile responsive CSS", () => {
 
   it("keeps the mobile selector motion calm and respects reduced motion", () => {
     expect(styles).toContain("@keyframes mobile-submenu-enter");
+    expect(styles).toContain("@keyframes mobile-menu-default-enter");
+    expect(styles).toContain("@keyframes mobile-menu-selector-expand");
     expect(styles).toContain("transform: translateY(8px);");
     expect(styles).toContain("animation: mobile-submenu-enter 320ms cubic-bezier(0.22, 1, 0.36, 1);");
+    expect(styles).toContain("animation: mobile-menu-default-enter 440ms cubic-bezier(0.22, 1, 0.36, 1);");
+    expect(styles).toContain("animation: mobile-menu-selector-expand 520ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(styles).toContain(
       "transition:\n    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    font-size 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    color 420ms ease;"
     );
@@ -790,6 +801,7 @@ describe("small mobile responsive CSS", () => {
       "transition:\n    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);"
     );
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(styles).toContain(".brand-header__mobile-menu-selector,\n  .brand-header__mobile-selector-item");
     expect(styles).toContain(".brand-header__mobile-selector-item,\n  .brand-header__mobile-submenu-panel");
     expect(styles).toContain("animation: none;");
     expect(styles).toContain("transition: opacity 120ms ease;");
