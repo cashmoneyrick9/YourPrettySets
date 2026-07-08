@@ -394,7 +394,13 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".featured-sets-section");
     expect(styles).toContain(".featured-sets-carousel");
     expect(styles).toContain(".featured-set-card");
-    expect(styles).toContain(".featured-set-card__image");
+    expect(styles).toContain(".featured-sets-carousel .featured-sets-carousel__slide");
+    expect(styles).toContain(".featured-set-card .product-preview-card__image");
+    expect(styles).toContain(".featured-set-card .product-preview-card__body");
+    expect(styles).toContain(".featured-set-card p");
+    expect(styles).toContain("font-size: var(--type-body);");
+    expect(styles).not.toContain(".featured-set-card__image");
+    expect(styles).not.toContain(".featured-set-card__body");
     expect(styles).not.toContain(".carousel-progress__pill");
     expect(styles).not.toContain("grid-auto-columns: minmax(148px, 56vw);");
     expect(styles).not.toContain(".confidence-carousel__hint");
