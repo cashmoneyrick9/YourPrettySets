@@ -150,7 +150,7 @@ describe("App", () => {
     expect(window.location.pathname).toBe("/shop");
   });
 
-  it("resets scroll when navigating from Home collection previews to Shop", async () => {
+  it("resets scroll when navigating from Home collection previews to Ready to Ship", async () => {
     const user = userEvent.setup();
     const scrollTo = vi.mocked(window.scrollTo);
     renderApp();
@@ -159,8 +159,9 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: "Everyday" }));
     await user.click(screen.getByRole("link", { name: "See more" }));
 
-    expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
-    expect(window.location.pathname).toBe("/shop");
+    expect(screen.getByRole("heading", { name: "Ready to Ship" })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/shop/ready-to-ship");
+    expect(window.location.search).toBe("?collection=Everyday");
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
   });
 

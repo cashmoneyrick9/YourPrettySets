@@ -2,27 +2,28 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter, MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { featuredProducts, products } from "../data/products";
-import { CollectionFilters } from "./CollectionFilters";
+import { products } from "../data/products";
+import { HomeCollections } from "./HomeCollections";
 
 afterEach(() => {
   cleanup();
 });
 
-describe("CollectionFilters", () => {
-  function renderCollectionFilters() {
+describe("HomeCollections", () => {
+  function renderHomeCollections() {
     return render(
       <BrowserRouter>
-        <CollectionFilters />
+        <HomeCollections />
       </BrowserRouter>
     );
   }
 
   it("starts Browse unselected, then shows collection products after selection", async () => {
     const user = userEvent.setup();
-    renderCollectionFilters();
+    renderHomeCollections();
 
     expect(screen.getByRole("heading", { name: "Browse" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Featured sets" })).not.toBeInTheDocument();
 
     for (const collection of ["Everyday", "Date Night", "Vacation", "Bridal", "Birthday", "Work/Neutral", "Statement"]) {
       expect(screen.getByRole("button", { name: collection })).toBeInTheDocument();
@@ -91,32 +92,9 @@ describe("CollectionFilters", () => {
     }
   });
 
-  it("renders real featured product cards below Browse before any collection is selected", () => {
-    renderCollectionFilters();
-
-    const browseHeading = screen.getByRole("heading", { name: "Browse" });
-    const featuredHeading = screen.getByRole("heading", { name: "Featured sets" });
-    expect(browseHeading.compareDocumentPosition(featuredHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(document.querySelector(".featured-sets-carousel")).toHaveClass("mobile-carousel");
-
-    for (const product of featuredProducts) {
-      const card = screen.getByRole("link", { name: `View ${product.name}` });
-      expect(card).toHaveAttribute("href", `/products/${product.slug}`);
-      expect(card).toHaveClass("featured-set-card");
-      expect(within(card).getByRole("img", { name: product.images.clean })).toBeInTheDocument();
-      expect(within(card).getByRole("heading", { name: product.name })).toBeInTheDocument();
-      expect(within(card).getByText(`$${product.price}`)).toBeInTheDocument();
-    }
-
-    for (const name of ["Glazed Petal", "Sunset Sprinkle", "Pearl Wink", "Poolside Pop"]) {
-      expect(screen.queryByRole("link", { name: `View ${name}` })).not.toBeInTheDocument();
-      expect(screen.queryByRole("heading", { name })).not.toBeInTheDocument();
-    }
-  });
-
   it("clears the selected collection when the selected tile is tapped again", async () => {
     const user = userEvent.setup();
-    renderCollectionFilters();
+    renderHomeCollections();
 
     await user.click(screen.getByRole("button", { name: "Bridal" }));
 
@@ -130,11 +108,30 @@ describe("CollectionFilters", () => {
     expect(screen.queryByRole("heading", { name: "Bridal sets" })).not.toBeInTheDocument();
     expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-auto-rotate", "true");
-    expect(screen.getByRole("heading", { name: "Featured sets" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Featured sets" })).not.toBeInTheDocument();
+  });
+
+  it("links active Browse collections to the filtered Ready to Ship shop route", async () => {
+    const user = userEvent.setup();
+    renderHomeCollections();
+
+    await user.click(screen.getByRole("button", { name: "Date Night" }));
+
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
+      "href",
+      "/shop/ready-to-ship?collection=Date%20Night"
+    );
+
+    await user.click(screen.getByRole("button", { name: "Work/Neutral" }));
+
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
+      "href",
+      "/shop/ready-to-ship?collection=Work%2FNeutral"
+    );
   });
 
   it("uses shared carousel behavior instead of custom pointer-drag handling", () => {
-    renderCollectionFilters();
+    renderHomeCollections();
 
     const carousel = document.querySelector(".collection-carousel") as HTMLElement;
     const track = document.querySelector(".collection-track") as HTMLElement;
@@ -154,7 +151,7 @@ describe("CollectionFilters", () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
         <Routes>
-          <Route path="/" element={<CollectionFilters />} />
+          <Route path="/" element={<HomeCollections />} />
           <Route path="/products/:slug" element={<ProductRouteStateProbe />} />
         </Routes>
       </MemoryRouter>

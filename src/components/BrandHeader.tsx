@@ -1,5 +1,5 @@
 import { Menu, ShoppingBag, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { TouchEvent, WheelEvent, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 type NavItem = {
@@ -32,13 +32,30 @@ const mainNavItems: NavItem[] = [
     ]
   }
 ];
+
+type MobileMenuSection = NavItem & {
+  eyebrow?: string;
+  id: "home" | "shop" | "help";
+};
+
+const mobileMenuSections: MobileMenuSection[] = mainNavItems.map((item) => ({
+  ...item,
+  eyebrow: item.children ? item.label.toUpperCase() : undefined,
+  id: item.label.toLowerCase() as MobileMenuSection["id"]
+}));
+
+type MobileContentSectionId = Exclude<MobileMenuSection["id"], "home">;
+
+const mobileContentSectionIds: MobileContentSectionId[] = ["shop", "help"];
 const headerAtTopBodyClass = "header-at-top";
 const headerScrolledBodyClass = "header-scrolled";
 const mobileMenuOpenBodyClass = "mobile-menu-open";
 
 export function BrandHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [openMobileNavGroups, setOpenMobileNavGroups] = useState<Record<string, boolean>>({});
+  const [activeMobileSectionId, setActiveMobileSectionId] = useState<MobileContentSectionId>("shop");
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const touchStartYRef = useRef<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -65,10 +82,6 @@ export function BrandHeader() {
 
   useEffect(() => {
     document.body.classList.toggle(mobileMenuOpenBodyClass, isMenuOpen);
-
-    if (!isMenuOpen) {
-      setOpenMobileNavGroups({});
-    }
 
     if (!isMenuOpen) {
       return;
@@ -100,6 +113,7 @@ export function BrandHeader() {
     window.addEventListener("wheel", preventMenuScroll, { passive: false });
     window.addEventListener("touchmove", preventMenuScroll, { passive: false });
     window.addEventListener("keydown", closeOnEscape);
+    menuButtonRef.current?.focus();
 
     return () => {
       document.body.classList.remove(mobileMenuOpenBodyClass);
@@ -120,6 +134,80 @@ export function BrandHeader() {
       }
     };
   }, [isMenuOpen]);
+
+  const closeMobileMenu = () => {
+    setIsMenuOpen(false);
+    window.setTimeout(() => {
+      menuButtonRef.current?.focus();
+    }, 0);
+  };
+
+  const openMobileMenu = () => {
+    setActiveMobileSectionId("shop");
+    setIsMenuOpen(true);
+  };
+
+  const toggleMobileMenu = () => {
+    if (isMenuOpen) {
+      closeMobileMenu();
+      return;
+    }
+
+    openMobileMenu();
+  };
+
+  const rotateMobileSection = (direction: 1 | -1) => {
+    setActiveMobileSectionId((current) => {
+      const currentIndex = mobileContentSectionIds.indexOf(current);
+      const nextIndex =
+        (currentIndex + direction + mobileContentSectionIds.length) % mobileContentSectionIds.length;
+
+      return mobileContentSectionIds[nextIndex];
+    });
+  };
+
+  const handleSelectorWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (Math.abs(event.deltaY) < 8) {
+      return;
+    }
+
+    event.preventDefault();
+    rotateMobileSection(event.deltaY > 0 ? 1 : -1);
+  };
+
+  const handleSelectorTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    touchStartYRef.current = event.touches[0]?.clientY ?? null;
+  };
+
+  const handleSelectorTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    const touchStartY = touchStartYRef.current;
+    const touchEndY = event.changedTouches[0]?.clientY ?? null;
+    touchStartYRef.current = null;
+
+    if (touchStartY === null || touchEndY === null || Math.abs(touchStartY - touchEndY) < 32) {
+      return;
+    }
+
+    rotateMobileSection(touchEndY < touchStartY ? 1 : -1);
+  };
+
+  const activeMobileSection = mobileMenuSections.find((section) => section.id === activeMobileSectionId);
+
+  const getSelectorOffset = (sectionId: MobileMenuSection["id"]) => {
+    if (sectionId === activeMobileSectionId) {
+      return 0;
+    }
+
+    if (activeMobileSectionId === "shop") {
+      return sectionId === "home" ? -1 : 1;
+    }
+
+    if (sectionId === "shop") {
+      return -1;
+    }
+
+    return 1;
+  };
 
   const headerClasses = [
     "brand-header",
@@ -154,14 +242,15 @@ export function BrandHeader() {
 
         <div className="brand-header__mobile-actions" aria-label="Mobile header actions">
           <button
+            ref={menuButtonRef}
             className="brand-header__icon-button"
             type="button"
             aria-controls="mobile-navigation"
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            onClick={() => setIsMenuOpen((current) => !current)}
+            onClick={toggleMobileMenu}
           >
-            {isMenuOpen ? <X aria-hidden="true" size={18} /> : <Menu aria-hidden="true" size={18} />}
+            {isMenuOpen ? <X aria-hidden="true" size={16} strokeWidth={1.7} /> : <Menu aria-hidden="true" size={18} />}
           </button>
           <button
             aria-disabled="true"
@@ -177,60 +266,95 @@ export function BrandHeader() {
         </div>
       </div>
 
-      <nav
+      <div
         id="mobile-navigation"
-        className="brand-header__mobile-menu"
-        aria-label="Mobile navigation"
+        aria-label="Mobile menu"
+        aria-modal="true"
+        className="brand-header__mobile-menu-dialog"
+        role="dialog"
         hidden={!isMenuOpen}
       >
-        <Link to="/" onClick={() => setIsMenuOpen(false)}>
-          Home
-        </Link>
+        <nav
+          aria-label="Mobile navigation"
+          className={`brand-header__mobile-menu brand-header__mobile-menu--active-${activeMobileSectionId}`}
+        >
+          <div
+            aria-label="Menu sections"
+            className="brand-header__mobile-menu-selector"
+            onTouchEnd={handleSelectorTouchEnd}
+            onTouchStart={handleSelectorTouchStart}
+            onWheel={handleSelectorWheel}
+          >
+            <span className="brand-header__mobile-selector-indicator" aria-hidden="true" />
+            {mobileMenuSections.map((section) => {
+              const selectorOffset = getSelectorOffset(section.id);
+              const isActive = section.id === activeMobileSectionId;
+              const selectorClasses = [
+                "brand-header__mobile-selector-item",
+                isActive ? "brand-header__mobile-selector-item--active" : "",
+                `brand-header__mobile-selector-item--offset-${selectorOffset}`
+              ]
+                .filter(Boolean)
+                .join(" ");
 
-        {mainNavItems
-          .filter((item) => item.href !== "/")
-          .map((item) => {
-            const submenuId = `mobile-${item.label.toLowerCase().replace(/\s+/g, "-")}-submenu`;
-            const isSubmenuOpen = Boolean(openMobileNavGroups[item.href]);
+              if (section.id === "home") {
+                return (
+                  <Link
+                    aria-label="Home"
+                    className={selectorClasses}
+                    data-offset={selectorOffset}
+                    key={section.id}
+                    onClick={closeMobileMenu}
+                    to={section.href}
+                  >
+                    {section.label}
+                  </Link>
+                );
+              }
 
-            if (!item.children) {
+              const contentSectionId = section.id as MobileContentSectionId;
+
               return (
-                <Link key={item.href} to={item.href} onClick={() => setIsMenuOpen(false)}>
-                  {item.label}
-                </Link>
-              );
-            }
-
-            return (
-              <div className="brand-header__mobile-nav-group" key={item.href}>
                 <button
-                  aria-controls={submenuId}
-                  aria-expanded={isSubmenuOpen}
-                  className="brand-header__mobile-nav-toggle"
+                  aria-label={section.label}
+                  aria-current={isActive ? "page" : undefined}
+                  className={selectorClasses}
+                  data-offset={selectorOffset}
+                  key={section.id}
+                  onClick={() => setActiveMobileSectionId(contentSectionId)}
                   type="button"
-                  onClick={() =>
-                    setOpenMobileNavGroups((current) => ({
-                      ...current,
-                      [item.href]: !current[item.href]
-                    }))
-                  }
                 >
-                  {item.label}
+                  {isActive ? section.label.toUpperCase() : section.label}
                 </button>
+              );
+            })}
+          </div>
 
-                {isSubmenuOpen ? (
-                  <div className="brand-header__mobile-submenu" id={submenuId}>
-                    {item.children.map((child) => (
-                      <Link key={child.href} to={child.href} onClick={() => setIsMenuOpen(false)}>
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                ) : null}
+          <div className="brand-header__mobile-menu-content">
+            {activeMobileSection ? (
+              <div
+                className="brand-header__mobile-submenu-panel"
+                key={activeMobileSection.id}
+                data-active-section={activeMobileSection.id}
+              >
+                <p className="brand-header__mobile-submenu-eyebrow">{activeMobileSection.eyebrow}</p>
+                <div className="brand-header__mobile-submenu-links">
+                  {activeMobileSection.children?.map((child) => (
+                    <Link
+                      className="brand-header__mobile-submenu-link"
+                      key={child.href}
+                      onClick={closeMobileMenu}
+                      to={child.href}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
-            );
-          })}
-      </nav>
+            ) : null}
+          </div>
+        </nav>
+      </div>
     </header>
   );
 }

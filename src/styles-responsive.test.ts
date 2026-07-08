@@ -118,9 +118,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-footer__column-title");
     expect(styles).toContain(".site-footer__text-link");
     expect(styles).toContain(".brand-header__desktop-nav a {\n  color: var(--site-text-muted);\n  font-size: var(--type-button);");
-    expect(styles).toContain(".brand-header__mobile-menu a {\n  border-radius: 6px;\n  color: var(--site-text-primary);\n  font-size: var(--type-button);");
-    expect(styles).toContain("--mobile-nav-submenu-type: clamp(1rem, 4.4vw, 1.2rem);");
-    expect(styles).toContain(".brand-header__mobile-submenu a {\n  color: var(--site-text-muted);\n  font-size: var(--mobile-nav-submenu-type);");
+    expect(styles).toContain("--mobile-menu-active-type: clamp(1.85rem, 10.8vw, 3.2rem);");
+    expect(styles).toContain("--mobile-menu-link-type: clamp(1.34rem, 6vw, 2.05rem);");
+    expect(styles).toContain(".brand-header__mobile-submenu-link {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);");
     expect(styles).toContain(".review-story-viewer__card blockquote {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);\n  font-size: var(--type-display-special);");
     expect(styles).toContain(".site-footer__brand {\n  color: var(--footer-ink);\n  font-family: var(--font-display);\n  font-size: var(--type-display-special);");
     expect(styles).toContain("font-family: var(--font-cta);");
@@ -765,15 +765,30 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__mobile-menu {\n    display: grid;");
   });
 
-  it("presents open mobile nav submenus as centered subheading links without a container", () => {
-    expect(styles).toContain(".brand-header__mobile-submenu {\n  border-left: 0;");
-    expect(styles).toContain("justify-items: center;");
-    expect(styles).toContain("margin-left: 0;");
-    expect(styles).toContain("padding-left: 0;");
+  it("presents the mobile menu as an editorial split-screen selector", () => {
+    expect(styles).toContain(".brand-header__mobile-menu-dialog");
+    expect(styles).toContain(".brand-header__mobile-menu-selector");
+    expect(styles).toContain(".brand-header__mobile-menu-content");
+    expect(styles).toContain("grid-template-columns: minmax(0, 38%) minmax(0, 62%);");
+    expect(styles).toContain("background: #fbf4f3;");
+    expect(styles).toContain("background: #fffdfb;");
+    expect(styles).toContain("border-left: 1px solid rgba(31, 36, 40, 0.13);");
+    expect(styles).toContain(".brand-header__mobile-selector-indicator");
+    expect(styles).toContain("height: clamp(32px, 10vw, 48px);");
     expect(styles).not.toContain(".brand-header__mobile-submenu {\n  border-left: 1px solid");
-    expect(styles).not.toContain(".brand-header--menu-open .brand-header__mobile-submenu {\n    margin-left: 16px;");
-    expect(styles).toContain(".brand-header--menu-open .brand-header__mobile-submenu a {\n    color: var(--site-text-muted);\n    font-size: var(--mobile-nav-submenu-type);");
-    expect(styles).toContain("text-align: center;");
+    expect(styles).not.toContain(".brand-header__mobile-menu-content {\n    border-radius:");
+  });
+
+  it("keeps the mobile selector motion calm and respects reduced motion", () => {
+    expect(styles).toContain(
+      "transition:\n    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    font-size 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    color 420ms ease;"
+    );
+    expect(styles).toContain(
+      "transition:\n    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);"
+    );
+    expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(styles).toContain(".brand-header__mobile-selector-item,\n  .brand-header__mobile-submenu-panel");
+    expect(styles).toContain("transition: opacity 120ms ease;");
   });
 
   it("keeps the open mobile menu close button aligned to the right edge", () => {

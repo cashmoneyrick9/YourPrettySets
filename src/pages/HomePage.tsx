@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { CollectionFilters } from "../components/CollectionFilters";
+import { FeaturedSets } from "../components/FeaturedSets";
+import { HomeCollections } from "../components/HomeCollections";
 import { MobileCarousel } from "../components/MobileCarousel";
 import { ReviewsPolaroidStrip } from "../components/ReviewsPolaroidStrip";
 
@@ -50,7 +51,9 @@ export function HomePage() {
         </div>
       </section>
 
-      <CollectionFilters />
+      <HomeCollections />
+
+      <FeaturedSets />
 
       <section className="section-block confidence-section" id="how-it-works">
         <div className="section-heading confidence-section__heading">

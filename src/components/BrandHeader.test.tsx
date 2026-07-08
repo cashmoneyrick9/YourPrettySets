@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter } from "react-router-dom";
@@ -42,7 +42,7 @@ describe("BrandHeader", () => {
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
   });
 
-  it("opens a full-screen mobile overlay menu with the approved destinations", async () => {
+  it("opens a split-screen editorial mobile menu with Shop active by default", async () => {
     const user = userEvent.setup();
     renderBrandHeader();
 
@@ -59,15 +59,37 @@ describe("BrandHeader", () => {
     expect(document.body.style.position).toBe("fixed");
     expect(document.documentElement.style.overflow).toBe("hidden");
 
+    const dialog = screen.getByRole("dialog", { name: "Mobile menu" });
+    expect(dialog).toHaveClass("brand-header__mobile-menu-dialog");
+
     const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
     expect(mobileNav).toHaveClass("brand-header__mobile-menu");
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-shop");
 
-    expect(within(mobileNav).getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
-    expect(within(mobileNav).getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "false");
-    expect(within(mobileNav).getByRole("button", { name: "Help" })).toHaveAttribute("aria-expanded", "false");
-    expect(within(mobileNav).queryByRole("link", { name: "Ready to Ship" })).not.toBeInTheDocument();
-    expect(within(mobileNav).queryByRole("link", { name: "Made to Order" })).not.toBeInTheDocument();
-    expect(within(mobileNav).queryByRole("link", { name: "Custom Orders" })).not.toBeInTheDocument();
+    const selector = within(mobileNav).getByLabelText("Menu sections");
+    expect(within(selector).getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute("aria-current", "page");
+    expect(within(selector).getByRole("button", { name: "Help" })).not.toHaveAttribute("aria-current");
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveClass(
+      "brand-header__mobile-selector-item--active"
+    );
+    const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
+    expect(content).not.toBeNull();
+    expect(within(content as HTMLElement).getByText("SHOP")).toHaveClass(
+      "brand-header__mobile-submenu-eyebrow"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "Ready to Ship" })).toHaveAttribute(
+      "href",
+      "/shop/ready-to-ship"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "Made to Order" })).toHaveAttribute(
+      "href",
+      "/shop/made-to-order"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "Custom Orders" })).toHaveAttribute(
+      "href",
+      "/shop/custom-orders"
+    );
     expect(within(mobileNav).queryByRole("link", { name: "Help Center" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Sizing Guide" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "How to Apply" })).not.toBeInTheDocument();
@@ -80,18 +102,13 @@ describe("BrandHeader", () => {
     expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("tabindex", "-1");
   });
 
-  it("expands the mobile Shop submenu and closes after choosing a submenu route", async () => {
+  it("closes after choosing a Shop submenu route", async () => {
     const user = userEvent.setup();
     renderBrandHeader();
 
     await user.click(screen.getByRole("button", { name: "Open menu" }));
 
     const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
-    const shopToggle = within(mobileNav).getByRole("button", { name: "Shop" });
-
-    await user.click(shopToggle);
-
-    expect(shopToggle).toHaveAttribute("aria-expanded", "true");
     expect(within(mobileNav).getByRole("link", { name: "Ready to Ship" })).toHaveAttribute(
       "href",
       "/shop/ready-to-ship"
@@ -114,18 +131,30 @@ describe("BrandHeader", () => {
     window.history.pushState({}, "", "/");
   });
 
-  it("expands the mobile Help submenu and closes after choosing a help route", async () => {
+  it("switches the mobile selector to Help without showing Shop links", async () => {
     const user = userEvent.setup();
     renderBrandHeader();
 
     await user.click(screen.getByRole("button", { name: "Open menu" }));
 
     const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
-    const helpToggle = within(mobileNav).getByRole("button", { name: "Help" });
+    const selector = within(mobileNav).getByLabelText("Menu sections");
+    const shopToggle = within(selector).getByRole("button", { name: "Shop" });
+    const helpToggle = within(selector).getByRole("button", { name: "Help" });
 
     await user.click(helpToggle);
 
-    expect(helpToggle).toHaveAttribute("aria-expanded", "true");
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
+    expect(helpToggle).toHaveAttribute("aria-current", "page");
+    expect(shopToggle).not.toHaveAttribute("aria-current");
+    const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
+    expect(content).not.toBeNull();
+    expect(within(content as HTMLElement).getByText("HELP")).toHaveClass(
+      "brand-header__mobile-submenu-eyebrow"
+    );
+    expect(within(mobileNav).queryByRole("link", { name: "Ready to Ship" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Made to Order" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Custom Orders" })).not.toBeInTheDocument();
     expect(within(mobileNav).getByRole("link", { name: "Help Center" })).toHaveAttribute(
       "href",
       "/help"
@@ -155,6 +184,32 @@ describe("BrandHeader", () => {
     expect(document.body).not.toHaveClass("mobile-menu-open");
 
     window.history.pushState({}, "", "/");
+  });
+
+  it("rotates the mobile selector with wheel gestures on the left panel", async () => {
+    const user = userEvent.setup();
+    renderBrandHeader();
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+
+    const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+    const selector = within(mobileNav).getByLabelText("Menu sections");
+
+    fireEvent.wheel(selector, { deltaY: 42 });
+
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
+    expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
+
+    fireEvent.wheel(selector, { deltaY: -42 });
+
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-shop");
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
   });
 
   it("closes the overlay menu from a destination link or Escape", async () => {

@@ -104,7 +104,10 @@ describe("HomePage", () => {
     expect(collectionProductRow).toBeInTheDocument();
     expect(within(collectionProductRow).getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "/products/blush-crush");
     expect(within(collectionProductRow).getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "/products/soft-serve");
-    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop?collection=Everyday");
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
+      "href",
+      "/shop/ready-to-ship?collection=Everyday"
+    );
     expect(within(collectionProductRow).getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
     expect(within(collectionProductRow).getByRole("heading", { name: "Soft Serve" })).toBeInTheDocument();
     expect(screen.getAllByText("$18").length).toBeGreaterThan(0);
@@ -123,6 +126,25 @@ describe("HomePage", () => {
     expect(screen.queryByRole("heading", { name: "What’s Included" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Loved by first-time press-on buyers" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Questions before you order" })).not.toBeInTheDocument();
+  });
+
+  it("links active Browse collections to the filtered Ready to Ship shop route", async () => {
+    const user = userEvent.setup();
+    renderHomePage();
+
+    await user.click(screen.getByRole("button", { name: "Date Night" }));
+
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
+      "href",
+      "/shop/ready-to-ship?collection=Date%20Night"
+    );
+
+    await user.click(screen.getByRole("button", { name: "Work/Neutral" }));
+
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
+      "href",
+      "/shop/ready-to-ship?collection=Work%2FNeutral"
+    );
   });
 
   it("uses the polished storefront presentation without a hero background image", () => {
