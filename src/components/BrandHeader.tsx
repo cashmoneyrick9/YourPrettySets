@@ -236,6 +236,12 @@ export function BrandHeader() {
   };
 
   const selectMobileContentSection = (sectionId: MobileContentSectionId) => {
+    if (mobileMenuMode === "expanded" && activeMobileSectionId === sectionId) {
+      setActiveMobileSectionId(null);
+      setMobileMenuMode("default");
+      return;
+    }
+
     setActiveMobileSectionId(sectionId);
     setMobileMenuMode("expanded");
   };

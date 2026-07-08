@@ -784,7 +784,6 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header--menu-open .brand-header__mobile-menu--expanded");
     expect(styles).toContain(".brand-header__mobile-menu-selector--default");
     expect(styles).toContain(".brand-header__mobile-menu-selector--expanded");
-    expect(styles).toContain("background: #eab6b4;");
     expect(styles).toContain("background: #fffdfb;");
     expect(styles).toContain("border-left: 1px solid rgba(31, 36, 40, 0.13);");
     expect(styles).toContain(".brand-header__mobile-menu-content--default");
@@ -798,17 +797,20 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".brand-header__mobile-menu-content {\n    border-radius:");
 
     expect(getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu--default")).toContain(
-      "background: #eab6b4;"
+      "background: #fffdfb;"
     );
     expect(getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu--expanded")).toContain(
-      "background: #eab6b4;"
+      "background: #fffdfb;"
     );
     expect(getRuleBody(styles, ".brand-header__mobile-menu-selector--default")).toContain(
-      "background: #eab6b4;"
+      "background: #fffdfb;"
+    );
+    expect(getRuleBody(styles, ".brand-header__mobile-menu-selector--expanded")).toContain(
+      "background: #fffdfb;"
     );
 
     const menuRule = getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu");
-    expect(menuRule).toContain("background: #eab6b4;");
+    expect(menuRule).toContain("background: #fffdfb;");
     expect(menuRule).not.toContain("grid-template-columns:");
   });
 
@@ -881,6 +883,13 @@ describe("small mobile responsive CSS", () => {
     expect(expandedContentRule).toContain("position: absolute;");
     expect(expandedContentRule).toContain("transform: translateX(0);");
     expect(expandedContentRule).toContain("visibility: visible;");
+
+    expect(styles).toContain(".brand-header__mobile-menu-selector--expanded::before");
+    expect(styles).toContain(".brand-header__mobile-menu-selector--expanded::after");
+    expect(styles).toContain("pointer-events: none;");
+    expect(styles).toContain("linear-gradient(to bottom, #fffdfb, rgba(255, 253, 251, 0));");
+    expect(styles).toContain("linear-gradient(to top, #fffdfb, rgba(255, 253, 251, 0));");
+    expect(styles).toContain("z-index: 3;");
   });
 
   it("uses transform-based mobile submenu sheet motion instead of grid ownership changes", () => {
