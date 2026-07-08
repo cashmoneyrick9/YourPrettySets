@@ -797,6 +797,13 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("height: clamp(32px, 10vw, 48px);");
     expect(styles).not.toContain(".brand-header__mobile-submenu {\n  border-left: 1px solid");
     expect(styles).not.toContain(".brand-header__mobile-menu-content {\n    border-radius:");
+
+    expect(getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu--default")).toContain(
+      "background: #eab6b4;"
+    );
+    expect(getRuleBody(styles, ".brand-header__mobile-menu-selector--default")).toContain(
+      "background: #eab6b4;"
+    );
   });
 
   it("separates default centered menu layout from expanded wheel selector CSS", () => {
