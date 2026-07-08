@@ -61,10 +61,20 @@ describe("SiteFooter", () => {
     expect(loveNote).not.toHaveTextContent("♡");
     expect(loveNote.textContent?.endsWith(".")).toBe(false);
     expect(within(footer).queryByText("Follow Us")).not.toBeInTheDocument();
-    expect(instagramLink).toHaveAttribute("href", "#instagram");
-    expect(tiktokLink).toHaveAttribute("href", "#tiktok");
-    expect(pinterestLink).toHaveAttribute("href", "#pinterest");
-    expect(emailLink).toHaveAttribute("href", "mailto:hello@yourprettysets.com");
+    expect(instagramLink).toHaveAttribute("href", "https://www.instagram.com/yourprettysets/");
+    expect(tiktokLink).toHaveAttribute("href", "https://www.tiktok.com/@yourprettysets?_r=1");
+    expect(pinterestLink).toHaveAttribute(
+      "href",
+      "https://www.pinterest.com/yourprettysets/?invite_code=816e94235a384f57885884bf35a6bd29&sender=1116259595048936063"
+    );
+    expect(emailLink).toHaveAttribute("href", "mailto:yourprettysets@gmail.com");
+    expect(instagramLink).toHaveAttribute("target", "_blank");
+    expect(tiktokLink).toHaveAttribute("target", "_blank");
+    expect(pinterestLink).toHaveAttribute("target", "_blank");
+    expect(instagramLink).toHaveAttribute("rel", "noreferrer");
+    expect(tiktokLink).toHaveAttribute("rel", "noreferrer");
+    expect(pinterestLink).toHaveAttribute("rel", "noreferrer");
+    expect(emailLink).not.toHaveAttribute("target");
     expect(within(footer).queryByText("Instagram ↗")).not.toBeInTheDocument();
     expect(within(footer).queryByText("TikTok ↗")).not.toBeInTheDocument();
     expect(within(footer).queryByText("Pinterest ↗")).not.toBeInTheDocument();

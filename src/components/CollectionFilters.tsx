@@ -1,18 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { collectionLabels, products } from "../data/products";
+import { collectionLabels, featuredProducts, products } from "../data/products";
 import { BrandButton } from "./BrandButton";
 import { MobileCarousel } from "./MobileCarousel";
 import { ProductPreviewCard } from "./ProductPreviewCard";
 
 const moodCollections = collectionLabels.filter((label) => label !== "New Arrivals");
-
-const featuredSets = [
-  "Glazed Petal",
-  "Sunset Sprinkle",
-  "Pearl Wink",
-  "Poolside Pop"
-] as const;
 
 function toCollectionSlug(title: string) {
   return title.toLowerCase().replace("/", "-").replace(/\s+/g, "-");
@@ -25,6 +18,7 @@ export function CollectionFilters() {
   const activeCollectionProducts = activeCollection
     ? products.filter((product) => product.collections.includes(activeCollection))
     : [];
+  const activeCollectionShopPath = activeCollection ? `/shop?collection=${encodeURIComponent(activeCollection)}` : "/shop";
   const visibleCollectionProducts = activeCollectionProducts.slice(0, 4);
   const teaserCollectionProducts = activeCollectionProducts.slice(4, 6);
   const emptyTeaserSlots = Math.max(0, 2 - teaserCollectionProducts.length);
@@ -120,7 +114,7 @@ export function CollectionFilters() {
                 </span>
               ))}
             </div>
-            <Link className="collection-products__more" to="/shop">
+            <Link className="collection-products__more" to={activeCollectionShopPath}>
               See more
             </Link>
           </div>
@@ -150,13 +144,15 @@ function FeaturedSets() {
         showArrows={false}
         slideClassName="featured-sets-carousel__slide"
         viewportClassName="featured-sets-carousel__viewport"
-        slides={featuredSets.map((name) => (
-          <Link aria-label={`View ${name}`} className="featured-set-card" key={name} to="/shop">
-            <span className="featured-set-card__image" role="img" aria-label={`${name} placeholder image`} />
-            <span className="featured-set-card__body">
-              <h3>{name}</h3>
-            </span>
-          </Link>
+        slides={featuredProducts.map((product) => (
+          <ProductPreviewCard
+            className="featured-set-card"
+            key={product.id}
+            product={product}
+            state={{ fromHome: true }}
+            to={`/products/${product.slug}`}
+            variant="home"
+          />
         ))}
       />
     </section>

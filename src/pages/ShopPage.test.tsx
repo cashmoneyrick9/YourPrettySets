@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import type { ComponentProps } from "react";
 import { products } from "../data/products";
 import { ShopPage } from "./ShopPage";
@@ -19,6 +19,14 @@ function renderShopPage(props?: ComponentProps<typeof ShopPage>) {
     <BrowserRouter>
       <ShopPage {...props} />
     </BrowserRouter>
+  );
+}
+
+function renderShopPageAt(route: string, props?: ComponentProps<typeof ShopPage>) {
+  return render(
+    <MemoryRouter initialEntries={[route]}>
+      <ShopPage {...props} />
+    </MemoryRouter>
   );
 }
 
@@ -177,6 +185,54 @@ describe("ShopPage", () => {
     expect(screen.getByRole("heading", { name: "Something Blue" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Lace Veil" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Vacation Crush" })).not.toBeInTheDocument();
+  });
+
+  it("starts with the matching collection tab active from the collection query param", async () => {
+    const user = userEvent.setup();
+    const vacationProducts = products.filter((product) => product.collections.includes("Vacation"));
+    renderShopPageAt("/shop?collection=Vacation");
+
+    expect(screen.getByRole("button", { name: "Vacation" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByText(`${vacationProducts.length} sets`)).toBeInTheDocument();
+    expect(getCatalogCards()).toHaveLength(vacationProducts.length);
+    expect(screen.getByRole("heading", { name: "Vacation Crush" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Lace Veil" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "All" }));
+
+    expect(screen.getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("33 sets")).toBeInTheDocument();
+  });
+
+  it("starts with encoded collection names active from the collection query param", () => {
+    const workNeutralProducts = products.filter((product) => product.collections.includes("Work/Neutral"));
+    renderShopPageAt("/shop?collection=Work%2FNeutral");
+
+    expect(screen.getByRole("button", { name: "Work/Neutral" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByText(`${workNeutralProducts.length} sets`)).toBeInTheDocument();
+    expect(getCatalogCards()).toHaveLength(workNeutralProducts.length);
+  });
+
+  it("defaults to All when the collection query param is invalid", () => {
+    renderShopPageAt("/shop?collection=Not%20Real");
+
+    expect(screen.getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("33 sets")).toBeInTheDocument();
+    expect(getCatalogCards()).toHaveLength(33);
+  });
+
+  it("applies valid collection query params on category shop routes", () => {
+    const readyVacationProducts = products.filter(
+      (product) => product.orderType === "ready-to-ship" && product.collections.includes("Vacation")
+    );
+    renderShopPageAt("/shop/ready-to-ship?collection=Vacation", { orderType: "ready-to-ship" });
+
+    expect(screen.getByRole("heading", { name: "Ready to Ship" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Vacation" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText(`${readyVacationProducts.length} sets`)).toBeInTheDocument();
+    expect(getCatalogCards()).toHaveLength(readyVacationProducts.length);
   });
 
   it("lets shoppers drag the collection tab rail with a mouse during review", () => {

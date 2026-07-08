@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { detailTiers, products, type CollectionLabel, type DetailTier, type OrderType, type Product } from "../data/products";
 import { ProductPreviewCard } from "../components/ProductPreviewCard";
 
@@ -60,6 +61,14 @@ function normalizeSearchText(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9$]+/g, " ").replace(/\s+/g, " ").trim();
 }
 
+function getCollectionTabFromParam(collectionParam: string | null): CollectionTab {
+  if (collectionParam && collectionTabs.includes(collectionParam as CollectionTab)) {
+    return collectionParam as CollectionTab;
+  }
+
+  return "All";
+}
+
 function getProductSearchText(product: Product) {
   const matchingPriceLabels = priceFilters.filter((filter) => filter.matches(product)).map((filter) => filter.label);
   const searchableParts = [
@@ -87,15 +96,21 @@ type ShopPageProps = {
 };
 
 export function ShopPage({ orderType }: ShopPageProps) {
+  const [searchParams] = useSearchParams();
+  const initialActiveTab = getCollectionTabFromParam(searchParams.get("collection"));
   const tabRailDrag = useRef({ hasDragged: false, isDragging: false, startScrollLeft: 0, startX: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isTabRailDragging, setIsTabRailDragging] = useState(false);
-  const [activeTab, setActiveTab] = useState<CollectionTab>("All");
+  const [activeTab, setActiveTab] = useState<CollectionTab>(initialActiveTab);
   const [selectedPrices, setSelectedPrices] = useState<PriceFilter[]>([]);
   const [selectedDetailTiers, setSelectedDetailTiers] = useState<DetailTier[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>("newest");
+
+  useEffect(() => {
+    setActiveTab(getCollectionTabFromParam(searchParams.get("collection")));
+  }, [searchParams]);
 
   const visibleProducts = useMemo(() => {
     const normalizedSearch = normalizeSearchText(searchTerm);

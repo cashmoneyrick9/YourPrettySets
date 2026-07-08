@@ -33,12 +33,15 @@ const brandIconPaths = {
 
 type SocialIconName = keyof typeof brandIconPaths | "email";
 
-// TODO: Replace placeholder social hrefs with real brand URLs when accounts are available.
 const socialLinks = [
-  { label: "Instagram", icon: "instagram", href: "#instagram" },
-  { label: "TikTok", icon: "tiktok", href: "#tiktok" },
-  { label: "Pinterest", icon: "pinterest", href: "#pinterest" },
-  { label: "Email", icon: "email", href: "mailto:hello@yourprettysets.com" }
+  { label: "Instagram", icon: "instagram", href: "https://www.instagram.com/yourprettysets/" },
+  { label: "TikTok", icon: "tiktok", href: "https://www.tiktok.com/@yourprettysets?_r=1" },
+  {
+    label: "Pinterest",
+    icon: "pinterest",
+    href: "https://www.pinterest.com/yourprettysets/?invite_code=816e94235a384f57885884bf35a6bd29&sender=1116259595048936063"
+  },
+  { label: "Email", icon: "email", href: "mailto:yourprettysets@gmail.com" }
 ] satisfies Array<{
   label: string;
   icon: SocialIconName;
@@ -104,11 +107,22 @@ export function SiteFooter() {
         </nav>
 
         <nav className="site-footer__social-links" aria-label="Footer social and contact links">
-          {socialLinks.map((link) => (
-            <a aria-label={link.label} className="site-footer__social-link" href={link.href} key={link.label}>
-              <SocialIcon icon={link.icon} />
-            </a>
-          ))}
+          {socialLinks.map((link) => {
+            const isExternalSocialLink = link.href.startsWith("https://");
+
+            return (
+              <a
+                aria-label={link.label}
+                className="site-footer__social-link"
+                href={link.href}
+                key={link.label}
+                rel={isExternalSocialLink ? "noreferrer" : undefined}
+                target={isExternalSocialLink ? "_blank" : undefined}
+              >
+                <SocialIcon icon={link.icon} />
+              </a>
+            );
+          })}
         </nav>
 
         <div className="site-footer__copyright">

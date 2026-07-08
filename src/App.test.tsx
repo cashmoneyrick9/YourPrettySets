@@ -171,7 +171,7 @@ describe("App", () => {
     scrollTo.mockClear();
 
     await user.click(screen.getByRole("button", { name: "Everyday" }));
-    await user.click(screen.getByRole("link", { name: "View Blush Crush" }));
+    await user.click(within(document.querySelector(".collection-product-row") as HTMLElement).getByRole("link", { name: "View Blush Crush" }));
 
     expect(screen.getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
     expect(window.location.pathname).toBe("/products/blush-crush");

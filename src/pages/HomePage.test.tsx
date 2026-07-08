@@ -1,7 +1,8 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
+import { featuredProducts } from "../data/products";
 import { HomePage } from "./HomePage";
 
 const restoreDefaultMatchMedia = () => {
@@ -84,20 +85,28 @@ describe("HomePage", () => {
     expect(collections.compareDocumentPosition(confidence) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "New Arrivals" })).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Featured sets" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "View Glazed Petal" })).toHaveAttribute("href", "/shop");
+    for (const product of featuredProducts) {
+      expect(screen.getByRole("link", { name: `View ${product.name}` })).toHaveAttribute("href", `/products/${product.slug}`);
+    }
+    for (const name of ["Glazed Petal", "Sunset Sprinkle", "Pearl Wink", "Poolside Pop"]) {
+      expect(screen.queryByRole("link", { name: `View ${name}` })).not.toBeInTheDocument();
+      expect(screen.queryByRole("heading", { name })).not.toBeInTheDocument();
+    }
     expect(screen.queryByRole("heading", { name: "This week's set" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Everyday sets" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "View Blush Crush" })).not.toBeInTheDocument();
+    expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Everyday" }));
 
     expect(screen.getByRole("heading", { name: "Everyday sets" })).toBeInTheDocument();
     expect(screen.getByText("10 available")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "/products/blush-crush");
-    expect(screen.getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "/products/soft-serve");
-    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop");
-    expect(screen.getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Soft Serve" })).toBeInTheDocument();
+    const collectionProductRow = document.querySelector(".collection-product-row") as HTMLElement;
+    expect(collectionProductRow).toBeInTheDocument();
+    expect(within(collectionProductRow).getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "/products/blush-crush");
+    expect(within(collectionProductRow).getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "/products/soft-serve");
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop?collection=Everyday");
+    expect(within(collectionProductRow).getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
+    expect(within(collectionProductRow).getByRole("heading", { name: "Soft Serve" })).toBeInTheDocument();
     expect(screen.getAllByText("$18").length).toBeGreaterThan(0);
     expect(screen.getAllByText("$20").length).toBeGreaterThan(0);
     expect(document.querySelectorAll(".collection-product-row > .collection-product-card")).toHaveLength(4);
