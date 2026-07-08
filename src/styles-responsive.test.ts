@@ -127,7 +127,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-footer__column-title");
     expect(styles).toContain(".site-footer__text-link");
     expect(styles).toContain(".brand-header__desktop-nav a {\n  color: var(--site-text-muted);\n  font-size: var(--type-button);");
-    expect(styles).toContain("--mobile-menu-active-type: clamp(1.85rem, 10.8vw, 3.2rem);");
+    expect(styles).toContain("--mobile-menu-default-type: clamp(2.1rem, 11vw, 3.35rem);");
+    expect(styles).toContain("--mobile-menu-active-type: clamp(2rem, 9.8vw, 3.1rem);");
+    expect(styles).toContain("--mobile-menu-inactive-type: clamp(1.38rem, 6.8vw, 2.05rem);");
     expect(styles).toContain("--mobile-menu-link-type: clamp(1.34rem, 6vw, 2.05rem);");
     expect(styles).toContain(".brand-header__mobile-submenu-link {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);");
     expect(styles).toContain(".review-story-viewer__card blockquote {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);\n  font-size: var(--type-display-special);");
@@ -779,9 +781,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__mobile-menu-selector");
     expect(styles).toContain(".brand-header__mobile-menu-content");
     expect(styles).toContain(".brand-header--menu-open .brand-header__mobile-menu--default");
-    expect(styles).toContain("grid-template-columns: 1fr;");
     expect(styles).toContain(".brand-header--menu-open .brand-header__mobile-menu--expanded");
-    expect(styles).toContain("grid-template-columns: minmax(0, 38%) minmax(0, 62%);");
     expect(styles).toContain(".brand-header__mobile-menu-selector--default");
     expect(styles).toContain(".brand-header__mobile-menu-selector--expanded");
     expect(styles).toContain("background: #eab6b4;");
@@ -793,7 +793,6 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__mobile-menu--default .brand-header__mobile-selector-indicator");
     expect(styles).toContain(".brand-header__mobile-menu--expanded .brand-header__mobile-selector-indicator");
     expect(styles).toContain("opacity: 0;");
-    expect(styles).toContain("opacity: 1;");
     expect(styles).toContain("height: clamp(32px, 10vw, 48px);");
     expect(styles).not.toContain(".brand-header__mobile-submenu {\n  border-left: 1px solid");
     expect(styles).not.toContain(".brand-header__mobile-menu-content {\n    border-radius:");
@@ -801,20 +800,35 @@ describe("small mobile responsive CSS", () => {
     expect(getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu--default")).toContain(
       "background: #eab6b4;"
     );
+    expect(getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu--expanded")).toContain(
+      "background: #eab6b4;"
+    );
     expect(getRuleBody(styles, ".brand-header__mobile-menu-selector--default")).toContain(
       "background: #eab6b4;"
     );
+
+    const menuRule = getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu");
+    expect(menuRule).toContain("background: #eab6b4;");
+    expect(menuRule).not.toContain("grid-template-columns:");
   });
 
   it("separates default centered menu layout from expanded wheel selector CSS", () => {
     const rootSelectorItemRule = getRuleBody(styles, ".brand-header__mobile-selector-item");
     expect(rootSelectorItemRule).toContain("font-family: var(--font-display);");
     expect(rootSelectorItemRule).not.toContain("font-family: var(--font-body);");
+    expect(rootSelectorItemRule).toContain('font-variation-settings: "opsz" 144, "SOFT" 54, "WONK" 0;');
+    expect(rootSelectorItemRule).toContain("font-size: var(--mobile-menu-inactive-type);");
+    expect(rootSelectorItemRule).toContain("letter-spacing: var(--mobile-menu-inactive-tracking);");
+    expect(rootSelectorItemRule).toContain("letter-spacing 420ms ease,");
     expect(styles).toContain(
       ".brand-header .brand-header__mobile-selector-item {\n  font-family: var(--font-display);"
     );
 
     const activeSelectorItemRule = getRuleBody(styles, ".brand-header__mobile-selector-item--active");
+    expect(activeSelectorItemRule).toContain("font-family: var(--font-display);");
+    expect(activeSelectorItemRule).toContain('font-variation-settings: "opsz" 144, "SOFT" 54, "WONK" 0;');
+    expect(activeSelectorItemRule).toContain("font-size: var(--mobile-menu-active-type);");
+    expect(activeSelectorItemRule).toContain("letter-spacing: var(--mobile-menu-active-tracking);");
     expect(activeSelectorItemRule).toContain("text-transform: none;");
     expect(activeSelectorItemRule).not.toContain("text-transform: uppercase;");
 
@@ -832,6 +846,10 @@ describe("small mobile responsive CSS", () => {
     );
     expect(defaultSelectorItemRule).toContain("position: static;");
     expect(defaultSelectorItemRule).toContain("transform: none;");
+    expect(defaultSelectorItemRule).toContain("font-family: var(--font-display);");
+    expect(defaultSelectorItemRule).toContain("font-size: var(--mobile-menu-default-type);");
+    expect(defaultSelectorItemRule).toContain("letter-spacing: 0;");
+    expect(defaultSelectorItemRule).toContain('font-variation-settings: "opsz" 144, "SOFT" 54, "WONK" 0;');
 
     const expandedSelectorItemRule = getRuleBody(
       styles,
@@ -848,21 +866,51 @@ describe("small mobile responsive CSS", () => {
       ".brand-header__mobile-menu--default .brand-header__mobile-selector-indicator {\n    opacity: 0;"
     );
     expect(styles).toContain(
-      ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-indicator {\n    opacity: 1;"
+      ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-indicator {\n    opacity: 0;"
     );
 
     const defaultContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--default");
-    expect(defaultContentRule).toContain("opacity: 0;");
+    expect(defaultContentRule).toContain("opacity: 1;");
     expect(defaultContentRule).toContain("pointer-events: none;");
     expect(defaultContentRule).toContain("position: absolute;");
-    expect(defaultContentRule).toContain("transform: translateX(32px);");
-    expect(defaultContentRule).toContain("visibility: hidden;");
+    expect(defaultContentRule).toContain("transform: translateX(100%);");
+    expect(defaultContentRule).toContain("visibility: visible;");
 
     const expandedContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--expanded");
     expect(expandedContentRule).toContain("opacity: 1;");
-    expect(expandedContentRule).toContain("position: relative;");
+    expect(expandedContentRule).toContain("position: absolute;");
     expect(expandedContentRule).toContain("transform: translateX(0);");
     expect(expandedContentRule).toContain("visibility: visible;");
+  });
+
+  it("uses transform-based mobile submenu sheet motion instead of grid ownership changes", () => {
+    const defaultMenuRule = getRuleBody(
+      styles,
+      ".brand-header--menu-open .brand-header__mobile-menu--default"
+    );
+    const expandedMenuRule = getRuleBody(
+      styles,
+      ".brand-header--menu-open .brand-header__mobile-menu--expanded"
+    );
+    const selectorExpandedRule = getRuleBody(styles, ".brand-header__mobile-menu-selector--expanded");
+    const contentRule = getRuleBody(styles, ".brand-header__mobile-menu-content");
+    const defaultContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--default");
+    const expandedContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--expanded");
+
+    expect(defaultMenuRule).not.toContain("grid-template-columns:");
+    expect(expandedMenuRule).not.toContain("grid-template-columns:");
+    expect(selectorExpandedRule).toContain("width: 38%;");
+    expect(selectorExpandedRule).toContain("z-index: 2;");
+    expect(contentRule).toContain("bottom: 0;");
+    expect(contentRule).toContain("position: absolute;");
+    expect(contentRule).toContain("right: 0;");
+    expect(contentRule).toContain("top: 0;");
+    expect(contentRule).toContain("width: 62%;");
+    expect(contentRule).toContain("transition:\n      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);");
+    expect(defaultContentRule).toContain("transform: translateX(100%);");
+    expect(defaultContentRule).not.toContain("visibility: hidden;");
+    expect(expandedContentRule).toContain("transform: translateX(0);");
+    expect(expandedContentRule).not.toContain("position: relative;");
   });
 
   it("keeps the mobile selector motion calm and respects reduced motion", () => {
@@ -870,23 +918,29 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("@keyframes mobile-menu-default-enter");
     expect(styles).toContain("@keyframes mobile-menu-selector-expand");
     expect(styles).toContain("transform: translateY(8px);");
-    expect(styles).toContain("animation: mobile-submenu-enter 320ms cubic-bezier(0.22, 1, 0.36, 1);");
+    expect(styles).toContain(
+      "animation: mobile-submenu-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;"
+    );
     expect(styles).toContain("animation: mobile-menu-default-enter 440ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(styles).toContain("animation: mobile-menu-selector-expand 520ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(styles).toContain(
-      "transition:\n    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    font-size 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    color 420ms ease;"
+      "transition:\n    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    font-size 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    letter-spacing 420ms ease,\n    color 420ms ease;"
     );
     expect(styles).toContain(
       "transition:\n    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);"
     );
-    expect(styles).toContain(
-      "transition:\n      opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),\n      transform 540ms cubic-bezier(0.22, 1, 0.36, 1),\n      visibility 0ms linear 540ms;"
-    );
+    expect(styles).toContain("transition:\n      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
     expect(styles).toContain(".brand-header__mobile-menu-selector,\n  .brand-header__mobile-selector-item");
     expect(styles).toContain(".brand-header__mobile-selector-item,\n  .brand-header__mobile-menu-content,\n  .brand-header__mobile-submenu-panel");
     expect(styles).toContain("animation: none;");
     expect(styles).toContain("transition: opacity 120ms ease;");
+    expect(styles).toContain(
+      ".brand-header__mobile-menu-content--default {\n    transform: translateX(100%);"
+    );
+    expect(styles).toContain(
+      ".brand-header__mobile-menu-content--expanded {\n    transform: translateX(0);"
+    );
   });
 
   it("keeps the open mobile menu close button aligned to the right edge", () => {
