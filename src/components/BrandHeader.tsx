@@ -56,6 +56,8 @@ export function BrandHeader() {
   const [activeMobileSectionId, setActiveMobileSectionId] = useState<MobileContentSectionId>("shop");
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const touchStartYRef = useRef<number | null>(null);
+  const wheelLockRef = useRef(false);
+  const wheelLockTimeoutRef = useRef<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -135,6 +137,14 @@ export function BrandHeader() {
     };
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    return () => {
+      if (wheelLockTimeoutRef.current) {
+        window.clearTimeout(wheelLockTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const closeMobileMenu = () => {
     setIsMenuOpen(false);
     window.setTimeout(() => {
@@ -143,6 +153,11 @@ export function BrandHeader() {
   };
 
   const openMobileMenu = () => {
+    wheelLockRef.current = false;
+    if (wheelLockTimeoutRef.current) {
+      window.clearTimeout(wheelLockTimeoutRef.current);
+      wheelLockTimeoutRef.current = null;
+    }
     setActiveMobileSectionId("shop");
     setIsMenuOpen(true);
   };
@@ -172,7 +187,16 @@ export function BrandHeader() {
     }
 
     event.preventDefault();
+    if (wheelLockRef.current) {
+      return;
+    }
+
     rotateMobileSection(event.deltaY > 0 ? 1 : -1);
+    wheelLockRef.current = true;
+    wheelLockTimeoutRef.current = window.setTimeout(() => {
+      wheelLockRef.current = false;
+      wheelLockTimeoutRef.current = null;
+    }, 400);
   };
 
   const handleSelectorTouchStart = (event: TouchEvent<HTMLDivElement>) => {

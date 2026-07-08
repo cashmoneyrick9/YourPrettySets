@@ -780,6 +780,9 @@ describe("small mobile responsive CSS", () => {
   });
 
   it("keeps the mobile selector motion calm and respects reduced motion", () => {
+    expect(styles).toContain("@keyframes mobile-submenu-enter");
+    expect(styles).toContain("transform: translateY(8px);");
+    expect(styles).toContain("animation: mobile-submenu-enter 320ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(styles).toContain(
       "transition:\n    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    font-size 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    color 420ms ease;"
     );
@@ -788,6 +791,7 @@ describe("small mobile responsive CSS", () => {
     );
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
     expect(styles).toContain(".brand-header__mobile-selector-item,\n  .brand-header__mobile-submenu-panel");
+    expect(styles).toContain("animation: none;");
     expect(styles).toContain("transition: opacity 120ms ease;");
   });
 

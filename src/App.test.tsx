@@ -150,28 +150,28 @@ describe("App", () => {
     expect(window.location.pathname).toBe("/shop");
   });
 
-  it("resets scroll when navigating from Home collection previews to Ready to Ship", async () => {
+  it("resets scroll when navigating from Home shopping previews to Ready to Ship", async () => {
     const user = userEvent.setup();
     const scrollTo = vi.mocked(window.scrollTo);
     renderApp();
     scrollTo.mockClear();
 
-    await user.click(screen.getByRole("button", { name: "Everyday" }));
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
     await user.click(screen.getByRole("link", { name: "See more" }));
 
     expect(screen.getByRole("heading", { name: "Ready to Ship" })).toBeInTheDocument();
     expect(window.location.pathname).toBe("/shop/ready-to-ship");
-    expect(window.location.search).toBe("?collection=Everyday");
+    expect(window.location.search).toBe("");
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
   });
 
-  it("opens Home collection products at top and uses history back without forcing scroll reset", async () => {
+  it("opens Home shopping preview products at top and uses history back without forcing scroll reset", async () => {
     const user = userEvent.setup();
     const scrollTo = vi.mocked(window.scrollTo);
     renderApp();
     scrollTo.mockClear();
 
-    await user.click(screen.getByRole("button", { name: "Everyday" }));
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
     await user.click(within(document.querySelector(".collection-product-row") as HTMLElement).getByRole("link", { name: "View Blush Crush" }));
 
     expect(screen.getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();

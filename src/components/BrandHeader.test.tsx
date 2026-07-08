@@ -1,11 +1,12 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import { BrandHeader } from "./BrandHeader";
 
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
   document.body.style.overflow = "";
 });
 
@@ -186,7 +187,7 @@ describe("BrandHeader", () => {
     window.history.pushState({}, "", "/");
   });
 
-  it("rotates the mobile selector with wheel gestures on the left panel", async () => {
+  it("rotates the mobile selector once with a wheel gesture on the left panel", async () => {
     const user = userEvent.setup();
     renderBrandHeader();
 
@@ -202,7 +203,30 @@ describe("BrandHeader", () => {
       "aria-current",
       "page"
     );
+  });
 
+  it("debounces trackpad-style wheel bursts on the left selector", async () => {
+    vi.useFakeTimers();
+    renderBrandHeader();
+
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+
+    const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+    const selector = within(mobileNav).getByLabelText("Menu sections");
+
+    fireEvent.wheel(selector, { deltaY: 42 });
+    fireEvent.wheel(selector, { deltaY: 42 });
+
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
+    expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
+    expect(within(selector).getByRole("button", { name: "Shop" })).not.toHaveAttribute(
+      "aria-current"
+    );
+
+    vi.advanceTimersByTime(400);
     fireEvent.wheel(selector, { deltaY: -42 });
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-shop");

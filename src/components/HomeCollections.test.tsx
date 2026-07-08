@@ -2,7 +2,7 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter, MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { products } from "../data/products";
+import { featuredProducts, newArrivals, products } from "../data/products";
 import { HomeCollections } from "./HomeCollections";
 
 afterEach(() => {
@@ -18,22 +18,25 @@ describe("HomeCollections", () => {
     );
   }
 
-  it("starts Browse unselected, then shows collection products after selection", async () => {
+  it("starts Browse unselected, then shows shopping-path products after selection", async () => {
     const user = userEvent.setup();
     renderHomeCollections();
 
     expect(screen.getByRole("heading", { name: "Browse" })).toBeInTheDocument();
+    expect(screen.getByText("Shop")).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Featured sets" })).not.toBeInTheDocument();
 
-    for (const collection of ["Everyday", "Date Night", "Vacation", "Bridal", "Birthday", "Work/Neutral", "Statement"]) {
-      expect(screen.getByRole("button", { name: collection })).toBeInTheDocument();
+    for (const option of ["Ready to Ship", "Made to Order", "Custom Orders", "New Arrivals", "Best Sellers"]) {
+      expect(screen.getByRole("button", { name: option })).toBeInTheDocument();
+    }
+    for (const oldCollection of ["Everyday", "Date Night", "Vacation", "Bridal", "Birthday", "Work/Neutral", "Statement"]) {
+      expect(screen.queryByRole("button", { name: oldCollection })).not.toBeInTheDocument();
     }
 
     const seeAllLink = screen.getByRole("link", { name: "See all" });
     expect(seeAllLink).toHaveAttribute("href", "/shop");
     expect(seeAllLink).toHaveClass("collection-heading__link");
     expect(seeAllLink).toHaveAttribute("data-slot", "button");
-    expect(screen.queryByRole("link", { name: "New Arrivals" })).not.toBeInTheDocument();
     expect(screen.queryByText("Soft sets for daily wear")).not.toBeInTheDocument();
     expect(screen.queryByText("Shop Everyday")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".collection-card__visual")).toHaveLength(0);
@@ -46,43 +49,43 @@ describe("HomeCollections", () => {
     expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-loop", "true");
     expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-rotate-speed", "24");
     expect(document.querySelector(".collection-track")).toHaveClass("mobile-carousel__container");
-    expect(screen.queryByRole("button", { name: "Previous collection" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Next collection" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /Go to collection/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Previous shopping option" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next shopping option" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Go to shopping option/i })).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel__hint")).toHaveTextContent("Swipe to explore");
     expect(screen.queryByText(/\d+ sets/)).not.toBeInTheDocument();
-    for (const collection of ["Everyday", "Date Night", "Vacation", "Bridal", "Birthday", "Work/Neutral", "Statement"]) {
-      expect(screen.getByRole("button", { name: collection })).toHaveAttribute("aria-pressed", "false");
+    for (const option of ["Ready to Ship", "Made to Order", "Custom Orders", "New Arrivals", "Best Sellers"]) {
+      expect(screen.getByRole("button", { name: option })).toHaveAttribute("aria-pressed", "false");
     }
-    expect(screen.queryByRole("heading", { name: "Everyday sets" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Ready to Ship sets" })).not.toBeInTheDocument();
     expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".collection-product-card__blank")).toHaveLength(0);
 
-    await user.click(screen.getByRole("button", { name: "Bridal" }));
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
 
-    const bridalProducts = products.filter((product) => product.collections.includes("Bridal")).slice(0, 4);
+    const readyToShipProducts = products.filter((product) => product.orderType === "ready-to-ship").slice(0, 4);
     const collectionProductRow = document.querySelector(".collection-product-row") as HTMLElement;
-    const bridalCards = Array.from(document.querySelectorAll(".collection-product-row > .collection-product-card"));
+    const previewCards = Array.from(document.querySelectorAll(".collection-product-row > .collection-product-card"));
     expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
-    expect(screen.getByRole("button", { name: "Everyday" })).toHaveAttribute("aria-pressed", "false");
-    expect(screen.getByRole("button", { name: "Bridal" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("heading", { name: "Bridal sets" })).toBeInTheDocument();
-    expect(screen.getByText("6 available")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Made to Order" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: "Ready to Ship sets" })).toBeInTheDocument();
+    expect(screen.getByText(`${products.filter((product) => product.orderType === "ready-to-ship").length} available`)).toBeInTheDocument();
     expect(collectionProductRow).toBeInTheDocument();
-    expect(bridalCards).toHaveLength(4);
-    expect(bridalCards.map((card) => within(card as HTMLElement).getByRole("heading", { level: 3 }).textContent)).toEqual(
-      bridalProducts.map((product) => product.name)
+    expect(previewCards).toHaveLength(4);
+    expect(previewCards.map((card) => within(card as HTMLElement).getByRole("heading", { level: 3 }).textContent)).toEqual(
+      readyToShipProducts.map((product) => product.name)
     );
     expect(document.querySelectorAll(".collection-product-row > .collection-product-card--placeholder")).toHaveLength(0);
-    const bridalTeaser = document.querySelector(".collection-product-teaser") as HTMLElement;
-    const bridalTeaserProducts = products.filter((product) => product.collections.includes("Bridal")).slice(4, 6);
-    expect(bridalTeaser).toBeInTheDocument();
-    expect(bridalTeaser).toHaveAttribute("aria-hidden", "true");
-    expect(bridalTeaser.querySelectorAll(".collection-product-card")).toHaveLength(2);
-    expect(bridalTeaser.textContent?.replace(/\s+/g, " ").trim()).toBe(
-      bridalTeaserProducts.map((product) => `${product.name}$${product.price}`).join("")
+    const readyTeaser = document.querySelector(".collection-product-teaser") as HTMLElement;
+    const readyTeaserProducts = products.filter((product) => product.orderType === "ready-to-ship").slice(4, 6);
+    expect(readyTeaser).toBeInTheDocument();
+    expect(readyTeaser).toHaveAttribute("aria-hidden", "true");
+    expect(readyTeaser.querySelectorAll(".collection-product-card")).toHaveLength(2);
+    expect(readyTeaser.textContent?.replace(/\s+/g, " ").trim()).toBe(
+      readyTeaserProducts.map((product) => `${product.name}$${product.price}`).join("")
     );
-    for (const product of bridalProducts) {
+    for (const product of readyToShipProducts) {
       const card = within(collectionProductRow).getByRole("link", { name: `View ${product.name}` });
       expect(card).toHaveAttribute("href", `/products/${product.slug}`);
       expect(within(card).getByRole("img", { name: product.images.clean })).toBeInTheDocument();
@@ -92,42 +95,76 @@ describe("HomeCollections", () => {
     }
   });
 
+  it("previews made-to-order, new arrival, and best-seller products from existing product data", async () => {
+    const user = userEvent.setup();
+    renderHomeCollections();
+
+    await user.click(screen.getByRole("button", { name: "Made to Order" }));
+    expect(screen.getByRole("heading", { name: "Made to Order sets" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop/made-to-order");
+    expect(
+      Array.from(document.querySelectorAll(".collection-product-row > .collection-product-card h3")).map((heading) => heading.textContent)
+    ).toEqual(products.filter((product) => product.orderType === "made-to-order").slice(0, 4).map((product) => product.name));
+
+    await user.click(screen.getByRole("button", { name: "New Arrivals" }));
+    expect(screen.getByRole("heading", { name: "New Arrivals sets" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop?collection=New%20Arrivals");
+    expect(
+      Array.from(document.querySelectorAll(".collection-product-row > .collection-product-card h3")).map((heading) => heading.textContent)
+    ).toEqual(newArrivals.slice(0, 4).map((product) => product.name));
+
+    await user.click(screen.getByRole("button", { name: "Best Sellers" }));
+    expect(screen.getByRole("heading", { name: "Best Sellers sets" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop");
+    expect(
+      Array.from(document.querySelectorAll(".collection-product-row > .collection-product-card h3")).map((heading) => heading.textContent)
+    ).toEqual(featuredProducts.slice(0, 4).map((product) => product.name));
+  });
+
+  it("shows a custom-order preview without fake product cards", async () => {
+    const user = userEvent.setup();
+    renderHomeCollections();
+
+    await user.click(screen.getByRole("button", { name: "Custom Orders" }));
+
+    expect(screen.getByRole("button", { name: "Custom Orders" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: "Custom Orders" })).toBeInTheDocument();
+    expect(screen.getByText("Design request preview")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop/custom-orders");
+    expect(document.querySelector(".collection-product-row")).not.toBeInTheDocument();
+    expect(document.querySelector(".collection-product-teaser")).not.toBeInTheDocument();
+  });
+
   it("clears the selected collection when the selected tile is tapped again", async () => {
     const user = userEvent.setup();
     renderHomeCollections();
 
-    await user.click(screen.getByRole("button", { name: "Bridal" }));
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
 
-    expect(screen.getByRole("button", { name: "Bridal" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("heading", { name: "Bridal sets" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: "Ready to Ship sets" })).toBeInTheDocument();
     expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
 
-    await user.click(screen.getByRole("button", { name: "Bridal" }));
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
 
-    expect(screen.getByRole("button", { name: "Bridal" })).toHaveAttribute("aria-pressed", "false");
-    expect(screen.queryByRole("heading", { name: "Bridal sets" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.queryByRole("heading", { name: "Ready to Ship sets" })).not.toBeInTheDocument();
     expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-auto-rotate", "true");
     expect(screen.queryByRole("heading", { name: "Featured sets" })).not.toBeInTheDocument();
   });
 
-  it("links active Browse collections to the filtered Ready to Ship shop route", async () => {
+  it("links shopping-path options to their destinations", async () => {
     const user = userEvent.setup();
     renderHomeCollections();
 
-    await user.click(screen.getByRole("button", { name: "Date Night" }));
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
 
-    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
-      "href",
-      "/shop/ready-to-ship?collection=Date%20Night"
-    );
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop/ready-to-ship");
 
-    await user.click(screen.getByRole("button", { name: "Work/Neutral" }));
+    await user.click(screen.getByRole("button", { name: "Made to Order" }));
 
-    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
-      "href",
-      "/shop/ready-to-ship?collection=Work%2FNeutral"
-    );
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop/made-to-order");
   });
 
   it("uses shared carousel behavior instead of custom pointer-drag handling", () => {
@@ -157,7 +194,7 @@ describe("HomeCollections", () => {
       </MemoryRouter>
     );
 
-    await userEvent.click(screen.getByRole("button", { name: "Everyday" }));
+    await userEvent.click(screen.getByRole("button", { name: "Ready to Ship" }));
     await userEvent.click(within(document.querySelector(".collection-product-row") as HTMLElement).getByRole("link", { name: "View Blush Crush" }));
 
     expect(screen.getByText("fromHome: true")).toBeInTheDocument();

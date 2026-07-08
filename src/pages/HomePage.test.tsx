@@ -83,7 +83,13 @@ describe("HomePage", () => {
 
     expect(hero.compareDocumentPosition(collections) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(collections.compareDocumentPosition(confidence) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "New Arrivals" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "New Arrivals" })).toBeInTheDocument();
+    for (const option of ["Ready to Ship", "Made to Order", "Custom Orders", "Best Sellers"]) {
+      expect(screen.getByRole("button", { name: option })).toBeInTheDocument();
+    }
+    for (const oldCollection of ["Everyday", "Date Night", "Vacation", "Bridal", "Birthday", "Work/Neutral", "Statement"]) {
+      expect(screen.queryByRole("button", { name: oldCollection })).not.toBeInTheDocument();
+    }
     expect(screen.getByRole("heading", { name: "Featured sets" })).toBeInTheDocument();
     for (const product of featuredProducts) {
       expect(screen.getByRole("link", { name: `View ${product.name}` })).toHaveAttribute("href", `/products/${product.slug}`);
@@ -93,25 +99,22 @@ describe("HomePage", () => {
       expect(screen.queryByRole("heading", { name })).not.toBeInTheDocument();
     }
     expect(screen.queryByRole("heading", { name: "This week's set" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Everyday sets" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Ready to Ship sets" })).not.toBeInTheDocument();
     expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Everyday" }));
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
 
-    expect(screen.getByRole("heading", { name: "Everyday sets" })).toBeInTheDocument();
-    expect(screen.getByText("10 available")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Ready to Ship sets" })).toBeInTheDocument();
+    expect(screen.getByText("16 available")).toBeInTheDocument();
     const collectionProductRow = document.querySelector(".collection-product-row") as HTMLElement;
     expect(collectionProductRow).toBeInTheDocument();
     expect(within(collectionProductRow).getByRole("link", { name: "View Blush Crush" })).toHaveAttribute("href", "/products/blush-crush");
-    expect(within(collectionProductRow).getByRole("link", { name: "View Soft Serve" })).toHaveAttribute("href", "/products/soft-serve");
-    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
-      "href",
-      "/shop/ready-to-ship?collection=Everyday"
-    );
+    expect(within(collectionProductRow).getByRole("link", { name: "View Golden Hour" })).toHaveAttribute("href", "/products/golden-hour");
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop/ready-to-ship");
     expect(within(collectionProductRow).getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
-    expect(within(collectionProductRow).getByRole("heading", { name: "Soft Serve" })).toBeInTheDocument();
+    expect(within(collectionProductRow).getByRole("heading", { name: "Golden Hour" })).toBeInTheDocument();
     expect(screen.getAllByText("$18").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("$20").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("$28").length).toBeGreaterThan(0);
     expect(document.querySelectorAll(".collection-product-row > .collection-product-card")).toHaveLength(4);
     expect(document.querySelector(".collection-product-teaser")).toBeInTheDocument();
     expect(document.querySelectorAll(".collection-product-teaser .collection-product-card")).toHaveLength(2);
@@ -128,22 +131,25 @@ describe("HomePage", () => {
     expect(screen.queryByRole("heading", { name: "Questions before you order" })).not.toBeInTheDocument();
   });
 
-  it("links active Browse collections to the filtered Ready to Ship shop route", async () => {
+  it("links active Browse shopping paths to their destinations", async () => {
     const user = userEvent.setup();
     renderHomePage();
 
-    await user.click(screen.getByRole("button", { name: "Date Night" }));
+    await user.click(screen.getByRole("button", { name: "Made to Order" }));
+
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop/made-to-order");
+
+    await user.click(screen.getByRole("button", { name: "Custom Orders" }));
+
+    expect(screen.getByRole("heading", { name: "Custom Orders" })).toBeInTheDocument();
+    expect(screen.getByText("Design request preview")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop/custom-orders");
+
+    await user.click(screen.getByRole("button", { name: "New Arrivals" }));
 
     expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
       "href",
-      "/shop/ready-to-ship?collection=Date%20Night"
-    );
-
-    await user.click(screen.getByRole("button", { name: "Work/Neutral" }));
-
-    expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute(
-      "href",
-      "/shop/ready-to-ship?collection=Work%2FNeutral"
+      "/shop?collection=New%20Arrivals"
     );
   });
 
