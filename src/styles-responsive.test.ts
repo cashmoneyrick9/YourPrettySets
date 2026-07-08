@@ -785,6 +785,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__mobile-menu-selector--default");
     expect(styles).toContain(".brand-header__mobile-menu-selector--expanded");
     expect(styles).toContain("background: #fffdfb;");
+    expect(styles).toContain("background: rgba(255, 253, 251, 0.62);");
+    expect(styles).toContain("backdrop-filter: blur(18px);");
     expect(styles).toContain("border-left: 1px solid rgba(31, 36, 40, 0.13);");
     expect(styles).toContain(".brand-header__mobile-menu-content--default");
     expect(styles).toContain(".brand-header__mobile-menu-content--expanded");
@@ -796,22 +798,40 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".brand-header__mobile-submenu {\n  border-left: 1px solid");
     expect(styles).not.toContain(".brand-header__mobile-menu-content {\n    border-radius:");
 
+    const menuDialogRule = getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu-dialog");
+    expect(menuDialogRule).toContain("background: rgba(255, 253, 251, 0.62);");
+    expect(menuDialogRule).toContain("backdrop-filter: blur(18px);");
+    expect(menuDialogRule).toContain("-webkit-backdrop-filter: blur(18px);");
+    expect(menuDialogRule).not.toContain("opacity:");
+
     expect(getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu--default")).toContain(
-      "background: #fffdfb;"
+      "background: transparent;"
     );
     expect(getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu--expanded")).toContain(
-      "background: #fffdfb;"
+      "background: transparent;"
     );
     expect(getRuleBody(styles, ".brand-header__mobile-menu-selector--default")).toContain(
-      "background: #fffdfb;"
+      "background: transparent;"
+    );
+    expect(getRuleBody(styles, ".brand-header__mobile-menu-selector--default")).toContain(
+      "backdrop-filter: none;"
     );
     expect(getRuleBody(styles, ".brand-header__mobile-menu-selector--expanded")).toContain(
-      "background: #fffdfb;"
+      "background: transparent;"
+    );
+    expect(getRuleBody(styles, ".brand-header__mobile-menu-selector--expanded")).toContain(
+      "backdrop-filter: none;"
     );
 
     const menuRule = getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu");
-    expect(menuRule).toContain("background: #fffdfb;");
+    expect(menuRule).toContain("background: transparent;");
+    expect(menuRule).not.toContain("backdrop-filter:");
     expect(menuRule).not.toContain("grid-template-columns:");
+    expect(menuRule).not.toContain("opacity:");
+
+    const contentRule = getRuleBody(styles, ".brand-header__mobile-menu-content");
+    expect(contentRule).toContain("background: #fffdfb;");
+    expect(contentRule).toContain("backdrop-filter: none;");
   });
 
   it("separates default centered menu layout from expanded wheel selector CSS", () => {
@@ -887,8 +907,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__mobile-menu-selector--expanded::before");
     expect(styles).toContain(".brand-header__mobile-menu-selector--expanded::after");
     expect(styles).toContain("pointer-events: none;");
-    expect(styles).toContain("linear-gradient(to bottom, #fffdfb, rgba(255, 253, 251, 0));");
-    expect(styles).toContain("linear-gradient(to top, #fffdfb, rgba(255, 253, 251, 0));");
+    expect(styles).toContain("linear-gradient(to bottom, rgba(255, 253, 251, 0.88), rgba(255, 253, 251, 0));");
+    expect(styles).toContain("linear-gradient(to top, rgba(255, 253, 251, 0.88), rgba(255, 253, 251, 0));");
     expect(styles).toContain("z-index: 3;");
   });
 

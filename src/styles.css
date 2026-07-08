@@ -3374,6 +3374,9 @@ h1 {
   }
 
   .brand-header--menu-open .brand-header__mobile-menu-dialog {
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    background: rgba(255, 253, 251, 0.62);
     border: 0;
     border-radius: 0;
     box-shadow: none;
@@ -3391,7 +3394,7 @@ h1 {
   }
 
   .brand-header--menu-open .brand-header__mobile-menu {
-    background: #fffdfb;
+    background: transparent;
     display: grid;
     min-height: 100vh;
     min-height: 100dvh;
@@ -3401,11 +3404,11 @@ h1 {
   }
 
   .brand-header--menu-open .brand-header__mobile-menu--default {
-    background: #fffdfb;
+    background: transparent;
   }
 
   .brand-header--menu-open .brand-header__mobile-menu--expanded {
-    background: #fffdfb;
+    background: transparent;
   }
 
   .brand-header__mobile-menu-selector {
@@ -3421,7 +3424,9 @@ h1 {
   .brand-header__mobile-menu-selector--default {
     align-content: center;
     animation: mobile-menu-default-enter 440ms cubic-bezier(0.22, 1, 0.36, 1);
-    background: #fffdfb;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: transparent;
     gap: clamp(26px, 8vh, 46px);
     justify-items: center;
     padding: calc(74px + env(safe-area-inset-top, 0px)) var(--space-page-inline)
@@ -3431,7 +3436,9 @@ h1 {
 
   .brand-header__mobile-menu-selector--expanded {
     animation: mobile-menu-selector-expand 520ms cubic-bezier(0.22, 1, 0.36, 1);
-    background: #fffdfb;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: transparent;
     cursor: ns-resize;
     touch-action: none;
     width: 38%;
@@ -3450,17 +3457,19 @@ h1 {
   }
 
   .brand-header__mobile-menu-selector--expanded::before {
-    background: linear-gradient(to bottom, #fffdfb, rgba(255, 253, 251, 0));
+    background: linear-gradient(to bottom, rgba(255, 253, 251, 0.88), rgba(255, 253, 251, 0));
     top: 0;
   }
 
   .brand-header__mobile-menu-selector--expanded::after {
-    background: linear-gradient(to top, #fffdfb, rgba(255, 253, 251, 0));
+    background: linear-gradient(to top, rgba(255, 253, 251, 0.88), rgba(255, 253, 251, 0));
     bottom: 0;
   }
 
   .brand-header__mobile-menu-content {
     align-items: center;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     background: #fffdfb;
     border-left: 1px solid rgba(31, 36, 40, 0.13);
     bottom: 0;
