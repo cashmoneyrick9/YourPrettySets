@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { detailTiers, products, type CollectionLabel, type DetailTier, type OrderType, type Product } from "../data/products";
 import { ProductPreviewCard } from "../components/ProductPreviewCard";
@@ -107,6 +107,7 @@ export function ShopPage({ orderType }: ShopPageProps) {
   const [selectedPrices, setSelectedPrices] = useState<PriceFilter[]>([]);
   const [selectedDetailTiers, setSelectedDetailTiers] = useState<DetailTier[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>("newest");
+  const sortButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setActiveTab(getCollectionTabFromParam(searchParams.get("collection")));
@@ -173,6 +174,22 @@ export function ShopPage({ orderType }: ShopPageProps) {
   function chooseSortOption(nextSortOption: SortOption) {
     setSortOption(nextSortOption);
     setIsSortOpen(false);
+  }
+
+  function closeSortOptions() {
+    setIsSortOpen(false);
+    window.setTimeout(() => {
+      sortButtonRef.current?.focus();
+    }, 0);
+  }
+
+  function handleSortKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== "Escape" || !isSortOpen) {
+      return;
+    }
+
+    event.preventDefault();
+    closeSortOptions();
   }
 
   function handleTabRailPointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -284,8 +301,9 @@ export function ShopPage({ orderType }: ShopPageProps) {
             {isFilterOpen ? "Hide filters" : "Filter"}
           </button>
 
-          <div className="shop-sort">
+          <div className="shop-sort" onKeyDown={handleSortKeyDown}>
             <button
+              ref={sortButtonRef}
               aria-controls="shop-sort-panel"
               aria-expanded={isSortOpen}
               className="shop-sort-button"

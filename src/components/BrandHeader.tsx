@@ -63,6 +63,28 @@ export function BrandHeader() {
   const wheelLockTimeoutRef = useRef<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const getMobileMenuFocusTargets = () => {
+    const dialog = document.getElementById("mobile-navigation");
+    const candidates = [
+      menuButtonRef.current,
+      ...(dialog
+        ? Array.from(
+            dialog.querySelectorAll<HTMLElement>(
+              'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+          )
+        : [])
+    ];
+
+    return candidates.filter((element): element is HTMLElement => {
+      if (!element || element.tabIndex < 0) return false;
+      if (element.closest("[hidden]")) return false;
+      if (element.closest('[aria-hidden="true"]')) return false;
+
+      return true;
+    });
+  };
+
   useEffect(() => {
     const syncHeaderState = () => {
       setIsScrolled(window.scrollY > 8);
@@ -98,12 +120,28 @@ export function BrandHeader() {
     const previousBodyWidth = document.body.style.width;
     const previousRootOverflow = document.documentElement.style.overflow;
     const lockedScrollY = window.scrollY;
+    const headerElement = menuButtonRef.current?.closest(".brand-header");
+    const pageSiblings = headerElement?.parentElement
+      ? Array.from(headerElement.parentElement.children).filter(
+          (child): child is HTMLElement => child instanceof HTMLElement && child !== headerElement
+        )
+      : [];
+    const previousPageSiblingState = pageSiblings.map((element) => ({
+      ariaHidden: element.getAttribute("aria-hidden"),
+      element,
+      hadAriaHidden: element.hasAttribute("aria-hidden"),
+      hadInert: element.hasAttribute("inert")
+    }));
 
     document.body.style.overflow = "hidden";
     document.body.style.position = "fixed";
     document.body.style.top = `-${lockedScrollY}px`;
     document.body.style.width = "100%";
     document.documentElement.style.overflow = "hidden";
+    pageSiblings.forEach((element) => {
+      element.setAttribute("aria-hidden", "true");
+      element.setAttribute("inert", "");
+    });
 
     const preventMenuScroll = (event: Event) => {
       event.preventDefault();
@@ -112,12 +150,48 @@ export function BrandHeader() {
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsMenuOpen(false);
+        window.setTimeout(() => {
+          menuButtonRef.current?.focus();
+        }, 0);
+      }
+    };
+
+    const keepFocusInMobileMenu = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusTargets = getMobileMenuFocusTargets();
+      if (!focusTargets.length) {
+        return;
+      }
+
+      const firstTarget = focusTargets[0];
+      const lastTarget = focusTargets[focusTargets.length - 1];
+      const activeElement = document.activeElement;
+
+      if (!activeElement || !focusTargets.includes(activeElement as HTMLElement)) {
+        event.preventDefault();
+        firstTarget.focus();
+        return;
+      }
+
+      if (event.shiftKey && activeElement === firstTarget) {
+        event.preventDefault();
+        lastTarget.focus();
+        return;
+      }
+
+      if (!event.shiftKey && activeElement === lastTarget) {
+        event.preventDefault();
+        firstTarget.focus();
       }
     };
 
     window.addEventListener("wheel", preventMenuScroll, { passive: false });
     window.addEventListener("touchmove", preventMenuScroll, { passive: false });
     window.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("keydown", keepFocusInMobileMenu);
     menuButtonRef.current?.focus();
 
     return () => {
@@ -130,6 +204,18 @@ export function BrandHeader() {
       window.removeEventListener("wheel", preventMenuScroll);
       window.removeEventListener("touchmove", preventMenuScroll);
       window.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("keydown", keepFocusInMobileMenu);
+      previousPageSiblingState.forEach(({ ariaHidden, element, hadAriaHidden, hadInert }) => {
+        if (hadAriaHidden) {
+          element.setAttribute("aria-hidden", ariaHidden ?? "");
+        } else {
+          element.removeAttribute("aria-hidden");
+        }
+
+        if (!hadInert) {
+          element.removeAttribute("inert");
+        }
+      });
       if (lockedScrollY > 0) {
         try {
           window.scrollTo(0, lockedScrollY);

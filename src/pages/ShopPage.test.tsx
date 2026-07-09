@@ -325,6 +325,21 @@ describe("ShopPage", () => {
     expect(screen.getAllByRole("heading", { level: 3 })[0]).toHaveTextContent("Blush Crush");
   });
 
+  it("closes the sort options with Escape and returns focus to the sort button", async () => {
+    const user = userEvent.setup();
+    renderShopPage();
+
+    const sortButton = screen.getByRole("button", { name: "Sort Newest" });
+    await user.click(sortButton);
+
+    expect(screen.getByRole("radiogroup", { name: "Sort sets" })).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+
+    expect(screen.queryByRole("radiogroup", { name: "Sort sets" })).not.toBeInTheDocument();
+    expect(sortButton).toHaveFocus();
+  });
+
   it("keeps catalog cards minimal", () => {
     renderShopPage();
 

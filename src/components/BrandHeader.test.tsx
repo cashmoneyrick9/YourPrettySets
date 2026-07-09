@@ -19,6 +19,18 @@ describe("BrandHeader", () => {
     );
   }
 
+  function renderBrandHeaderWithPageContent() {
+    return render(
+      <BrowserRouter>
+        <BrandHeader />
+        <main>
+          <a href="/outside">Outside page link</a>
+          <button type="button">Outside page button</button>
+        </main>
+      </BrowserRouter>
+    );
+  }
+
   it("renders the brand, desktop navigation, and compact mobile actions", () => {
     renderBrandHeader();
 
@@ -95,6 +107,63 @@ describe("BrandHeader", () => {
     expect(screen.getByLabelText("YourPrettySets home")).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("keeps keyboard focus inside the open mobile menu and hides page content from tab order", async () => {
+    const user = userEvent.setup();
+    renderBrandHeaderWithPageContent();
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+
+    const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+    const closeButton = screen.getByRole("button", { name: "Close menu" });
+    const homeLink = within(mobileNav).getByRole("link", { name: "Home" });
+    const shopButton = within(mobileNav).getByRole("button", { name: "Shop" });
+    const helpButton = within(mobileNav).getByRole("button", { name: "Help" });
+    const pageContent = document.querySelector("main");
+
+    expect(pageContent).not.toBeNull();
+    expect(pageContent).toHaveAttribute("inert", "");
+    expect(pageContent).toHaveAttribute("aria-hidden", "true");
+    expect(closeButton).toHaveFocus();
+
+    await user.tab();
+    expect(homeLink).toHaveFocus();
+
+    await user.tab();
+    expect(shopButton).toHaveFocus();
+
+    await user.tab();
+    expect(helpButton).toHaveFocus();
+
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(helpButton).toHaveFocus();
+  });
+
+  it("keeps expanded mobile submenu links inside the focus loop", async () => {
+    const user = userEvent.setup();
+    renderBrandHeaderWithPageContent();
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    await user.click(screen.getByRole("button", { name: "Shop" }));
+
+    const closeButton = screen.getByRole("button", { name: "Close menu" });
+    const readyToShipLink = screen.getByRole("link", { name: "Ready to Ship" });
+    const customOrdersLink = screen.getByRole("link", { name: "Custom Orders" });
+
+    customOrdersLink.focus();
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(customOrdersLink).toHaveFocus();
+
+    readyToShipLink.focus();
+    await user.tab({ shift: true });
+    expect(screen.getByRole("button", { name: "Help" })).toHaveFocus();
   });
 
   it("ignores wheel and touch selector gestures while the mobile menu is in default mode", async () => {
