@@ -3567,19 +3567,19 @@ h1 {
 
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset--1 {
     --selector-offset: -1;
-    left: 54%;
+    left: 50%;
     opacity: 0.58;
   }
 
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0 {
     --selector-offset: 0;
-    left: 57%;
+    left: 50%;
     opacity: 1;
   }
 
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-1 {
     --selector-offset: 1;
-    left: 54%;
+    left: 50%;
     opacity: 0.58;
   }
 

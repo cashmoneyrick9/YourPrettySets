@@ -77,6 +77,9 @@ export function HomeCollections() {
         ariaLabel="Shop by buying path"
         className="collection-carousel"
         containerClassName="collection-track"
+        onSelectedIndexChange={(index) => {
+          setSelectedOptionIndex((currentIndex) => (currentIndex === index ? currentIndex : index));
+        }}
         options={{ align: "center", containScroll: false, loop: true, startIndex: 0 }}
         scrollToIndex={selectedOptionIndex}
         showArrows={false}

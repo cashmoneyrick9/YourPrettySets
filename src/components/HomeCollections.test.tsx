@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -14,6 +14,7 @@ type MockMobileCarouselProps = {
   autoRotateStopped?: boolean;
   className?: string;
   containerClassName?: string;
+  onSelectedIndexChange?: (index: number) => void;
   options?: { loop?: boolean; startIndex?: number };
   slideClassName?: string;
   slides: ReactNode[];
@@ -221,6 +222,26 @@ describe("HomeCollections", () => {
     expect(vi.mocked(MobileCarousel).mock.calls.map(([props]) => props.scrollToIndex)).toEqual([0, 1]);
     const mobileCarouselCalls = vi.mocked(MobileCarousel).mock.calls;
     expect(mobileCarouselCalls[mobileCarouselCalls.length - 1]?.[0].options?.startIndex).toBe(0);
+  });
+
+  it("updates active Browse option when the carousel selected index changes", () => {
+    renderHomeCollections();
+
+    const carouselBefore = document.querySelector(".collection-carousel");
+    const mobileCarouselCalls = vi.mocked(MobileCarousel).mock.calls;
+    const latestCarouselProps = mobileCarouselCalls[mobileCarouselCalls.length - 1]?.[0];
+
+    act(() => {
+      latestCarouselProps?.onSelectedIndexChange?.(1);
+    });
+
+    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "Made to Order" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: "Made to Order sets" })).toBeInTheDocument();
+    expect(document.querySelector(".collection-products")).toBeInTheDocument();
+    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
+    expect(document.querySelector(".collection-carousel")).toBe(carouselBefore);
+    expect(vi.mocked(MobileCarousel).mock.calls.map(([props]) => props.scrollToIndex)).toEqual([0, 1]);
   });
 
   it("does not remount the Browse carousel when switching options", async () => {

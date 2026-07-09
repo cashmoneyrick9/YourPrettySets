@@ -934,6 +934,15 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(
       ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0"
     );
+    expect(
+      getRuleBody(styles, ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset--1")
+    ).toContain("left: 50%;");
+    expect(
+      getRuleBody(styles, ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0")
+    ).toContain("left: 50%;");
+    expect(
+      getRuleBody(styles, ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-1")
+    ).toContain("left: 50%;");
     expect(styles).not.toContain("\n  .brand-header__mobile-selector-item--offset-0 {");
     expect(styles).toContain(
       ".brand-header__mobile-menu--default .brand-header__mobile-selector-indicator {\n    opacity: 0;"
