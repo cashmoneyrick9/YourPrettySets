@@ -52,6 +52,7 @@ function toOptionSlug(title: string) {
 
 export function HomeCollections() {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
+  const [hasInteractedWithBrowse, setHasInteractedWithBrowse] = useState(false);
 
   const activeOption = selectedOptionIndex === null ? null : homeShoppingOptions[selectedOptionIndex];
   const activeOptionProducts = activeOption?.products ?? [];
@@ -76,7 +77,7 @@ export function HomeCollections() {
       <MobileCarousel
         ariaLabel="Shop by buying path"
         autoRotate
-        autoRotateStopped={selectedOptionIndex !== null}
+        autoRotateStopped={hasInteractedWithBrowse || selectedOptionIndex !== null}
         className="collection-carousel"
         containerClassName="collection-track"
         options={{ align: "center", containScroll: false, loop: true, startIndex: selectedOptionIndex ?? 0 }}
@@ -93,7 +94,10 @@ export function HomeCollections() {
               aria-pressed={isSelected}
               className={`collection-card collection-card--${slug}${isSelected ? " collection-card--active" : ""}`}
               key={option.id}
-              onClick={() => setSelectedOptionIndex(isSelected ? null : index)}
+              onClick={() => {
+                setHasInteractedWithBrowse(true);
+                setSelectedOptionIndex(isSelected ? null : index);
+              }}
               type="button"
             >
               <span className="collection-card__image" aria-hidden="true" />

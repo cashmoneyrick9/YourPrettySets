@@ -135,9 +135,11 @@ describe("HomeCollections", () => {
     expect(document.querySelector(".collection-product-teaser")).not.toBeInTheDocument();
   });
 
-  it("clears the selected collection when the selected tile is tapped again", async () => {
+  it("clears the selected collection without resuming Browse auto-rotation", async () => {
     const user = userEvent.setup();
     renderHomeCollections();
+
+    expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-auto-rotate", "true");
 
     await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
 
@@ -150,7 +152,7 @@ describe("HomeCollections", () => {
     expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "false");
     expect(screen.queryByRole("heading", { name: "Ready to Ship sets" })).not.toBeInTheDocument();
     expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
-    expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
     expect(screen.queryByRole("heading", { name: "Featured sets" })).not.toBeInTheDocument();
   });
 
