@@ -117,7 +117,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("font-family: var(--font-display);");
     expect(styles).toContain(".brand-header,\n.brand-header button,\n.brand-header a {");
     expect(styles).toContain(".hero-copy h1 {\n  color: inherit;\n  font-family: var(--font-display);");
-    expect(styles).toContain(".hero-copy__accent {\n  color: #eab6b4;");
+    expect(styles).toContain(".hero-copy__accent {\n  color: inherit;");
     expect(styles).toContain("font-size: var(--type-hero-title);");
     expect(styles).toContain(".section-heading h2 {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);");
     expect(styles).toContain("font-size: var(--type-section-title);");
@@ -315,7 +315,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("height: 34px;");
     expect(styles).toContain("rgba(255, 255, 255, 0.75) 55%");
     expect(styles).toContain("box-shadow: var(--site-shadow-subtle);");
-    expect(styles).not.toContain("mask-image: linear-gradient(");
+    expect(styles).not.toMatch(/\.confidence-carousel[^{]*\{[^}]*mask-image: linear-gradient\(/);
     expect(styles).toContain(".confidence-carousel:focus-visible");
     expect(styles).not.toContain(".confidence-card--peek");
     expect(styles).toContain(".confidence-carousel__track");
@@ -785,7 +785,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".brand-header__mobile-menu-selector--default");
     expect(styles).toContain(".brand-header__mobile-menu-selector--expanded");
     expect(styles).toContain("background: #fffdfb;");
-    expect(styles).toContain("background: rgba(255, 253, 251, 0.62);");
+    expect(styles).toContain("background: rgba(255, 253, 251, 0.48);");
     expect(styles).toContain("backdrop-filter: blur(18px);");
     expect(styles).toContain("border-left: 1px solid rgba(31, 36, 40, 0.13);");
     expect(styles).toContain(".brand-header__mobile-menu-content--default");
@@ -799,7 +799,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".brand-header__mobile-menu-content {\n    border-radius:");
 
     const menuDialogRule = getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu-dialog");
-    expect(menuDialogRule).toContain("background: rgba(255, 253, 251, 0.62);");
+    expect(menuDialogRule).toContain("background: rgba(255, 253, 251, 0.48);");
     expect(menuDialogRule).toContain("backdrop-filter: blur(18px);");
     expect(menuDialogRule).toContain("-webkit-backdrop-filter: blur(18px);");
     expect(menuDialogRule).not.toContain("opacity:");
@@ -904,12 +904,18 @@ describe("small mobile responsive CSS", () => {
     expect(expandedContentRule).toContain("transform: translateX(0);");
     expect(expandedContentRule).toContain("visibility: visible;");
 
-    expect(styles).toContain(".brand-header__mobile-menu-selector--expanded::before");
-    expect(styles).toContain(".brand-header__mobile-menu-selector--expanded::after");
-    expect(styles).toContain("pointer-events: none;");
-    expect(styles).toContain("linear-gradient(to bottom, rgba(255, 253, 251, 0.88), rgba(255, 253, 251, 0));");
-    expect(styles).toContain("linear-gradient(to top, rgba(255, 253, 251, 0.88), rgba(255, 253, 251, 0));");
-    expect(styles).toContain("z-index: 3;");
+    const selectorExpandedRule = getRuleBody(styles, ".brand-header__mobile-menu-selector--expanded");
+    expect(styles).not.toContain(".brand-header__mobile-menu-selector--expanded::before");
+    expect(styles).not.toContain(".brand-header__mobile-menu-selector--expanded::after");
+    expect(styles).not.toContain("linear-gradient(to bottom, rgba(255, 253, 251");
+    expect(styles).not.toContain("linear-gradient(to top, rgba(255, 253, 251");
+    expect(selectorExpandedRule).toContain("-webkit-mask-image: linear-gradient(");
+    expect(selectorExpandedRule).toContain("mask-image: linear-gradient(");
+    expect(selectorExpandedRule).toContain("transparent 0,");
+    expect(selectorExpandedRule).toContain("#000 var(--mobile-selector-fade)");
+    expect(selectorExpandedRule).toContain("#000 calc(100% - var(--mobile-selector-fade))");
+    expect(selectorExpandedRule).toContain("transparent 100%");
+    expect(selectorExpandedRule).toContain("mask-repeat: no-repeat;");
   });
 
   it("uses transform-based mobile submenu sheet motion instead of grid ownership changes", () => {
