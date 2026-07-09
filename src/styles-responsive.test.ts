@@ -220,6 +220,33 @@ describe("small mobile responsive CSS", () => {
     expect(mobileRules).not.toContain(".collection-track {\n    padding: 8px 18px 12px;\n  }");
   });
 
+  it("makes the active Browse tab high contrast with calm preview motion", () => {
+    const cardRule = getRuleBody(styles, ".collection-card");
+    const activeCardRule = getRuleBody(styles, ".collection-card--active,\n.collection-card[aria-pressed=\"true\"]");
+    const activeOverlayRule = getRuleBody(
+      styles,
+      ".collection-card--active::after,\n.collection-card[aria-pressed=\"true\"]::after"
+    );
+    const activeLabelRule = getRuleBody(
+      styles,
+      ".collection-card--active .collection-card__label,\n.collection-card[aria-pressed=\"true\"] .collection-card__label"
+    );
+    const productsRule = getRuleBody(styles, ".collection-products");
+
+    expect(cardRule).toContain("transition:");
+    expect(cardRule).toContain("background 220ms ease");
+    expect(cardRule).toContain("color 220ms ease");
+    expect(activeCardRule).toContain("background: #101417;");
+    expect(activeCardRule).toContain("transform: translateY(-1px) scale(1.015);");
+    expect(activeOverlayRule).toContain("background: rgba(16, 20, 23, 0.88);");
+    expect(activeLabelRule).toContain("color: #ffffff;");
+    expect(productsRule).toContain("animation: collection-products-enter 220ms ease both;");
+    expect(styles).toContain("@keyframes collection-products-enter");
+    expect(styles).toContain("transform: translateY(4px);");
+    expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(styles).toContain(".collection-products {\n    animation: none;");
+  });
+
   it("uses a fixed mobile top bar with safe-area paint and hero offset", () => {
     expect(indexHtml).toContain('name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"');
     expect(styles).toContain("@supports (height: env(safe-area-inset-top))");
@@ -393,8 +420,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-product-row");
     expect(styles).toContain(".collection-card__image");
     expect(styles).toContain(".collection-card__label");
-    expect(styles).toContain(".collection-card[aria-pressed=\"true\"] {\n  box-shadow: var(--site-shadow-soft);");
-    expect(styles).not.toContain(".collection-card[aria-pressed=\"true\"] {\n  background: var(--site-text-primary);");
+    expect(styles).toContain(".collection-card[aria-pressed=\"true\"] {\n  background: #101417;");
+    expect(styles).toContain(".collection-card[aria-pressed=\"true\"]::after");
     expect(styles).toContain("margin-inline: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain("max-width: none;");
     expect(styles).toContain(".collection-carousel__viewport");

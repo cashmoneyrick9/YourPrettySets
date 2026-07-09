@@ -70,8 +70,7 @@ describe("HomeCollections", () => {
     );
   }
 
-  it("starts Browse unselected, then shows shopping-path products after selection", async () => {
-    const user = userEvent.setup();
+  it("starts Browse with Ready to Ship selected and product previews visible", () => {
     renderHomeCollections();
 
     expect(screen.getByRole("heading", { name: "Browse" })).toBeInTheDocument();
@@ -97,30 +96,24 @@ describe("HomeCollections", () => {
     expect(document.querySelectorAll(".collection-pagination__dot")).toHaveLength(0);
     expect(document.querySelector(".collection-pagination")).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel")).toHaveClass("mobile-carousel");
-    expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
     expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-loop", "true");
-    expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-rotate-speed", "24");
+    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-rotate-speed");
     expect(document.querySelector(".collection-track")).toHaveClass("mobile-carousel__container");
     expect(screen.queryByRole("button", { name: "Previous shopping option" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Next shopping option" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Go to shopping option/i })).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel__hint")).toHaveTextContent("Swipe to explore");
-    expect(screen.queryByText(/\d+ sets/)).not.toBeInTheDocument();
-    for (const option of ["Ready to Ship", "Made to Order", "Custom Orders", "New Arrivals", "Best Sellers"]) {
+    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "true");
+    for (const option of ["Made to Order", "Custom Orders", "New Arrivals", "Best Sellers"]) {
       expect(screen.getByRole("button", { name: option })).toHaveAttribute("aria-pressed", "false");
     }
-    expect(screen.queryByRole("heading", { name: "Ready to Ship sets" })).not.toBeInTheDocument();
-    expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".collection-product-card__blank")).toHaveLength(0);
-
-    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
 
     const readyToShipProducts = products.filter((product) => product.orderType === "ready-to-ship").slice(0, 4);
     const collectionProductRow = document.querySelector(".collection-product-row") as HTMLElement;
     const previewCards = Array.from(document.querySelectorAll(".collection-product-row > .collection-product-card"));
-    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
-    expect(screen.getByRole("button", { name: "Made to Order" })).toHaveAttribute("aria-pressed", "false");
-    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "true");
+    expect(document.querySelector(".collection-products")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Ready to Ship sets" })).toBeInTheDocument();
     expect(screen.getByText(`${products.filter((product) => product.orderType === "ready-to-ship").length} available`)).toBeInTheDocument();
     expect(collectionProductRow).toBeInTheDocument();
@@ -145,6 +138,8 @@ describe("HomeCollections", () => {
       expect(within(card).getByText(`$${product.price}`)).toBeInTheDocument();
       expect(within(card).queryByText(product.description)).not.toBeInTheDocument();
     }
+    expect(vi.mocked(MobileCarousel).mock.calls.map(([props]) => props.scrollToIndex)).toEqual([0]);
+    expect(vi.mocked(MobileCarousel).mock.calls[0]?.[0].options?.startIndex).toBe(0);
   });
 
   it("previews made-to-order, new arrival, and best-seller products from existing product data", async () => {
@@ -187,64 +182,63 @@ describe("HomeCollections", () => {
     expect(document.querySelector(".collection-product-teaser")).not.toBeInTheDocument();
   });
 
-  it("clears the selected collection without resuming Browse auto-rotation", async () => {
+  it("keeps the active Browse option selected when it is clicked again", async () => {
     const user = userEvent.setup();
     renderHomeCollections();
 
-    expect(document.querySelector(".collection-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: "Ready to Ship sets" })).toBeInTheDocument();
+    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
+    const carouselBefore = document.querySelector(".collection-carousel");
+    const renderCountBefore = vi.mocked(MobileCarousel).mock.calls.length;
 
     await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
 
     expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: "Ready to Ship sets" })).toBeInTheDocument();
+    expect(document.querySelector(".collection-products")).toBeInTheDocument();
     expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
-
-    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
-
-    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "false");
-    expect(screen.queryByRole("heading", { name: "Ready to Ship sets" })).not.toBeInTheDocument();
-    expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
-    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
+    expect(document.querySelector(".collection-carousel")).toBe(carouselBefore);
+    expect(vi.mocked(MobileCarousel).mock.calls).toHaveLength(renderCountBefore);
     expect(screen.queryByRole("heading", { name: "Featured sets" })).not.toBeInTheDocument();
   });
 
-  it("resets Browse carousel scroll after selecting a different option and unselecting it", async () => {
+  it("switches active Browse option without remounting or hiding products", async () => {
     const user = userEvent.setup();
     renderHomeCollections();
 
     const carouselBefore = document.querySelector(".collection-carousel");
 
-    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
     await user.click(screen.getByRole("button", { name: "Made to Order" }));
     await user.click(screen.getByRole("button", { name: "Made to Order" }));
 
-    expect(screen.getByRole("button", { name: "Made to Order" })).toHaveAttribute("aria-pressed", "false");
-    expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "Made to Order" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: "Made to Order sets" })).toBeInTheDocument();
+    expect(document.querySelector(".collection-products")).toBeInTheDocument();
     expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
     expect(document.querySelector(".collection-carousel")).toBe(carouselBefore);
-    expect(vi.mocked(MobileCarousel).mock.calls.map(([props]) => props.scrollToIndex)).toEqual([null, 0, 1, 0]);
+    expect(vi.mocked(MobileCarousel).mock.calls.map(([props]) => props.scrollToIndex)).toEqual([0, 1]);
     const mobileCarouselCalls = vi.mocked(MobileCarousel).mock.calls;
     expect(mobileCarouselCalls[mobileCarouselCalls.length - 1]?.[0].options?.startIndex).toBe(0);
   });
 
-  it("does not remount the Browse carousel when selecting and unselecting an option", async () => {
+  it("does not remount the Browse carousel when switching options", async () => {
     const user = userEvent.setup();
     renderHomeCollections();
 
     const carouselBefore = document.querySelector(".collection-carousel");
 
-    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
+    await user.click(screen.getByRole("button", { name: "Made to Order" }));
     expect(document.querySelector(".collection-carousel")).toBe(carouselBefore);
 
-    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
+    await user.click(screen.getByRole("button", { name: "New Arrivals" }));
     expect(document.querySelector(".collection-carousel")).toBe(carouselBefore);
   });
 
   it("links shopping-path options to their destinations", async () => {
     const user = userEvent.setup();
     renderHomeCollections();
-
-    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
 
     expect(screen.getByRole("link", { name: "See more" })).toHaveAttribute("href", "/shop/ready-to-ship");
 
@@ -280,7 +274,6 @@ describe("HomeCollections", () => {
       </MemoryRouter>
     );
 
-    await userEvent.click(screen.getByRole("button", { name: "Ready to Ship" }));
     await userEvent.click(within(document.querySelector(".collection-product-row") as HTMLElement).getByRole("link", { name: "View Blush Crush" }));
 
     expect(screen.getByText("fromHome: true")).toBeInTheDocument();

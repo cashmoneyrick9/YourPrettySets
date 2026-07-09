@@ -52,8 +52,7 @@ describe("HomePage", () => {
     expect(scrollIntoViewSpy).not.toHaveBeenCalled();
   });
 
-  it("renders the mobile shopping path before product shopping", async () => {
-    const user = userEvent.setup();
+  it("renders the mobile shopping path before product shopping", () => {
     renderHomePage();
 
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
@@ -91,20 +90,21 @@ describe("HomePage", () => {
       expect(screen.queryByRole("button", { name: oldCollection })).not.toBeInTheDocument();
     }
     expect(screen.getByRole("heading", { name: "Featured sets" })).toBeInTheDocument();
+    const featuredSetsSection = document.querySelector(".featured-sets-section") as HTMLElement;
     for (const product of featuredProducts) {
-      expect(screen.getByRole("link", { name: `View ${product.name}` })).toHaveAttribute("href", `/products/${product.slug}`);
+      expect(within(featuredSetsSection).getByRole("link", { name: `View ${product.name}` })).toHaveAttribute(
+        "href",
+        `/products/${product.slug}`
+      );
     }
     for (const name of ["Glazed Petal", "Sunset Sprinkle", "Pearl Wink", "Poolside Pop"]) {
       expect(screen.queryByRole("link", { name: `View ${name}` })).not.toBeInTheDocument();
       expect(screen.queryByRole("heading", { name })).not.toBeInTheDocument();
     }
     expect(screen.queryByRole("heading", { name: "This week's set" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Ready to Ship sets" })).not.toBeInTheDocument();
-    expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
-
+    expect(screen.getByRole("button", { name: "Ready to Ship" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: "Ready to Ship sets" })).toBeInTheDocument();
+    expect(document.querySelector(".collection-products")).toBeInTheDocument();
     expect(screen.getByText("16 available")).toBeInTheDocument();
     const collectionProductRow = document.querySelector(".collection-product-row") as HTMLElement;
     expect(collectionProductRow).toBeInTheDocument();

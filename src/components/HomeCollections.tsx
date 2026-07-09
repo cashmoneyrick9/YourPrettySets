@@ -51,15 +51,13 @@ function toOptionSlug(title: string) {
 }
 
 export function HomeCollections() {
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
-  const [hasInteractedWithBrowse, setHasInteractedWithBrowse] = useState(false);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
 
-  const activeOption = selectedOptionIndex === null ? null : homeShoppingOptions[selectedOptionIndex];
+  const activeOption = homeShoppingOptions[selectedOptionIndex];
   const activeOptionProducts = activeOption?.products ?? [];
   const visibleOptionProducts = activeOptionProducts.slice(0, 4);
   const teaserOptionProducts = activeOptionProducts.slice(4, 6);
   const emptyTeaserSlots = Math.max(0, 2 - teaserOptionProducts.length);
-  const browseScrollTargetIndex = selectedOptionIndex ?? (hasInteractedWithBrowse ? 0 : null);
 
   return (
     <section className="section-block collection-section" id="shop-collections">
@@ -77,12 +75,10 @@ export function HomeCollections() {
 
       <MobileCarousel
         ariaLabel="Shop by buying path"
-        autoRotate
-        autoRotateStopped={hasInteractedWithBrowse || selectedOptionIndex !== null}
         className="collection-carousel"
         containerClassName="collection-track"
         options={{ align: "center", containScroll: false, loop: true, startIndex: 0 }}
-        scrollToIndex={browseScrollTargetIndex}
+        scrollToIndex={selectedOptionIndex}
         showArrows={false}
         slideClassName="collection-carousel__slide"
         viewportClassName="collection-carousel__viewport"
@@ -96,8 +92,9 @@ export function HomeCollections() {
               className={`collection-card collection-card--${slug}${isSelected ? " collection-card--active" : ""}`}
               key={option.id}
               onClick={() => {
-                setHasInteractedWithBrowse(true);
-                setSelectedOptionIndex(isSelected ? null : index);
+                if (isSelected) return;
+
+                setSelectedOptionIndex(index);
               }}
               type="button"
             >
@@ -114,64 +111,62 @@ export function HomeCollections() {
         </p>
       </div>
 
-      {activeOption ? (
-        <div className="collection-products" id="collection-products" aria-live="polite">
-          <div className="collection-products__heading">
-            <div>
-              <p className="eyebrow">{activeOption.label}</p>
-              <h3>{activeOption.products ? `${activeOption.label} sets` : activeOption.label}</h3>
-            </div>
-            {activeOption.products ? <span>{activeOptionProducts.length} available</span> : null}
+      <div className="collection-products" id="collection-products" aria-live="polite" key={activeOption.id}>
+        <div className="collection-products__heading">
+          <div>
+            <p className="eyebrow">{activeOption.label}</p>
+            <h3>{activeOption.products ? `${activeOption.label} sets` : activeOption.label}</h3>
           </div>
-          {activeOption.products ? (
-            <>
-              <div className="collection-product-row">
-                {visibleOptionProducts.map((product) => (
+          {activeOption.products ? <span>{activeOptionProducts.length} available</span> : null}
+        </div>
+        {activeOption.products ? (
+          <>
+            <div className="collection-product-row">
+              {visibleOptionProducts.map((product) => (
+                <ProductPreviewCard
+                  id={`product-${product.slug}`}
+                  key={product.id}
+                  product={product}
+                  state={{ fromHome: true }}
+                  to={`/products/${product.slug}`}
+                  variant="home"
+                />
+              ))}
+            </div>
+            {teaserOptionProducts.length || emptyTeaserSlots ? (
+              <div className="collection-product-teaser" aria-hidden="true">
+                {teaserOptionProducts.map((product) => (
                   <ProductPreviewCard
-                    id={`product-${product.slug}`}
-                    key={product.id}
+                    className="collection-product-teaser__card"
+                    key={`${activeOption.id}-teaser-${product.id}`}
                     product={product}
-                    state={{ fromHome: true }}
-                    to={`/products/${product.slug}`}
                     variant="home"
                   />
                 ))}
+                {Array.from({ length: emptyTeaserSlots }, (_, index) => (
+                  <span
+                    className="collection-product-card collection-product-teaser__card collection-product-teaser__placeholder"
+                    key={`${activeOption.id}-teaser-placeholder-${index}`}
+                  >
+                    <span className="collection-product-card__image collection-product-teaser__placeholder-well" />
+                  </span>
+                ))}
               </div>
-              {teaserOptionProducts.length || emptyTeaserSlots ? (
-                <div className="collection-product-teaser" aria-hidden="true">
-                  {teaserOptionProducts.map((product) => (
-                    <ProductPreviewCard
-                      className="collection-product-teaser__card"
-                      key={`${activeOption.id}-teaser-${product.id}`}
-                      product={product}
-                      variant="home"
-                    />
-                  ))}
-                  {Array.from({ length: emptyTeaserSlots }, (_, index) => (
-                    <span
-                      className="collection-product-card collection-product-teaser__card collection-product-teaser__placeholder"
-                      key={`${activeOption.id}-teaser-placeholder-${index}`}
-                    >
-                      <span className="collection-product-card__image collection-product-teaser__placeholder-well" />
-                    </span>
-                  ))}
-                </div>
-              ) : null}
-            </>
-          ) : (
-            <div className="collection-custom-preview">
-              <span className="collection-custom-preview__image" aria-hidden="true" />
-              <div className="collection-custom-preview__body">
-                <p className="eyebrow">Design request preview</p>
-                <p>{activeOption.description}</p>
-              </div>
+            ) : null}
+          </>
+        ) : (
+          <div className="collection-custom-preview">
+            <span className="collection-custom-preview__image" aria-hidden="true" />
+            <div className="collection-custom-preview__body">
+              <p className="eyebrow">Design request preview</p>
+              <p>{activeOption.description}</p>
             </div>
-          )}
-          <Link className="collection-products__more" to={activeOption.href}>
-            See more
-          </Link>
-        </div>
-      ) : null}
+          </div>
+        )}
+        <Link className="collection-products__more" to={activeOption.href}>
+          See more
+        </Link>
+      </div>
     </section>
   );
 }
