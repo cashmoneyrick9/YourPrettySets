@@ -79,7 +79,6 @@ export function HomeCollections() {
         autoRotateStopped={selectedOptionIndex !== null}
         className="collection-carousel"
         containerClassName="collection-track"
-        key={selectedOptionIndex === null ? "collection-carousel-spinning" : `collection-carousel-${selectedOptionIndex}`}
         options={{ align: "center", containScroll: false, loop: true, startIndex: selectedOptionIndex ?? 0 }}
         scrollToIndex={selectedOptionIndex}
         showArrows={false}

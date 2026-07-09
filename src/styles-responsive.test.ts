@@ -195,6 +195,24 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain("site-footer__panel");
   });
 
+  it("gives clipped interactive lanes enough top room for lifted and focused states", () => {
+    const collectionTrackRule = getRuleBody(styles, ".collection-track");
+    const mobileCollectionTrackRule = getRuleBodies(styles, ".collection-track").find((body) =>
+      body.includes("18px")
+    );
+    const featuredTrackRule = getRuleBody(styles, ".featured-sets-carousel__track");
+    const kitTabsRule = getRuleBody(styles, ".kit-detail-tabs");
+    const productOptionListRule = getRuleBody(styles, ".product-page__option-list");
+    const shopTabRailRule = getRuleBody(styles, ".shop-tab-rail");
+
+    expect(collectionTrackRule).toContain("padding: 8px 0 12px;");
+    expect(mobileCollectionTrackRule).toContain("padding: 8px 18px 12px;");
+    expect(featuredTrackRule).toContain("padding: 8px 0 12px;");
+    expect(kitTabsRule).toContain("padding: 8px 0 7px;");
+    expect(productOptionListRule).toContain("padding: 8px var(--space-page-inline) 10px;");
+    expect(shopTabRailRule).toContain("padding: 8px var(--space-page-inline) 10px;");
+  });
+
   it("uses a fixed mobile top bar with safe-area paint and hero offset", () => {
     expect(indexHtml).toContain('name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"');
     expect(styles).toContain("@supports (height: env(safe-area-inset-top))");
@@ -379,8 +397,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".collection-carousel,\n  .faq-topic-carousel {\n    margin-left: calc(50% - 50vw);");
     expect(styles).toContain(".collection-carousel__viewport {\n    padding-inline: 0;");
     expect(styles).toContain(".confidence-carousel__viewport {\n    overflow: hidden;");
-    expect(styles).toContain("padding: 2px 18px 12px;");
-    expect(styles).toContain("padding: 2px 0 12px;");
+    expect(styles).toContain("padding: 8px 18px 12px;");
+    expect(styles).toContain("padding: 8px 0 12px;");
     expect(styles).toContain(".collection-carousel__slide");
     expect(styles).toContain("flex: 0 0 clamp(132px, 42vw, 168px);");
     expect(styles).toContain("grid-template-columns: repeat(2, 170px);");

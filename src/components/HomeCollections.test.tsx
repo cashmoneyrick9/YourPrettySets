@@ -154,6 +154,19 @@ describe("HomeCollections", () => {
     expect(screen.queryByRole("heading", { name: "Featured sets" })).not.toBeInTheDocument();
   });
 
+  it("does not remount the Browse carousel when selecting and unselecting an option", async () => {
+    const user = userEvent.setup();
+    renderHomeCollections();
+
+    const carouselBefore = document.querySelector(".collection-carousel");
+
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
+    expect(document.querySelector(".collection-carousel")).toBe(carouselBefore);
+
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
+    expect(document.querySelector(".collection-carousel")).toBe(carouselBefore);
+  });
+
   it("links shopping-path options to their destinations", async () => {
     const user = userEvent.setup();
     renderHomeCollections();
