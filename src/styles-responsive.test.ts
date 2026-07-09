@@ -949,9 +949,17 @@ describe("small mobile responsive CSS", () => {
   });
 
   it("keeps the mobile selector motion calm and respects reduced motion", () => {
+    const selectorExpandKeyframes = styles.slice(
+      styles.indexOf("@keyframes mobile-menu-selector-expand"),
+      styles.indexOf(".brand-header__icon-button:focus-visible")
+    );
+
     expect(styles).toContain("@keyframes mobile-submenu-enter");
     expect(styles).toContain("@keyframes mobile-menu-default-enter");
     expect(styles).toContain("@keyframes mobile-menu-selector-expand");
+    expect(selectorExpandKeyframes).not.toContain("opacity:");
+    expect(selectorExpandKeyframes).toContain("transform: translateX(22vw);");
+    expect(selectorExpandKeyframes).toContain("transform: translateX(0);");
     expect(styles).toContain("transform: translateY(8px);");
     expect(styles).toContain(
       "animation: mobile-submenu-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;"

@@ -387,12 +387,10 @@ a {
 
 @keyframes mobile-menu-selector-expand {
   from {
-    opacity: 0.9;
     transform: translateX(22vw);
   }
 
   to {
-    opacity: 1;
     transform: translateX(0);
   }
 }
