@@ -2365,7 +2365,7 @@ h1 {
   }
 
   .collection-carousel__viewport {
-    padding-inline: 0;
+    padding-inline: 18px;
   }
 
   .confidence-carousel__viewport {
@@ -2373,7 +2373,7 @@ h1 {
   }
 
   .collection-track {
-    padding: 8px 18px 12px;
+    padding: 8px 0 12px;
   }
 
   .confidence-carousel__viewport::after {

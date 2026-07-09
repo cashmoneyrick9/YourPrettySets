@@ -59,6 +59,7 @@ export function HomeCollections() {
   const visibleOptionProducts = activeOptionProducts.slice(0, 4);
   const teaserOptionProducts = activeOptionProducts.slice(4, 6);
   const emptyTeaserSlots = Math.max(0, 2 - teaserOptionProducts.length);
+  const browseScrollTargetIndex = selectedOptionIndex ?? (hasInteractedWithBrowse ? 0 : null);
 
   return (
     <section className="section-block collection-section" id="shop-collections">
@@ -80,8 +81,8 @@ export function HomeCollections() {
         autoRotateStopped={hasInteractedWithBrowse || selectedOptionIndex !== null}
         className="collection-carousel"
         containerClassName="collection-track"
-        options={{ align: "center", containScroll: false, loop: true, startIndex: selectedOptionIndex ?? 0 }}
-        scrollToIndex={selectedOptionIndex}
+        options={{ align: "center", containScroll: false, loop: true, startIndex: 0 }}
+        scrollToIndex={browseScrollTargetIndex}
         showArrows={false}
         slideClassName="collection-carousel__slide"
         viewportClassName="collection-carousel__viewport"

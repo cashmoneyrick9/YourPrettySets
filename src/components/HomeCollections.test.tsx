@@ -1,12 +1,64 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import type { ReactNode } from "react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter, MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { featuredProducts, newArrivals, products } from "../data/products";
 import { HomeCollections } from "./HomeCollections";
+import { MobileCarousel } from "./MobileCarousel";
+
+type MockMobileCarouselProps = {
+  ariaLabel: string;
+  autoRotate?: boolean;
+  autoRotateSpeedPxPerSecond?: number;
+  autoRotateStopped?: boolean;
+  className?: string;
+  containerClassName?: string;
+  options?: { loop?: boolean; startIndex?: number };
+  slideClassName?: string;
+  slides: ReactNode[];
+  viewportClassName?: string;
+};
+
+vi.mock("./MobileCarousel", () => ({
+  MobileCarousel: vi.fn(
+    ({
+      ariaLabel,
+      autoRotate,
+      autoRotateSpeedPxPerSecond = 24,
+      autoRotateStopped,
+      className,
+      containerClassName,
+      options,
+      slideClassName,
+      slides,
+      viewportClassName
+    }: MockMobileCarouselProps) => (
+      <section
+        aria-label={ariaLabel}
+        className={`mobile-carousel ${className ?? ""}`}
+        data-auto-rotate={autoRotate && !autoRotateStopped ? "true" : undefined}
+        data-loop={options?.loop ? "true" : undefined}
+        data-rotate-speed={autoRotate ? autoRotateSpeedPxPerSecond : undefined}
+        role="region"
+      >
+        <div className={`mobile-carousel__viewport ${viewportClassName ?? ""}`}>
+          <div className={`mobile-carousel__container ${containerClassName ?? ""}`}>
+            {slides.map((slide: ReactNode, index: number) => (
+              <div className={`mobile-carousel__slide ${slideClassName ?? ""}`} key={index}>
+                {slide}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  )
+}));
 
 afterEach(() => {
   cleanup();
+  vi.clearAllMocks();
 });
 
 describe("HomeCollections", () => {
@@ -154,6 +206,25 @@ describe("HomeCollections", () => {
     expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
     expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
     expect(screen.queryByRole("heading", { name: "Featured sets" })).not.toBeInTheDocument();
+  });
+
+  it("resets Browse carousel scroll after selecting a different option and unselecting it", async () => {
+    const user = userEvent.setup();
+    renderHomeCollections();
+
+    const carouselBefore = document.querySelector(".collection-carousel");
+
+    await user.click(screen.getByRole("button", { name: "Ready to Ship" }));
+    await user.click(screen.getByRole("button", { name: "Made to Order" }));
+    await user.click(screen.getByRole("button", { name: "Made to Order" }));
+
+    expect(screen.getByRole("button", { name: "Made to Order" })).toHaveAttribute("aria-pressed", "false");
+    expect(document.querySelector(".collection-products")).not.toBeInTheDocument();
+    expect(document.querySelector(".collection-carousel")).not.toHaveAttribute("data-auto-rotate");
+    expect(document.querySelector(".collection-carousel")).toBe(carouselBefore);
+    expect(vi.mocked(MobileCarousel).mock.calls.map(([props]) => props.scrollToIndex)).toEqual([null, 0, 1, 0]);
+    const mobileCarouselCalls = vi.mocked(MobileCarousel).mock.calls;
+    expect(mobileCarouselCalls[mobileCarouselCalls.length - 1]?.[0].options?.startIndex).toBe(0);
   });
 
   it("does not remount the Browse carousel when selecting and unselecting an option", async () => {

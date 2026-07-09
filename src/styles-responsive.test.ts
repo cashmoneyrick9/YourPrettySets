@@ -197,20 +197,27 @@ describe("small mobile responsive CSS", () => {
 
   it("gives clipped interactive lanes enough top room for lifted and focused states", () => {
     const collectionTrackRule = getRuleBody(styles, ".collection-track");
-    const mobileCollectionTrackRule = getRuleBodies(styles, ".collection-track").find((body) =>
-      body.includes("18px")
-    );
     const featuredTrackRule = getRuleBody(styles, ".featured-sets-carousel__track");
     const kitTabsRule = getRuleBody(styles, ".kit-detail-tabs");
     const productOptionListRule = getRuleBody(styles, ".product-page__option-list");
     const shopTabRailRule = getRuleBody(styles, ".shop-tab-rail");
 
     expect(collectionTrackRule).toContain("padding: 8px 0 12px;");
-    expect(mobileCollectionTrackRule).toContain("padding: 8px 18px 12px;");
     expect(featuredTrackRule).toContain("padding: 8px 0 12px;");
     expect(kitTabsRule).toContain("padding: 8px 0 7px;");
     expect(productOptionListRule).toContain("padding: 8px var(--space-page-inline) 10px;");
     expect(shopTabRailRule).toContain("padding: 8px var(--space-page-inline) 10px;");
+  });
+
+  it("keeps Browse carousel side gutters outside the Embla track on mobile", () => {
+    const mobileRules = styles.slice(
+      styles.indexOf("@media (max-width: 720px)"),
+      styles.indexOf("@media (min-width: 721px)")
+    );
+
+    expect(mobileRules).toContain(".collection-carousel__viewport {\n    padding-inline: 18px;\n  }");
+    expect(mobileRules).toContain(".collection-track {\n    padding: 8px 0 12px;\n  }");
+    expect(mobileRules).not.toContain(".collection-track {\n    padding: 8px 18px 12px;\n  }");
   });
 
   it("uses a fixed mobile top bar with safe-area paint and hero offset", () => {
@@ -395,9 +402,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".collection-carousel {\n    margin-left: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain("width: auto;");
     expect(styles).not.toContain(".collection-carousel,\n  .faq-topic-carousel {\n    margin-left: calc(50% - 50vw);");
-    expect(styles).toContain(".collection-carousel__viewport {\n    padding-inline: 0;");
+    expect(styles).toContain(".collection-carousel__viewport {\n    padding-inline: 18px;");
     expect(styles).toContain(".confidence-carousel__viewport {\n    overflow: hidden;");
-    expect(styles).toContain("padding: 8px 18px 12px;");
     expect(styles).toContain("padding: 8px 0 12px;");
     expect(styles).toContain(".collection-carousel__slide");
     expect(styles).toContain("flex: 0 0 clamp(132px, 42vw, 168px);");
