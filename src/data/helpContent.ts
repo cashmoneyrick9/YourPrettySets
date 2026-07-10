@@ -453,6 +453,153 @@ export const faqItemsById = {
 
 export const canonicalFaqItems = Object.values(faqItemsById);
 
+export interface HelpSearchEntry {
+  id: string;
+  title: string;
+  context: string;
+  href: string;
+  keywords: readonly string[];
+}
+
+const helpSectionSearchEntries = [
+  {
+    id: "find-your-fit",
+    title: "Find Your Fit",
+    context: "Sizing, ready-to-wear fit, and choosing a sizing kit",
+    href: helpRoutes.sizing.href,
+    keywords: ["size", "sizing", "fit", "measure", "measurement", "24 nails", "00 14"]
+  },
+  {
+    id: "sizing-kit",
+    title: "Sizing Kit",
+    context: `${sizingFacts.standaloneKitPriceLabel} standalone sizing help`,
+    href: helpHubDestinations.sizingKitProduct.href,
+    keywords: ["size samples", "custom set", "fit kit", "measure nails", "ten dollars"]
+  },
+  {
+    id: "apply-your-set",
+    title: "Apply Your Set",
+    context: "Prepare, choose an adhesive, and apply step by step",
+    href: helpRoutes.application.href,
+    keywords: ["application", "apply", "install", "put on", "press ons"]
+  },
+  {
+    id: "application-included",
+    title: "What comes with each set",
+    context: "Press-ons, adhesives, prep tools, and storage case",
+    href: `${helpRoutes.application.href}#included`,
+    keywords: ["included", "kit", "box", "nail glue", "tabs", "file", "cuticle stick", "alcohol wipe"]
+  },
+  {
+    id: "application-adhesive",
+    title: "Choose nail glue or adhesive tabs",
+    context: "Compare the two included application methods",
+    href: `${helpRoutes.application.href}#choose-adhesive`,
+    keywords: ["adhesive", "glue", "tabs", "wear", "how long"]
+  },
+  {
+    id: "application-prep",
+    title: "Prepare your natural nails",
+    context: "Clean, dry, and prep before applying adhesive",
+    href: `${helpRoutes.application.href}#prepare-natural-nails`,
+    keywords: ["prep", "clean", "alcohol wipe", "file", "cuticle", "before application"]
+  },
+  {
+    id: "application-fit",
+    title: "Select and arrange your press-ons",
+    context: "Check every nail's fit before using adhesive",
+    href: `${helpRoutes.application.href}#select-and-arrange`,
+    keywords: ["arrange", "layout", "match", "select", "size", "fit"]
+  },
+  {
+    id: "application-glue",
+    title: "Apply with nail glue",
+    context: `Application steps and an estimated ${wearEstimates.glue} wear window`,
+    href: `${helpRoutes.application.href}#apply-with-glue`,
+    keywords: ["glue application", "long wear", "hold", "bond"]
+  },
+  {
+    id: "application-tabs",
+    title: "Apply with adhesive tabs",
+    context: `Application steps and an estimated ${wearEstimates.tabs} wear window`,
+    href: `${helpRoutes.application.href}#apply-with-tabs`,
+    keywords: ["sticky tabs", "tab application", "adhesive stickers", "short wear"]
+  },
+  {
+    id: "application-aftercare",
+    title: "Aftercare and wear expectations",
+    context: "Water exposure, daily activity, lifting, and realistic wear",
+    href: `${helpRoutes.application.href}#aftercare`,
+    keywords: ["care", "wear time", "last", "water", "lifting", "reuse"]
+  },
+  {
+    id: "application-problems",
+    title: "Common application problems",
+    context: "Help with early lifting, gaps, rocking, and fit",
+    href: `${helpRoutes.application.href}#application-problems`,
+    keywords: ["troubleshoot", "problem", "lifting", "gap", "rocks", "does not fit"]
+  },
+  {
+    id: "remove-and-reuse",
+    title: "Remove & Reuse",
+    context: "Removal guidance for tabs and nail glue",
+    href: helpRoutes.removal.href,
+    keywords: ["remove", "removal", "take off", "soak", "warm water", "clean", "store", "reuse"]
+  },
+  {
+    id: "shipping-timing",
+    title: "Processing and shipping timing",
+    context: "Separate order processing from carrier transit",
+    href: `${helpRoutes.shippingReturns.href}#processing-transit`,
+    keywords: ["shipping", "delivery", "arrival", "processing", "transit", "how long", "tracking"]
+  },
+  {
+    id: "damaged-order",
+    title: "Damaged or incorrect order",
+    context: "What to send support for an order issue",
+    href: helpHubDestinations.damagedOrder.href,
+    keywords: ["damaged", "defective", "wrong item", "incorrect", "broken", "replacement"]
+  },
+  {
+    id: "lost-package",
+    title: "Lost package",
+    context: "Tracking, investigation, and possible carrier claims",
+    href: helpHubDestinations.lostPackage.href,
+    keywords: ["lost", "missing", "carrier", "tracking stopped", "not delivered", "package"]
+  },
+  {
+    id: "cancel-order",
+    title: "Cancel an order",
+    context: `The ${orderPolicyFacts.cancellationWindowHours}-hour cancellation rule`,
+    href: helpHubDestinations.cancellations.href,
+    keywords: ["cancel", "cancellation", "change order", "production", "painting"]
+  },
+  {
+    id: "contact-support",
+    title: "Contact Support",
+    context: "Get personal help with fit, products, or an order",
+    href: helpRoutes.contact.href,
+    keywords: ["contact", "email", "support", "help", "customer service"]
+  }
+] as const satisfies readonly HelpSearchEntry[];
+
+const faqCategoryAnchors: Record<HelpFaqCategory, string> = {
+  "Fit and sizing": "faq-fit-and-sizing",
+  "Application and care": "faq-application-and-care",
+  "Orders and support": "faq-orders-and-support"
+};
+
+export const helpSearchEntries: readonly HelpSearchEntry[] = [
+  ...helpSectionSearchEntries,
+  ...canonicalFaqItems.map((item) => ({
+    id: `faq-${item.id}`,
+    title: item.question,
+    context: `FAQ · ${item.category}`,
+    href: `${helpRoutes.faq.href}#${faqCategoryAnchors[item.category]}`,
+    keywords: [item.answer, item.category, item.relatedLink.label]
+  }))
+];
+
 export const helpFaqGroups = [
   {
     title: "Fit and sizing",

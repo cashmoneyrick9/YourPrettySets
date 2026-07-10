@@ -7,6 +7,7 @@ export { HelpImagePanel } from "./HelpImagePanel";
 export { HelpIssueChecklist } from "./HelpIssueChecklist";
 export { HelpRelatedLinks } from "./HelpRelatedLinks";
 export { HelpSection } from "./HelpSection";
+export { HelpSearch } from "./HelpSearch";
 export { HelpStepList } from "./HelpStepList";
 export { HelpSupportCta } from "./HelpSupportCta";
 export type { HelpContentsItem, HelpFactItem, HelpLink, HelpStepItem } from "./types";

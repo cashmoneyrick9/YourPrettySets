@@ -12,20 +12,21 @@ This is not a public launch MVP yet. It is a structured prototype for the CEO an
 
 ## Latest Integrated System: Press-On Guide
 
-The complete Help / Press-On Guide system was implemented on 2026-07-09. This entry supersedes older placeholder-route, placeholder support-email, sizing-kit-exclusion, cancellation, shipping-price, and return-policy notes later in this historical handoff.
+The complete Help / Press-On Guide system was implemented on 2026-07-09. A scoped follow-up on the same date refined only the `/help` hub, `/help/application`, and Help search; the other Help articles, business facts, routes, navigation, and Product integration were intentionally left unchanged. This entry supersedes older placeholder-route, placeholder support-email, sizing-kit-exclusion, cancellation, shipping-price, and return-policy notes later in this historical handoff.
 
 Current architecture:
 
-- `/help` is the task-based Press-On Guide hub with `Before you order`, `Apply and care`, `Order help`, and `More help` groups.
+- `/help` is an editorial task hub with three customer paths: `Before you order`, `Apply and care`, and `Order help`. It also has a prominent client-side search, a compact `Most asked` FAQ section, and one Contact Support handoff near the bottom.
 - Canonical articles are `/help/sizing`, `/help/application`, `/help/removal`, `/help/shipping-returns`, `/help/faq`, and `/help/contact`.
 - `/help/how-to-apply` redirects to `/help/application`; damaged-order, lost-package, and cancellation hub tasks deep-link to sections in the combined order article.
-- Shared article primitives live in `src/components/help/`: article shell, responsive contents navigation, sections, numbered steps, callouts, instructional media, fact/policy blocks, issue checklists, FAQ accordion, related guides, and support CTA.
-- Approved business facts live in `src/data/storefrontFacts.ts`; route names, hub destinations, related guides, and canonical FAQ answers live in `src/data/helpContent.ts`.
+- Shared article primitives live in `src/components/help/`: article shell, responsive contents navigation, sections, numbered steps, callouts, instructional media, fact/policy blocks, issue checklists, FAQ accordion, related guides, support CTA, and the scoped Help search.
+- Approved business facts live in `src/data/storefrontFacts.ts`; route names, hub destinations, related guides, canonical FAQ answers, section targets, and Help search terms live in `src/data/helpContent.ts`.
 - The public support email is `yourprettysets@gmail.com` on Contact, FAQ/support flows, Product support, and the footer.
 - Product FAQ answers are a concise subset of the canonical FAQ data. `KitContents` now reads the exact seven included items and qualified glue/tab estimates from the central facts.
 - `/products/sizing-kit` is a separate $10 product outside the 33-set catalog. It links to Find Your Fit and the custom-order waitlist, omits normal set selectors/favorite/Add to Cart, and clearly states that online purchasing is not connected.
 - Desktop and mobile navigation use the canonical Help names. The footer keeps its three-column design, includes Contact Support under Help, and uses one combined `Shipping, Returns & Order Issues` link instead of competing Shipping/Returns destinations.
-- Application and removal use replaceable branded instructional images at `public/assets/help/apply-press-on-alignment.jpg` and `public/assets/help/remove-adhesive-tabs-warm-water.jpg`.
+- `/help/application` is a nine-step guided sequence: included items, adhesive choice, prep, nail selection, glue, tabs, aftercare, troubleshooting, and one clear handoff to removal. It uses a compact horizontal step rail instead of the generic desktop article sidebar and keeps glue/tab methods visually distinct.
+- The refined hub and Application guide reuse replaceable brand assets at `public/assets/nail-size-set.png`, `public/assets/kit-contents-spread-v2.png`, `public/assets/hero-s3-summer.png`, and `public/assets/help/`.
 - Route changes focus the new page heading, article anchors use fixed-header-safe scroll margins, the mobile Help sheet scrolls independently on short screens, submenu parents expose `aria-expanded`/`aria-controls`, FAQ headers have normalized margins, and Help focus/metadata contrast is explicit.
 
 Confirmed customer facts:
@@ -48,8 +49,10 @@ Remaining integrations and founder inputs:
 
 Verification completed for this system:
 
-- `npm test`: 22 files and 182 tests passed.
+- `npm test`: 22 files and 184 tests passed.
 - `npm run build`: passed with the production bundle generated successfully.
+- Scoped browser refinement covered `/help` and `/help/application` at `393x852`, `667x375`, and `1440x1000`. The hub exposes imagery and a customer task in the first mobile/landscape viewport; Application exposes the first guided step in each required viewport; both pages had one H1 and no page-level horizontal overflow.
+- Browser search verification with `lost package` returned the direct order-issue anchor plus the canonical FAQ result. The glue/tab method split, aftercare block, and removal handoff were also inspected after scrolling the desktop Application guide.
 - Browser route matrices at `393x852` and `1440x1000` covered every canonical Help route, the legacy redirect, sizing-kit product, a normal Product page, and custom-order waitlist page. Every checked page had one H1, no page-level horizontal overflow, no broken image, no duplicate ID, and no empty `href="#"` link.
 - The seven-link Help menu was also checked at `667x375`; its right panel becomes independently scrollable and the final Contact Support link remains reachable.
 - FAQ disclosure/focus behavior, route-to-heading focus, deep order-task anchors, desktop/mobile contents navigation, footer Help links, Product FAQ links, public mailto links, and the sizing-kit no-commerce state were checked in the browser.

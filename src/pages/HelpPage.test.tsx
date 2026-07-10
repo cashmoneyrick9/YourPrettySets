@@ -1,7 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { canonicalFaqItems, helpRoutes } from "../data/helpContent";
 import {
   includedSetItems,
@@ -23,8 +23,18 @@ import {
 
 afterEach(() => cleanup());
 
-function renderHelpPage(page: React.ReactNode) {
-  return render(<MemoryRouter>{page}</MemoryRouter>);
+function LocationProbe() {
+  const { hash, pathname } = useLocation();
+  return <output data-testid="location-probe">{pathname}{hash}</output>;
+}
+
+function renderHelpPage(page: React.ReactNode, initialEntry = "/help") {
+  return render(
+    <MemoryRouter initialEntries={[initialEntry]}>
+      {page}
+      <LocationProbe />
+    </MemoryRouter>
+  );
 }
 
 function expectOneH1(name: string) {
@@ -33,22 +43,67 @@ function expectOneH1(name: string) {
 }
 
 describe("Help pages", () => {
-  it("routes customers through one grouped Press-On Guide hub", () => {
+  it("routes customers through three editorial paths on the Press-On Guide hub", () => {
     renderHelpPage(<HelpHubPage />);
 
     expectOneH1(helpRoutes.hub.title);
-    for (const groupTitle of ["Before you order", "Apply and care", "Order help", "More help"]) {
+    expect(screen.getByRole("searchbox", { name: "Search the guide" })).toBeInTheDocument();
+    for (const groupTitle of ["Start with the right fit", "Make application feel simple", "Find the right next step", "Most asked"]) {
       expect(screen.getByRole("heading", { level: 2, name: groupTitle })).toBeInTheDocument();
     }
     expect(screen.getByRole("link", { name: "Find Your Fit" })).toHaveAttribute("href", "/help/sizing");
     expect(screen.getByRole("link", { name: "Sizing Kit" })).toHaveAttribute("href", "/products/sizing-kit");
     expect(screen.getByRole("link", { name: "Apply Your Set" })).toHaveAttribute("href", "/help/application");
     expect(screen.getByRole("link", { name: "Remove & Reuse" })).toHaveAttribute("href", "/help/removal");
-    expect(screen.getByRole("link", { name: "Shipping, Returns & Order Issues" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Shipping and timing" })).toHaveAttribute(
       "href",
-      "/help/shipping-returns"
+      "/help/shipping-returns#processing-transit"
     );
-    expect(screen.getByText(`${sizingFacts.readyToWearNailCount} nails in each set`)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Damaged or incorrect order" })).toHaveAttribute(
+      "href",
+      "/help/shipping-returns#order-problems"
+    );
+    expect(screen.getByRole("link", { name: "Lost package" })).toHaveAttribute(
+      "href",
+      "/help/shipping-returns#lost-packages"
+    );
+    expect(screen.getByRole("link", { name: "Cancellations" })).toHaveAttribute(
+      "href",
+      "/help/shipping-returns#cancellations"
+    );
+  });
+
+  it("finds deep Help results and supports keyboard entry", async () => {
+    const user = userEvent.setup();
+    renderHelpPage(<HelpHubPage />);
+
+    const search = screen.getByRole("searchbox", { name: "Search the guide" });
+    await user.type(search, "choose glue tabs");
+
+    const result = screen.getByRole("link", { name: /Choose nail glue or adhesive tabs/i });
+    expect(result).toHaveAttribute("href", "/help/application#choose-adhesive");
+
+    await user.keyboard("{ArrowDown}");
+    expect(result).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByTestId("location-probe")).toHaveTextContent("/help/application#choose-adhesive");
+  });
+
+  it("offers useful recovery when Help search has no match", async () => {
+    const user = userEvent.setup();
+    renderHelpPage(<HelpHubPage />);
+
+    await user.type(screen.getByRole("searchbox", { name: "Search the guide" }), "meteor polish");
+    const emptyMessage = screen.getByText(/No guide results for “meteor polish”/i);
+    expect(emptyMessage).toBeInTheDocument();
+    const emptyState = emptyMessage.closest(".help-search__results");
+    expect(emptyState).not.toBeNull();
+    expect(within(emptyState as HTMLElement).getByRole("link", { name: "Browse the FAQ" })).toHaveAttribute("href", "/help/faq");
+    expect(within(emptyState as HTMLElement).getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "/help/contact");
+
+    await user.click(screen.getByRole("button", { name: "Clear Help search" }));
+    expect(screen.queryByText(/No guide results/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("searchbox", { name: "Search the guide" })).toHaveFocus();
   });
 
   it("explains confirmed sizing paths without fabricating a measurement chart", () => {
@@ -69,19 +124,36 @@ describe("Help pages", () => {
     expect(document.querySelector(".help-article__body table")).not.toBeInTheDocument();
   });
 
-  it("uses semantic steps and approved estimates throughout the application guide", () => {
-    renderHelpPage(<ApplicationGuidePage />);
+  it("uses nine semantic, linked steps and approved estimates throughout the application guide", () => {
+    renderHelpPage(<ApplicationGuidePage />, "/help/application");
 
     expectOneH1(helpRoutes.application.title);
     for (const item of includedSetItems) expect(screen.getAllByText(item).length).toBeGreaterThan(0);
     expect(screen.getAllByText(`Approximately ${wearEstimates.glue}`).length).toBeGreaterThan(0);
     expect(screen.getAllByText(`Approximately ${wearEstimates.tabs}`).length).toBeGreaterThan(0);
-    expect(document.querySelectorAll("ol.help-step-list").length).toBeGreaterThanOrEqual(3);
+    const expectedSections = [
+      "included",
+      "choose-adhesive",
+      "prepare-natural-nails",
+      "select-and-arrange",
+      "apply-with-glue",
+      "apply-with-tabs",
+      "aftercare",
+      "application-problems",
+      "next-removal"
+    ];
+    expect(
+      Array.from(document.querySelectorAll(".application-step, .application-next"), (section) => section.id)
+    ).toEqual(expectedSections);
+    expect(document.querySelectorAll("ol.application-procedure")).toHaveLength(3);
+    const jumpLinks = within(screen.getByRole("navigation", { name: "Application steps" })).getAllByRole("link");
+    expect(jumpLinks.map((link) => link.getAttribute("href"))).toEqual(expectedSections.map((id) => `#${id}`));
     expect(screen.getByRole("img", { name: /aligning a pale blush press-on/i })).toHaveAttribute(
       "src",
       "/assets/help/apply-press-on-alignment.jpg"
     );
     expect(screen.getByText(/Wear time is not guaranteed/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Open Remove & Reuse/i })).toHaveAttribute("href", "/help/removal");
   });
 
   it("keeps tab removal conservative and the planned glue solution unavailable", () => {

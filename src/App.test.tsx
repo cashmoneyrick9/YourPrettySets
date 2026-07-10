@@ -255,13 +255,12 @@ describe("App", () => {
       ["Sizing Kit", "/products/sizing-kit"],
       ["Apply Your Set", "/help/application"],
       ["Remove & Reuse", "/help/removal"],
-      ["Shipping, Returns & Order Issues", "/help/shipping-returns"],
+      ["Shipping and timing", "/help/shipping-returns#processing-transit"],
       ["Damaged or incorrect order", "/help/shipping-returns#order-problems"],
       ["Lost package", "/help/shipping-returns#lost-packages"],
-      ["Cancel an order", "/help/shipping-returns#cancellations"],
-      ["FAQ", "/help/faq"],
-      ["Contact Support", "/help/contact"],
-      ["Custom-order waitlist", "/shop/custom-orders"]
+      ["Cancellations", "/help/shipping-returns#cancellations"],
+      ["Browse every question", "/help/faq"],
+      ["Contact Support", "/help/contact"]
     ] as const) {
       expect(within(main).getAllByRole("link", { name }).some((link) => link.getAttribute("href") === href)).toBe(true);
     }

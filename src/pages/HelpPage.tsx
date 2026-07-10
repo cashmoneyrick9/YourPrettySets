@@ -8,6 +8,7 @@ import {
   HelpIssueChecklist,
   HelpPolicyBlock,
   HelpRelatedLinks,
+  HelpSearch,
   HelpSection,
   HelpStepList,
   HelpSupportCta,
@@ -19,7 +20,6 @@ import {
   getRelatedGuides,
   helpFaqGroups,
   helpHubDestinations,
-  helpHubGroups,
   helpRoutes,
   type HelpArticleRouteId
 } from "@/data/helpContent";
@@ -67,13 +67,14 @@ const sizingContents = [
 
 const applicationContents = [
   { id: "included", label: "What comes with your set" },
-  { id: "before-you-start", label: "Before you start" },
   { id: "choose-adhesive", label: "Choose glue or tabs" },
+  { id: "prepare-natural-nails", label: "Prepare your nails" },
+  { id: "select-and-arrange", label: "Select and arrange" },
   { id: "apply-with-glue", label: "Apply with nail glue" },
   { id: "apply-with-tabs", label: "Apply with adhesive tabs" },
-  { id: "aftercare", label: "Aftercare" },
+  { id: "aftercare", label: "Aftercare and wear" },
   { id: "application-problems", label: "Common problems" },
-  { id: "wear-expectations", label: "Wear expectations" }
+  { id: "next-removal", label: "Remove your set" }
 ] as const satisfies readonly HelpContentsItem[];
 
 const removalContents = [
@@ -104,73 +105,107 @@ const contactContents = [
 ] as const satisfies readonly HelpContentsItem[];
 
 export function HelpHubPage() {
+  const pathGroups = [
+    {
+      id: "before-order",
+      eyebrow: "Before you order",
+      title: "Start with the right fit",
+      intro: "Understand the broad ready-to-wear size range or check fit with a sizing kit before choosing a set.",
+      image: "/assets/nail-size-set.png",
+      imageAlt: "Pale blush press-on nails arranged from larger to smaller sizes",
+      links: [
+        { label: "Find Your Fit", href: helpHubDestinations.sizing.href },
+        { label: "Sizing Kit", href: helpHubDestinations.sizingKitProduct.href },
+        { label: "Common pre-purchase questions", href: "/help/faq#faq-fit-and-sizing" }
+      ]
+    },
+    {
+      id: "apply-care",
+      eyebrow: "Apply and care",
+      title: "Make application feel simple",
+      intro: "Choose your adhesive, follow the guided application sequence, then remove and store each nail with care.",
+      image: "/assets/help/apply-press-on-alignment.jpg",
+      imageAlt: "Hands aligning a pale blush press-on above a clean natural nail",
+      links: [
+        { label: "Apply Your Set", href: helpHubDestinations.application.href },
+        { label: "Remove & Reuse", href: helpHubDestinations.removal.href },
+        { label: "Wear and care guidance", href: "/help/application#aftercare" }
+      ]
+    },
+    {
+      id: "order-help",
+      eyebrow: "Order help",
+      title: "Find the right next step",
+      intro: "Check timing, delivery, and issue guidance without searching through a long policy page first.",
+      image: "/assets/hero-s3-summer.png",
+      imageAlt: "Floral press-on nail set presented in a blush storage case",
+      links: [
+        { label: "Shipping and timing", href: `${helpRoutes.shippingReturns.href}#processing-transit` },
+        { label: "Damaged or incorrect order", href: helpHubDestinations.damagedOrder.href },
+        { label: "Lost package", href: helpHubDestinations.lostPackage.href },
+        { label: "Cancellations", href: helpHubDestinations.cancellations.href }
+      ]
+    }
+  ] as const;
+
+  const mostAsked = [
+    faqItemsById["choose-size"],
+    faqItemsById["glue-or-tabs"],
+    faqItemsById["wear-time"],
+    faqItemsById.processing
+  ];
+
   return (
-    <main className="help-page help-page--hub">
-      <div className="help-page__inner help-hub">
-        <div className="help-page__heading help-hub__header">
-          <p className="eyebrow">{helpRoutes.hub.eyebrow}</p>
-          <h1>{helpRoutes.hub.title}</h1>
-          <p>{helpRoutes.hub.summary}</p>
-        </div>
+    <main className="help-page help-page--hub help-hub--editorial">
+      <div className="help-page__inner help-hub help-hub-editorial">
+        <header className="help-hub-editorial__intro">
+          <div className="help-page__heading help-hub-editorial__heading">
+            <p className="eyebrow">{helpRoutes.hub.eyebrow}</p>
+            <h1>{helpRoutes.hub.title}</h1>
+            <p>{helpRoutes.hub.summary}</p>
+          </div>
+          <HelpSearch />
+        </header>
 
-        <dl className="help-hub__quick-facts" aria-label="Quick press-on facts">
-          <div>
-            <dt>Ready-to-wear fit</dt>
-            <dd>{sizingFacts.readyToWearNailCount} nails in each set</dd>
-          </div>
-          <div>
-            <dt>Wear estimates</dt>
-            <dd>Glue {wearEstimates.glue} · Tabs {wearEstimates.tabs}</dd>
-          </div>
-          <div>
-            <dt>Every order</dt>
-            <dd>{shippingFacts.trackingLabel}</dd>
-          </div>
-        </dl>
-
-        <div className="help-hub__groups">
-          {helpHubGroups.map((group) => (
-            <section className="help-hub__group" key={group.id} aria-labelledby={`help-hub-${group.id}`}>
-              <div className="help-hub__group-heading">
-                <h2 id={`help-hub-${group.id}`}>{group.title}</h2>
-                <p>{group.intro}</p>
+        <div className="help-paths" aria-label="Press-on help by task">
+          {pathGroups.map((group, index) => (
+            <section className="help-path" id={`help-path-${group.id}`} key={group.id} aria-labelledby={`help-path-${group.id}-title`}>
+              <div className="help-path__media">
+                <img alt={group.imageAlt} src={group.image} />
+                <span aria-hidden="true" className="help-path__number">0{index + 1}</span>
               </div>
-              <ul className="help-hub__link-list">
-                {group.destinationIds.map((destinationId) => {
-                  const destination = helpHubDestinations[destinationId];
-
-                  return (
-                    <li key={destination.id}>
-                      <Link
-                        aria-describedby={`help-hub-${destination.id}-description`}
-                        aria-labelledby={`help-hub-${destination.id}-title`}
-                        className="help-hub__link"
-                        to={destination.href}
-                      >
-                        <span className="help-hub__link-copy">
-                          <span className="help-hub__link-title" id={`help-hub-${destination.id}-title`}>
-                            {destination.label}
-                          </span>
-                          <span
-                            className="help-hub__link-description"
-                            id={`help-hub-${destination.id}-description`}
-                          >
-                            {destination.description}
-                          </span>
-                        </span>
-                        <span aria-hidden="true" className="help-hub__link-arrow">→</span>
+              <div className="help-path__content">
+                <p className="help-path__eyebrow">{group.eyebrow}</p>
+                <h2 id={`help-path-${group.id}-title`}>{group.title}</h2>
+                <p className="help-path__intro">{group.intro}</p>
+                <ul className="help-path__links">
+                  {group.links.map((link) => (
+                    <li key={link.href}>
+                      <Link to={link.href}>
+                        <span>{link.label}</span>
+                        <span aria-hidden="true">→</span>
                       </Link>
                     </li>
-                  );
-                })}
-              </ul>
+                  ))}
+                </ul>
+              </div>
             </section>
           ))}
         </div>
 
+        <section className="help-most-asked" aria-labelledby="help-most-asked-title">
+          <div className="help-most-asked__heading">
+            <p className="eyebrow">Quick answers</p>
+            <h2 id="help-most-asked-title">Most asked</h2>
+            <Link to="/help/faq">Browse every question <span aria-hidden="true">→</span></Link>
+          </div>
+          <HelpFaqAccordion items={mostAsked} />
+        </section>
+
         <HelpSupportCta
-          body="For fit, product, or order help that is not answered here, use the public support email and include the relevant details."
-          title="Need personal help?"
+          body="If the guide does not cover your fit, product, or order question, send support the details that will help explain it."
+          className="help-hub-editorial__support"
+          title="Still need personal help?"
         />
       </div>
     </main>
@@ -279,113 +314,156 @@ export function SizingGuidePage() {
 export function ApplicationGuidePage() {
   return (
     <HelpArticleShell
-      contents={applicationContents}
+      className="help-application--guided"
       eyebrow={helpRoutes.application.eyebrow}
       intro={helpRoutes.application.summary}
       title={helpRoutes.application.title}
     >
-      <HelpSection id="included" title="What comes with your set">
-        <ul className="help-simple-list help-simple-list--two-column">
-          {includedSetItems.map((item) => <li key={item}>{item}</li>)}
-        </ul>
-      </HelpSection>
+      <nav aria-label="Application steps" className="application-jump-nav">
+        <p>Application steps</p>
+        <ol>
+          {applicationContents.map((item, index) => (
+            <li key={item.id}>
+              <a href={`#${item.id}`}><span>{index + 1}</span>{item.label}</a>
+            </li>
+          ))}
+        </ol>
+      </nav>
 
-      <HelpSection id="before-you-start" title="Prepare before using adhesive">
-        <HelpStepList
-          items={[
-            { title: "Clean and dry", body: "Wash your hands, dry them completely, and start with clean natural nails." },
-            {
-              title: "Prepare gently",
-              body: "Use the included cuticle stick and nail file carefully. Avoid aggressive filing or forcing any prep step."
-            },
-            {
-              title: "Use the alcohol wipe",
-              body: "Wipe each natural nail and allow it to dry fully before touching the nail surface again."
-            },
-            {
-              title: "Choose every nail first",
-              body: "Lay out the closest-fitting press-on for each finger before opening the adhesive. The nail should not sit on surrounding skin."
-            }
-          ]}
-        />
-        <HelpImagePanel
-          alt="Hands aligning a pale blush press-on above a clean natural nail with application tools nearby"
-          caption="Check the alignment and fit before lowering the press-on onto the natural nail."
-          src="/assets/help/apply-press-on-alignment.jpg"
-        />
-      </HelpSection>
+      <section className="application-step application-step--included" id="included" aria-labelledby="included-title">
+        <div className="application-step__content">
+          <p className="application-step__eyebrow">Step 01</p>
+          <h2 id="included-title">Set out what comes with your set</h2>
+          <p>Keep every item within reach before opening either adhesive.</p>
+          <ul className="application-kit-list">
+            {includedSetItems.map((item) => <li key={item}>{item}</li>)}
+          </ul>
+        </div>
+        <figure className="application-step__image">
+          <img alt="Press-on application supplies with adhesive tabs, nail glue, alcohol wipe, file, cuticle stick, and storage case" src="/assets/kit-contents-spread-v2.png" />
+          <figcaption>Both application methods are included, so choose one path for this wear.</figcaption>
+        </figure>
+      </section>
 
-      <HelpSection id="choose-adhesive" title="Choose glue or adhesive tabs">
-        <HelpFactList
-          items={[
-            {
-              label: "Nail glue",
-              value: `Approximately ${wearEstimates.glue}`,
-              detail: "Estimated wear only; follow the directions on the included glue."
-            },
-            {
-              label: "Adhesive tabs",
-              value: `Approximately ${wearEstimates.tabs}`,
-              detail: "Estimated wear only; tabs have their own application and removal path."
-            }
-          ]}
-        />
-        <HelpCallout variant="important" title="Wear time is not guaranteed">
-          <p>Preparation, application, lifestyle, water exposure, natural nail condition, and daily activity all affect wear.</p>
-        </HelpCallout>
-      </HelpSection>
+      <section className="application-step" id="choose-adhesive" aria-labelledby="choose-adhesive-title">
+        <header className="application-step__header">
+          <p className="application-step__eyebrow">Step 02</p>
+          <h2 id="choose-adhesive-title">Choose nail glue or adhesive tabs</h2>
+          <p>Choose based on the wear window you hope for, then follow only that adhesive’s application instructions.</p>
+        </header>
+        <div className="application-adhesive-choice">
+          <article>
+            <p className="application-adhesive-choice__label">Nail glue</p>
+            <strong>Approximately {wearEstimates.glue}</strong>
+            <p>Estimated wear only. Follow the directions supplied with the included glue.</p>
+          </article>
+          <article>
+            <p className="application-adhesive-choice__label">Adhesive tabs</p>
+            <strong>Approximately {wearEstimates.tabs}</strong>
+            <p>Estimated wear only. Tabs have their own application and removal path.</p>
+          </article>
+        </div>
+        <aside className="application-note application-note--important">
+          <strong>Wear time is not guaranteed.</strong>
+          <span>Preparation, application, lifestyle, water exposure, natural nail condition, and daily activity all affect wear.</span>
+        </aside>
+      </section>
 
-      <HelpSection id="apply-with-glue" title="Apply with nail glue">
-        <HelpStepList
-          items={[
-            { title: "Read the glue directions", body: "Follow the instructions supplied with the included nail glue, including its application and hold guidance." },
-            { title: "Keep the fit ready", body: "Confirm the selected press-on is the correct nail before adding glue." },
-            { title: "Align carefully", body: "Place the press-on in line with the natural nail and keep it off the surrounding skin." },
-            { title: "Press steadily", body: "Lower the nail and hold it as directed by the glue instructions without shifting it side to side." }
-          ]}
-        />
-      </HelpSection>
+      <section className="application-step" id="prepare-natural-nails" aria-labelledby="prepare-natural-nails-title">
+        <header className="application-step__header">
+          <p className="application-step__eyebrow">Step 03</p>
+          <h2 id="prepare-natural-nails-title">Prepare your natural nails</h2>
+        </header>
+        <ol className="application-procedure">
+          <li><strong>Clean and dry.</strong><span>Wash your hands, dry them completely, and begin with clean natural nails.</span></li>
+          <li><strong>Prepare gently.</strong><span>Use the included cuticle stick and nail file carefully. Avoid aggressive filing or forcing any prep step.</span></li>
+          <li><strong>Use the alcohol wipe.</strong><span>Wipe each natural nail and let it dry fully. Avoid touching the prepared surface afterward.</span></li>
+        </ol>
+      </section>
 
-      <HelpSection id="apply-with-tabs" title="Apply with adhesive tabs">
-        <HelpStepList
-          items={[
-            { title: "Match the tab", body: "Choose a tab that fits the natural nail without extending onto surrounding skin." },
-            { title: "Apply it smoothly", body: "Place the tab on the clean, dry natural nail and press it flat without folds or trapped gaps." },
-            { title: "Remove the top film", body: "Lift only the protective film, keeping the adhesive surface clean." },
-            { title: "Align and press", body: "Lower the correct press-on in line with the natural nail and press it steadily into place." }
-          ]}
-        />
-      </HelpSection>
+      <section className="application-step application-step--visual" id="select-and-arrange" aria-labelledby="select-and-arrange-title">
+        <figure className="application-step__image">
+          <img alt="Hands aligning a pale blush press-on above a clean natural nail with application tools nearby" src="/assets/help/apply-press-on-alignment.jpg" />
+          <figcaption>Check the alignment and fit before lowering the press-on.</figcaption>
+        </figure>
+        <div className="application-step__content">
+          <p className="application-step__eyebrow">Step 04</p>
+          <h2 id="select-and-arrange-title">Select and arrange every nail</h2>
+          <p>Lay out the closest-fitting press-on for each finger before opening the adhesive. Each nail should sit in line with the natural nail without resting on surrounding skin.</p>
+          <Link className="application-inline-link" to="/help/sizing">Review Find Your Fit <span aria-hidden="true">→</span></Link>
+        </div>
+      </section>
 
-      <HelpSection id="aftercare" title="Aftercare that supports wear">
-        <ul className="help-simple-list">
-          <li>Follow the adhesive instructions before exposing the set to water.</li>
-          <li>Limit prolonged water exposure when practical and dry hands thoroughly.</li>
-          <li>Avoid using the press-ons as tools for opening, scraping, or prying.</li>
-          <li>If a nail lifts, remove and reapply it according to the adhesive directions instead of forcing it back down.</li>
-        </ul>
-      </HelpSection>
+      <div className="application-methods">
+        <section className="application-step application-step--method" id="apply-with-glue" aria-labelledby="apply-with-glue-title">
+          <header className="application-step__header">
+            <p className="application-step__eyebrow">Step 05 · Glue path</p>
+            <h2 id="apply-with-glue-title">Apply with nail glue</h2>
+          </header>
+          <ol className="application-procedure application-procedure--compact">
+            <li><strong>Read the glue directions.</strong><span>Follow the supplied application and hold guidance.</span></li>
+            <li><strong>Confirm the fit.</strong><span>Check that the correct press-on is ready before adding glue.</span></li>
+            <li><strong>Align carefully.</strong><span>Keep the press-on in line with the natural nail and off surrounding skin.</span></li>
+            <li><strong>Press steadily.</strong><span>Hold it as directed without shifting it side to side.</span></li>
+          </ol>
+        </section>
 
-      <HelpSection id="application-problems" title="Common application problems">
-        <HelpFactList
-          items={[
-            { label: "Lifts early", value: "Recheck prep", detail: "Oil, moisture, shifting during application, and water exposure can weaken the bond." },
-            { label: "Sits on skin", value: "Stop and resize", detail: "Choose a closer fit and realign before using adhesive." },
-            { label: "Rocks or leaves a gap", value: "Do not force it", detail: "The size or curve may not be the right match for that nail." },
-            { label: "Fit feels uncertain", value: "Ask before applying", detail: "Use Find Your Fit or contact support while the set is still unapplied." }
-          ]}
-        />
-      </HelpSection>
+        <section className="application-step application-step--method application-step--method-tabs" id="apply-with-tabs" aria-labelledby="apply-with-tabs-title">
+          <header className="application-step__header">
+            <p className="application-step__eyebrow">Step 06 · Tab path</p>
+            <h2 id="apply-with-tabs-title">Apply with adhesive tabs</h2>
+          </header>
+          <ol className="application-procedure application-procedure--compact">
+            <li><strong>Match the tab.</strong><span>Choose one that fits the natural nail without touching surrounding skin.</span></li>
+            <li><strong>Press it flat.</strong><span>Apply it to the clean, dry nail without folds or trapped gaps.</span></li>
+            <li><strong>Remove the film.</strong><span>Lift only the protective film and keep the adhesive clean.</span></li>
+            <li><strong>Align and press.</strong><span>Lower the correct press-on and press it steadily into place.</span></li>
+          </ol>
+        </section>
+      </div>
 
-      <HelpSection id="wear-expectations" title="Keep wear expectations realistic">
-        <p>
-          Nail glue wear is estimated at approximately {wearEstimates.glue}; adhesive-tab wear is estimated at
-          approximately {wearEstimates.tabs}. These are ranges, not guarantees. Your actual wear can be shorter or longer
-          depending on {formatNaturalList(wearEstimates.variables.map((item) => item.toLowerCase()))}.
-        </p>
-      </HelpSection>
+      <section className="application-step application-step--aftercare" id="aftercare" aria-labelledby="aftercare-title">
+        <header className="application-step__header">
+          <p className="application-step__eyebrow">Step 07</p>
+          <h2 id="aftercare-title">Support the wear with simple aftercare</h2>
+          <p>Glue wear is estimated at approximately {wearEstimates.glue}; tab wear at approximately {wearEstimates.tabs}. These are ranges, not guarantees.</p>
+        </header>
+        <div className="application-aftercare-grid">
+          <ul>
+            <li>Follow the adhesive instructions before exposing the set to water.</li>
+            <li>Limit prolonged water exposure when practical and dry hands thoroughly.</li>
+            <li>Avoid using press-ons as tools for opening, scraping, or prying.</li>
+            <li>If a nail lifts, remove and reapply it according to the adhesive directions instead of forcing it down.</li>
+          </ul>
+          <aside className="application-note">
+            <strong>What changes wear</strong>
+            <span>{formatNaturalList(wearEstimates.variables.map((item) => item.toLowerCase()))}.</span>
+          </aside>
+        </div>
+      </section>
 
-      <StandardArticleEnding routeId="application" />
+      <section className="application-step" id="application-problems" aria-labelledby="application-problems-title">
+        <header className="application-step__header">
+          <p className="application-step__eyebrow">Step 08</p>
+          <h2 id="application-problems-title">Check common application problems</h2>
+        </header>
+        <dl className="application-troubleshooting">
+          <div><dt>Lifts early</dt><dd><strong>Recheck prep.</strong> Oil, moisture, shifting during application, and water exposure can weaken the bond.</dd></div>
+          <div><dt>Sits on skin</dt><dd><strong>Stop and resize.</strong> Choose a closer fit and realign before using adhesive.</dd></div>
+          <div><dt>Rocks or leaves a gap</dt><dd><strong>Do not force it.</strong> The size or curve may not match that nail.</dd></div>
+          <div><dt>Fit feels uncertain</dt><dd><strong>Ask before applying.</strong> Use Find Your Fit or contact support while the set is still unapplied.</dd></div>
+        </dl>
+      </section>
+
+      <section className="application-next" id="next-removal" aria-labelledby="next-removal-title">
+        <img alt="Pale blush press-on nails being loosened gently in comfortably warm water" src="/assets/help/remove-adhesive-tabs-warm-water.jpg" />
+        <div>
+          <p className="application-step__eyebrow">Step 09 · When wear is finished</p>
+          <h2 id="next-removal-title">Move next to removal</h2>
+          <p>Removal depends on the adhesive you used. Do not pull, peel, or pry through resistance.</p>
+          <Link to="/help/removal">Open Remove & Reuse <span aria-hidden="true">→</span></Link>
+        </div>
+      </section>
     </HelpArticleShell>
   );
 }
