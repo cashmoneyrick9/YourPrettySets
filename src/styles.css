@@ -319,7 +319,7 @@ a {
   text-transform: none;
   transition:
     opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1),
     font-size 420ms cubic-bezier(0.22, 1, 0.36, 1),
     letter-spacing 420ms ease,
     color 420ms ease;
@@ -3531,7 +3531,7 @@ h1 {
     right: 0;
     top: 0;
     transition:
-      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
     touch-action: pan-y;
     width: 62%;
     will-change: transform;
@@ -3576,32 +3576,33 @@ h1 {
 
   .brand-header__mobile-selector-item {
     display: inline-flex;
-    justify-self: center;
     white-space: nowrap;
   }
 
+  .brand-header__mobile-menu--default .brand-header__mobile-selector-item,
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item {
     max-width: min-content;
+    left: 50%;
     position: absolute;
     top: 50%;
     transform: translate(-50%, calc(-50% + (var(--selector-offset) * clamp(76px, 22vw, 112px))));
   }
 
+  .brand-header__mobile-menu--default .brand-header__mobile-selector-item--offset--1,
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset--1 {
     --selector-offset: -1;
-    left: 50%;
     opacity: 0.86;
   }
 
+  .brand-header__mobile-menu--default .brand-header__mobile-selector-item--offset-0,
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0 {
     --selector-offset: 0;
-    left: 50%;
     opacity: 1;
   }
 
+  .brand-header__mobile-menu--default .brand-header__mobile-selector-item--offset-1,
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-1 {
     --selector-offset: 1;
-    left: 50%;
     opacity: 0.86;
   }
 
@@ -3611,14 +3612,14 @@ h1 {
     font-size: var(--mobile-menu-default-type);
     font-variation-settings: "opsz" 144, "SOFT" 54, "WONK" 0;
     font-weight: var(--weight-display);
-    justify-self: center;
+    left: 50%;
     letter-spacing: 0;
     line-height: var(--leading-tight);
-    max-width: none;
     opacity: 1;
-    position: static;
+    position: absolute;
     text-transform: none;
-    transform: none;
+    top: 50%;
+    transform: translate(-50%, calc(-50% + (var(--selector-offset) * clamp(76px, 22vw, 112px))));
   }
 
   .brand-header__mobile-submenu-panel {

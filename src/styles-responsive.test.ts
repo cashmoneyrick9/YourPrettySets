@@ -910,7 +910,7 @@ describe("small mobile responsive CSS", () => {
     expect(contentRule).toContain("backdrop-filter: none;");
   });
 
-  it("separates default centered menu layout from expanded wheel selector CSS", () => {
+  it("keeps mobile selector items in one transform-based layout across menu states", () => {
     const rootSelectorItemRule = getRuleBody(styles, ".brand-header__mobile-selector-item");
     expect(rootSelectorItemRule).toContain("font-family: var(--font-display);");
     expect(rootSelectorItemRule).not.toContain("font-family: var(--font-body);");
@@ -933,8 +933,6 @@ describe("small mobile responsive CSS", () => {
     const baseSelectorItemRules = getRuleBodies(styles, ".brand-header__mobile-selector-item");
 
     for (const ruleBody of baseSelectorItemRules) {
-      expect(ruleBody).not.toContain("position: absolute;");
-      expect(ruleBody).not.toContain("transform: translate(-50%");
       expect(ruleBody).not.toContain("left: 57%;");
     }
 
@@ -942,8 +940,6 @@ describe("small mobile responsive CSS", () => {
       styles,
       ".brand-header__mobile-menu--default .brand-header__mobile-selector-item"
     );
-    expect(defaultSelectorItemRule).toContain("position: static;");
-    expect(defaultSelectorItemRule).toContain("transform: none;");
     expect(defaultSelectorItemRule).toContain("font-family: var(--font-display);");
     expect(defaultSelectorItemRule).toContain("font-size: var(--mobile-menu-default-type);");
     expect(defaultSelectorItemRule).toContain("letter-spacing: 0;");
@@ -953,21 +949,15 @@ describe("small mobile responsive CSS", () => {
       styles,
       ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item"
     );
+    expect(defaultSelectorItemRule).toContain("position: absolute;");
+    expect(defaultSelectorItemRule).toContain("transform: translate(-50%");
     expect(expandedSelectorItemRule).toContain("position: absolute;");
     expect(expandedSelectorItemRule).toContain("transform: translate(-50%");
 
     expect(styles).toContain(
       ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0"
     );
-    expect(
-      getRuleBody(styles, ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset--1")
-    ).toContain("left: 50%;");
-    expect(
-      getRuleBody(styles, ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0")
-    ).toContain("left: 50%;");
-    expect(
-      getRuleBody(styles, ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-1")
-    ).toContain("left: 50%;");
+    expect(defaultSelectorItemRule).toContain("left: 50%;");
     expect(styles).not.toContain("\n  .brand-header__mobile-selector-item--offset-0 {");
     expect(styles).toContain(
       ".brand-header__mobile-menu--default .brand-header__mobile-selector-indicator {\n    opacity: 0;"
@@ -1026,7 +1016,7 @@ describe("small mobile responsive CSS", () => {
     expect(contentRule).toContain("right: 0;");
     expect(contentRule).toContain("top: 0;");
     expect(contentRule).toContain("width: 62%;");
-    expect(contentRule).toContain("transition:\n      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);");
+    expect(contentRule).toContain("transition:\n      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(defaultContentRule).toContain("transform: translateX(100%);");
     expect(defaultContentRule).not.toContain("visibility: hidden;");
     expect(expandedContentRule).toContain("transform: translateX(0);");
@@ -1052,12 +1042,12 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("animation: mobile-menu-default-enter 440ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(styles).toContain("animation: mobile-menu-selector-expand 520ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(styles).toContain(
-      "transition:\n    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    font-size 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    letter-spacing 420ms ease,\n    color 420ms ease;"
+      "transition:\n    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 620ms cubic-bezier(0.22, 1, 0.36, 1),\n    font-size 420ms cubic-bezier(0.22, 1, 0.36, 1),\n    letter-spacing 420ms ease,\n    color 420ms ease;"
     );
     expect(styles).toContain(
       "transition:\n    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),\n    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);"
     );
-    expect(styles).toContain("transition:\n      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);");
+    expect(styles).toContain("transition:\n      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
     expect(styles).toContain(".brand-header__mobile-menu-selector,\n  .brand-header__mobile-selector-item");
     expect(styles).toContain(".brand-header__mobile-selector-item,\n  .brand-header__mobile-menu-content,\n  .brand-header__mobile-submenu-panel");

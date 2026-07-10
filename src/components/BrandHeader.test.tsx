@@ -85,8 +85,17 @@ describe("BrandHeader", () => {
     const selector = within(mobileNav).getByLabelText("Menu sections");
     expect(selector).toHaveClass("brand-header__mobile-menu-selector--default");
     expect(within(selector).getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+    expect(within(selector).getByRole("link", { name: "Home" })).toHaveClass(
+      "brand-header__mobile-selector-item--offset--1"
+    );
     expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "false");
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveClass(
+      "brand-header__mobile-selector-item--offset-0"
+    );
     expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute("aria-expanded", "false");
+    expect(within(selector).getByRole("button", { name: "Help" })).toHaveClass(
+      "brand-header__mobile-selector-item--offset-1"
+    );
     expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute(
       "aria-controls",
       "brand-header-mobile-menu-content"

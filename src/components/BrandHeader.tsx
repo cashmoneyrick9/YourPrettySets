@@ -357,7 +357,7 @@ export function BrandHeader() {
 
   const getSelectorOffset = (sectionId: MobileMenuSection["id"]) => {
     if (!activeMobileSectionId) {
-      return 0;
+      return sectionId === "home" ? -1 : sectionId === "shop" ? 0 : 1;
     }
 
     if (sectionId === activeMobileSectionId) {
