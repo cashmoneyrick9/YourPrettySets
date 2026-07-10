@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Mail } from "lucide-react";
+import { supportDetails } from "../data/storefrontFacts";
 
 const shopLinks = [
   { label: "Shop All", href: "/shop" },
@@ -9,15 +10,14 @@ const shopLinks = [
 ];
 
 const helpLinks = [
-  { label: "Sizing", href: "/help/sizing" },
-  { label: "Application", href: "/help/how-to-apply" },
-  { label: "Contact", href: "/help/contact" },
-  { label: "FAQ", href: "/help/faq" }
+  { label: "Press-On Guide", href: "/help" },
+  { label: "Find Your Fit", href: "/help/sizing" },
+  { label: "FAQ", href: "/help/faq" },
+  { label: "Contact Support", href: "/help/contact" }
 ];
 
 const policyLinks = [
-  { label: "Shipping", href: "/help/shipping-returns" },
-  { label: "Returns", href: "/help/shipping-returns" },
+  { label: "Shipping, Returns & Order Issues", href: "/help/shipping-returns" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" }
 ];
@@ -41,7 +41,7 @@ const socialLinks = [
     icon: "pinterest",
     href: "https://www.pinterest.com/yourprettysets/?invite_code=816e94235a384f57885884bf35a6bd29&sender=1116259595048936063"
   },
-  { label: "Email", icon: "email", href: "mailto:yourprettysets@gmail.com" }
+  { label: "Email", icon: "email", href: supportDetails.mailto }
 ] satisfies Array<{
   label: string;
   icon: SocialIconName;

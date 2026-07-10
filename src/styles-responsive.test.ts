@@ -622,14 +622,39 @@ describe("small mobile responsive CSS", () => {
   });
 
   it("keeps the What’s Included kit image frameless and visually larger", () => {
+    const kitImageRule = getRuleBody(styles, ".kit-spread__image");
+
     expect(styles).toContain(".kit-spread {\n  align-items: center;");
     expect(styles).toContain("aspect-ratio: 1020 / 573;");
     expect(styles).toContain("border: 0;");
     expect(styles).toContain("padding: 0;");
     expect(styles).toContain(".kit-spread__image");
-    expect(styles).toContain("object-fit: contain;");
-    expect(styles).not.toContain("object-fit: cover;");
+    expect(kitImageRule).toContain("object-fit: contain;");
+    expect(kitImageRule).not.toContain("object-fit: cover;");
     expect(styles).not.toContain(".collection-card__mood,\n.kit-spread,\n.review-product__art");
+  });
+
+  it("keeps Help imagery, focus, touch targets, and the short-height mobile submenu resilient", () => {
+    const helpImageRule = getRuleBody(styles, ".help-image-panel__image");
+    const helpFocusRule = getRuleBody(
+      styles,
+      ".help-page a:focus-visible,\n.help-contents__summary:focus-visible,\n.help-faq-accordion__trigger:focus-visible"
+    );
+    const updatedRule = getRuleBody(styles, ".help-article__updated");
+    const productSupportLinkRule = getRuleBody(
+      styles,
+      ".product-page__support-links > a:not(.product-page__shop-link)"
+    );
+    const mobileMenuContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content");
+    const mobileHelpStyles = styles.slice(styles.indexOf("@media (max-width: 759px)"), styles.indexOf(".shop-page {"));
+
+    expect(helpImageRule).toContain("object-fit: cover;");
+    expect(helpFocusRule).toContain("outline: 3px solid var(--site-accent);");
+    expect(updatedRule).toContain("color: var(--site-text-muted);");
+    expect(productSupportLinkRule).toContain("min-height: 44px;");
+    expect(mobileMenuContentRule).toContain("overflow-y: auto;");
+    expect(mobileMenuContentRule).toContain("touch-action: pan-y;");
+    expect(mobileHelpStyles).toContain(".help-contents__link {\n    min-height: 44px;");
   });
 
   it("keeps the FAQ Help section aligned to the shared neutral system", () => {

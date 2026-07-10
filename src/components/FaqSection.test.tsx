@@ -2,6 +2,7 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter } from "react-router-dom";
+import { productPageFaqItems } from "../data/helpContent";
 import { FaqSection } from "./FaqSection";
 
 afterEach(() => {
@@ -17,22 +18,14 @@ describe("FaqSection", () => {
     );
   }
 
-  it("renders default homepage FAQ questions immediately", () => {
+  it("renders the approved Product-page FAQ subset immediately", () => {
     renderFaqSection();
 
     expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
-    expect(screen.getByText("Answers on sizing, wear time, application, and custom orders.")).toBeInTheDocument();
+    expect(screen.getByText("Answers on sizing, wear estimates, application, and ordering.")).toBeInTheDocument();
 
-    for (const question of [
-      "How do I know my size?",
-      "How long do press-ons last?",
-      "Can I reuse them?",
-      "Should I use glue or tabs?",
-      "How long does my order take?",
-      "Do you take custom orders?",
-      "What if my set does not fit?"
-    ]) {
-      expect(screen.getByRole("button", { name: question })).toBeInTheDocument();
+    for (const item of productPageFaqItems) {
+      expect(screen.getByRole("button", { name: item.question })).toBeInTheDocument();
     }
 
     expect(screen.queryByRole("heading", { name: "How Can We Help?" })).not.toBeInTheDocument();
@@ -88,7 +81,7 @@ describe("FaqSection", () => {
     expect(document.querySelector(".faq-trust-row")).not.toBeInTheDocument();
   });
 
-  it("does not render trust badges in the compact homepage FAQ", () => {
+  it("does not render trust badges in the compact Product-page FAQ", () => {
     renderFaqSection();
 
     expect(screen.queryByRole("list", { name: "FAQ trust notes" })).not.toBeInTheDocument();
@@ -102,23 +95,43 @@ describe("FaqSection", () => {
     const user = userEvent.setup();
     renderFaqSection();
 
-    const sizingQuestion = screen.getByRole("button", { name: "How do I know my size?" });
-    const wearQuestion = screen.getByRole("button", { name: "How long do press-ons last?" });
+    const [sizingItem, wearItem] = productPageFaqItems;
+    const sizingQuestion = screen.getByRole("button", { name: sizingItem.question });
+    const wearQuestion = screen.getByRole("button", { name: wearItem.question });
 
     expect(sizingQuestion).toHaveAttribute("aria-expanded", "false");
-    expect(screen.queryByText(/Use a sizing kit for the safest fit/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(sizingItem.answer)).not.toBeInTheDocument();
 
     sizingQuestion.focus();
     await user.keyboard("{Enter}");
 
     expect(sizingQuestion).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByText(/Use a sizing kit for the safest fit/i)).toBeInTheDocument();
+    expect(screen.getByText(sizingItem.answer)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: sizingItem.relatedLink.label })).toHaveAttribute(
+      "href",
+      sizingItem.relatedLink.href
+    );
 
     await user.click(wearQuestion);
 
     expect(sizingQuestion).toHaveAttribute("aria-expanded", "false");
     expect(wearQuestion).toHaveAttribute("aria-expanded", "true");
-    expect(screen.queryByText(/Use a sizing kit for the safest fit/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/Wear time depends on prep and adhesive/i)).toBeInTheDocument();
+    expect(screen.queryByText(sizingItem.answer)).not.toBeInTheDocument();
+    expect(screen.getByText(wearItem.answer)).toBeInTheDocument();
+  });
+
+  it("renders the canonical related guide link for every product FAQ answer", async () => {
+    const user = userEvent.setup();
+    renderFaqSection();
+
+    for (const item of productPageFaqItems) {
+      await user.click(screen.getByRole("button", { name: item.question }));
+
+      expect(screen.getByText(item.answer)).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: item.relatedLink.label })).toHaveAttribute(
+        "href",
+        item.relatedLink.href
+      );
+    }
   });
 });

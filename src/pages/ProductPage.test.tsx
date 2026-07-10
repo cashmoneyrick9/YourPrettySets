@@ -2,7 +2,7 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter, MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { products } from "../data/products";
+import { products, sizingKitProduct } from "../data/products";
 import { ProductPage } from "./ProductPage";
 
 afterEach(() => {
@@ -40,8 +40,10 @@ describe("ProductPage", () => {
     expect(document.querySelector(".product-page__media .product-art__nail")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: products[0].name })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Back to shop" })).toBeInTheDocument();
+    expect(screen.getByText("Ready-to-wear set")).toBeInTheDocument();
     expect(screen.getByText(`$${products[0].price}`)).toBeInTheDocument();
     expect(screen.getByText(products[0].description)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Find Your Fit" })).toHaveAttribute("href", "/help/sizing");
 
     const lengthGroup = screen.getByRole("group", { name: "Length" });
     const shapeGroup = screen.getByRole("group", { name: "Shape" });
@@ -143,6 +145,19 @@ describe("ProductPage", () => {
     expect(screen.getByRole("button", { name: `Favorite ${products[0].name}` })).toHaveAttribute("aria-pressed", "true");
   });
 
+  it("labels made-to-order sets accurately without applying the ready-to-wear nail count", () => {
+    const madeToOrderProduct = products.find((product) => product.orderType === "made-to-order");
+
+    expect(madeToOrderProduct).toBeDefined();
+    renderProductPage(`/products/${madeToOrderProduct?.slug}`);
+
+    expect(screen.getByText("Made-to-order set")).toBeInTheDocument();
+    expect(screen.getByRole("tabpanel", { name: "Nails" })).toHaveTextContent(
+      "Press-on nails are included with every set."
+    );
+    expect(screen.queryByText(/Ready-to-wear sets include 24 press-on nails/i)).not.toBeInTheDocument();
+  });
+
   it("uses browser history when the product was opened from Shop", async () => {
     const user = userEvent.setup();
 
@@ -217,5 +232,36 @@ describe("ProductPage", () => {
 
     expect(screen.getByRole("heading", { name: "Set not found" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Back to shop" })).toHaveAttribute("href", "/shop");
+  });
+
+  it("renders the standalone sizing-kit presentation without fake commerce controls", () => {
+    renderProductPage(`/products/${sizingKitProduct.slug}`);
+
+    expect(screen.getByRole("main")).toHaveClass("product-page--sizing-kit");
+    expect(screen.getByRole("heading", { name: "Sizing Kit", level: 1 })).toBeInTheDocument();
+    expect(screen.getByText(`$${sizingKitProduct.price}`)).toBeInTheDocument();
+    expect(screen.getByText(sizingKitProduct.description)).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Sizing Kit image placeholder" })).toBeInTheDocument();
+    expect(screen.getByRole("status", { name: "Sizing Kit purchase status" })).toHaveTextContent(
+      "Online checkout coming soon"
+    );
+    expect(screen.getByText(/online purchasing is not connected yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sizing kits connected to custom-set orders are free/i)).toBeInTheDocument();
+    expect(screen.getByText(/Custom orders are waitlist-only/i)).toBeInTheDocument();
+
+    expect(screen.getByRole("link", { name: "Back to Find Your Fit" })).toHaveAttribute("href", "/help/sizing");
+    expect(screen.getByRole("link", { name: "Read Find Your Fit" })).toHaveAttribute("href", "/help/sizing");
+    expect(screen.getByRole("link", { name: "Join the custom-order waitlist" })).toHaveAttribute(
+      "href",
+      "/shop/custom-orders"
+    );
+    expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "/help/contact");
+
+    expect(screen.queryByRole("button", { name: "Add to cart" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Favorite/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: "Length" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: "Shape" })).not.toBeInTheDocument();
+    expect(document.querySelector(".kit-section")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-help-section")).not.toBeInTheDocument();
   });
 });

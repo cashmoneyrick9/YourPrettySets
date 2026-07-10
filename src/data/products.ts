@@ -1,3 +1,5 @@
+import { sizingFacts } from "./storefrontFacts";
+
 export const lengthOptions = ["Short", "Medium", "Long", "Extra Long"] as const;
 
 export const shapeOptions = ["Almond", "Coffin", "Square", "Round", "Stiletto", "Oval"] as const;
@@ -25,31 +27,42 @@ export type CollectionLabel = (typeof collectionLabels)[number];
 export type DetailTier = (typeof detailTiers)[number]["id"];
 export type OrderType = "ready-to-ship" | "made-to-order";
 
-export type Product = {
+type ProductPresentation = {
   id: string;
   name: string;
   slug: string;
   price: number;
-  detailTier: DetailTier;
-  orderType: OrderType;
-  collections: CollectionLabel[];
-  isNew: boolean;
-  isPopular: boolean;
   description: string;
   images: {
     clean: string;
     editorial: string;
   };
+};
+
+export type Product = ProductPresentation & {
+  kind: "nail-set";
+  detailTier: DetailTier;
+  orderType: OrderType;
+  collections: CollectionLabel[];
+  isNew: boolean;
+  isPopular: boolean;
   lengthOptions: readonly LengthOption[];
   shapeOptions: readonly ShapeOption[];
 };
+
+export type SizingKitProduct = ProductPresentation & {
+  commerceStatus: "pending";
+  kind: "sizing-kit";
+};
+
+export type ProductPageEntry = Product | SizingKitProduct;
 
 const sharedOptions = {
   lengthOptions,
   shapeOptions
 };
 
-type ProductSeed = Omit<Product, "slug" | "images" | "lengthOptions" | "shapeOptions"> & {
+type ProductSeed = Omit<Product, "kind" | "slug" | "images" | "lengthOptions" | "shapeOptions"> & {
   slug?: string;
 };
 
@@ -60,6 +73,7 @@ function toProductSlug(name: string) {
 function makeProduct({ slug, ...product }: ProductSeed): Product {
   return {
     ...product,
+    kind: "nail-set",
     slug: slug ?? toProductSlug(product.name),
     images: {
       clean: `Clean background placeholder for ${product.name}`,
@@ -434,6 +448,27 @@ export const products: Product[] = [
     description: "A high-shine chrome set with a bold party-ready finish."
   })
 ];
+
+export const sizingKitProduct: SizingKitProduct = {
+  commerceStatus: "pending",
+  description:
+    "A physical sizing kit for customers who want fit guidance without an active custom order.",
+  id: "sizing-kit",
+  images: {
+    clean: "Clean background placeholder for the YourPrettySets sizing kit",
+    editorial: "Stylized editorial placeholder for the YourPrettySets sizing kit"
+  },
+  kind: "sizing-kit",
+  name: "Sizing Kit",
+  price: sizingFacts.standaloneKitPrice,
+  slug: "sizing-kit"
+};
+
+export const productPageEntries: readonly ProductPageEntry[] = [...products, sizingKitProduct];
+
+export function findProductBySlug(slug: string | undefined) {
+  return productPageEntries.find((product) => product.slug === slug);
+}
 
 export const featuredProducts = products.filter((product) => product.isPopular);
 export const newArrivals = products.filter((product) => product.isNew);

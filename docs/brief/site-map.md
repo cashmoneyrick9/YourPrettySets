@@ -1,96 +1,63 @@
 # Site Map
 
+Last aligned with the live prototype: 2026-07-09.
+
 ## Navigation
 
-Primary navigation:
+Desktop primary navigation:
 
-- Home
-- Shop Collections
-- How It Works
-- FAQ
-- Bag
+- Home: `/`
+- Shop: `/shop`
+- Help: `/help`
 
-## Pages
+The mobile Shop submenu links to Ready to Ship, Made to Order, and Custom Orders. The mobile Help submenu links to the Press-On Guide, Find Your Fit, Apply Your Set, Remove & Reuse, Shipping, Returns & Order Issues, FAQ, and Contact Support.
+
+The bag control remains a coming-soon affordance. Checkout is not connected.
+
+## Shopping Pages
 
 ### Home
 
-The Home page is the first build target and the visual reference for future pages.
+The Home page is the visual reference for the storefront and the first shopping path into ready-to-wear sets.
 
-Purpose:
+### Shop
 
-- Establish the brand.
-- Show a lot of pretty product quickly.
-- Drive browsing into the ready-to-wear collection.
-- Define visual standards for buttons, cards, spacing, section rhythm, and copy tone.
+- All sets: `/shop`
+- Ready to Ship: `/shop/ready-to-ship`
+- Made to Order: `/shop/made-to-order`
+- Custom-order waitlist status: `/shop/custom-orders`
 
-### Shop Collections
-
-This is the main shop page.
-
-Important: collections and shop are the same page. Collections behave as filters.
-
-Expected behavior:
-
-- Show all products by default.
-- Provide collection filters across the top.
-- Include simple search.
-- Include sort controls: Newest, Price, Most Popular.
-- Show product cards with image, name, and price.
-
-Collections:
-
-- New Arrivals
-- Everyday
-- Date Night
-- Vacation
-- Bridal
-- Birthday
-- Work/Neutral
-- Statement
+Shop collections and filters share the main Shop page. Custom orders are waitlist-only; the prototype email signup is not connected to a backend yet.
 
 ### Product Detail
 
-Purpose:
+Regular set pages use `/products/:slug` and show product information, length and shape selectors, fit guidance, what is included, and the canonical Product FAQ subset.
 
-- Show product images.
-- Show product name, price, and detail tier.
-- Let customers choose length and shape.
-- Let customers add the set to the bag.
-- Explain what is included, application, care/removal, shipping, and relevant FAQ snippets.
+The standalone sizing kit uses `/products/sizing-kit`. It has a confirmed $10 price and its own Product-page presentation, but deliberately has no Add to Cart or payment behavior until commerce is connected.
 
-The product page should be complete but still conversion-focused.
+## Press-On Guide
 
-### Bag
+The Help Center is organized around customer tasks:
 
-Purpose:
+- Press-On Guide hub: `/help`
+- Find Your Fit: `/help/sizing`
+- Apply Your Set: `/help/application`
+- Remove & Reuse: `/help/removal`
+- Shipping, Returns & Order Issues: `/help/shipping-returns`
+- FAQ: `/help/faq`
+- Contact Support: `/help/contact`
 
-- Show selected products.
-- Show selected length and shape.
-- Show price, quantity, and subtotal.
-- Let users remove items and change quantity.
-- Show checkout as coming soon.
+The old `/help/how-to-apply` route redirects to `/help/application`. Order-problem links may deep-link to sections within the combined shipping and order-issues article.
 
-Checkout should not be implemented yet.
+## Policy Placeholders
 
-### How It Works
+- Privacy: `/privacy`
+- Terms: `/terms`
 
-Depth is undecided. It should exist in the nav, but the final balance between full guide and short shopping support page is open.
-
-### FAQ
-
-Purpose:
-
-- Answer product education questions.
-- Answer policy questions.
-- Explain support for damaged, incorrect, or missing orders.
-
-Tone should be quick and friendly first, with enough detail underneath.
+These pages remain placeholders until final language is approved.
 
 ## Footer
 
-Footer should include:
+The lower footer keeps the current three-column Shop, Help, and Policies structure. Help links use the canonical Help routes, Contact Support is available inside the Help column, and the combined order article is not split into competing Shipping and Returns destinations.
 
-- Navigation links
-- Contact placeholders
-- Instagram placeholder
-- Policy links or policy teaser links
+The public support email is `yourprettysets@gmail.com`.

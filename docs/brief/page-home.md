@@ -84,10 +84,9 @@ Show the kit contents:
 - Adhesive tabs
 - Nail glue
 - Nail file
-- Cuticle pusher
+- Cuticle stick
 - Alcohol wipe
-- Application card
-- Storage box or bag
+- Storage case
 
 Keep the section visual and easy to scan.
 

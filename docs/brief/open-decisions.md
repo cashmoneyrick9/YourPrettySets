@@ -63,37 +63,15 @@ The first build uses generated placeholder images and realistic sample products.
 
 Real nail designs, photos, product names, and final prices will come later.
 
-## How It Works Page Depth
+## Help And Order Work Still Open
 
-The page should exist, but the final depth is undecided.
+The Press-On Guide depth, cancellation rule, shipping figures, issue-reporting window, and current returns approach were confirmed on 2026-07-09 and are centralized in `src/data/storefrontFacts.ts`. Do not restore the older placeholder rules.
 
-Options:
+Still open:
 
-- Short support page that mostly helps people shop.
-- Full guide with application, removal, reuse, sizing, and care.
-
-## Cancellation Policy
-
-Cancellation policy is not decided yet.
-
-Do not write strict cancellation language into the prototype.
-
-## Shipping Details
-
-Use placeholder shipping rules for now:
-
-- Standard shipping: $5.99
-- Free shipping over $50
-- Processing: 3-7 business days
-- Delivery estimate: 3-5 business days after processing
-
-These are placeholders and can change.
-
-## Return/Issue Window
-
-Direction:
-
-- All sales final for hygiene reasons.
-- If an order arrives damaged, incorrect, or missing something, customer should contact support within 7 days of delivery.
-
-Final wording can be refined later.
+- Approved millimeter measurements for the `00–14` sizing chart.
+- Checkout/cart integration for the $10 standalone sizing kit and the wider storefront.
+- Final product details, compatible instructions, and product page for the planned YourPrettySets glue-removal solution.
+- Backend/provider connection and longer-term routing for custom-order and footer email signup forms.
+- Final Privacy and Terms language.
+- Whether finalized policy wording later moves into dedicated policy pages in addition to the customer-facing Help article.

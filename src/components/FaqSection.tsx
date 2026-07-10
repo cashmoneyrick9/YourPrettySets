@@ -1,41 +1,6 @@
 import { Link } from "react-router-dom";
+import { productPageFaqItems } from "../data/helpContent";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
-
-const homepageFaqItems = [
-  {
-    question: "How do I know my size?",
-    answer:
-      "Use a sizing kit for the safest fit, or measure the widest part of each natural nail in millimeters and match each finger to the closest size."
-  },
-  {
-    question: "How long do press-ons last?",
-    answer:
-      "Wear time depends on prep and adhesive. Glue is best for longer wear, while tabs are better for shorter wear."
-  },
-  {
-    question: "Can I reuse them?",
-    answer: "Yes. Many sets can be reused if they are removed gently, cleaned, and stored properly."
-  },
-  {
-    question: "Should I use glue or tabs?",
-    answer: "Choose glue when you want a stronger hold. Choose tabs when you want easier removal or short-term wear."
-  },
-  {
-    question: "How long does my order take?",
-    answer:
-      "Ready-to-wear processing time should follow the timing shown at checkout or on the product page. Shipping time starts after processing."
-  },
-  {
-    question: "Do you take custom orders?",
-    answer:
-      "Custom availability depends on the current queue. Customers should contact support or check the custom-order flow when available."
-  },
-  {
-    question: "What if my set does not fit?",
-    answer:
-      "Contact support as soon as possible. A sizing kit before ordering is the best way to avoid fit issues."
-  }
-] as const;
 
 export function FaqSection() {
   return (
@@ -45,7 +10,7 @@ export function FaqSection() {
           <h2 className="faq-card__heading" id="faq-heading">
             Questions before you order
           </h2>
-          <p>Answers on sizing, wear time, application, and custom orders.</p>
+          <p>Answers on sizing, wear estimates, application, and ordering.</p>
         </div>
         <div className="faq-card__actions">
           <Link className="faq-card__primary-link" to="/help/contact">
@@ -60,14 +25,17 @@ export function FaqSection() {
       <div className="faq-help">
         <div className="faq-card">
           <Accordion className="faq-question-list" collapsible type="single">
-            {homepageFaqItems.map((item, index) => (
-              <AccordionItem className="faq-question-item" key={item.question} value={`homepage-faq-${index}`}>
+            {productPageFaqItems.map((item) => (
+              <AccordionItem className="faq-question-item" key={item.id} value={`product-faq-${item.id}`}>
                 <AccordionTrigger className="faq-question-row [&>svg]:hidden">
                   <span>{item.question}</span>
                   <span aria-hidden className="faq-question-row__icon" />
                 </AccordionTrigger>
                 <AccordionContent className="faq-question-answer">
                   <p>{item.answer}</p>
+                  <Link className="faq-question-answer__link" to={item.relatedLink.href}>
+                    {item.relatedLink.label}
+                  </Link>
                 </AccordionContent>
               </AccordionItem>
             ))}

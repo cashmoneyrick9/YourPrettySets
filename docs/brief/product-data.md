@@ -10,7 +10,7 @@ Exact count is open, but the system should support 12-30 placeholder products at
 
 ## Product Type
 
-Ready-to-wear press-on nail sets only.
+The current catalog contains ready-to-wear press-on nail sets. A separate $10 standalone sizing-kit product exists outside the set catalog at `/products/sizing-kit`; its online purchase flow is not connected yet. Custom sets remain waitlist-only.
 
 Customers choose:
 
@@ -27,10 +27,9 @@ Every ready-to-wear set includes:
 - Adhesive tabs
 - Nail glue
 - Nail file
-- Cuticle pusher
+- Cuticle stick
 - Alcohol wipe
-- Application card
-- Storage box or bag
+- Storage case
 
 Use this language direction:
 

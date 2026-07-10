@@ -97,12 +97,30 @@ describe("App", () => {
     await user.type(screen.getByLabelText("Email address"), "custom@example.com");
     await user.click(screen.getByRole("button", { name: "Notify me" }));
 
-    expect(screen.getByText("You’re on the list.")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "This address was not saved because signup is not connected yet."
+    );
 
     await user.click(screen.getByRole("link", { name: "Close custom orders and return to shop" }));
 
     expect(screen.getByRole("heading", { name: "Shop All" })).toBeInTheDocument();
     expect(window.location.pathname).toBe("/shop");
+  });
+
+  it("moves focus through the mobile custom-order route and back to Shop", async () => {
+    const user = userEvent.setup();
+    renderApp();
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    await user.click(screen.getByRole("button", { name: "Shop" }));
+    await user.click(screen.getByRole("link", { name: "Custom Orders" }));
+
+    const customHeading = screen.getByRole("heading", { name: "Custom Orders Coming Soon" });
+    expect(customHeading).toHaveFocus();
+
+    await user.click(screen.getByRole("link", { name: "Close custom orders and return to shop" }));
+
+    expect(screen.getByRole("heading", { name: "Shop All" })).toHaveFocus();
   });
 
   it("renders a product detail page at /products/:slug", () => {
@@ -114,6 +132,18 @@ describe("App", () => {
     expect(screen.getByRole("group", { name: "Length" })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "Shape" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Add to cart" })).toBeInTheDocument();
+  });
+
+  it("renders the standalone sizing-kit product without fake commerce controls", () => {
+    window.history.pushState({}, "", "/products/sizing-kit");
+
+    renderApp();
+
+    expect(screen.getByRole("heading", { name: "Sizing Kit" })).toBeInTheDocument();
+    expect(screen.getByText("$10")).toBeInTheDocument();
+    expect(screen.getByText(/Online purchasing is not connected yet/i)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Add to cart" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Read Find Your Fit" })).toHaveAttribute("href", "/help/sizing");
   });
 
   it("renders a clean product not-found state for unknown slugs", () => {
@@ -221,20 +251,27 @@ describe("App", () => {
     expect(within(main).getByRole("heading", { name: "The Press-On Guide" })).toBeInTheDocument();
 
     for (const [name, href] of [
-      ["Sizing Guide", "/help/sizing"],
-      ["How to Apply & Remove", "/help/how-to-apply"],
-      ["Shipping & Returns", "/help/shipping-returns"],
+      ["Find Your Fit", "/help/sizing"],
+      ["Sizing Kit", "/products/sizing-kit"],
+      ["Apply Your Set", "/help/application"],
+      ["Remove & Reuse", "/help/removal"],
+      ["Shipping, Returns & Order Issues", "/help/shipping-returns"],
+      ["Damaged or incorrect order", "/help/shipping-returns#order-problems"],
+      ["Lost package", "/help/shipping-returns#lost-packages"],
+      ["Cancel an order", "/help/shipping-returns#cancellations"],
       ["FAQ", "/help/faq"],
-      ["Contact Support", "/help/contact"]
+      ["Contact Support", "/help/contact"],
+      ["Custom-order waitlist", "/shop/custom-orders"]
     ] as const) {
-      expect(within(main).getByRole("link", { name })).toHaveAttribute("href", href);
+      expect(within(main).getAllByRole("link", { name }).some((link) => link.getAttribute("href") === href)).toBe(true);
     }
   });
 
   it.each([
-    ["/help/sizing", "Sizing Guide"],
-    ["/help/how-to-apply", "How to Apply & Remove"],
-    ["/help/shipping-returns", "Shipping & Returns"],
+    ["/help/sizing", "Find Your Fit"],
+    ["/help/application", "Apply Your Set"],
+    ["/help/removal", "Remove & Reuse"],
+    ["/help/shipping-returns", "Shipping, Returns & Order Issues"],
     ["/help/faq", "FAQ"],
     ["/help/contact", "Contact Support"],
     ["/privacy", "Privacy"],
@@ -245,6 +282,17 @@ describe("App", () => {
     renderApp();
 
     expect(screen.getByRole("heading", { name: heading })).toBeInTheDocument();
+  });
+
+  it("redirects the legacy application route to the canonical guide", async () => {
+    window.history.pushState({}, "", "/help/how-to-apply");
+
+    renderApp();
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Apply Your Set" })).toBeInTheDocument();
+    });
+    expect(window.location.pathname).toBe("/help/application");
   });
 
   it("navigates from the primary Help link to the Help hub", async () => {
@@ -259,9 +307,24 @@ describe("App", () => {
       })
     );
 
-    expect(screen.getByRole("heading", { name: "The Press-On Guide" })).toBeInTheDocument();
+    const pageHeading = screen.getByRole("heading", { name: "The Press-On Guide" });
+    expect(pageHeading).toBeInTheDocument();
+    expect(pageHeading).toHaveFocus();
     expect(window.location.pathname).toBe("/help");
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
+  });
+
+  it("moves directly from the Help hub to a focused order-issue section", async () => {
+    const user = userEvent.setup();
+    window.history.pushState({}, "", "/help");
+    renderApp();
+
+    await user.click(screen.getByRole("link", { name: "Damaged or incorrect order" }));
+
+    const sectionHeading = screen.getByRole("heading", { name: "Damaged, incorrect, or defective items" });
+    expect(window.location.pathname).toBe("/help/shipping-returns");
+    expect(window.location.hash).toBe("#order-problems");
+    expect(sectionHeading).toHaveFocus();
   });
 
   it("renders the approved footer system at the bottom", () => {

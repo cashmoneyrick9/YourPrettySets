@@ -85,8 +85,12 @@ describe("BrandHeader", () => {
     const selector = within(mobileNav).getByLabelText("Menu sections");
     expect(selector).toHaveClass("brand-header__mobile-menu-selector--default");
     expect(within(selector).getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
-    expect(within(selector).getByRole("button", { name: "Shop" })).not.toHaveAttribute("aria-current");
-    expect(within(selector).getByRole("button", { name: "Help" })).not.toHaveAttribute("aria-current");
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "false");
+    expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute("aria-expanded", "false");
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute(
+      "aria-controls",
+      "brand-header-mobile-menu-content"
+    );
     expect(within(selector).getByRole("button", { name: "Shop" })).not.toHaveClass(
       "brand-header__mobile-selector-item--active"
     );
@@ -97,13 +101,14 @@ describe("BrandHeader", () => {
     expect(within(mobileNav).queryByRole("link", { name: "Ready to Ship" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Made to Order" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Custom Orders" })).not.toBeInTheDocument();
-    expect(within(mobileNav).queryByRole("link", { name: "Help Center" })).not.toBeInTheDocument();
-    expect(within(mobileNav).queryByRole("link", { name: "Sizing Guide" })).not.toBeInTheDocument();
-    expect(within(mobileNav).queryByRole("link", { name: "How to Apply" })).not.toBeInTheDocument();
-    expect(within(mobileNav).queryByRole("link", { name: "Shipping & Returns" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Press-On Guide" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Find Your Fit" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Apply Your Set" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Remove & Reuse" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Shipping, Returns & Order Issues" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "FAQ" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Reviews" })).not.toBeInTheDocument();
-    expect(within(mobileNav).queryByRole("link", { name: "Contact" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Contact Support" })).not.toBeInTheDocument();
     expect(screen.getByLabelText("YourPrettySets home")).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("aria-hidden", "true");
     expect(document.querySelector('[aria-label="Bag coming soon"]')).toHaveAttribute("tabindex", "-1");
@@ -181,8 +186,8 @@ describe("BrandHeader", () => {
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--expanded");
-    expect(within(selector).getByRole("button", { name: "Shop" })).not.toHaveAttribute("aria-current");
-    expect(within(selector).getByRole("button", { name: "Help" })).not.toHaveAttribute("aria-current");
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "false");
+    expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute("aria-expanded", "false");
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
     expect(content).toHaveClass("brand-header__mobile-menu-content--default");
@@ -204,13 +209,11 @@ describe("BrandHeader", () => {
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-shop");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--default");
     expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute(
-      "aria-current",
-      "page"
+      "aria-expanded",
+      "true"
     );
     expect(within(selector).getByRole("button", { name: "Shop" })).toHaveTextContent("Shop");
-    expect(within(selector).getByRole("button", { name: "Help" })).not.toHaveAttribute(
-      "aria-current"
-    );
+    expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute("aria-expanded", "false");
 
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
@@ -231,7 +234,7 @@ describe("BrandHeader", () => {
       "href",
       "/shop/custom-orders"
     );
-    expect(within(mobileNav).queryByRole("link", { name: "Help Center" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Press-On Guide" })).not.toBeInTheDocument();
   });
 
   it("collapses the Shop submenu when tapping the active Shop selector again", async () => {
@@ -255,10 +258,8 @@ describe("BrandHeader", () => {
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--expanded");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--active-shop");
-    expect(shopToggle).not.toHaveAttribute("aria-current");
-    expect(within(selector).getByRole("button", { name: "Help" })).not.toHaveAttribute(
-      "aria-current"
-    );
+    expect(shopToggle).toHaveAttribute("aria-expanded", "false");
+    expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute("aria-expanded", "false");
 
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
@@ -314,42 +315,52 @@ describe("BrandHeader", () => {
     const shopToggle = within(selector).getByRole("button", { name: "Shop" });
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--expanded");
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
-    expect(helpToggle).toHaveAttribute("aria-current", "page");
+    expect(helpToggle).toHaveAttribute("aria-expanded", "true");
     expect(helpToggle).toHaveTextContent("Help");
-    expect(shopToggle).not.toHaveAttribute("aria-current");
+    expect(shopToggle).toHaveAttribute("aria-expanded", "false");
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
     expect(content).toHaveClass("brand-header__mobile-menu-content--expanded");
     expect(content).not.toHaveAttribute("aria-hidden");
+    const submenuScrollEvent = new Event("touchmove", { bubbles: true, cancelable: true });
+    content?.dispatchEvent(submenuScrollEvent);
+    expect(submenuScrollEvent.defaultPrevented).toBe(false);
+    const backgroundScrollEvent = new Event("touchmove", { bubbles: true, cancelable: true });
+    selector.dispatchEvent(backgroundScrollEvent);
+    expect(backgroundScrollEvent.defaultPrevented).toBe(true);
     expect(within(content as HTMLElement).getByText("HELP")).toHaveClass(
       "brand-header__mobile-submenu-eyebrow"
     );
     expect(within(mobileNav).queryByRole("link", { name: "Ready to Ship" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Made to Order" })).not.toBeInTheDocument();
     expect(within(mobileNav).queryByRole("link", { name: "Custom Orders" })).not.toBeInTheDocument();
-    expect(within(mobileNav).getByRole("link", { name: "Help Center" })).toHaveAttribute(
+    expect(within(mobileNav).getByRole("link", { name: "Press-On Guide" })).toHaveAttribute(
       "href",
       "/help"
     );
-    expect(within(mobileNav).getByRole("link", { name: "Sizing Guide" })).toHaveAttribute(
+    expect(within(mobileNav).getByRole("link", { name: "Find Your Fit" })).toHaveAttribute(
       "href",
       "/help/sizing"
     );
-    expect(within(mobileNav).getByRole("link", { name: "How to Apply" })).toHaveAttribute(
+    expect(within(mobileNav).getByRole("link", { name: "Apply Your Set" })).toHaveAttribute(
       "href",
-      "/help/how-to-apply"
+      "/help/application"
     );
-    expect(within(mobileNav).getByRole("link", { name: "Shipping & Returns" })).toHaveAttribute(
+    expect(within(mobileNav).getByRole("link", { name: "Remove & Reuse" })).toHaveAttribute(
+      "href",
+      "/help/removal"
+    );
+    expect(within(mobileNav).getByRole("link", { name: "Shipping, Returns & Order Issues" })).toHaveAttribute(
       "href",
       "/help/shipping-returns"
     );
     expect(within(mobileNav).getByRole("link", { name: "FAQ" })).toHaveAttribute("href", "/help/faq");
-    expect(within(mobileNav).getByRole("link", { name: "Contact" })).toHaveAttribute(
+    expect(within(mobileNav).getByRole("link", { name: "Contact Support" })).toHaveAttribute(
       "href",
       "/help/contact"
     );
 
-    await user.click(within(mobileNav).getByRole("link", { name: "Help Center" }));
+    await user.click(within(mobileNav).getByRole("link", { name: "Press-On Guide" }));
 
     expect(window.location.pathname).toBe("/help");
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
@@ -375,16 +386,14 @@ describe("BrandHeader", () => {
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--expanded");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--active-help");
-    expect(helpToggle).not.toHaveAttribute("aria-current");
-    expect(within(selector).getByRole("button", { name: "Shop" })).not.toHaveAttribute(
-      "aria-current"
-    );
+    expect(helpToggle).toHaveAttribute("aria-expanded", "false");
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "false");
 
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
     expect(content).toHaveClass("brand-header__mobile-menu-content--default");
     expect(content).toHaveAttribute("aria-hidden", "true");
-    expect(within(mobileNav).queryByRole("link", { name: "Help Center" })).not.toBeInTheDocument();
+    expect(within(mobileNav).queryByRole("link", { name: "Press-On Guide" })).not.toBeInTheDocument();
     expect(document.body).toHaveClass("mobile-menu-open");
   });
 
@@ -404,9 +413,9 @@ describe("BrandHeader", () => {
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--expanded");
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
-    expect(helpToggle).toHaveAttribute("aria-current", "page");
-    expect(shopToggle).not.toHaveAttribute("aria-current");
-    expect(within(mobileNav).getByRole("link", { name: "Help Center" })).toHaveAttribute(
+    expect(helpToggle).toHaveAttribute("aria-expanded", "true");
+    expect(shopToggle).toHaveAttribute("aria-expanded", "false");
+    expect(within(mobileNav).getByRole("link", { name: "Press-On Guide" })).toHaveAttribute(
       "href",
       "/help"
     );
@@ -427,8 +436,8 @@ describe("BrandHeader", () => {
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
     expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute(
-      "aria-current",
-      "page"
+      "aria-expanded",
+      "true"
     );
   });
 
@@ -447,20 +456,18 @@ describe("BrandHeader", () => {
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
     expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute(
-      "aria-current",
-      "page"
+      "aria-expanded",
+      "true"
     );
-    expect(within(selector).getByRole("button", { name: "Shop" })).not.toHaveAttribute(
-      "aria-current"
-    );
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "false");
 
     vi.advanceTimersByTime(400);
     fireEvent.wheel(selector, { deltaY: -42 });
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-shop");
     expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute(
-      "aria-current",
-      "page"
+      "aria-expanded",
+      "true"
     );
   });
 
@@ -479,8 +486,8 @@ describe("BrandHeader", () => {
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
     expect(within(selector).getByRole("button", { name: "Help" })).toHaveAttribute(
-      "aria-current",
-      "page"
+      "aria-expanded",
+      "true"
     );
   });
 

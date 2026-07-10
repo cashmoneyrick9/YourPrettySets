@@ -38,8 +38,8 @@ The current goal is not a public launch MVP. The current goal is a structured br
 
 ## Current Build State
 
-The Home page foundation exists as a Vite React TypeScript app. It has central placeholder product data, shared Home components, a long-scroll mobile-first Home page, responsive CSS including 320px rules, and passing test/build/audit checks.
+The storefront exists as a Vite React TypeScript app with central product data, shared Home and Product components, responsive CSS including 320px rules, and React Router page navigation.
 
-The latest Home page UX bug pass is complete and focused on mobile behavior rather than final UI polish. Current sections include a compact mobile header, image-led hero, overlapping How It Works step carousel, collection tiles, real weekly set carousel, two-card shop-more carousel, kit contents accordion, review carousel, FAQ accordion, and accordion footer.
+The complete Press-On Guide system is now implemented at `/help`, with task-based sizing, application, removal, shipping/order-issue, FAQ, and Contact routes; centralized storefront facts; reusable article components; mobile/desktop article navigation; and a separate $10 sizing-kit Product page with commerce clearly marked as not connected.
 
-Next likely work is the broader UI pass. Preserve the approved behavior documented in `session-handoff.md`, then improve visual treatment section by section. The immediate open thread is the UI of the How It Works carousel cards: the CEO skipped further work on the hero-to-card gradient and wants fresh card-only mockups before implementation. Do not treat the logo, final visuals, product photography, product copy, checkout, policies, or broader UI styling as final.
+Preserve the approved behavior documented in `session-handoff.md` and improve visual treatment section by section. Do not treat the logo, final product photography, final copy, checkout, the missing sizing measurements, the planned glue-removal product, or Privacy/Terms wording as final.

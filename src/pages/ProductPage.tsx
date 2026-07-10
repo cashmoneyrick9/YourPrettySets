@@ -3,8 +3,9 @@ import { ArrowLeft, Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaqSection } from "../components/FaqSection";
 import { KitContents } from "../components/KitContents";
-import { products } from "../data/products";
-import type { Product } from "../data/products";
+import { findProductBySlug } from "../data/products";
+import type { Product, SizingKitProduct } from "../data/products";
+import { sizingFacts } from "../data/storefrontFacts";
 
 function ProductOptionGroup<Option extends string>({
   label,
@@ -79,12 +80,17 @@ function ProductBuyingFlow({ product }: { product: Product }) {
 
         <section className="product-page__buying-panel" aria-labelledby="product-title">
           <div className="product-page__summary">
-            <p className="product-page__eyebrow">Ready-to-wear set</p>
+            <p className="product-page__eyebrow">
+              {product.orderType === "ready-to-ship" ? "Ready-to-wear set" : "Made-to-order set"}
+            </p>
             <div className="product-page__title-row">
               <h1 id="product-title">{product.name}</h1>
               <p className="product-page__price">${product.price}</p>
             </div>
             <p className="product-page__description">{product.description}</p>
+            <p className="product-page__fit-help">
+              Not sure about fit? Read <Link to="/help/sizing">Find Your Fit</Link> before ordering.
+            </p>
           </div>
 
           <ProductOptionGroup
@@ -130,15 +136,80 @@ function ProductBuyingFlow({ product }: { product: Product }) {
           </div>
         </section>
       </div>
-      <KitContents />
+      <KitContents readyToWear={product.orderType === "ready-to-ship"} />
       <FaqSection />
+    </main>
+  );
+}
+
+function SizingKitProductPage({ product }: { product: SizingKitProduct }) {
+  const customOrderKitPrice =
+    sizingFacts.customOrderKitPrice === 0 ? "free" : `$${sizingFacts.customOrderKitPrice}`;
+
+  return (
+    <main className="product-page product-page--sizing-kit">
+      <div className="product-page__inner">
+        <Link className="product-page__back-button" to="/help/sizing">
+          <ArrowLeft aria-hidden="true" size={16} strokeWidth={2} />
+          Back to Find Your Fit
+        </Link>
+
+        <section className="product-page__media" aria-label={`${product.name} preview`}>
+          <div
+            className="product-page__image-placeholder"
+            role="img"
+            aria-label={`${product.name} image placeholder`}
+          />
+        </section>
+
+        <section className="product-page__buying-panel" aria-labelledby="product-title">
+          <div className="product-page__summary">
+            <p className="product-page__eyebrow">Sizing support</p>
+            <div className="product-page__title-row">
+              <h1 id="product-title">{product.name}</h1>
+              <p className="product-page__price">${product.price}</p>
+            </div>
+            <p className="product-page__description">{product.description}</p>
+          </div>
+
+          <div
+            aria-label="Sizing Kit purchase status"
+            className="product-page__selected-summary product-page__commerce-status"
+            role="status"
+          >
+            <span className="product-page__selected-summary-eyebrow">Store status</span>
+            <span className="product-page__selected-summary-value">Online checkout coming soon</span>
+            <p>
+              Online purchasing is not connected yet. This page does not collect payment or create an order.
+            </p>
+          </div>
+
+          <section className="product-page__sizing-kit-details" aria-labelledby="sizing-kit-details-title">
+            <h2 id="sizing-kit-details-title">When to use a sizing kit</h2>
+            <ul>
+              <li>Choose the standalone kit when you want sizing help without an active custom order.</li>
+              <li>
+                Sizing kits connected to custom-set orders are {customOrderKitPrice}. Custom orders are {sizingFacts.customOrdersStatus}.
+              </li>
+            </ul>
+          </section>
+
+          <div className="product-page__support-links" aria-label="Sizing kit help links">
+            <Link className="product-page__shop-link" to="/help/sizing">
+              Read Find Your Fit
+            </Link>
+            <Link to="/shop/custom-orders">Join the custom-order waitlist</Link>
+            <Link to="/help/contact">Contact Support</Link>
+          </div>
+        </section>
+      </div>
     </main>
   );
 }
 
 export function ProductPage() {
   const { slug } = useParams();
-  const product = products.find((catalogProduct) => catalogProduct.slug === slug);
+  const product = findProductBySlug(slug);
 
   if (!product) {
     return (
@@ -153,6 +224,10 @@ export function ProductPage() {
         </section>
       </main>
     );
+  }
+
+  if (product.kind === "sizing-kit") {
+    return <SizingKitProductPage product={product} />;
   }
 
   return <ProductBuyingFlow key={product.slug} product={product} />;

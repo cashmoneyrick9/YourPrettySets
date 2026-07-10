@@ -67,9 +67,9 @@ Shape:
 
 ## Add To Bag
 
-Add-to-bag should work in the prototype.
+The regular Product-page Add to Cart control is still a prototype affordance; the storefront does not yet have a complete cart or checkout system. The sizing-kit page deliberately omits the control until commerce is connected.
 
-The bag should store:
+When the bag is implemented, it should store:
 
 - Product
 - Selected length
@@ -104,3 +104,11 @@ It may appear as:
 - A more visual flat-lay style section lower on Home or product pages.
 
 The exact presentation can evolve, but the contents are already decided.
+
+The approved seven-item list lives in `src/data/storefrontFacts.ts`. Product and Help surfaces should read from that source instead of maintaining separate lists.
+
+## Help Article System
+
+The reusable Help system lives in `src/components/help/` and is shared by the hub and all long-form guides. It includes the article shell, desktop/mobile contents navigation, numbered steps, callouts, instructional media, fact and policy blocks, issue checklists, FAQ accordions, related guides, and support CTAs.
+
+Keep the system editorial and task-focused. Use sections and dividers before adding more cards, preserve one H1 per page, and route all changeable policy and product facts through `src/data/storefrontFacts.ts` and `src/data/helpContent.ts`.

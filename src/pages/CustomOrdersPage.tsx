@@ -22,7 +22,10 @@ export function CustomOrdersPage() {
         <p className="custom-orders-page__eyebrow">YourPrettySets</p>
         <h1 id="custom-orders-title">Custom Orders Coming Soon</h1>
         <p className="custom-orders-page__copy">
-          Join the list for first notice when one-of-one request spots open.
+          Custom orders are waitlist-only. The email signup connection is coming soon.
+        </p>
+        <p className="custom-orders-page__signup-status">
+          This prototype form does not save an email address yet.
         </p>
 
         <form className="custom-orders-page__form" onSubmit={handleSubmit}>
@@ -44,7 +47,11 @@ export function CustomOrdersPage() {
           <button type="submit">Notify me</button>
         </form>
 
-        {isSubmitted ? <p className="custom-orders-page__confirmation">You’re on the list.</p> : null}
+        {isSubmitted ? (
+          <p className="custom-orders-page__confirmation" role="status">
+            Thanks for your interest. This address was not saved because signup is not connected yet.
+          </p>
+        ) : null}
       </section>
     </main>
   );

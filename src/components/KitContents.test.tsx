@@ -2,6 +2,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter } from "react-router-dom";
+import { includedSetItems, sizingFacts, wearEstimates } from "../data/storefrontFacts";
 import { KitContents } from "./KitContents";
 
 afterEach(() => {
@@ -37,15 +38,17 @@ describe("KitContents", () => {
     expect(screen.getByRole("tab", { name: "Case + care" })).toHaveAttribute("aria-selected", "false");
 
     const activePanel = screen.getByRole("tabpanel", { name: "Nails" });
-    expect(activePanel).toHaveTextContent("Made to fit");
-    expect(activePanel).toHaveTextContent("24 nails in multiple sizes so you can find your best fit.");
+    expect(activePanel).toHaveTextContent("A broader fit range");
+    expect(activePanel).toHaveTextContent(
+      `Ready-to-wear sets include ${sizingFacts.readyToWearNailCount} ${includedSetItems[0].toLowerCase()} in multiple sizes.`
+    );
     expect(screen.getByRole("img", { name: "Twenty-four press-on nails in multiple sizes with small fruit details" })).toHaveAttribute(
       "src",
       "/assets/nail-size-set.png"
     );
 
-    const applyCareLink = screen.getByRole("link", { name: /HOW TO APPLY & CARE/i });
-    expect(applyCareLink).toHaveAttribute("href", "/help/how-to-apply");
+    const applyCareLink = screen.getByRole("link", { name: /APPLY YOUR SET/i });
+    expect(applyCareLink).toHaveAttribute("href", "/help/application");
     expect(applyCareLink).toHaveClass("kit-primary-link");
     expect(applyCareLink).toHaveAttribute("data-slot", "button");
     const faqLink = screen.getByRole("link", { name: "Have a question? Visit our FAQ" });
@@ -53,7 +56,6 @@ describe("KitContents", () => {
     expect(faqLink).toHaveClass("kit-faq-link");
     expect(faqLink).toHaveAttribute("data-slot", "button");
 
-    expect(screen.queryByText(/24 press-on nails/i)).not.toBeInTheDocument();
     expect(screen.queryByText("Prep and size")).not.toBeInTheDocument();
     expect(screen.queryByText("Apply with glue or tabs")).not.toBeInTheDocument();
     expect(screen.queryByText("Press, hold, and wear")).not.toBeInTheDocument();
@@ -70,7 +72,10 @@ describe("KitContents", () => {
     expect(screen.getByRole("tab", { name: "Glue / tabs" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("tabpanel", { name: "Glue / tabs" })).toHaveTextContent("Choose your wear");
     expect(screen.getByRole("tabpanel", { name: "Glue / tabs" })).toHaveTextContent(
-      "Use nail glue for longer wear or adhesive tabs for a gentler temporary hold."
+      `${includedSetItems[1]} and ${includedSetItems[2].toLowerCase()} are included.`
+    );
+    expect(screen.getByRole("tabpanel", { name: "Glue / tabs" })).toHaveTextContent(
+      `Glue is estimated at ${wearEstimates.glue}; tabs are estimated at ${wearEstimates.tabs}.`
     );
     expect(screen.getByRole("img", { name: "Nail glue and adhesive tabs" })).toHaveAttribute("src", "/assets/nail-glue.png");
     expect(screen.getByRole("img", { name: "Adhesive tabs" })).toHaveAttribute("src", "/assets/adhesive-tabs.png");
@@ -81,11 +86,15 @@ describe("KitContents", () => {
     expect(screen.getByRole("tab", { name: "Prep tools" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("tabpanel", { name: "Prep tools" })).toHaveTextContent("Prep + apply kit");
     expect(screen.getByRole("tabpanel", { name: "Prep tools" })).toHaveTextContent(
-      "Includes the basics to prep your nails and apply your set cleanly."
+      `${includedSetItems[3]}, ${includedSetItems[4].toLowerCase()}, and ${includedSetItems[5].toLowerCase()} are included for preparation and application.`
     );
     expect(screen.getByRole("img", { name: "Nail file" })).toHaveAttribute("src", "/assets/nail-file.png");
-    expect(screen.getByRole("img", { name: "Cuticle pusher" })).toHaveAttribute("src", "/assets/cuticle-pusher.png");
+    expect(screen.getByRole("img", { name: "Cuticle stick" })).toHaveAttribute("src", "/assets/cuticle-pusher.png");
     expect(screen.getByRole("img", { name: "Alcohol wipe" })).toHaveAttribute("src", "/assets/alcohol-wipe.png");
+
+    await user.click(screen.getByRole("tab", { name: "Case + care" }));
+
+    expect(screen.getByRole("tabpanel", { name: "Case + care" })).toHaveTextContent(includedSetItems[6]);
   });
 
   it("does not render the old accordion controls or care tips CTA", () => {

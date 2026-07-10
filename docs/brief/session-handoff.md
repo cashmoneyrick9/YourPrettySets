@@ -10,9 +10,55 @@ YourPrettySets is being built as a from-scratch brand and ecommerce prototype fo
 
 This is not a public launch MVP yet. It is a structured prototype for the CEO and agents to shape the brand, product system, Home page, and future shop pages.
 
+## Latest Integrated System: Press-On Guide
+
+The complete Help / Press-On Guide system was implemented on 2026-07-09. This entry supersedes older placeholder-route, placeholder support-email, sizing-kit-exclusion, cancellation, shipping-price, and return-policy notes later in this historical handoff.
+
+Current architecture:
+
+- `/help` is the task-based Press-On Guide hub with `Before you order`, `Apply and care`, `Order help`, and `More help` groups.
+- Canonical articles are `/help/sizing`, `/help/application`, `/help/removal`, `/help/shipping-returns`, `/help/faq`, and `/help/contact`.
+- `/help/how-to-apply` redirects to `/help/application`; damaged-order, lost-package, and cancellation hub tasks deep-link to sections in the combined order article.
+- Shared article primitives live in `src/components/help/`: article shell, responsive contents navigation, sections, numbered steps, callouts, instructional media, fact/policy blocks, issue checklists, FAQ accordion, related guides, and support CTA.
+- Approved business facts live in `src/data/storefrontFacts.ts`; route names, hub destinations, related guides, and canonical FAQ answers live in `src/data/helpContent.ts`.
+- The public support email is `yourprettysets@gmail.com` on Contact, FAQ/support flows, Product support, and the footer.
+- Product FAQ answers are a concise subset of the canonical FAQ data. `KitContents` now reads the exact seven included items and qualified glue/tab estimates from the central facts.
+- `/products/sizing-kit` is a separate $10 product outside the 33-set catalog. It links to Find Your Fit and the custom-order waitlist, omits normal set selectors/favorite/Add to Cart, and clearly states that online purchasing is not connected.
+- Desktop and mobile navigation use the canonical Help names. The footer keeps its three-column design, includes Contact Support under Help, and uses one combined `Shipping, Returns & Order Issues` link instead of competing Shipping/Returns destinations.
+- Application and removal use replaceable branded instructional images at `public/assets/help/apply-press-on-alignment.jpg` and `public/assets/help/remove-adhesive-tabs-warm-water.jpg`.
+- Route changes focus the new page heading, article anchors use fixed-header-safe scroll margins, the mobile Help sheet scrolls independently on short screens, submenu parents expose `aria-expanded`/`aria-controls`, FAQ headers have normalized margins, and Help focus/metadata contrast is explicit.
+
+Confirmed customer facts:
+
+- Ready-to-wear sets include 24 nails across preset sizes `00–14`; a broad range reduces sizing risk without guaranteeing every fit.
+- A standalone sizing kit is $10. A sizing kit connected to a custom-set order is free. Custom orders remain waitlist-only.
+- Glue wear is estimated at `1–3+ weeks`; tab wear is estimated at `7–14 days`. Both are estimates affected by preparation, application, lifestyle, water exposure, natural nail condition, and daily activity.
+- Ready-to-ship processing is approximately 1–3 business days; made-to-order processing is approximately 2–4 business days; carrier transit is approximately 5–7 business days.
+- Shipping is temporarily approximately $7 below $65 and free priority shipping at $65+. Tracking is included.
+- Standard returns are not accepted for handmade sets. Damaged, incorrect, or defective items should be reported within seven days of confirmed delivery with order details and clear photos; resolutions are case-by-case.
+- Orders may be cancelled within 24 hours of purchase if painting or production has not started.
+
+Remaining integrations and founder inputs:
+
+- Approved millimeter mappings for sizes `00–14` are still missing; no chart was fabricated.
+- Cart/checkout remains unconnected, including the sizing kit.
+- The planned YourPrettySets glue-removal solution still needs finalized product details, compatible instructions, imagery, and a product page.
+- The custom-order and footer email captures still need a real provider/backend. The custom-order page now states that its prototype form does not save an address instead of claiming enrollment.
+- Privacy and Terms remain placeholder pages.
+
+Verification completed for this system:
+
+- `npm test`: 22 files and 182 tests passed.
+- `npm run build`: passed with the production bundle generated successfully.
+- Browser route matrices at `393x852` and `1440x1000` covered every canonical Help route, the legacy redirect, sizing-kit product, a normal Product page, and custom-order waitlist page. Every checked page had one H1, no page-level horizontal overflow, no broken image, no duplicate ID, and no empty `href="#"` link.
+- The seven-link Help menu was also checked at `667x375`; its right panel becomes independently scrollable and the final Contact Support link remains reachable.
+- FAQ disclosure/focus behavior, route-to-heading focus, deep order-task anchors, desktop/mobile contents navigation, footer Help links, Product FAQ links, public mailto links, and the sizing-kit no-commerce state were checked in the browser.
+- `git diff --check`: passed.
+- `npm audit --audit-level=moderate`: reports 6 existing dependency advisories (1 low, 1 moderate, 4 high) in the unchanged dependency set. Dependency upgrades were not mixed into this Help feature pass.
+
 ## New Chat Starting Point
 
-Start the next chat from the Home page UI pass, not from UX restructuring.
+Treat the Press-On Guide as the newest integrated customer journey and preserve its shared facts/routes/components unless the founder reopens them. Home-page visual work remains a separate ongoing pass.
 
 Before starting a section pass, read `docs/brief/section-pass-template.md` and use that CEO checklist. The founder wants planning chats to stay nontechnical: discuss what feels right or wrong, use image mockups when appearance is unclear, then write a plain-English handoff for the web dev to review and build.
 
@@ -60,7 +106,7 @@ Current CEO direction:
 - 2026-07-09 Browse carousel selected-index sync keeps the tab-like Browse behavior and no-auto-rotation model, but lets Embla selection drive `selectedOptionIndex` through `onSelectedIndexChange`. Swiping/settling to a tile now updates the active tile and product preview the same way tapping does. Keep active-tile clicks as a no-op and keep `.collection-products` always visible.
 - Phase 4C FAQ cleanup replaces the FAQ topic picker’s custom drag/click-suppression logic with the shared Embla-backed `MobileCarousel` foundation. Topic cards keep the same visual style, active topic behavior, question open/close behavior, `View all ... questions`, Help Center, and Contact Support CTAs.
 - Follow-up FAQ cleanup replaces the FAQ question-row `openQuestionIndex` logic with the shared shadcn/Radix Accordion foundation. The list still allows one open answer at a time, clears the open answer when the active topic changes, preserves the right-chevron row treatment, and keeps the `View all ... questions`, Help Center, and Contact Support CTAs unchanged.
-- 2026-06-08 Homepage FAQ refinement replaces the mini-help-center topic carousel with a compact conversion-focused FAQ layout: dark slate intro/CTA card, white Radix accordion card with seven immediate ordering questions, and compact dark trust strip. The old topic selection behavior, `Top questions in ...` heading, fake `View all ... questions` link, and placeholder/future-direction wording are removed; `Contact Support` remains `mailto:hello@yourprettysets.com`, while `View Full FAQ` is a safe in-page placeholder until a real route exists.
+- 2026-06-08 Homepage FAQ refinement replaced the mini-help-center topic carousel with a compact conversion-focused FAQ layout. Its temporary Contact and full-FAQ placeholders are superseded by the 2026-07-09 canonical FAQ, `/help/contact`, and public `yourprettysets@gmail.com` support address.
 - 2026-06-09 homepage typography-token cleanup reduces the active `--type-*` roles to eight shared sizes: hero title, section title, subsection title, product title, body, caption, button, and display special. `--type-card-title`, `--type-body-large`, `--type-nav`, `--type-footer-title`, and `--type-review-quote` are retired. Header nav/menu links now use `--type-button`, footer brand and review quote share `--type-display-special`, and FAQ heading/subcopy/questions/answers/buttons use existing title/body/button roles instead of FAQ-specific font-size clamps.
 - 2026-06-09 low-risk typography drift patch moves raw tiny kit/review label sizes and footer legal text to `--type-caption`, moves the footer love note to `--type-body`, and moves Shop empty-state and sort option controls to `--type-button`. Footer link aliases, footer email title alias, fullscreen menu clamp, tiny-screen `h1`, shop tab rail, sort value, product back control, brand mark sizes, story title, and icon/glyph sizes remain intentionally unchanged for later review.
 - 2026-06-09 Product page selector polish upgrades Length and Shape into one consistent horizontal carousel tile system while preserving the same option state, button semantics, `aria-pressed` behavior, routing, product data, imagery, and add-to-cart behavior. The selector cards now use narrow vertical image-ready tiles with a small decorative neutral gray placeholder above each label; the prior nail icon/silhouette layer remains removed, and the selected style summary is unchanged.
@@ -79,7 +125,7 @@ Current CEO direction:
 - 2026-06-18 Product page spacing polish adds a small product-scoped `18px` margin before `KitContents` so the buying panel and `What’s Included` section have breathing room without changing the reusable kit section structure.
 - 2026-06-18 Shop category structure update adds `orderType: "ready-to-ship" | "made-to-order"` to every normal product and makes `/shop/ready-to-ship` plus `/shop/made-to-order` render the normal Shop grid filtered by that field. `/shop/custom-orders` is now a standalone fullscreen white coming-soon email capture page outside the normal header/footer shell, with a top-right X link back to `/shop`; the form is local-only with a TODO until a backend/email capture provider is chosen. Current placeholder split treats the first 16 launch/current-assortment products as ready-to-ship and the remaining 17 as made-to-order until fulfillment data is final.
 - 2026-06-17 Navigation and Help structure cleanup reduces the main header/mobile overlay navigation to `Home`, `Shop`, and `Help`; removes stale FAQ/Reviews Home anchors from navigation; keeps the mobile bag icon visible as a non-routing `Bag coming soon` action; adds `/help` as `The Press-On Guide` hub with subroutes for sizing, application/removal, shipping/returns, FAQ, and contact; adds simple `/privacy` and `/terms` placeholders; and updates footer plus Product support CTAs to use the real Help routes.
-- 2026-06-27 Mobile nav submenu standardization keeps the `Home`, `Shop`, and `Help` overlay structure, but makes parent items with deeper destinations use one shared submenu treatment. `Shop` and `Help` read as centered parent headings, with smaller muted centered subheading-style links underneath. `Help` expands to `Help Center`, `Sizing Guide`, `How to Apply`, `Shipping & Returns`, `FAQ`, and `Contact`. Do not reintroduce boxed containers, left rules, or left-offset submenus unless the founder reopens that direction.
+- 2026-06-27 Mobile nav submenu standardization keeps the `Home`, `Shop`, and `Help` overlay structure, but makes parent items with deeper destinations use one shared submenu treatment. The Help destinations were renamed and expanded on 2026-07-09 to `Press-On Guide`, `Find Your Fit`, `Apply Your Set`, `Remove & Reuse`, `Shipping, Returns & Order Issues`, `FAQ`, and `Contact Support`. Do not reintroduce boxed containers, left rules, or left-offset submenus unless the founder reopens that direction.
 - Phase 4D footer cleanup replaces the footer’s custom open-group state with the shared shadcn/Radix Accordion foundation. The footer still defaults to `Shop`, keeps one group open at a time, preserves the same group labels and links, and keeps the current dark footer styling rather than default shadcn visuals.
 - Follow-up carousel controls cleanup on 2026-05-28 removed the visible progress bars/dots and arrow buttons from the How It Works, Collections, Reviews, and FAQ topic carousels. The carousels keep their cards, native swipe/drag behavior, labels, and section layout.
 - Follow-up carousel motion cleanup on 2026-05-28 turns on Embla `loop: true` and shared continuous auto-rotation for the How It Works, Collections, Reviews, and FAQ topic carousels. There are still no visible arrows or progress bars. Auto-rotation moves the Embla location at the shared `24px/second` speed, pauses immediately on pointer, hover, or focus interaction, resumes after a short delay, and stays off for reduced-motion users. Do not reintroduce manual loop-buffer DOM copies for this pass.
@@ -316,7 +362,7 @@ Confirmed direction:
 - Use a photo-led hero direction instead of the old four placeholder nail tiles.
 - Keep the hero CTA direct: `Shop sets`.
 - Do not force a traditional "How it works" section yet.
-- Do not mention sizing kits because sizing kits are not part of the current product flow.
+- This historical Home-only pass omitted sizing kits. The wider storefront now includes the 2026-07-09 Help guidance and standalone sizing-kit Product page; Home may still omit sizing-kit merchandising unless the founder requests it.
 - Use a slim three-step confidence strip:
   - `Pick your set`
   - `Choose your wear`
@@ -436,7 +482,7 @@ Latest FAQ decision:
   - tappable issue/topic cards for `Sizing`, `Application`, `Wear & Care`, `Shipping`, `Returns`, `Removal`, and `Custom Orders`
   - no topic selected by default, with topic taps revealing the `Top questions in [Topic]` card and the view-all link text
   - one compact FAQ support footer instead of the old two stacked CTA cards
-  - `Visit Help Center →` pointing to `#help-center` as the primary outlined action and `Contact Support` as a secondary underlined `mailto:hello@yourprettysets.com` placeholder link
+  - The historical `Visit Help Center`/Contact placeholders are superseded by `/help`, `/help/faq`, `/help/contact`, and `yourprettysets@gmail.com`.
 - Follow-up CEO feedback on 2026-05-27 removed all pink/blush accents from this section. Keep FAQ styling basic black, white, and light gray unless the CEO reopens color.
 - Follow-up size pass on 2026-05-27 reduced the FAQ section footprint so it sits closer to the scale of neighboring Home sections: smaller intro padding/title, shorter topic cards, tighter question rows, and more compact CTA cards.
 - Follow-up accordion pass on 2026-05-27 made the `Top questions in [Topic]` rows expand in place with short placeholder answers. One quick answer opens at a time, changing topic resets the open answer, and the category grid plus Help Center / Contact Support cards stay unchanged.
@@ -548,9 +594,11 @@ Still open:
 - Exact color palette.
 - Real product names and photos.
 - Exact product count.
-- How It Works page depth.
-- Cancellation policy.
-- Final shipping and policy wording.
+- Approved sizing measurements for the `00–14` chart.
+- Sizing-kit commerce integration.
+- Final glue-removal product and compatible instructions.
+- Custom-order and footer email-capture backend/provider.
+- Privacy and Terms wording.
 - Final mobile menu visual polish.
 
 ## Latest Discussion: Barebones Home UI Pass
@@ -563,7 +611,7 @@ Implemented scope:
 - Removed visible black outlines/circles from the mobile header menu and bag controls in barebones review mode.
 - Tightened and resized the collection product card grid, then added the partial/faded teaser row under the visible product cards to imply a larger shop page.
 - Replaced the old `KitContents` / “What’s Included” accordion area with the approved compact image-tab/detail-panel module while preserving the centered header, real kit image, primary care CTA, and required FAQ link.
-- Added the updated kit image asset at `public/assets/kit-contents-spread-v2.png` plus individual prep-kit assets for adhesive tabs, nail glue, nail file, cuticle pusher, alcohol wipe, and storage case/card.
+- Added the updated kit image asset at `public/assets/kit-contents-spread-v2.png` plus individual prep-kit assets for adhesive tabs, nail glue, nail file, cuticle stick (legacy filename `cuticle-pusher.png`), alcohol wipe, and storage case.
 
 Current review state:
 

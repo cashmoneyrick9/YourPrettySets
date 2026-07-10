@@ -1,5 +1,6 @@
 import { useState, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
+import { includedSetItems, sizingFacts, wearEstimates } from "../data/storefrontFacts";
 import { BrandButton } from "./BrandButton";
 
 type KitDetailId = "nails" | "adhesive" | "prep" | "case";
@@ -15,45 +16,58 @@ type KitDetailItem = {
   title: string;
 };
 
-const kitDetailItems: KitDetailItem[] = [
-  {
-    copy: "24 nails in multiple sizes so you can find your best fit.",
-    id: "nails",
-    images: [{ alt: "Twenty-four press-on nails in multiple sizes with small fruit details", src: "/assets/nail-size-set.png" }],
-    label: "Nails",
-    title: "Made to fit"
-  },
-  {
-    copy: "Use nail glue for longer wear or adhesive tabs for a gentler temporary hold.",
-    id: "adhesive",
-    images: [
-      { alt: "Nail glue and adhesive tabs", src: "/assets/nail-glue.png" },
-      { alt: "Adhesive tabs", src: "/assets/adhesive-tabs.png" }
-    ],
-    label: "Glue / tabs",
-    title: "Choose your wear"
-  },
-  {
-    copy: "Includes the basics to prep your nails and apply your set cleanly.",
-    id: "prep",
-    images: [
-      { alt: "Nail file", src: "/assets/nail-file.png" },
-      { alt: "Cuticle pusher", src: "/assets/cuticle-pusher.png" },
-      { alt: "Alcohol wipe", src: "/assets/alcohol-wipe.png" }
-    ],
-    label: "Prep tools",
-    title: "Prep + apply kit"
-  },
-  {
-    copy: "Keep your set protected and follow the included care steps for the best wear.",
-    id: "case",
-    images: [{ alt: "Storage case and instruction card", src: "/assets/storage-case.png" }],
-    label: "Case + care",
-    title: "Store + reuse"
-  }
-];
+const [pressOnNails, nailGlue, adhesiveTabs, nailFile, cuticleStick, alcoholWipe, storageCase] =
+  includedSetItems;
 
-export function KitContents() {
+function getKitDetailItems(readyToWear: boolean): KitDetailItem[] {
+  return [
+    {
+      copy: readyToWear
+        ? `Ready-to-wear sets include ${sizingFacts.readyToWearNailCount} ${pressOnNails.toLowerCase()} in multiple sizes.`
+        : `${pressOnNails} are included with every set. Read Find Your Fit before ordering if you are unsure about sizing.`,
+      id: "nails",
+      images: [
+        {
+          alt: "Twenty-four press-on nails in multiple sizes with small fruit details",
+          src: "/assets/nail-size-set.png"
+        }
+      ],
+      label: "Nails",
+      title: "A broader fit range"
+    },
+    {
+      copy: `${nailGlue} and ${adhesiveTabs.toLowerCase()} are included. Glue is estimated at ${wearEstimates.glue}; tabs are estimated at ${wearEstimates.tabs}. Actual wear varies with ${wearEstimates.variables.map((item) => item.toLowerCase()).join(", ")}.`,
+      id: "adhesive",
+      images: [
+        { alt: "Nail glue and adhesive tabs", src: "/assets/nail-glue.png" },
+        { alt: "Adhesive tabs", src: "/assets/adhesive-tabs.png" }
+      ],
+      label: "Glue / tabs",
+      title: "Choose your wear"
+    },
+    {
+      copy: `${nailFile}, ${cuticleStick.toLowerCase()}, and ${alcoholWipe.toLowerCase()} are included for preparation and application.`,
+      id: "prep",
+      images: [
+        { alt: "Nail file", src: "/assets/nail-file.png" },
+        { alt: "Cuticle stick", src: "/assets/cuticle-pusher.png" },
+        { alt: "Alcohol wipe", src: "/assets/alcohol-wipe.png" }
+      ],
+      label: "Prep tools",
+      title: "Prep + apply kit"
+    },
+    {
+      copy: `${storageCase} is included to help protect your nails between wears.`,
+      id: "case",
+      images: [{ alt: "Storage case", src: "/assets/storage-case.png" }],
+      label: "Case + care",
+      title: "Store + reuse"
+    }
+  ];
+}
+
+export function KitContents({ readyToWear = true }: { readyToWear?: boolean }) {
+  const kitDetailItems = getKitDetailItems(readyToWear);
   const [activeItemId, setActiveItemId] = useState<KitDetailId>("nails");
   const activeItem = kitDetailItems.find((item) => item.id === activeItemId) ?? kitDetailItems[0];
 
@@ -136,8 +150,8 @@ export function KitContents() {
         </div>
 
         <BrandButton asChild className="kit-primary-link">
-          <Link to="/help/how-to-apply">
-            HOW TO APPLY &amp; CARE <span aria-hidden="true">→</span>
+          <Link to="/help/application">
+            APPLY YOUR SET <span aria-hidden="true">→</span>
           </Link>
         </BrandButton>
         <BrandButton asChild className="kit-faq-link">

@@ -1,6 +1,6 @@
 import { Menu, ShoppingBag, X } from "lucide-react";
 import { TouchEvent, WheelEvent, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 type NavItem = {
   children?: { href: string; label: string }[];
@@ -23,12 +23,13 @@ const mainNavItems: NavItem[] = [
     href: "/help",
     label: "Help",
     children: [
-      { href: "/help", label: "Help Center" },
-      { href: "/help/sizing", label: "Sizing Guide" },
-      { href: "/help/how-to-apply", label: "How to Apply" },
-      { href: "/help/shipping-returns", label: "Shipping & Returns" },
+      { href: "/help", label: "Press-On Guide" },
+      { href: "/help/sizing", label: "Find Your Fit" },
+      { href: "/help/application", label: "Apply Your Set" },
+      { href: "/help/removal", label: "Remove & Reuse" },
+      { href: "/help/shipping-returns", label: "Shipping, Returns & Order Issues" },
       { href: "/help/faq", label: "FAQ" },
-      { href: "/help/contact", label: "Contact" }
+      { href: "/help/contact", label: "Contact Support" }
     ]
   }
 ];
@@ -53,6 +54,7 @@ const headerScrolledBodyClass = "header-scrolled";
 const mobileMenuOpenBodyClass = "mobile-menu-open";
 
 export function BrandHeader() {
+  const { pathname } = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mobileMenuMode, setMobileMenuMode] = useState<MobileMenuMode>("default");
   const [activeMobileSectionId, setActiveMobileSectionId] =
@@ -144,6 +146,13 @@ export function BrandHeader() {
     });
 
     const preventMenuScroll = (event: Event) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest(".brand-header__mobile-menu-content--expanded")
+      ) {
+        return;
+      }
+
       event.preventDefault();
     };
 
@@ -239,6 +248,18 @@ export function BrandHeader() {
     window.setTimeout(() => {
       menuButtonRef.current?.focus();
     }, 0);
+  };
+
+  const followMobileMenuLink = (href: string) => {
+    setIsMenuOpen(false);
+
+    if (href === pathname) {
+      window.setTimeout(() => {
+        const pageHeading = document.querySelector<HTMLElement>("main h1");
+        pageHeading?.setAttribute("tabindex", "-1");
+        pageHeading?.focus({ preventScroll: true });
+      }, 0);
+    }
   };
 
   const openMobileMenu = () => {
@@ -458,7 +479,7 @@ export function BrandHeader() {
                     className={selectorClasses}
                     data-offset={selectorOffset}
                     key={section.id}
-                    onClick={closeMobileMenu}
+                    onClick={() => followMobileMenuLink(section.href)}
                     to={section.href}
                   >
                     {section.label}
@@ -471,7 +492,8 @@ export function BrandHeader() {
               return (
                 <button
                   aria-label={section.label}
-                  aria-current={isActive ? "page" : undefined}
+                  aria-controls="brand-header-mobile-menu-content"
+                  aria-expanded={isActive}
                   className={selectorClasses}
                   data-offset={selectorOffset}
                   key={section.id}
@@ -490,6 +512,7 @@ export function BrandHeader() {
               "brand-header__mobile-menu-content",
               `brand-header__mobile-menu-content--${mobileMenuMode}`
             ].join(" ")}
+            id="brand-header-mobile-menu-content"
           >
             {activeMobileSection ? (
               <div
@@ -503,7 +526,7 @@ export function BrandHeader() {
                     <Link
                       className="brand-header__mobile-submenu-link"
                       key={child.href}
-                      onClick={closeMobileMenu}
+                      onClick={() => followMobileMenuLink(child.href)}
                       to={child.href}
                     >
                       {child.label}
