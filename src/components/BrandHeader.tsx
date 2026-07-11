@@ -46,14 +46,14 @@ const mobileMenuSections: MobileMenuSection[] = mainNavItems.map((item) => ({
 }));
 
 type MobileContentSectionId = Exclude<MobileMenuSection["id"], "home">;
-type MobileMenuMode = "default" | "expanded";
+type MobileMenuMode = "default" | "expanded" | "collapsing";
 
 const mobileContentSectionIds: MobileContentSectionId[] = ["shop", "help"];
 const headerAtTopBodyClass = "header-at-top";
 const headerScrolledBodyClass = "header-scrolled";
 const mobileMenuOpenBodyClass = "mobile-menu-open";
-const mobileMenuCloseDuration = 440;
-const mobileSubmenuCloseDuration = 620;
+const mobileMenuCollapseDuration = 620;
+const mobileMenuOverlayExitDuration = 160;
 
 export function BrandHeader() {
   const { pathname } = useLocation();
@@ -68,6 +68,7 @@ export function BrandHeader() {
   const wheelLockTimeoutRef = useRef<number | null>(null);
   const mobileMenuCloseTimeoutRef = useRef<number | null>(null);
   const mobileSubmenuCloseTimeoutRef = useRef<number | null>(null);
+  const pendingAfterCloseRef = useRef<(() => void) | undefined>(undefined);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const prefersReducedMotion = () =>
@@ -265,13 +266,13 @@ export function BrandHeader() {
   }, []);
 
   const closeMobileMenu = (afterClose?: () => void) => {
-    if (!isMenuOpen || isMenuClosing) {
+    if (!isMenuOpen || isMenuClosing || mobileMenuMode === "collapsing") {
       return;
     }
 
     clearMobileMenuCloseTimeout();
     clearMobileSubmenuCloseTimeout();
-    setIsMenuClosing(true);
+    pendingAfterCloseRef.current = afterClose;
 
     const finishClose = () => {
       mobileMenuCloseTimeoutRef.current = null;
@@ -280,9 +281,21 @@ export function BrandHeader() {
       setIsMenuOpen(false);
       setIsMenuClosing(false);
       window.setTimeout(() => {
-        afterClose?.();
+        pendingAfterCloseRef.current?.();
+        pendingAfterCloseRef.current = undefined;
         menuButtonRef.current?.focus();
       }, 0);
+    };
+
+    const startOverlayExit = () => {
+      mobileSubmenuCloseTimeoutRef.current = null;
+      setActiveMobileSectionId(null);
+      setMobileMenuMode("default");
+      setIsMenuClosing(true);
+      mobileMenuCloseTimeoutRef.current = window.setTimeout(
+        finishClose,
+        mobileMenuOverlayExitDuration
+      );
     };
 
     if (prefersReducedMotion()) {
@@ -290,7 +303,20 @@ export function BrandHeader() {
       return;
     }
 
-    mobileMenuCloseTimeoutRef.current = window.setTimeout(finishClose, mobileMenuCloseDuration);
+    if (mobileMenuMode === "expanded") {
+      setMobileMenuMode("collapsing");
+      mobileSubmenuCloseTimeoutRef.current = window.setTimeout(
+        startOverlayExit,
+        mobileMenuCollapseDuration
+      );
+      return;
+    }
+
+    setIsMenuClosing(true);
+    mobileMenuCloseTimeoutRef.current = window.setTimeout(
+      finishClose,
+      mobileMenuOverlayExitDuration
+    );
   };
 
   const followMobileMenuLink = (href: string) => {
@@ -387,11 +413,16 @@ export function BrandHeader() {
   };
 
   const selectMobileContentSection = (sectionId: MobileContentSectionId) => {
+    if (mobileMenuMode === "collapsing" || isMenuClosing) {
+      return;
+    }
+
     if (mobileMenuMode === "expanded" && activeMobileSectionId === sectionId) {
-      setMobileMenuMode("default");
+      setMobileMenuMode("collapsing");
 
       if (prefersReducedMotion()) {
         setActiveMobileSectionId(null);
+        setMobileMenuMode("default");
         return;
       }
 
@@ -399,7 +430,8 @@ export function BrandHeader() {
       mobileSubmenuCloseTimeoutRef.current = window.setTimeout(() => {
         mobileSubmenuCloseTimeoutRef.current = null;
         setActiveMobileSectionId(null);
-      }, mobileSubmenuCloseDuration);
+        setMobileMenuMode("default");
+      }, mobileMenuCollapseDuration);
       return;
     }
 
@@ -411,7 +443,7 @@ export function BrandHeader() {
   const activeMobileSection = mobileMenuSections.find((section) => section.id === activeMobileSectionId);
 
   const getSelectorOffset = (sectionId: MobileMenuSection["id"]) => {
-    if (mobileMenuMode === "default" || !activeMobileSectionId) {
+    if (mobileMenuMode === "default" || mobileMenuMode === "collapsing" || !activeMobileSectionId) {
       return sectionId === "home" ? -1 : sectionId === "shop" ? 0 : 1;
     }
 
@@ -564,7 +596,7 @@ export function BrandHeader() {
           </div>
 
           <div
-            aria-hidden={mobileMenuMode === "default" ? "true" : undefined}
+            aria-hidden={mobileMenuMode !== "expanded" ? "true" : undefined}
             className={[
               "brand-header__mobile-menu-content",
               `brand-header__mobile-menu-content--${mobileMenuMode}`

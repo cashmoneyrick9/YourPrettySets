@@ -265,7 +265,7 @@ describe("BrandHeader", () => {
       "aria-expanded",
       "true"
     );
-    expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--collapsing");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--expanded");
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-shop");
     expect(shopToggle).toHaveAttribute("aria-expanded", "false");
@@ -273,15 +273,27 @@ describe("BrandHeader", () => {
 
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
-    expect(content).toHaveClass("brand-header__mobile-menu-content--default");
+    expect(content).toHaveClass("brand-header__mobile-menu-content--collapsing");
     expect(content).toHaveAttribute("aria-hidden", "true");
-    expect(content).toHaveTextContent("Ready to Ship");
+    expect(mobileNav.querySelector(".brand-header__mobile-menu-content")).toHaveTextContent(
+      "Ready to Ship"
+    );
     expect(document.body).toHaveClass("mobile-menu-open");
 
     act(() => {
-      vi.advanceTimersByTime(620);
+      vi.advanceTimersByTime(619);
     });
 
+    expect(mobileNav.querySelector(".brand-header__mobile-menu-content")).toHaveTextContent(
+      "Ready to Ship"
+    );
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--collapsing");
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--active-shop");
     expect(within(mobileNav).queryByRole("link", { name: "Ready to Ship" })).not.toBeInTheDocument();
   });
@@ -311,13 +323,26 @@ describe("BrandHeader", () => {
     fireEvent.click(within(mobileNav).getByRole("link", { name: "Ready to Ship" }));
 
     expect(window.location.pathname).toBe("/shop/ready-to-ship");
-    expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toHaveClass(
-      "brand-header__mobile-menu--closing"
-    );
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--collapsing");
     expect(document.body).toHaveClass("mobile-menu-open");
 
     act(() => {
-      vi.advanceTimersByTime(440);
+      vi.advanceTimersByTime(619);
+    });
+
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--collapsing");
+    expect(mobileNav.querySelector(".brand-header__mobile-menu-content")).toHaveTextContent(
+      "Ready to Ship"
+    );
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--closing");
+
+    act(() => {
+      vi.advanceTimersByTime(160);
     });
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
@@ -390,13 +415,11 @@ describe("BrandHeader", () => {
     fireEvent.click(within(mobileNav).getByRole("link", { name: "Press-On Guide" }));
 
     expect(window.location.pathname).toBe("/help");
-    expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toHaveClass(
-      "brand-header__mobile-menu--closing"
-    );
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--collapsing");
     expect(document.body).toHaveClass("mobile-menu-open");
 
     act(() => {
-      vi.advanceTimersByTime(440);
+      vi.advanceTimersByTime(780);
     });
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
@@ -419,7 +442,7 @@ describe("BrandHeader", () => {
     fireEvent.click(helpToggle);
 
     expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toBeInTheDocument();
-    expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--collapsing");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--expanded");
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
     expect(helpToggle).toHaveAttribute("aria-expanded", "false");
@@ -427,7 +450,7 @@ describe("BrandHeader", () => {
 
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
-    expect(content).toHaveClass("brand-header__mobile-menu-content--default");
+    expect(content).toHaveClass("brand-header__mobile-menu-content--collapsing");
     expect(content).toHaveAttribute("aria-hidden", "true");
     expect(content).toHaveTextContent("Press-On Guide");
     expect(document.body).toHaveClass("mobile-menu-open");
@@ -436,6 +459,7 @@ describe("BrandHeader", () => {
       vi.advanceTimersByTime(620);
     });
 
+    expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
     expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--active-help");
     expect(within(mobileNav).queryByRole("link", { name: "Press-On Guide" })).not.toBeInTheDocument();
   });
@@ -548,7 +572,7 @@ describe("BrandHeader", () => {
     expect(document.body).toHaveClass("mobile-menu-open");
 
     act(() => {
-      vi.advanceTimersByTime(440);
+      vi.advanceTimersByTime(160);
     });
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
@@ -570,7 +594,7 @@ describe("BrandHeader", () => {
     );
 
     act(() => {
-      vi.advanceTimersByTime(440);
+      vi.advanceTimersByTime(160);
     });
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
@@ -599,12 +623,12 @@ describe("BrandHeader", () => {
 
     expect(window.location.pathname).toBe("/");
     expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toHaveClass(
-      "brand-header__mobile-menu--closing"
+      "brand-header__mobile-menu--collapsing"
     );
     expect(document.body).toHaveClass("mobile-menu-open");
 
     act(() => {
-      vi.advanceTimersByTime(440);
+      vi.advanceTimersByTime(780);
     });
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
@@ -630,7 +654,7 @@ describe("BrandHeader", () => {
     expect(document.body).toHaveClass("mobile-menu-open");
 
     act(() => {
-      vi.advanceTimersByTime(439);
+      vi.advanceTimersByTime(159);
     });
 
     expect(screen.getByRole("dialog", { name: "Mobile menu" })).toBeInTheDocument();

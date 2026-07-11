@@ -942,17 +942,14 @@ describe("small mobile responsive CSS", () => {
     );
     expect(defaultSelectorItemRule).toContain("font-family: var(--font-display);");
     expect(defaultSelectorItemRule).toContain("font-size: var(--mobile-menu-default-type);");
-    expect(defaultSelectorItemRule).toContain("letter-spacing: 0;");
+    expect(defaultSelectorItemRule).toContain("letter-spacing: var(--mobile-menu-active-tracking);");
     expect(defaultSelectorItemRule).toContain('font-variation-settings: "opsz" 144, "SOFT" 54, "WONK" 0;');
 
-    const expandedSelectorItemRule = getRuleBody(
-      styles,
-      ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item"
-    );
     expect(defaultSelectorItemRule).toContain("position: absolute;");
     expect(defaultSelectorItemRule).toContain("transform: translate(-50%");
-    expect(expandedSelectorItemRule).toContain("position: absolute;");
-    expect(expandedSelectorItemRule).toContain("transform: translate(-50%");
+    expect(styles).toContain(
+      ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item,\n  .brand-header__mobile-menu--collapsing .brand-header__mobile-selector-item"
+    );
 
     expect(styles).toContain(
       ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0"
@@ -1003,15 +1000,21 @@ describe("small mobile responsive CSS", () => {
       ".brand-header--menu-open .brand-header__mobile-menu--expanded"
     );
     const selectorExpandedRule = getRuleBody(styles, ".brand-header__mobile-menu-selector--expanded");
+    const selectorRule = getRuleBody(styles, ".brand-header__mobile-menu-selector");
+    const selectorCollapsingRule = getRuleBody(styles, ".brand-header__mobile-menu-selector--collapsing");
     const contentRule = getRuleBody(styles, ".brand-header__mobile-menu-content");
     const menuDialogRule = getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu-dialog");
     const closingDialogRule = getRuleBody(styles, ".brand-header--menu-closing .brand-header__mobile-menu-dialog");
     const defaultContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--default");
     const expandedContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--expanded");
+    const collapsingContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--collapsing");
 
     expect(defaultMenuRule).not.toContain("grid-template-columns:");
     expect(expandedMenuRule).not.toContain("grid-template-columns:");
     expect(selectorExpandedRule).toContain("width: 38%;");
+    expect(selectorRule).toContain("transition: width 620ms cubic-bezier(0.22, 1, 0.36, 1);");
+    expect(selectorCollapsingRule).toContain("width: 100%;");
+    expect(selectorCollapsingRule).not.toContain("animation: mobile-menu-default-enter");
     expect(selectorExpandedRule).toContain("z-index: 2;");
     expect(contentRule).toContain("bottom: 0;");
     expect(contentRule).toContain("position: absolute;");
@@ -1019,12 +1022,14 @@ describe("small mobile responsive CSS", () => {
     expect(contentRule).toContain("top: 0;");
     expect(contentRule).toContain("width: 62%;");
     expect(contentRule).toContain("transition:\n      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);");
-    expect(menuDialogRule).toContain("transition: opacity 440ms cubic-bezier(0.22, 1, 0.36, 1);");
+    expect(menuDialogRule).toContain("transition: opacity 160ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(closingDialogRule).toContain("opacity: 0;");
     expect(closingDialogRule).toContain("pointer-events: none;");
     expect(defaultContentRule).toContain("transform: translateX(100%);");
     expect(defaultContentRule).not.toContain("visibility: hidden;");
     expect(expandedContentRule).toContain("transform: translateX(0);");
+    expect(collapsingContentRule).toContain("transform: translateX(100%);");
+    expect(collapsingContentRule).toContain("visibility: visible;");
     expect(expandedContentRule).not.toContain("position: relative;");
   });
 
