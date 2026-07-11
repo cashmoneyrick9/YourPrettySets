@@ -1022,8 +1022,8 @@ describe("small mobile responsive CSS", () => {
     expect(contentRule).toContain("top: 0;");
     expect(contentRule).toContain("width: 62%;");
     expect(contentRule).toContain("transition:\n      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);");
-    expect(menuDialogRule).toContain("transition: opacity 160ms cubic-bezier(0.22, 1, 0.36, 1);");
-    expect(closingDialogRule).toContain("opacity: 0;");
+    expect(menuDialogRule).not.toContain("transition: opacity");
+    expect(closingDialogRule).not.toContain("opacity:");
     expect(closingDialogRule).toContain("pointer-events: none;");
     expect(defaultContentRule).toContain("transform: translateX(100%);");
     expect(defaultContentRule).not.toContain("visibility: hidden;");

@@ -53,7 +53,6 @@ const headerAtTopBodyClass = "header-at-top";
 const headerScrolledBodyClass = "header-scrolled";
 const mobileMenuOpenBodyClass = "mobile-menu-open";
 const mobileMenuCollapseDuration = 620;
-const mobileMenuOverlayExitDuration = 160;
 
 export function BrandHeader() {
   const { pathname } = useLocation();
@@ -66,8 +65,9 @@ export function BrandHeader() {
   const touchStartYRef = useRef<number | null>(null);
   const wheelLockRef = useRef(false);
   const wheelLockTimeoutRef = useRef<number | null>(null);
-  const mobileMenuCloseTimeoutRef = useRef<number | null>(null);
+  const mobileMenuCloseFrameRef = useRef<number | null>(null);
   const mobileSubmenuCloseTimeoutRef = useRef<number | null>(null);
+  const mobileMenuUnlockRef = useRef<(() => void) | null>(null);
   const pendingAfterCloseRef = useRef<(() => void) | undefined>(undefined);
   const isMenuClosingRef = useRef(isMenuClosing);
   const mobileMenuModeRef = useRef(mobileMenuMode);
@@ -79,10 +79,10 @@ export function BrandHeader() {
   const prefersReducedMotion = () =>
     typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const clearMobileMenuCloseTimeout = () => {
-    if (mobileMenuCloseTimeoutRef.current) {
-      window.clearTimeout(mobileMenuCloseTimeoutRef.current);
-      mobileMenuCloseTimeoutRef.current = null;
+  const clearMobileMenuCloseFrame = () => {
+    if (mobileMenuCloseFrameRef.current !== null) {
+      window.cancelAnimationFrame(mobileMenuCloseFrameRef.current);
+      mobileMenuCloseFrameRef.current = null;
     }
   };
 
@@ -228,7 +228,13 @@ export function BrandHeader() {
     window.addEventListener("keydown", keepFocusInMobileMenu);
     menuButtonRef.current?.focus();
 
-    return () => {
+    let hasRestoredPage = false;
+    const restorePage = () => {
+      if (hasRestoredPage) {
+        return;
+      }
+
+      hasRestoredPage = true;
       document.body.classList.remove(mobileMenuOpenBodyClass);
       document.body.style.overflow = previousBodyOverflow;
       document.body.style.position = previousBodyPosition;
@@ -258,6 +264,15 @@ export function BrandHeader() {
         }
       }
     };
+
+    mobileMenuUnlockRef.current = restorePage;
+
+    return () => {
+      restorePage();
+      if (mobileMenuUnlockRef.current === restorePage) {
+        mobileMenuUnlockRef.current = null;
+      }
+    };
   }, [isMenuOpen]);
 
   useEffect(() => {
@@ -265,8 +280,9 @@ export function BrandHeader() {
       if (wheelLockTimeoutRef.current) {
         window.clearTimeout(wheelLockTimeoutRef.current);
       }
-      clearMobileMenuCloseTimeout();
+      clearMobileMenuCloseFrame();
       clearMobileSubmenuCloseTimeout();
+      mobileMenuUnlockRef.current?.();
     };
   }, []);
 
@@ -287,12 +303,12 @@ export function BrandHeader() {
       return;
     }
 
-    clearMobileMenuCloseTimeout();
+    clearMobileMenuCloseFrame();
     clearMobileSubmenuCloseTimeout();
     pendingAfterCloseRef.current = afterClose;
 
-    const finishClose = () => {
-      mobileMenuCloseTimeoutRef.current = null;
+    const hideMenu = () => {
+      mobileMenuCloseFrameRef.current = null;
       isMenuClosingRef.current = false;
       setIsMenuOpen(false);
       setIsMenuClosing(false);
@@ -303,14 +319,20 @@ export function BrandHeader() {
       }, 0);
     };
 
-    const startOverlayExit = () => {
+    const finishClose = () => {
       mobileSubmenuCloseTimeoutRef.current = null;
       isMenuClosingRef.current = true;
       setIsMenuClosing(true);
-      mobileMenuCloseTimeoutRef.current = window.setTimeout(
-        finishClose,
-        mobileMenuOverlayExitDuration
-      );
+      mobileMenuUnlockRef.current?.();
+
+      if (prefersReducedMotion()) {
+        hideMenu();
+        return;
+      }
+
+      mobileMenuCloseFrameRef.current = window.requestAnimationFrame(() => {
+        mobileMenuCloseFrameRef.current = window.requestAnimationFrame(hideMenu);
+      });
     };
 
     if (prefersReducedMotion()) {
@@ -322,18 +344,13 @@ export function BrandHeader() {
       mobileMenuModeRef.current = "collapsing";
       setMobileMenuMode("collapsing");
       mobileSubmenuCloseTimeoutRef.current = window.setTimeout(
-        startOverlayExit,
+        finishClose,
         mobileMenuCollapseDuration
       );
       return;
     }
 
-    isMenuClosingRef.current = true;
-    setIsMenuClosing(true);
-    mobileMenuCloseTimeoutRef.current = window.setTimeout(
-      finishClose,
-      mobileMenuOverlayExitDuration
-    );
+    finishClose();
   };
 
   const followMobileMenuLink = (href: string) => {
@@ -347,7 +364,7 @@ export function BrandHeader() {
   };
 
   const openMobileMenu = () => {
-    clearMobileMenuCloseTimeout();
+    clearMobileMenuCloseFrame();
     clearMobileSubmenuCloseTimeout();
     wheelLockRef.current = false;
     if (wheelLockTimeoutRef.current) {

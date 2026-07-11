@@ -8,6 +8,7 @@ afterEach(() => {
   cleanup();
   vi.useRealTimers();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
   document.body.style.overflow = "";
 });
 
@@ -30,6 +31,21 @@ describe("BrandHeader", () => {
         </main>
       </BrowserRouter>
     );
+  }
+
+  function mockAnimationFrame() {
+    const callbacks: FrameRequestCallback[] = [];
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      callbacks.push(callback);
+      return callbacks.length;
+    });
+    vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => undefined);
+
+    return () => {
+      act(() => {
+        callbacks.shift()?.(0);
+      });
+    };
   }
 
   it("renders the brand, desktop navigation, and compact mobile actions", () => {
@@ -340,9 +356,11 @@ describe("BrandHeader", () => {
     });
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--closing");
+    expect(document.body).not.toHaveClass("mobile-menu-open");
+    expect(document.body.style.position).toBe("");
 
     act(() => {
-      vi.advanceTimersByTime(160);
+      vi.advanceTimersByTime(32);
     });
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
@@ -419,7 +437,7 @@ describe("BrandHeader", () => {
     expect(document.body).toHaveClass("mobile-menu-open");
 
     act(() => {
-      vi.advanceTimersByTime(780);
+      vi.advanceTimersByTime(652);
     });
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
@@ -565,9 +583,10 @@ describe("BrandHeader", () => {
     { closeWith: "submenu link", section: "Shop" },
     { closeWith: "submenu link", section: "Help" }
   ])(
-    "keeps the completed collapsing render frozen through the overlay fade for $closeWith from $section",
+    "keeps the completed collapsing render frozen through the final unlock frame for $closeWith from $section",
     ({ closeWith, section }) => {
       vi.useFakeTimers();
+      const flushCloseFrame = mockAnimationFrame();
       window.history.pushState({}, "", "/");
       renderBrandHeader();
 
@@ -618,15 +637,18 @@ describe("BrandHeader", () => {
       assertFrozenCollapse();
       expect(mobileNav).toHaveClass("brand-header__mobile-menu--closing");
 
-      act(() => {
-        vi.advanceTimersByTime(159);
-      });
+      assertFrozenCollapse();
+      expect(screen.getByRole("dialog", { name: "Mobile menu" })).toBeInTheDocument();
+      expect(document.body).not.toHaveClass("mobile-menu-open");
+      expect(document.body.style.overflow).toBe("");
+      expect(document.body.style.position).toBe("");
+      expect(document.documentElement.style.overflow).toBe("");
+
+      flushCloseFrame();
       assertFrozenCollapse();
       expect(screen.getByRole("dialog", { name: "Mobile menu" })).toBeInTheDocument();
 
-      act(() => {
-        vi.advanceTimersByTime(1);
-      });
+      flushCloseFrame();
       expect(screen.queryByRole("dialog", { name: "Mobile menu" })).not.toBeInTheDocument();
 
       fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
@@ -639,6 +661,7 @@ describe("BrandHeader", () => {
 
   it("closes the overlay menu from a destination link or Escape", async () => {
     vi.useFakeTimers();
+    const flushCloseFrame = mockAnimationFrame();
     renderBrandHeader();
 
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
@@ -648,11 +671,11 @@ describe("BrandHeader", () => {
       "brand-header__mobile-menu--closing"
     );
     expect(screen.getByRole("button", { name: "Close menu" })).toHaveAttribute("aria-expanded", "true");
-    expect(document.body).toHaveClass("mobile-menu-open");
+    expect(document.body).not.toHaveClass("mobile-menu-open");
 
-    act(() => {
-      vi.advanceTimersByTime(160);
-    });
+    flushCloseFrame();
+    expect(screen.getByRole("dialog", { name: "Mobile menu" })).toBeInTheDocument();
+    flushCloseFrame();
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Open menu" })).toHaveAttribute("aria-expanded", "false");
@@ -672,9 +695,9 @@ describe("BrandHeader", () => {
       "brand-header__mobile-menu--closing"
     );
 
-    act(() => {
-      vi.advanceTimersByTime(160);
-    });
+    flushCloseFrame();
+    expect(screen.getByRole("dialog", { name: "Mobile menu" })).toBeInTheDocument();
+    flushCloseFrame();
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Open menu" })).toHaveAttribute("aria-expanded", "false");
@@ -707,7 +730,7 @@ describe("BrandHeader", () => {
     expect(document.body).toHaveClass("mobile-menu-open");
 
     act(() => {
-      vi.advanceTimersByTime(780);
+      vi.advanceTimersByTime(652);
     });
 
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
@@ -721,6 +744,7 @@ describe("BrandHeader", () => {
 
   it("keeps the full menu mounted until the close button animation completes", () => {
     vi.useFakeTimers();
+    const flushCloseFrame = mockAnimationFrame();
     renderBrandHeader();
 
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
@@ -730,18 +754,14 @@ describe("BrandHeader", () => {
     expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toHaveClass(
       "brand-header__mobile-menu--closing"
     );
-    expect(document.body).toHaveClass("mobile-menu-open");
-
-    act(() => {
-      vi.advanceTimersByTime(159);
-    });
+    expect(document.body).not.toHaveClass("mobile-menu-open");
 
     expect(screen.getByRole("dialog", { name: "Mobile menu" })).toBeInTheDocument();
-    expect(document.body).toHaveClass("mobile-menu-open");
+    expect(document.body).not.toHaveClass("mobile-menu-open");
 
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
+    flushCloseFrame();
+    expect(screen.getByRole("dialog", { name: "Mobile menu" })).toBeInTheDocument();
+    flushCloseFrame();
 
     expect(screen.queryByRole("dialog", { name: "Mobile menu" })).not.toBeInTheDocument();
     expect(document.body).not.toHaveClass("mobile-menu-open");
