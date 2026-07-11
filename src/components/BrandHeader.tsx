@@ -52,10 +52,13 @@ const mobileContentSectionIds: MobileContentSectionId[] = ["shop", "help"];
 const headerAtTopBodyClass = "header-at-top";
 const headerScrolledBodyClass = "header-scrolled";
 const mobileMenuOpenBodyClass = "mobile-menu-open";
+const mobileMenuCloseDuration = 440;
+const mobileSubmenuCloseDuration = 620;
 
 export function BrandHeader() {
   const { pathname } = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuClosing, setIsMenuClosing] = useState(false);
   const [mobileMenuMode, setMobileMenuMode] = useState<MobileMenuMode>("default");
   const [activeMobileSectionId, setActiveMobileSectionId] =
     useState<MobileContentSectionId | null>(null);
@@ -63,7 +66,26 @@ export function BrandHeader() {
   const touchStartYRef = useRef<number | null>(null);
   const wheelLockRef = useRef(false);
   const wheelLockTimeoutRef = useRef<number | null>(null);
+  const mobileMenuCloseTimeoutRef = useRef<number | null>(null);
+  const mobileSubmenuCloseTimeoutRef = useRef<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const prefersReducedMotion = () =>
+    typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const clearMobileMenuCloseTimeout = () => {
+    if (mobileMenuCloseTimeoutRef.current) {
+      window.clearTimeout(mobileMenuCloseTimeoutRef.current);
+      mobileMenuCloseTimeoutRef.current = null;
+    }
+  };
+
+  const clearMobileSubmenuCloseTimeout = () => {
+    if (mobileSubmenuCloseTimeoutRef.current) {
+      window.clearTimeout(mobileSubmenuCloseTimeoutRef.current);
+      mobileSubmenuCloseTimeoutRef.current = null;
+    }
+  };
 
   const getMobileMenuFocusTargets = () => {
     const dialog = document.getElementById("mobile-navigation");
@@ -158,10 +180,7 @@ export function BrandHeader() {
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setIsMenuOpen(false);
-        window.setTimeout(() => {
-          menuButtonRef.current?.focus();
-        }, 0);
+        closeMobileMenu();
       }
     };
 
@@ -240,29 +259,53 @@ export function BrandHeader() {
       if (wheelLockTimeoutRef.current) {
         window.clearTimeout(wheelLockTimeoutRef.current);
       }
+      clearMobileMenuCloseTimeout();
+      clearMobileSubmenuCloseTimeout();
     };
   }, []);
 
-  const closeMobileMenu = () => {
-    setIsMenuOpen(false);
-    window.setTimeout(() => {
-      menuButtonRef.current?.focus();
-    }, 0);
+  const closeMobileMenu = (afterClose?: () => void) => {
+    if (!isMenuOpen || isMenuClosing) {
+      return;
+    }
+
+    clearMobileMenuCloseTimeout();
+    clearMobileSubmenuCloseTimeout();
+    setIsMenuClosing(true);
+
+    const finishClose = () => {
+      mobileMenuCloseTimeoutRef.current = null;
+      setActiveMobileSectionId(null);
+      setMobileMenuMode("default");
+      setIsMenuOpen(false);
+      setIsMenuClosing(false);
+      window.setTimeout(() => {
+        afterClose?.();
+        menuButtonRef.current?.focus();
+      }, 0);
+    };
+
+    if (prefersReducedMotion()) {
+      finishClose();
+      return;
+    }
+
+    mobileMenuCloseTimeoutRef.current = window.setTimeout(finishClose, mobileMenuCloseDuration);
   };
 
   const followMobileMenuLink = (href: string) => {
-    setIsMenuOpen(false);
-
-    if (href === pathname) {
-      window.setTimeout(() => {
+    closeMobileMenu(() => {
+      if (href === pathname) {
         const pageHeading = document.querySelector<HTMLElement>("main h1");
         pageHeading?.setAttribute("tabindex", "-1");
         pageHeading?.focus({ preventScroll: true });
-      }, 0);
-    }
+      }
+    });
   };
 
   const openMobileMenu = () => {
+    clearMobileMenuCloseTimeout();
+    clearMobileSubmenuCloseTimeout();
     wheelLockRef.current = false;
     if (wheelLockTimeoutRef.current) {
       window.clearTimeout(wheelLockTimeoutRef.current);
@@ -270,6 +313,7 @@ export function BrandHeader() {
     }
     setMobileMenuMode("default");
     setActiveMobileSectionId(null);
+    setIsMenuClosing(false);
     setIsMenuOpen(true);
   };
 
@@ -344,11 +388,22 @@ export function BrandHeader() {
 
   const selectMobileContentSection = (sectionId: MobileContentSectionId) => {
     if (mobileMenuMode === "expanded" && activeMobileSectionId === sectionId) {
-      setActiveMobileSectionId(null);
       setMobileMenuMode("default");
+
+      if (prefersReducedMotion()) {
+        setActiveMobileSectionId(null);
+        return;
+      }
+
+      clearMobileSubmenuCloseTimeout();
+      mobileSubmenuCloseTimeoutRef.current = window.setTimeout(() => {
+        mobileSubmenuCloseTimeoutRef.current = null;
+        setActiveMobileSectionId(null);
+      }, mobileSubmenuCloseDuration);
       return;
     }
 
+    clearMobileSubmenuCloseTimeout();
     setActiveMobileSectionId(sectionId);
     setMobileMenuMode("expanded");
   };
@@ -356,7 +411,7 @@ export function BrandHeader() {
   const activeMobileSection = mobileMenuSections.find((section) => section.id === activeMobileSectionId);
 
   const getSelectorOffset = (sectionId: MobileMenuSection["id"]) => {
-    if (!activeMobileSectionId) {
+    if (mobileMenuMode === "default" || !activeMobileSectionId) {
       return sectionId === "home" ? -1 : sectionId === "shop" ? 0 : 1;
     }
 
@@ -378,7 +433,8 @@ export function BrandHeader() {
   const headerClasses = [
     "brand-header",
     isScrolled ? "brand-header--scrolled" : "brand-header--at-top",
-    isMenuOpen ? "brand-header--menu-open" : ""
+    isMenuOpen ? "brand-header--menu-open" : "",
+    isMenuClosing ? "brand-header--menu-closing" : ""
   ]
     .filter(Boolean)
     .join(" ");
@@ -445,6 +501,7 @@ export function BrandHeader() {
           className={[
             "brand-header__mobile-menu",
             `brand-header__mobile-menu--${mobileMenuMode}`,
+            isMenuClosing ? "brand-header__mobile-menu--closing" : "",
             activeMobileSectionId ? `brand-header__mobile-menu--active-${activeMobileSectionId}` : ""
           ]
             .filter(Boolean)

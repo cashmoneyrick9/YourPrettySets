@@ -3437,7 +3437,13 @@ h1 {
     min-height: 100vh;
     min-height: 100dvh;
     position: fixed;
+    transition: opacity 440ms cubic-bezier(0.22, 1, 0.36, 1);
     z-index: 61;
+  }
+
+  .brand-header--menu-closing .brand-header__mobile-menu-dialog {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .brand-header--menu-open .brand-header__mobile-menu-dialog[hidden] {
@@ -3483,6 +3489,10 @@ h1 {
     padding: calc(74px + env(safe-area-inset-top, 0px)) var(--space-page-inline)
       max(52px, env(safe-area-inset-bottom, 0px));
     touch-action: manipulation;
+  }
+
+  .brand-header__mobile-menu--closing .brand-header__mobile-menu-selector--default {
+    animation: none;
   }
 
   .brand-header__mobile-menu-selector--expanded {
@@ -3676,6 +3686,10 @@ h1 {
   .brand-header__mobile-menu-content--default,
   .brand-header__mobile-menu-content--expanded {
     transition: opacity 120ms ease;
+  }
+
+  .brand-header--menu-open .brand-header__mobile-menu-dialog {
+    transition: none;
   }
 
   .brand-header__mobile-menu-content--default {
