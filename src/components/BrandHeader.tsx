@@ -69,7 +69,12 @@ export function BrandHeader() {
   const mobileMenuCloseTimeoutRef = useRef<number | null>(null);
   const mobileSubmenuCloseTimeoutRef = useRef<number | null>(null);
   const pendingAfterCloseRef = useRef<(() => void) | undefined>(undefined);
+  const isMenuClosingRef = useRef(isMenuClosing);
+  const mobileMenuModeRef = useRef(mobileMenuMode);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  isMenuClosingRef.current = isMenuClosing;
+  mobileMenuModeRef.current = mobileMenuMode;
 
   const prefersReducedMotion = () =>
     typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -265,8 +270,20 @@ export function BrandHeader() {
     };
   }, []);
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      return;
+    }
+
+    mobileMenuModeRef.current = "default";
+    setActiveMobileSectionId(null);
+    setMobileMenuMode("default");
+  }, [isMenuOpen]);
+
   const closeMobileMenu = (afterClose?: () => void) => {
-    if (!isMenuOpen || isMenuClosing || mobileMenuMode === "collapsing") {
+    const currentMobileMenuMode = mobileMenuModeRef.current;
+
+    if (!isMenuOpen || isMenuClosingRef.current || currentMobileMenuMode === "collapsing") {
       return;
     }
 
@@ -276,8 +293,7 @@ export function BrandHeader() {
 
     const finishClose = () => {
       mobileMenuCloseTimeoutRef.current = null;
-      setActiveMobileSectionId(null);
-      setMobileMenuMode("default");
+      isMenuClosingRef.current = false;
       setIsMenuOpen(false);
       setIsMenuClosing(false);
       window.setTimeout(() => {
@@ -289,8 +305,7 @@ export function BrandHeader() {
 
     const startOverlayExit = () => {
       mobileSubmenuCloseTimeoutRef.current = null;
-      setActiveMobileSectionId(null);
-      setMobileMenuMode("default");
+      isMenuClosingRef.current = true;
       setIsMenuClosing(true);
       mobileMenuCloseTimeoutRef.current = window.setTimeout(
         finishClose,
@@ -303,7 +318,8 @@ export function BrandHeader() {
       return;
     }
 
-    if (mobileMenuMode === "expanded") {
+    if (currentMobileMenuMode === "expanded") {
+      mobileMenuModeRef.current = "collapsing";
       setMobileMenuMode("collapsing");
       mobileSubmenuCloseTimeoutRef.current = window.setTimeout(
         startOverlayExit,
@@ -312,6 +328,7 @@ export function BrandHeader() {
       return;
     }
 
+    isMenuClosingRef.current = true;
     setIsMenuClosing(true);
     mobileMenuCloseTimeoutRef.current = window.setTimeout(
       finishClose,
@@ -337,6 +354,8 @@ export function BrandHeader() {
       window.clearTimeout(wheelLockTimeoutRef.current);
       wheelLockTimeoutRef.current = null;
     }
+    mobileMenuModeRef.current = "default";
+    isMenuClosingRef.current = false;
     setMobileMenuMode("default");
     setActiveMobileSectionId(null);
     setIsMenuClosing(false);
@@ -418,10 +437,12 @@ export function BrandHeader() {
     }
 
     if (mobileMenuMode === "expanded" && activeMobileSectionId === sectionId) {
+      mobileMenuModeRef.current = "collapsing";
       setMobileMenuMode("collapsing");
 
       if (prefersReducedMotion()) {
         setActiveMobileSectionId(null);
+        mobileMenuModeRef.current = "default";
         setMobileMenuMode("default");
         return;
       }
@@ -430,6 +451,7 @@ export function BrandHeader() {
       mobileSubmenuCloseTimeoutRef.current = window.setTimeout(() => {
         mobileSubmenuCloseTimeoutRef.current = null;
         setActiveMobileSectionId(null);
+        mobileMenuModeRef.current = "default";
         setMobileMenuMode("default");
       }, mobileMenuCollapseDuration);
       return;
@@ -437,6 +459,7 @@ export function BrandHeader() {
 
     clearMobileSubmenuCloseTimeout();
     setActiveMobileSectionId(sectionId);
+    mobileMenuModeRef.current = "expanded";
     setMobileMenuMode("expanded");
   };
 

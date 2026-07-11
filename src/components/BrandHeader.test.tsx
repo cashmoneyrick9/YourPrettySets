@@ -558,6 +558,85 @@ describe("BrandHeader", () => {
     );
   });
 
+  it.each([
+    { closeWith: "X button", section: "Shop" },
+    { closeWith: "Escape", section: "Shop" },
+    { closeWith: "Home", section: "Shop" },
+    { closeWith: "submenu link", section: "Shop" },
+    { closeWith: "submenu link", section: "Help" }
+  ])(
+    "keeps the completed collapsing render frozen through the overlay fade for $closeWith from $section",
+    ({ closeWith, section }) => {
+      vi.useFakeTimers();
+      window.history.pushState({}, "", "/");
+      renderBrandHeader();
+
+      fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+      const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+      fireEvent.click(within(mobileNav).getByRole("button", { name: section }));
+
+      if (closeWith === "X button") {
+        fireEvent.click(screen.getByRole("button", { name: "Close menu" }));
+      } else if (closeWith === "Escape") {
+        fireEvent.keyDown(window, { key: "Escape" });
+      } else if (closeWith === "Home") {
+        fireEvent.click(within(mobileNav).getByRole("link", { name: "Home" }));
+      } else {
+        fireEvent.click(
+          within(mobileNav).getByRole("link", {
+            name: section === "Shop" ? "Ready to Ship" : "Press-On Guide"
+          })
+        );
+      }
+
+      const activeClass = `brand-header__mobile-menu--active-${section.toLowerCase()}`;
+      const submenuText = section === "Shop" ? "Ready to Ship" : "Press-On Guide";
+      const assertFrozenCollapse = () => {
+        expect(mobileNav).toHaveClass("brand-header__mobile-menu--collapsing", activeClass);
+        expect(mobileNav.querySelector(".brand-header__mobile-menu-selector")).toHaveClass(
+          "brand-header__mobile-menu-selector--collapsing"
+        );
+        expect(mobileNav.querySelector(".brand-header__mobile-menu-content")).toHaveClass(
+          "brand-header__mobile-menu-content--collapsing"
+        );
+        expect(mobileNav.querySelector(".brand-header__mobile-menu-content")).toHaveTextContent(
+          submenuText
+        );
+      };
+
+      assertFrozenCollapse();
+
+      act(() => {
+        vi.advanceTimersByTime(619);
+      });
+      assertFrozenCollapse();
+      expect(mobileNav).not.toHaveClass("brand-header__mobile-menu--closing");
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      assertFrozenCollapse();
+      expect(mobileNav).toHaveClass("brand-header__mobile-menu--closing");
+
+      act(() => {
+        vi.advanceTimersByTime(159);
+      });
+      assertFrozenCollapse();
+      expect(screen.getByRole("dialog", { name: "Mobile menu" })).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(screen.queryByRole("dialog", { name: "Mobile menu" })).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+      const reopenedNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+      expect(reopenedNav).toHaveClass("brand-header__mobile-menu--default");
+      expect(reopenedNav).not.toHaveClass(activeClass);
+      expect(reopenedNav.querySelector(".brand-header__mobile-submenu-panel")).not.toBeInTheDocument();
+    }
+  );
+
   it("closes the overlay menu from a destination link or Escape", async () => {
     vi.useFakeTimers();
     renderBrandHeader();
