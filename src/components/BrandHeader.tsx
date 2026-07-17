@@ -463,11 +463,7 @@ export function BrandHeader() {
       return sectionId === "home" ? -1 : 1;
     }
 
-    if (sectionId === "shop") {
-      return -1;
-    }
-
-    return 1;
+    return sectionId === "home" ? -2 : -1;
   };
 
   const headerClasses = [

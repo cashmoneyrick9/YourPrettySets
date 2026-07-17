@@ -3656,6 +3656,14 @@ h1 {
     transform: translate(-50%, calc(-50% + (var(--selector-offset) * clamp(76px, 22vw, 112px))));
   }
 
+  .brand-header__mobile-menu--default .brand-header__mobile-selector-item--offset--2,
+  .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset--2,
+  .brand-header__mobile-menu--closing-panel .brand-header__mobile-selector-item--offset--2,
+  .brand-header__mobile-menu--returning-selector .brand-header__mobile-selector-item--offset--2 {
+    --selector-offset: -2;
+    opacity: 0.86;
+  }
+
   .brand-header__mobile-menu--default .brand-header__mobile-selector-item--offset--1,
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset--1,
   .brand-header__mobile-menu--closing-panel .brand-header__mobile-selector-item--offset--1,

@@ -957,6 +957,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(
       ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0"
     );
+    expect(styles).toContain(
+      ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset--2"
+    );
+    expect(styles).toContain("--selector-offset: -2;");
     expect(styles).toContain("opacity: 0.86;");
     expect(defaultSelectorItemRule).toContain("left: 50%;");
     expect(styles).not.toContain("\n  .brand-header__mobile-selector-item--offset-0 {");

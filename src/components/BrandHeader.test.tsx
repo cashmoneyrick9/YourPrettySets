@@ -353,11 +353,15 @@ describe("BrandHeader", () => {
     await user.click(helpToggle);
 
     const shopToggle = within(selector).getByRole("button", { name: "Shop" });
+    const homeLink = within(selector).getByRole("link", { name: "Home" });
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--expanded");
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--active-help");
     expect(helpToggle).toHaveAttribute("aria-expanded", "true");
     expect(helpToggle).toHaveTextContent("Help");
     expect(shopToggle).toHaveAttribute("aria-expanded", "false");
+    expect(homeLink).toHaveAttribute("data-offset", "-2");
+    expect(shopToggle).toHaveAttribute("data-offset", "-1");
+    expect(helpToggle).toHaveAttribute("data-offset", "0");
     const content = mobileNav.querySelector(".brand-header__mobile-menu-content");
     expect(content).not.toBeNull();
     expect(content).toHaveClass("brand-header__mobile-menu-content--expanded");
@@ -451,6 +455,9 @@ describe("BrandHeader", () => {
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--returning-selector");
     expect(content).toHaveClass("brand-header__mobile-menu-content--returning-selector");
     expect(helpToggle).not.toHaveClass("brand-header__mobile-selector-item--active");
+    expect(within(selector).getByRole("link", { name: "Home" })).toHaveAttribute("data-offset", "-1");
+    expect(within(selector).getByRole("button", { name: "Shop" })).toHaveAttribute("data-offset", "0");
+    expect(helpToggle).toHaveAttribute("data-offset", "1");
 
     fireEvent.transitionEnd(helpToggle, { bubbles: true, propertyName: "font-size" });
 
