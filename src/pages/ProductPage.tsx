@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Heart, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Check, Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaqSection } from "../components/FaqSection";
 import { KitContents } from "../components/KitContents";
@@ -21,25 +21,49 @@ function ProductOptionGroup<Option extends string>({
   selectedOption: Option;
   onSelect: (option: Option) => void;
 }) {
+  const optionClassName = (option: Option) => option.toLowerCase().replace(/\s+/g, "-");
+  const optionLabel = (option: Option) => (option === "Extra Long" ? "XL" : option);
+
   return (
     <fieldset className={`product-page__option-group product-page__option-group--${optionKind}`}>
-      <legend>{label}</legend>
+      <legend className="product-page__option-legend">{label}</legend>
+      <div className="product-page__option-heading">
+        <span aria-hidden="true">{label}</span>
+        {optionKind === "shape" ? (
+          <Link className="product-page__option-guide" to="/help/sizing">
+            View guide
+          </Link>
+        ) : null}
+      </div>
       <div className="product-page__option-list">
-        {options.map((option) => (
-          <button
-            aria-label={option}
-            aria-pressed={selectedOption === option}
-            className={`product-page__option-tile product-page__option-tile--${optionKind}`}
-            key={option}
-            onClick={() => onSelect(option)}
-            type="button"
-          >
-            <span className="product-page__option-placeholder" role="presentation" aria-hidden="true" />
-            <span className="product-page__option-copy">
-              <span className="product-page__option-label">{option}</span>
-            </span>
-          </button>
-        ))}
+        {options.map((option) => {
+          const isSelected = selectedOption === option;
+
+          return (
+            <button
+              aria-label={option}
+              aria-pressed={isSelected}
+              className={`product-page__option-tile product-page__option-tile--${optionKind}`}
+              key={option}
+              onClick={() => onSelect(option)}
+              type="button"
+            >
+              <span className="product-page__option-visual">
+                <span
+                  aria-hidden="true"
+                  className={`product-page__nail-sample product-page__nail-sample--${optionKind} product-page__nail-sample--${optionClassName(option)}`}
+                  role="presentation"
+                />
+                {isSelected ? (
+                  <span aria-hidden="true" className="product-page__option-check">
+                    <Check size={10} strokeWidth={3} />
+                  </span>
+                ) : null}
+              </span>
+              <span className="product-page__option-label">{optionLabel(option)}</span>
+            </button>
+          );
+        })}
       </div>
     </fieldset>
   );
@@ -88,31 +112,33 @@ function ProductBuyingFlow({ product }: { product: Product }) {
             </p>
           </div>
 
-          <ProductOptionGroup
-            label="Length"
-            optionKind="length"
-            onSelect={setSelectedLength}
-            options={product.lengthOptions}
-            selectedOption={selectedLength}
-          />
-          <ProductOptionGroup
-            label="Shape"
-            optionKind="shape"
-            onSelect={setSelectedShape}
-            options={product.shapeOptions}
-            selectedOption={selectedShape}
-          />
+          <section className="product-page__style-selector" aria-labelledby="product-style-title">
+            <div className="product-page__style-header">
+              <h2 id="product-style-title">Choose your style</h2>
+              <p
+                aria-label={`Selected style: ${selectedShape} shape, ${selectedLength} length`}
+                aria-live="polite"
+                className="product-page__style-selection"
+              >
+                {selectedShape} · {selectedLength === "Extra Long" ? "XL" : selectedLength}
+              </p>
+            </div>
 
-          <div
-            aria-label={`Selected style: ${selectedLength} length, ${selectedShape} shape`}
-            aria-live="polite"
-            className="product-page__selected-summary"
-          >
-            <span className="product-page__selected-summary-eyebrow">Selected style</span>
-            <span className="product-page__selected-summary-value">
-              {selectedLength} length · {selectedShape} shape
-            </span>
-          </div>
+            <ProductOptionGroup
+              label="Shape"
+              optionKind="shape"
+              onSelect={setSelectedShape}
+              options={product.shapeOptions}
+              selectedOption={selectedShape}
+            />
+            <ProductOptionGroup
+              label="Length"
+              optionKind="length"
+              onSelect={setSelectedLength}
+              options={product.lengthOptions}
+              selectedOption={selectedLength}
+            />
+          </section>
 
           <div className="product-page__cta-row">
             <button className="product-page__add-button" type="button">

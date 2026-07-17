@@ -56,25 +56,30 @@ describe("ProductPage", () => {
       expect(within(shapeGroup).getByRole("button", { name: option })).toBeInTheDocument();
     }
 
-    const lengthPlaceholders = lengthGroup.querySelectorAll(
-      '.product-page__option-placeholder[aria-hidden="true"][role="presentation"]'
+    const lengthSamples = lengthGroup.querySelectorAll(
+      '.product-page__nail-sample[aria-hidden="true"][role="presentation"]'
     );
-    const shapePlaceholders = shapeGroup.querySelectorAll(
-      '.product-page__option-placeholder[aria-hidden="true"][role="presentation"]'
+    const shapeSamples = shapeGroup.querySelectorAll(
+      '.product-page__nail-sample[aria-hidden="true"][role="presentation"]'
     );
 
-    expect(lengthPlaceholders).toHaveLength(products[0].lengthOptions.length);
-    expect(shapePlaceholders).toHaveLength(products[0].shapeOptions.length);
+    expect(lengthSamples).toHaveLength(products[0].lengthOptions.length);
+    expect(shapeSamples).toHaveLength(products[0].shapeOptions.length);
+    expect(document.querySelector(".product-page__option-placeholder")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__option-icon")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__nail-icon")).not.toBeInTheDocument();
     expect(within(lengthGroup).getByRole("button", { name: products[0].lengthOptions[0] })).toHaveAttribute("aria-pressed", "true");
     expect(within(shapeGroup).getByRole("button", { name: products[0].shapeOptions[0] })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText("Selected style")).toBeInTheDocument();
-    expect(screen.getByText("Short length · Almond shape")).toBeInTheDocument();
-    expect(document.querySelector(".product-page__selected-summary")).toHaveAttribute(
+    expect(screen.getByRole("heading", { name: "Choose your style", level: 2 })).toBeInTheDocument();
+    expect(screen.getByText("Almond · Short")).toBeInTheDocument();
+    expect(document.querySelector(".product-page__style-selection")).toHaveAttribute(
       "aria-label",
-      "Selected style: Short length, Almond shape"
+      "Selected style: Almond shape, Short length"
     );
+    expect(document.querySelector(".product-page__selected-summary")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "View guide" })).toHaveAttribute("href", "/help/sizing");
+    expect(shapeGroup.compareDocumentPosition(lengthGroup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(document.querySelectorAll(".product-page__option-check")).toHaveLength(2);
     expect(screen.queryByRole("group", { name: /size/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("group", { name: /adhesive|glue|tabs/i })).not.toBeInTheDocument();
 
@@ -180,10 +185,10 @@ describe("ProductPage", () => {
     expect(within(lengthGroup).getByRole("button", { name: "Medium" })).toHaveAttribute("aria-pressed", "true");
     expect(within(shapeGroup).getByRole("button", { name: "Almond" })).toHaveAttribute("aria-pressed", "false");
     expect(within(shapeGroup).getByRole("button", { name: "Coffin" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText("Medium length · Coffin shape")).toBeInTheDocument();
-    expect(document.querySelector(".product-page__selected-summary")).toHaveAttribute(
+    expect(screen.getByText("Coffin · Medium")).toBeInTheDocument();
+    expect(document.querySelector(".product-page__style-selection")).toHaveAttribute(
       "aria-label",
-      "Selected style: Medium length, Coffin shape"
+      "Selected style: Coffin shape, Medium length"
     );
     expect(screen.getByRole("button", { name: `Favorite ${products[0].name}` })).toHaveAttribute("aria-pressed", "true");
   });
