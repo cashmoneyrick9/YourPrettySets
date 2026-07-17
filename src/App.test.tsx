@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
@@ -23,7 +23,13 @@ describe("App", () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 0
+    });
     window.history.pushState({}, "", "/");
   });
 
@@ -115,12 +121,89 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: "Shop" }));
     await user.click(screen.getByRole("link", { name: "Custom Orders" }));
 
-    const customHeading = screen.getByRole("heading", { name: "Custom Orders Coming Soon" });
+    const customHeading = await screen.findByRole("heading", { name: "Custom Orders Coming Soon" });
     expect(customHeading).toHaveFocus();
 
     await user.click(screen.getByRole("link", { name: "Close custom orders and return to shop" }));
 
     expect(screen.getByRole("heading", { name: "Shop All" })).toHaveFocus();
+  });
+
+  it("unlocks a deeply scrolled page before mobile-menu navigation resets the new route to the top", () => {
+    vi.useFakeTimers();
+    const scrollTo = vi.mocked(window.scrollTo);
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 2611
+    });
+    renderApp();
+    scrollTo.mockClear();
+
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+    fireEvent.click(screen.getByRole("button", { name: "Shop" }));
+    fireEvent.click(screen.getByRole("link", { name: "Ready to Ship" }));
+
+    expect(window.location.pathname).toBe("/");
+
+    act(() => {
+      vi.advanceTimersByTime(652);
+    });
+
+    expect(window.location.pathname).toBe("/shop/ready-to-ship");
+    expect(document.body.style.position).toBe("");
+    expect(scrollTo).toHaveBeenNthCalledWith(1, 0, 2611);
+    expect(scrollTo).toHaveBeenLastCalledWith({ top: 0, left: 0, behavior: "auto" });
+  });
+
+  it.each([
+    { heading: "Ready-to-wear sets for pretty plans", href: "/", label: "Home", section: null },
+    { heading: "Ready to Ship", href: "/shop/ready-to-ship", label: "Ready to Ship", section: "Shop" },
+    { heading: "Made to Order", href: "/shop/made-to-order", label: "Made to Order", section: "Shop" },
+    { heading: "Custom Orders Coming Soon", href: "/shop/custom-orders", label: "Custom Orders", section: "Shop" },
+    { heading: "The Press-On Guide", href: "/help", label: "Press-On Guide", section: "Help" },
+    { heading: "Find Your Fit", href: "/help/sizing", label: "Find Your Fit", section: "Help" },
+    { heading: "Apply Your Set", href: "/help/application", label: "Apply Your Set", section: "Help" },
+    { heading: "Remove & Reuse", href: "/help/removal", label: "Remove & Reuse", section: "Help" },
+    {
+      heading: "Shipping, Returns & Order Issues",
+      href: "/help/shipping-returns",
+      label: "Shipping, Returns & Order Issues",
+      section: "Help"
+    },
+    { heading: "FAQ", href: "/help/faq", label: "FAQ", section: "Help" },
+    { heading: "Contact Support", href: "/help/contact", label: "Contact Support", section: "Help" }
+  ] as const)("opens $label from the mobile menu at the top", async ({ heading, href, label, section }) => {
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn().mockImplementation((query: string) => ({
+        matches: query === "(prefers-reduced-motion: reduce)",
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn()
+      }))
+    );
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 2611
+    });
+    window.history.pushState({}, "", "/shop");
+    const scrollTo = vi.mocked(window.scrollTo);
+    renderApp();
+    scrollTo.mockClear();
+
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+    if (section) {
+      fireEvent.click(screen.getByRole("button", { name: section }));
+    }
+    const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+    fireEvent.click(within(mobileNav).getByRole("link", { name: label }));
+
+    await waitFor(() => {
+      expect(window.location.pathname).toBe(href);
+    });
+    expect(screen.getByRole("heading", { name: heading })).toBeInTheDocument();
+    expect(document.body.style.position).toBe("");
+    expect(scrollTo).toHaveBeenCalledWith(0, 2611);
+    expect(scrollTo).toHaveBeenLastCalledWith({ top: 0, left: 0, behavior: "auto" });
   });
 
   it("renders a product detail page at /products/:slug", () => {

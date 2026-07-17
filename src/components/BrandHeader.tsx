@@ -1,6 +1,6 @@
 import { Menu, ShoppingBag, X } from "lucide-react";
-import { TouchEvent, WheelEvent, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { MouseEvent, TouchEvent, WheelEvent, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 type NavItem = {
   children?: { href: string; label: string }[];
@@ -56,6 +56,7 @@ const mobileMenuCollapseDuration = 620;
 
 export function BrandHeader() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMenuClosing, setIsMenuClosing] = useState(false);
   const [mobileMenuMode, setMobileMenuMode] = useState<MobileMenuMode>("default");
@@ -357,13 +358,27 @@ export function BrandHeader() {
     finishClose();
   };
 
-  const followMobileMenuLink = (href: string) => {
+  const followMobileMenuLink = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (
+      event.button !== 0 ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey
+    ) {
+      return;
+    }
+
+    event.preventDefault();
     closeMobileMenu(() => {
       if (href === pathname) {
         const pageHeading = document.querySelector<HTMLElement>("main h1");
         pageHeading?.setAttribute("tabindex", "-1");
         pageHeading?.focus({ preventScroll: true });
+        return;
       }
+
+      navigate(href);
     });
   };
 
@@ -612,7 +627,7 @@ export function BrandHeader() {
                     className={selectorClasses}
                     data-offset={selectorOffset}
                     key={section.id}
-                    onClick={() => followMobileMenuLink(section.href)}
+                    onClick={(event) => followMobileMenuLink(event, section.href)}
                     to={section.href}
                   >
                     {section.label}
@@ -659,7 +674,7 @@ export function BrandHeader() {
                     <Link
                       className="brand-header__mobile-submenu-link"
                       key={child.href}
-                      onClick={() => followMobileMenuLink(child.href)}
+                      onClick={(event) => followMobileMenuLink(event, child.href)}
                       to={child.href}
                     >
                       {child.label}

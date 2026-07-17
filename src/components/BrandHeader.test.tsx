@@ -336,9 +336,10 @@ describe("BrandHeader", () => {
       "/shop/custom-orders"
     );
 
+    const startingPath = window.location.pathname;
     fireEvent.click(within(mobileNav).getByRole("link", { name: "Ready to Ship" }));
 
-    expect(window.location.pathname).toBe("/shop/ready-to-ship");
+    expect(window.location.pathname).toBe(startingPath);
     expect(mobileNav).toHaveClass(
       "brand-header__mobile-menu--expanded",
       "brand-header__mobile-menu--active-shop",
@@ -376,6 +377,7 @@ describe("BrandHeader", () => {
       vi.advanceTimersByTime(32);
     });
 
+    expect(window.location.pathname).toBe("/shop/ready-to-ship");
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
     expect(document.body).not.toHaveClass("mobile-menu-open");
 
@@ -443,9 +445,10 @@ describe("BrandHeader", () => {
     );
 
     vi.useFakeTimers();
+    const startingPath = window.location.pathname;
     fireEvent.click(within(mobileNav).getByRole("link", { name: "Press-On Guide" }));
 
-    expect(window.location.pathname).toBe("/help");
+    expect(window.location.pathname).toBe(startingPath);
     expect(mobileNav).toHaveClass(
       "brand-header__mobile-menu--expanded",
       "brand-header__mobile-menu--active-help",
@@ -458,6 +461,7 @@ describe("BrandHeader", () => {
       vi.advanceTimersByTime(652);
     });
 
+    expect(window.location.pathname).toBe("/help");
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
     expect(document.body).not.toHaveClass("mobile-menu-open");
 
@@ -733,8 +737,8 @@ describe("BrandHeader", () => {
 
   it("closes the overlay menu when selecting the Home route", async () => {
     vi.useFakeTimers();
-    renderBrandHeader();
     window.history.pushState({}, "", "/help");
+    renderBrandHeader();
 
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
     fireEvent.click(
@@ -748,7 +752,7 @@ describe("BrandHeader", () => {
       })
     );
 
-    expect(window.location.pathname).toBe("/");
+    expect(window.location.pathname).toBe("/help");
     expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toHaveClass(
       "brand-header__mobile-menu--expanded",
       "brand-header__mobile-menu--active-shop",
@@ -760,6 +764,7 @@ describe("BrandHeader", () => {
       vi.advanceTimersByTime(652);
     });
 
+    expect(window.location.pathname).toBe("/");
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
     expect(document.body).not.toHaveClass("mobile-menu-open");
     expect(document.body.style.overflow).toBe("");
