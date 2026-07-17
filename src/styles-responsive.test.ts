@@ -1005,6 +1005,10 @@ describe("small mobile responsive CSS", () => {
     const contentRule = getRuleBody(styles, ".brand-header__mobile-menu-content");
     const menuDialogRule = getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu-dialog");
     const closingDialogRule = getRuleBody(styles, ".brand-header--menu-closing .brand-header__mobile-menu-dialog");
+    const closingExpandedContentRule = getRuleBody(
+      styles,
+      ".brand-header__mobile-menu--closing .brand-header__mobile-menu-content--expanded"
+    );
     const defaultContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--default");
     const expandedContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--expanded");
     const collapsingContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--collapsing");
@@ -1025,6 +1029,8 @@ describe("small mobile responsive CSS", () => {
     expect(menuDialogRule).not.toContain("transition: opacity");
     expect(closingDialogRule).not.toContain("opacity:");
     expect(closingDialogRule).toContain("pointer-events: none;");
+    expect(closingExpandedContentRule).toContain("pointer-events: none;");
+    expect(closingExpandedContentRule).toContain("transform: translateX(100%);");
     expect(defaultContentRule).toContain("transform: translateX(100%);");
     expect(defaultContentRule).not.toContain("visibility: hidden;");
     expect(expandedContentRule).toContain("transform: translateX(0);");

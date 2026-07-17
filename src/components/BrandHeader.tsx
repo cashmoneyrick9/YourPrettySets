@@ -321,8 +321,6 @@ export function BrandHeader() {
 
     const finishClose = () => {
       mobileSubmenuCloseTimeoutRef.current = null;
-      isMenuClosingRef.current = true;
-      setIsMenuClosing(true);
       mobileMenuUnlockRef.current?.();
 
       if (prefersReducedMotion()) {
@@ -335,14 +333,20 @@ export function BrandHeader() {
       });
     };
 
+    const startClose = () => {
+      isMenuClosingRef.current = true;
+      setIsMenuClosing(true);
+    };
+
     if (prefersReducedMotion()) {
+      startClose();
       finishClose();
       return;
     }
 
+    startClose();
+
     if (currentMobileMenuMode === "expanded") {
-      mobileMenuModeRef.current = "collapsing";
-      setMobileMenuMode("collapsing");
       mobileSubmenuCloseTimeoutRef.current = window.setTimeout(
         finishClose,
         mobileMenuCollapseDuration

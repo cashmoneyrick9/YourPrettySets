@@ -3595,6 +3595,11 @@ h1 {
     visibility: visible;
   }
 
+  .brand-header__mobile-menu--closing .brand-header__mobile-menu-content--expanded {
+    pointer-events: none;
+    transform: translateX(100%);
+  }
+
   .brand-header__mobile-menu-content--collapsing {
     opacity: 1;
     pointer-events: none;
