@@ -146,7 +146,7 @@ describe("App", () => {
     expect(window.location.pathname).toBe("/");
 
     act(() => {
-      vi.advanceTimersByTime(652);
+      vi.runOnlyPendingTimers();
     });
 
     expect(window.location.pathname).toBe("/shop/ready-to-ship");

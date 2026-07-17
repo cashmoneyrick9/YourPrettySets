@@ -932,14 +932,8 @@ describe("small mobile responsive CSS", () => {
 
     const baseSelectorItemRules = getRuleBodies(styles, ".brand-header__mobile-selector-item");
 
-    expect(
-      baseSelectorItemRules.some(
-        (ruleBody) =>
-          ruleBody.includes("-webkit-backface-visibility: hidden;") &&
-          ruleBody.includes("backface-visibility: hidden;") &&
-          ruleBody.includes("will-change: transform;"),
-      ),
-    ).toBe(true);
+    expect(baseSelectorItemRules.some((ruleBody) => ruleBody.includes("backface-visibility: hidden;"))).toBe(false);
+    expect(baseSelectorItemRules.some((ruleBody) => ruleBody.includes("will-change: transform;"))).toBe(false);
 
     for (const ruleBody of baseSelectorItemRules) {
       expect(ruleBody).not.toContain("left: 57%;");
@@ -955,7 +949,7 @@ describe("small mobile responsive CSS", () => {
     expect(defaultSelectorItemRule).toContain('font-variation-settings: "opsz" 144, "SOFT" 54, "WONK" 0;');
 
     expect(defaultSelectorItemRule).toContain("position: absolute;");
-    expect(defaultSelectorItemRule).toContain("transform: translate3d(-50%");
+    expect(defaultSelectorItemRule).toContain("transform: translate(-50%");
     expect(styles).toContain(
       ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item,\n  .brand-header__mobile-menu--collapsing .brand-header__mobile-selector-item"
     );
@@ -963,7 +957,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(
       ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0"
     );
-    expect(styles).not.toContain("opacity: 0.86;");
+    expect(styles).toContain("opacity: 0.86;");
     expect(defaultSelectorItemRule).toContain("left: 50%;");
     expect(styles).not.toContain("\n  .brand-header__mobile-selector-item--offset-0 {");
     expect(styles).toContain(
@@ -1014,11 +1008,6 @@ describe("small mobile responsive CSS", () => {
     const selectorCollapsingRule = getRuleBody(styles, ".brand-header__mobile-menu-selector--collapsing");
     const contentRule = getRuleBody(styles, ".brand-header__mobile-menu-content");
     const menuDialogRule = getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu-dialog");
-    const closingDialogRule = getRuleBody(styles, ".brand-header--menu-closing .brand-header__mobile-menu-dialog");
-    const closingExpandedContentRule = getRuleBody(
-      styles,
-      ".brand-header__mobile-menu--closing .brand-header__mobile-menu-content--expanded"
-    );
     const defaultContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--default");
     const expandedContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--expanded");
     const collapsingContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--collapsing");
@@ -1037,10 +1026,8 @@ describe("small mobile responsive CSS", () => {
     expect(contentRule).toContain("width: 62%;");
     expect(contentRule).toContain("transition:\n      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);");
     expect(menuDialogRule).not.toContain("transition: opacity");
-    expect(closingDialogRule).not.toContain("opacity:");
-    expect(closingDialogRule).toContain("pointer-events: none;");
-    expect(closingExpandedContentRule).toContain("pointer-events: none;");
-    expect(closingExpandedContentRule).toContain("transform: translateX(100%);");
+    expect(styles).not.toContain("brand-header--menu-closing");
+    expect(styles).not.toContain("brand-header__mobile-menu--closing");
     expect(defaultContentRule).toContain("transform: translateX(100%);");
     expect(defaultContentRule).not.toContain("visibility: hidden;");
     expect(expandedContentRule).toContain("transform: translateX(0);");

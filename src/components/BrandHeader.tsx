@@ -58,7 +58,6 @@ export function BrandHeader() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMenuClosing, setIsMenuClosing] = useState(false);
   const [mobileMenuMode, setMobileMenuMode] = useState<MobileMenuMode>("default");
   const [activeMobileSectionId, setActiveMobileSectionId] =
     useState<MobileContentSectionId | null>(null);
@@ -66,26 +65,12 @@ export function BrandHeader() {
   const touchStartYRef = useRef<number | null>(null);
   const wheelLockRef = useRef(false);
   const wheelLockTimeoutRef = useRef<number | null>(null);
-  const mobileMenuCloseFrameRef = useRef<number | null>(null);
   const mobileSubmenuCloseTimeoutRef = useRef<number | null>(null);
   const mobileMenuUnlockRef = useRef<(() => void) | null>(null);
-  const pendingAfterCloseRef = useRef<(() => void) | undefined>(undefined);
-  const isMenuClosingRef = useRef(isMenuClosing);
-  const mobileMenuModeRef = useRef(mobileMenuMode);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  isMenuClosingRef.current = isMenuClosing;
-  mobileMenuModeRef.current = mobileMenuMode;
 
   const prefersReducedMotion = () =>
     typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const clearMobileMenuCloseFrame = () => {
-    if (mobileMenuCloseFrameRef.current !== null) {
-      window.cancelAnimationFrame(mobileMenuCloseFrameRef.current);
-      mobileMenuCloseFrameRef.current = null;
-    }
-  };
 
   const clearMobileSubmenuCloseTimeout = () => {
     if (mobileSubmenuCloseTimeoutRef.current) {
@@ -281,7 +266,6 @@ export function BrandHeader() {
       if (wheelLockTimeoutRef.current) {
         window.clearTimeout(wheelLockTimeoutRef.current);
       }
-      clearMobileMenuCloseFrame();
       clearMobileSubmenuCloseTimeout();
       mobileMenuUnlockRef.current?.();
     };
@@ -292,70 +276,25 @@ export function BrandHeader() {
       return;
     }
 
-    mobileMenuModeRef.current = "default";
     setActiveMobileSectionId(null);
     setMobileMenuMode("default");
   }, [isMenuOpen]);
 
   const closeMobileMenu = (afterClose?: () => void) => {
-    const currentMobileMenuMode = mobileMenuModeRef.current;
-
-    if (!isMenuOpen || isMenuClosingRef.current || currentMobileMenuMode === "collapsing") {
+    if (!isMenuOpen) {
       return;
     }
 
-    clearMobileMenuCloseFrame();
     clearMobileSubmenuCloseTimeout();
-    pendingAfterCloseRef.current = afterClose;
-
-    const hideMenu = () => {
-      mobileMenuCloseFrameRef.current = null;
-      isMenuClosingRef.current = false;
-      setIsMenuOpen(false);
-      setIsMenuClosing(false);
-      window.setTimeout(() => {
-        pendingAfterCloseRef.current?.();
-        pendingAfterCloseRef.current = undefined;
+    mobileMenuUnlockRef.current?.();
+    setIsMenuOpen(false);
+    window.setTimeout(() => {
+      if (afterClose) {
+        afterClose();
+      } else {
         menuButtonRef.current?.focus();
-      }, 0);
-    };
-
-    const finishClose = () => {
-      mobileSubmenuCloseTimeoutRef.current = null;
-      mobileMenuUnlockRef.current?.();
-
-      if (prefersReducedMotion()) {
-        hideMenu();
-        return;
       }
-
-      mobileMenuCloseFrameRef.current = window.requestAnimationFrame(() => {
-        mobileMenuCloseFrameRef.current = window.requestAnimationFrame(hideMenu);
-      });
-    };
-
-    const startClose = () => {
-      isMenuClosingRef.current = true;
-      setIsMenuClosing(true);
-    };
-
-    if (prefersReducedMotion()) {
-      startClose();
-      finishClose();
-      return;
-    }
-
-    startClose();
-
-    if (currentMobileMenuMode === "expanded") {
-      mobileSubmenuCloseTimeoutRef.current = window.setTimeout(
-        finishClose,
-        mobileMenuCollapseDuration
-      );
-      return;
-    }
-
-    finishClose();
+    }, 0);
   };
 
   const followMobileMenuLink = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -383,18 +322,14 @@ export function BrandHeader() {
   };
 
   const openMobileMenu = () => {
-    clearMobileMenuCloseFrame();
     clearMobileSubmenuCloseTimeout();
     wheelLockRef.current = false;
     if (wheelLockTimeoutRef.current) {
       window.clearTimeout(wheelLockTimeoutRef.current);
       wheelLockTimeoutRef.current = null;
     }
-    mobileMenuModeRef.current = "default";
-    isMenuClosingRef.current = false;
     setMobileMenuMode("default");
     setActiveMobileSectionId(null);
-    setIsMenuClosing(false);
     setIsMenuOpen(true);
   };
 
@@ -468,17 +403,15 @@ export function BrandHeader() {
   };
 
   const selectMobileContentSection = (sectionId: MobileContentSectionId) => {
-    if (mobileMenuMode === "collapsing" || isMenuClosing) {
+    if (mobileMenuMode === "collapsing") {
       return;
     }
 
     if (mobileMenuMode === "expanded" && activeMobileSectionId === sectionId) {
-      mobileMenuModeRef.current = "collapsing";
       setMobileMenuMode("collapsing");
 
       if (prefersReducedMotion()) {
         setActiveMobileSectionId(null);
-        mobileMenuModeRef.current = "default";
         setMobileMenuMode("default");
         return;
       }
@@ -487,7 +420,6 @@ export function BrandHeader() {
       mobileSubmenuCloseTimeoutRef.current = window.setTimeout(() => {
         mobileSubmenuCloseTimeoutRef.current = null;
         setActiveMobileSectionId(null);
-        mobileMenuModeRef.current = "default";
         setMobileMenuMode("default");
       }, mobileMenuCollapseDuration);
       return;
@@ -495,7 +427,6 @@ export function BrandHeader() {
 
     clearMobileSubmenuCloseTimeout();
     setActiveMobileSectionId(sectionId);
-    mobileMenuModeRef.current = "expanded";
     setMobileMenuMode("expanded");
   };
 
@@ -524,8 +455,7 @@ export function BrandHeader() {
   const headerClasses = [
     "brand-header",
     isScrolled ? "brand-header--scrolled" : "brand-header--at-top",
-    isMenuOpen ? "brand-header--menu-open" : "",
-    isMenuClosing ? "brand-header--menu-closing" : ""
+    isMenuOpen ? "brand-header--menu-open" : ""
   ]
     .filter(Boolean)
     .join(" ");
@@ -592,7 +522,6 @@ export function BrandHeader() {
           className={[
             "brand-header__mobile-menu",
             `brand-header__mobile-menu--${mobileMenuMode}`,
-            isMenuClosing ? "brand-header__mobile-menu--closing" : "",
             activeMobileSectionId ? `brand-header__mobile-menu--active-${activeMobileSectionId}` : ""
           ]
             .filter(Boolean)
