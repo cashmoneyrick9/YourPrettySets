@@ -106,6 +106,49 @@ describe("ProductPage", () => {
     expect(backButton.compareDocumentPosition(productImage) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
+  it("renders image thumbnails followed by a video and switches the active media", async () => {
+    const user = userEvent.setup();
+    renderProductPage();
+
+    const gallery = screen.getByRole("region", { name: `${products[0].name} media gallery` });
+    const mediaButtons = within(gallery).getAllByRole("button", { name: /^Show / });
+
+    expect(mediaButtons).toHaveLength(3);
+    expect(mediaButtons[0]).toHaveAccessibleName("Show clean product image");
+    expect(mediaButtons[1]).toHaveAccessibleName("Show editorial product image");
+    expect(mediaButtons[2]).toHaveAccessibleName("Show product video");
+    expect(within(mediaButtons[2]).getByTestId("product-video-play-icon")).toBeInTheDocument();
+
+    await user.click(mediaButtons[2]);
+
+    const video = screen.getByLabelText(`${products[0].name} product video`);
+    expect(video).toHaveAttribute("controls");
+    expect(video).toHaveAttribute("playsinline");
+    expect(video).not.toHaveAttribute("autoplay");
+    expect(screen.queryByRole("button", { name: /^Zoom / })).not.toBeInTheDocument();
+  });
+
+  it("opens and closes the fullscreen image zoom view", async () => {
+    const user = userEvent.setup();
+    renderProductPage();
+
+    await user.click(screen.getByRole("button", { name: `Zoom ${products[0].name} image` }));
+
+    const zoomDialog = screen.getByRole("dialog", { name: `${products[0].name} image zoom` });
+    expect(zoomDialog).toBeInTheDocument();
+    expect(within(zoomDialog).getByRole("button", { name: "Zoom in" })).toBeInTheDocument();
+    expect(within(zoomDialog).getByRole("button", { name: "Zoom out" })).toBeInTheDocument();
+    expect(within(zoomDialog).getByRole("button", { name: "Reset zoom" })).toBeInTheDocument();
+
+    await user.click(within(zoomDialog).getByRole("button", { name: "Zoom in" }));
+
+    expect(within(zoomDialog).getByText("150%")).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+
+    expect(screen.queryByRole("dialog", { name: `${products[0].name} image zoom` })).not.toBeInTheDocument();
+  });
+
   it("renders kit contents and FAQ below the main buying panel", () => {
     renderProductPage();
 

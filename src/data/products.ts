@@ -37,6 +37,15 @@ type ProductPresentation = {
     clean: string;
     editorial: string;
   };
+  media?: {
+    clean?: string;
+    editorial?: string;
+    video?: {
+      poster?: string;
+      src: string;
+      thumbnail?: string;
+    };
+  };
 };
 
 export type Product = ProductPresentation & {

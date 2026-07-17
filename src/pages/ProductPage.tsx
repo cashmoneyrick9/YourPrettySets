@@ -3,6 +3,7 @@ import { ArrowLeft, Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaqSection } from "../components/FaqSection";
 import { KitContents } from "../components/KitContents";
+import { ProductMediaGallery } from "../components/ProductMediaGallery";
 import { findProductBySlug } from "../data/products";
 import type { Product, SizingKitProduct } from "../data/products";
 import { sizingFacts } from "../data/storefrontFacts";
@@ -70,13 +71,7 @@ function ProductBuyingFlow({ product }: { product: Product }) {
           Back to shop
         </button>
 
-        <section className="product-page__media" aria-label={`${product.name} preview`}>
-          <div
-            className="product-page__image-placeholder"
-            role="img"
-            aria-label={`${product.name} image placeholder`}
-          />
-        </section>
+        <ProductMediaGallery product={product} />
 
         <section className="product-page__buying-panel" aria-labelledby="product-title">
           <div className="product-page__summary">
