@@ -3527,6 +3527,11 @@ h1 {
     z-index: 2;
   }
 
+  .brand-header__mobile-menu--closing .brand-header__mobile-menu-selector--expanded {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
   .brand-header__mobile-menu-selector--collapsing {
     --mobile-selector-fade: clamp(78px, 18vh, 148px);
     -webkit-backdrop-filter: none;

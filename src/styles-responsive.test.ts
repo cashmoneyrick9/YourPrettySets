@@ -977,6 +977,10 @@ describe("small mobile responsive CSS", () => {
     expect(expandedContentRule).toContain("visibility: visible;");
 
     const selectorExpandedRule = getRuleBody(styles, ".brand-header__mobile-menu-selector--expanded");
+    const closingExpandedSelectorRule = getRuleBody(
+      styles,
+      ".brand-header__mobile-menu--closing .brand-header__mobile-menu-selector--expanded"
+    );
     expect(styles).not.toContain(".brand-header__mobile-menu-selector--expanded::before");
     expect(styles).not.toContain(".brand-header__mobile-menu-selector--expanded::after");
     expect(styles).not.toContain("linear-gradient(to bottom, rgba(255, 253, 251");
@@ -988,6 +992,8 @@ describe("small mobile responsive CSS", () => {
     expect(selectorExpandedRule).toContain("#000 calc(100% - var(--mobile-selector-fade))");
     expect(selectorExpandedRule).toContain("transparent 100%");
     expect(selectorExpandedRule).toContain("mask-repeat: no-repeat;");
+    expect(closingExpandedSelectorRule).toContain("-webkit-mask-image: none;");
+    expect(closingExpandedSelectorRule).toContain("mask-image: none;");
   });
 
   it("uses transform-based mobile submenu sheet motion instead of grid ownership changes", () => {
