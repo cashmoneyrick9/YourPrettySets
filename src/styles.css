@@ -3553,7 +3553,8 @@ h1 {
 
   .brand-header__mobile-menu-selector--closing-panel {
     cursor: ns-resize;
-    width: 38%;
+    transition-duration: 340ms;
+    width: 100%;
   }
 
   .brand-header__mobile-menu-selector--returning-selector {
@@ -3608,6 +3609,10 @@ h1 {
     position: absolute;
     transform: translateX(100%);
     visibility: visible;
+  }
+
+  .brand-header__mobile-menu-content--closing-panel {
+    transition-duration: 340ms;
   }
 
   .brand-header__mobile-selector-indicator {

@@ -291,7 +291,7 @@ describe("BrandHeader", () => {
     expect(content).toHaveClass("brand-header__mobile-menu-content--returning-selector");
     expect(shopToggle).not.toHaveClass("brand-header__mobile-selector-item--active");
 
-    fireEvent.transitionEnd(selector, { propertyName: "width" });
+    fireEvent.transitionEnd(shopToggle, { bubbles: true, propertyName: "font-size" });
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
     expect(selector).toHaveClass("brand-header__mobile-menu-selector--skip-enter");
@@ -452,7 +452,7 @@ describe("BrandHeader", () => {
     expect(content).toHaveClass("brand-header__mobile-menu-content--returning-selector");
     expect(helpToggle).not.toHaveClass("brand-header__mobile-selector-item--active");
 
-    fireEvent.transitionEnd(selector, { propertyName: "width" });
+    fireEvent.transitionEnd(helpToggle, { bubbles: true, propertyName: "font-size" });
 
     expect(mobileNav).toHaveClass("brand-header__mobile-menu--default");
     expect(selector).toHaveClass("brand-header__mobile-menu-selector--skip-enter");

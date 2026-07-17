@@ -1011,13 +1011,15 @@ describe("small mobile responsive CSS", () => {
     const menuDialogRule = getRuleBody(styles, ".brand-header--menu-open .brand-header__mobile-menu-dialog");
     const defaultContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--default");
     const expandedContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--expanded");
+    const closingPanelContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--closing-panel");
     const transientContentRule = getRuleBody(styles, ".brand-header__mobile-menu-content--returning-selector");
 
     expect(defaultMenuRule).not.toContain("grid-template-columns:");
     expect(expandedMenuRule).not.toContain("grid-template-columns:");
     expect(selectorExpandedRule).toContain("width: 38%;");
     expect(selectorRule).toContain("transition: width 620ms cubic-bezier(0.22, 1, 0.36, 1);");
-    expect(selectorClosingPanelRule).toContain("width: 38%;");
+    expect(selectorClosingPanelRule).toContain("transition-duration: 340ms;");
+    expect(selectorClosingPanelRule).toContain("width: 100%;");
     expect(styles).toContain(
       ".brand-header__mobile-menu-selector--returning-selector {\n    width: 100%;"
     );
@@ -1039,6 +1041,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(
       ".brand-header__mobile-menu-content--closing-panel,\n  .brand-header__mobile-menu-content--returning-selector"
     );
+    expect(closingPanelContentRule).toContain("transition-duration: 340ms;");
     expect(transientContentRule).toContain("transform: translateX(100%);");
     expect(transientContentRule).toContain("visibility: visible;");
     expect(expandedContentRule).not.toContain("position: relative;");

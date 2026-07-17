@@ -426,9 +426,15 @@ export function BrandHeader() {
   };
 
   const handleMobileMenuSelectorTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+    const finishedSelectorWidth =
+      event.target === event.currentTarget && event.propertyName === "width";
+    const finishedSelectorTypography =
+      event.target instanceof HTMLElement &&
+      event.target.classList.contains("brand-header__mobile-selector-item");
+
     if (
       mobileMenuMode !== "returning-selector" ||
-      event.target !== event.currentTarget
+      (!finishedSelectorWidth && !finishedSelectorTypography)
     ) {
       return;
     }
