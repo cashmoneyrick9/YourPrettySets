@@ -932,6 +932,15 @@ describe("small mobile responsive CSS", () => {
 
     const baseSelectorItemRules = getRuleBodies(styles, ".brand-header__mobile-selector-item");
 
+    expect(
+      baseSelectorItemRules.some(
+        (ruleBody) =>
+          ruleBody.includes("-webkit-backface-visibility: hidden;") &&
+          ruleBody.includes("backface-visibility: hidden;") &&
+          ruleBody.includes("will-change: transform;"),
+      ),
+    ).toBe(true);
+
     for (const ruleBody of baseSelectorItemRules) {
       expect(ruleBody).not.toContain("left: 57%;");
     }
@@ -946,7 +955,7 @@ describe("small mobile responsive CSS", () => {
     expect(defaultSelectorItemRule).toContain('font-variation-settings: "opsz" 144, "SOFT" 54, "WONK" 0;');
 
     expect(defaultSelectorItemRule).toContain("position: absolute;");
-    expect(defaultSelectorItemRule).toContain("transform: translate(-50%");
+    expect(defaultSelectorItemRule).toContain("transform: translate3d(-50%");
     expect(styles).toContain(
       ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item,\n  .brand-header__mobile-menu--collapsing .brand-header__mobile-selector-item"
     );
@@ -954,6 +963,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(
       ".brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-0"
     );
+    expect(styles).not.toContain("opacity: 0.86;");
     expect(defaultSelectorItemRule).toContain("left: 50%;");
     expect(styles).not.toContain("\n  .brand-header__mobile-selector-item--offset-0 {");
     expect(styles).toContain(
@@ -977,10 +987,6 @@ describe("small mobile responsive CSS", () => {
     expect(expandedContentRule).toContain("visibility: visible;");
 
     const selectorExpandedRule = getRuleBody(styles, ".brand-header__mobile-menu-selector--expanded");
-    const closingExpandedSelectorRule = getRuleBody(
-      styles,
-      ".brand-header__mobile-menu--closing .brand-header__mobile-menu-selector--expanded"
-    );
     expect(styles).not.toContain(".brand-header__mobile-menu-selector--expanded::before");
     expect(styles).not.toContain(".brand-header__mobile-menu-selector--expanded::after");
     expect(styles).not.toContain("linear-gradient(to bottom, rgba(255, 253, 251");
@@ -992,8 +998,6 @@ describe("small mobile responsive CSS", () => {
     expect(selectorExpandedRule).toContain("#000 calc(100% - var(--mobile-selector-fade))");
     expect(selectorExpandedRule).toContain("transparent 100%");
     expect(selectorExpandedRule).toContain("mask-repeat: no-repeat;");
-    expect(closingExpandedSelectorRule).toContain("-webkit-mask-image: none;");
-    expect(closingExpandedSelectorRule).toContain("mask-image: none;");
   });
 
   it("uses transform-based mobile submenu sheet motion instead of grid ownership changes", () => {

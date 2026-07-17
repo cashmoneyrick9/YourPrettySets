@@ -3527,11 +3527,6 @@ h1 {
     z-index: 2;
   }
 
-  .brand-header__mobile-menu--closing .brand-header__mobile-menu-selector--expanded {
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-
   .brand-header__mobile-menu-selector--collapsing {
     --mobile-selector-fade: clamp(78px, 18vh, 148px);
     -webkit-backdrop-filter: none;
@@ -3638,8 +3633,11 @@ h1 {
   }
 
   .brand-header__mobile-selector-item {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     display: inline-flex;
     white-space: nowrap;
+    will-change: transform;
   }
 
   .brand-header__mobile-menu--default .brand-header__mobile-selector-item,
@@ -3649,14 +3647,14 @@ h1 {
     left: 50%;
     position: absolute;
     top: 50%;
-    transform: translate(-50%, calc(-50% + (var(--selector-offset) * clamp(76px, 22vw, 112px))));
+    transform: translate3d(-50%, calc(-50% + (var(--selector-offset) * clamp(76px, 22vw, 112px))), 0);
   }
 
   .brand-header__mobile-menu--default .brand-header__mobile-selector-item--offset--1,
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset--1,
   .brand-header__mobile-menu--collapsing .brand-header__mobile-selector-item--offset--1 {
     --selector-offset: -1;
-    opacity: 0.86;
+    opacity: 1;
   }
 
   .brand-header__mobile-menu--default .brand-header__mobile-selector-item--offset-0,
@@ -3670,7 +3668,7 @@ h1 {
   .brand-header__mobile-menu--expanded .brand-header__mobile-selector-item--offset-1,
   .brand-header__mobile-menu--collapsing .brand-header__mobile-selector-item--offset-1 {
     --selector-offset: 1;
-    opacity: 0.86;
+    opacity: 1;
   }
 
   .brand-header__mobile-menu--default .brand-header__mobile-selector-item {
@@ -3686,7 +3684,7 @@ h1 {
     position: absolute;
     text-transform: none;
     top: 50%;
-    transform: translate(-50%, calc(-50% + (var(--selector-offset) * clamp(76px, 22vw, 112px))));
+    transform: translate3d(-50%, calc(-50% + (var(--selector-offset) * clamp(76px, 22vw, 112px))), 0);
   }
 
   .brand-header__mobile-menu--collapsing .brand-header__mobile-selector-item {
@@ -3697,7 +3695,7 @@ h1 {
     opacity: 1;
     position: absolute;
     top: 50%;
-    transform: translate(-50%, calc(-50% + (var(--selector-offset) * clamp(76px, 22vw, 112px))));
+    transform: translate3d(-50%, calc(-50% + (var(--selector-offset) * clamp(76px, 22vw, 112px))), 0);
   }
 
   .brand-header__mobile-submenu-panel {
