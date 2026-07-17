@@ -1,5 +1,5 @@
 import { Menu, ShoppingBag, X } from "lucide-react";
-import { MouseEvent, TouchEvent, WheelEvent, useEffect, useRef, useState } from "react";
+import { MouseEvent, TouchEvent, TransitionEvent, WheelEvent, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 type NavItem = {
@@ -46,38 +46,30 @@ const mobileMenuSections: MobileMenuSection[] = mainNavItems.map((item) => ({
 }));
 
 type MobileContentSectionId = Exclude<MobileMenuSection["id"], "home">;
-type MobileMenuMode = "default" | "expanded" | "collapsing";
+type MobileMenuMode = "default" | "expanded" | "closing-panel" | "returning-selector";
 
 const mobileContentSectionIds: MobileContentSectionId[] = ["shop", "help"];
 const headerAtTopBodyClass = "header-at-top";
 const headerScrolledBodyClass = "header-scrolled";
 const mobileMenuOpenBodyClass = "mobile-menu-open";
-const mobileMenuCollapseDuration = 620;
 
 export function BrandHeader() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mobileMenuMode, setMobileMenuMode] = useState<MobileMenuMode>("default");
+  const [skipMobileMenuDefaultEnter, setSkipMobileMenuDefaultEnter] = useState(false);
   const [activeMobileSectionId, setActiveMobileSectionId] =
     useState<MobileContentSectionId | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const touchStartYRef = useRef<number | null>(null);
   const wheelLockRef = useRef(false);
   const wheelLockTimeoutRef = useRef<number | null>(null);
-  const mobileSubmenuCloseTimeoutRef = useRef<number | null>(null);
   const mobileMenuUnlockRef = useRef<(() => void) | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const prefersReducedMotion = () =>
     typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const clearMobileSubmenuCloseTimeout = () => {
-    if (mobileSubmenuCloseTimeoutRef.current) {
-      window.clearTimeout(mobileSubmenuCloseTimeoutRef.current);
-      mobileSubmenuCloseTimeoutRef.current = null;
-    }
-  };
 
   const getMobileMenuFocusTargets = () => {
     const dialog = document.getElementById("mobile-navigation");
@@ -266,7 +258,6 @@ export function BrandHeader() {
       if (wheelLockTimeoutRef.current) {
         window.clearTimeout(wheelLockTimeoutRef.current);
       }
-      clearMobileSubmenuCloseTimeout();
       mobileMenuUnlockRef.current?.();
     };
   }, []);
@@ -278,6 +269,7 @@ export function BrandHeader() {
 
     setActiveMobileSectionId(null);
     setMobileMenuMode("default");
+    setSkipMobileMenuDefaultEnter(false);
   }, [isMenuOpen]);
 
   const closeMobileMenu = (afterClose?: () => void) => {
@@ -285,7 +277,6 @@ export function BrandHeader() {
       return;
     }
 
-    clearMobileSubmenuCloseTimeout();
     mobileMenuUnlockRef.current?.();
     setIsMenuOpen(false);
     window.setTimeout(() => {
@@ -322,7 +313,6 @@ export function BrandHeader() {
   };
 
   const openMobileMenu = () => {
-    clearMobileSubmenuCloseTimeout();
     wheelLockRef.current = false;
     if (wheelLockTimeoutRef.current) {
       window.clearTimeout(wheelLockTimeoutRef.current);
@@ -330,6 +320,7 @@ export function BrandHeader() {
     }
     setMobileMenuMode("default");
     setActiveMobileSectionId(null);
+    setSkipMobileMenuDefaultEnter(false);
     setIsMenuOpen(true);
   };
 
@@ -403,37 +394,58 @@ export function BrandHeader() {
   };
 
   const selectMobileContentSection = (sectionId: MobileContentSectionId) => {
-    if (mobileMenuMode === "collapsing") {
+    if (mobileMenuMode === "closing-panel" || mobileMenuMode === "returning-selector") {
       return;
     }
 
     if (mobileMenuMode === "expanded" && activeMobileSectionId === sectionId) {
-      setMobileMenuMode("collapsing");
-
       if (prefersReducedMotion()) {
         setActiveMobileSectionId(null);
         setMobileMenuMode("default");
         return;
       }
 
-      clearMobileSubmenuCloseTimeout();
-      mobileSubmenuCloseTimeoutRef.current = window.setTimeout(() => {
-        mobileSubmenuCloseTimeoutRef.current = null;
-        setActiveMobileSectionId(null);
-        setMobileMenuMode("default");
-      }, mobileMenuCollapseDuration);
+      setMobileMenuMode("closing-panel");
       return;
     }
 
-    clearMobileSubmenuCloseTimeout();
     setActiveMobileSectionId(sectionId);
+    setSkipMobileMenuDefaultEnter(false);
     setMobileMenuMode("expanded");
+  };
+
+  const handleMobileMenuContentTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+    if (
+      mobileMenuMode !== "closing-panel" ||
+      event.target !== event.currentTarget
+    ) {
+      return;
+    }
+
+    setMobileMenuMode("returning-selector");
+  };
+
+  const handleMobileMenuSelectorTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+    if (
+      mobileMenuMode !== "returning-selector" ||
+      event.target !== event.currentTarget
+    ) {
+      return;
+    }
+
+    setActiveMobileSectionId(null);
+    setSkipMobileMenuDefaultEnter(true);
+    setMobileMenuMode("default");
   };
 
   const activeMobileSection = mobileMenuSections.find((section) => section.id === activeMobileSectionId);
 
   const getSelectorOffset = (sectionId: MobileMenuSection["id"]) => {
-    if (mobileMenuMode === "default" || mobileMenuMode === "collapsing" || !activeMobileSectionId) {
+    if (
+      mobileMenuMode === "default" ||
+      mobileMenuMode === "returning-selector" ||
+      !activeMobileSectionId
+    ) {
       return sectionId === "home" ? -1 : sectionId === "shop" ? 0 : 1;
     }
 
@@ -531,19 +543,26 @@ export function BrandHeader() {
             aria-label="Menu sections"
             className={[
               "brand-header__mobile-menu-selector",
-              `brand-header__mobile-menu-selector--${mobileMenuMode}`
+              `brand-header__mobile-menu-selector--${mobileMenuMode}`,
+              mobileMenuMode === "default" && skipMobileMenuDefaultEnter
+                ? "brand-header__mobile-menu-selector--skip-enter"
+                : ""
             ].join(" ")}
             onTouchEnd={handleSelectorTouchEnd}
             onTouchStart={handleSelectorTouchStart}
+            onTransitionEnd={handleMobileMenuSelectorTransitionEnd}
             onWheel={handleSelectorWheel}
           >
             <span className="brand-header__mobile-selector-indicator" aria-hidden="true" />
             {mobileMenuSections.map((section) => {
               const selectorOffset = getSelectorOffset(section.id);
-              const isActive = mobileMenuMode === "expanded" && section.id === activeMobileSectionId;
+              const isExpanded = mobileMenuMode === "expanded" && section.id === activeMobileSectionId;
+              const isVisuallyActive =
+                (mobileMenuMode === "expanded" || mobileMenuMode === "closing-panel") &&
+                section.id === activeMobileSectionId;
               const selectorClasses = [
                 "brand-header__mobile-selector-item",
-                isActive ? "brand-header__mobile-selector-item--active" : "",
+                isVisuallyActive ? "brand-header__mobile-selector-item--active" : "",
                 `brand-header__mobile-selector-item--offset-${selectorOffset}`
               ]
                 .filter(Boolean)
@@ -570,7 +589,7 @@ export function BrandHeader() {
                 <button
                   aria-label={section.label}
                   aria-controls="brand-header-mobile-menu-content"
-                  aria-expanded={isActive}
+                  aria-expanded={isExpanded}
                   className={selectorClasses}
                   data-offset={selectorOffset}
                   key={section.id}
@@ -590,6 +609,7 @@ export function BrandHeader() {
               `brand-header__mobile-menu-content--${mobileMenuMode}`
             ].join(" ")}
             id="brand-header-mobile-menu-content"
+            onTransitionEnd={handleMobileMenuContentTransitionEnd}
           >
             {activeMobileSection ? (
               <div
