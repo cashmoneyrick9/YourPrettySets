@@ -65,6 +65,10 @@ describe("ProductPage", () => {
 
     expect(lengthSamples).toHaveLength(products[0].lengthOptions.length);
     expect(shapeSamples).toHaveLength(products[0].shapeOptions.length);
+    expect(Array.from(lengthSamples).every((sample) => sample.tagName === "IMG")).toBe(true);
+    expect(Array.from(shapeSamples).every((sample) => sample.tagName === "IMG")).toBe(true);
+    expect(lengthSamples[0]).toHaveAttribute("src", "/assets/product-options/length-short.png");
+    expect(shapeSamples[0]).toHaveAttribute("src", "/assets/product-options/shape-almond.png");
     expect(document.querySelector(".product-page__option-placeholder")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__option-icon")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__nail-icon")).not.toBeInTheDocument();

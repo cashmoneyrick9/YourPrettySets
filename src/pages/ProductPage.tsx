@@ -38,6 +38,7 @@ function ProductOptionGroup<Option extends string>({
       <div className="product-page__option-list">
         {options.map((option) => {
           const isSelected = selectedOption === option;
+          const optionSlug = optionClassName(option);
 
           return (
             <button
@@ -49,10 +50,13 @@ function ProductOptionGroup<Option extends string>({
               type="button"
             >
               <span className="product-page__option-visual">
-                <span
+                <img
+                  alt=""
                   aria-hidden="true"
-                  className={`product-page__nail-sample product-page__nail-sample--${optionKind} product-page__nail-sample--${optionClassName(option)}`}
+                  className="product-page__nail-sample"
+                  draggable="false"
                   role="presentation"
+                  src={`/assets/product-options/${optionKind}-${optionSlug}.png`}
                 />
                 {isSelected ? (
                   <span aria-hidden="true" className="product-page__option-check">
