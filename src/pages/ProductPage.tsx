@@ -1,4 +1,4 @@
-import { type MouseEvent, type PointerEvent, useCallback, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type MouseEvent, type PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Check, Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaqSection } from "../components/FaqSection";
@@ -260,16 +260,39 @@ function ProductBuyingFlow({ product }: { product: Product }) {
         <section className="product-page__buying-panel" aria-labelledby="product-title">
           <div className="product-page__summary">
             <p className="product-page__eyebrow">
-              {product.orderType === "ready-to-ship" ? "Ready-to-wear set" : "Made-to-order set"}
+              <span aria-hidden="true" className="product-page__availability-mark" />
+              {product.orderType === "ready-to-ship" ? "Ready to ship" : "Made to order"}
             </p>
             <div className="product-page__title-row">
               <h1 id="product-title">{product.name}</h1>
               <p className="product-page__price">${product.price}</p>
             </div>
+            <div className="product-page__visual-summary">
+              <span aria-hidden="true" className="product-page__swatches">
+                {product.visualSummary.swatches.map((swatch) => (
+                  <span
+                    className="product-page__swatch"
+                    key={swatch}
+                    style={{ "--product-swatch": swatch } as CSSProperties}
+                  />
+                ))}
+              </span>
+              <p>
+                {product.visualSummary.labels[0]}
+                <span aria-hidden="true"> · </span>
+                {product.visualSummary.labels[1]}
+              </p>
+            </div>
             <p className="product-page__description">{product.description}</p>
-            <p className="product-page__fit-help">
-              Not sure about fit? Read <Link to="/help/sizing">Find Your Fit</Link> before ordering.
-            </p>
+            <div aria-hidden="true" className="product-page__summary-divider">
+              <span />
+            </div>
+            <Link aria-label="Find Your Fit" className="product-page__fit-help" to="/help/sizing">
+              <span className="product-page__fit-label">Unsure about sizing?</span>
+              <span className="product-page__fit-link">
+                Find your fit <span aria-hidden="true">→</span>
+              </span>
+            </Link>
           </div>
 
           <section className="product-page__style-selector" aria-labelledby="product-style-title">

@@ -54,10 +54,22 @@ describe("ProductPage", () => {
     expect(document.querySelector(".product-page__media .product-art__nail")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: products[0].name })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Back to shop" })).toBeInTheDocument();
-    expect(screen.getByText("Ready-to-wear set")).toBeInTheDocument();
+    expect(screen.getByText("Ready to ship")).toBeInTheDocument();
     expect(screen.getByText(`$${products[0].price}`)).toBeInTheDocument();
+    expect(document.querySelector(".product-page__visual-summary")).toHaveTextContent(
+      `${products[0].visualSummary.labels[0]} · ${products[0].visualSummary.labels[1]}`
+    );
     expect(screen.getByText(products[0].description)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Find Your Fit" })).toHaveAttribute("href", "/help/sizing");
+    expect(screen.getByText("Unsure about sizing?")).toBeInTheDocument();
+    const summarySwatches = document.querySelectorAll(".product-page__swatch");
+    expect(summarySwatches).toHaveLength(2);
+    expect(summarySwatches[0]).toHaveAttribute(
+      "style",
+      `--product-swatch: ${products[0].visualSummary.swatches[0]};`
+    );
+    expect(document.querySelector(".product-page__availability-mark")).toHaveAttribute("aria-hidden", "true");
+    expect(document.querySelector(".product-page__summary-divider")).toHaveAttribute("aria-hidden", "true");
 
     const lengthGroup = screen.getByRole("group", { name: "Length" });
     const shapeGroup = screen.getByRole("group", { name: "Shape" });
@@ -293,7 +305,7 @@ describe("ProductPage", () => {
     expect(madeToOrderProduct).toBeDefined();
     renderProductPage(`/products/${madeToOrderProduct?.slug}`);
 
-    expect(screen.getByText("Made-to-order set")).toBeInTheDocument();
+    expect(screen.getByText("Made to order")).toBeInTheDocument();
     expect(screen.getByRole("tabpanel", { name: "Nails" })).toHaveTextContent(
       "Press-on nails are included with every set."
     );

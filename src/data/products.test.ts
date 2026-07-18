@@ -61,4 +61,13 @@ describe("product data", () => {
       expect(product.images.editorial).toContain(product.name);
     }
   });
+
+  it("provides a product-specific visual summary for every nail set", () => {
+    for (const product of products) {
+      expect(product.visualSummary.labels).toHaveLength(2);
+      expect(product.visualSummary.swatches).toHaveLength(2);
+      expect(product.visualSummary.labels.every((label) => label.trim().length > 0)).toBe(true);
+      expect(product.visualSummary.swatches.every((swatch) => /^#[0-9a-f]{6}$/i.test(swatch))).toBe(true);
+    }
+  });
 });
