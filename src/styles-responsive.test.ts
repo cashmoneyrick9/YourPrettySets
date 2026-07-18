@@ -205,7 +205,7 @@ describe("small mobile responsive CSS", () => {
     expect(collectionTrackRule).toContain("padding: 8px 0 12px;");
     expect(featuredTrackRule).toContain("padding: 8px 0 12px;");
     expect(kitTabsRule).toContain("padding: 8px 0 7px;");
-    expect(productOptionListRule).toContain("padding: 8px var(--space-page-inline) 10px;");
+    expect(productOptionListRule).toContain("padding: 8px 0 10px;");
     expect(shopTabRailRule).toContain("padding: 8px var(--space-page-inline) 10px;");
   });
 

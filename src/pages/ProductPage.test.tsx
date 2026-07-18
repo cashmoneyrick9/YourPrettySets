@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter, MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
@@ -84,6 +84,8 @@ describe("ProductPage", () => {
     expect(screen.getByRole("link", { name: "View guide" })).toHaveAttribute("href", "/help/sizing");
     expect(shapeGroup.compareDocumentPosition(lengthGroup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(document.querySelectorAll(".product-page__option-check")).toHaveLength(2);
+    expect(shapeGroup.querySelector(".product-page__option-progress")).not.toHaveAttribute("hidden");
+    expect(lengthGroup.querySelector(".product-page__option-progress")).toHaveAttribute("hidden");
     expect(screen.queryByRole("group", { name: /size/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("group", { name: /adhesive|glue|tabs/i })).not.toBeInTheDocument();
 
@@ -104,6 +106,25 @@ describe("ProductPage", () => {
     }
     expect(document.querySelector(".product-page__reassurance")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__details")).not.toBeInTheDocument();
+  });
+
+  it("updates the shape progress indicator as its option rail scrolls", () => {
+    renderProductPage();
+
+    const shapeGroup = screen.getByRole("group", { name: "Shape" });
+    const shapeRail = shapeGroup.querySelector(".product-page__option-list") as HTMLDivElement;
+    const progressThumb = shapeGroup.querySelector(".product-page__option-progress-thumb") as HTMLElement;
+
+    Object.defineProperties(shapeRail, {
+      clientWidth: { configurable: true, value: 320 },
+      scrollLeft: { configurable: true, value: 80, writable: true },
+      scrollWidth: { configurable: true, value: 480 }
+    });
+
+    fireEvent.scroll(shapeRail);
+
+    expect(Number.parseFloat(progressThumb.style.width)).toBeCloseTo(66.67, 1);
+    expect(Number.parseFloat(progressThumb.style.left)).toBeCloseTo(16.67, 1);
   });
 
   it("places the back control before the product image", () => {

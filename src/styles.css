@@ -4316,12 +4316,16 @@ h1 {
   -webkit-overflow-scrolling: touch;
   display: flex;
   gap: 10px;
-  margin-inline: calc(-1 * var(--space-page-inline));
+  margin-inline: 0;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-  padding: 8px var(--space-page-inline) 10px;
+  padding: 8px 0 10px;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+}
+
+.product-page__option-group--length .product-page__option-list {
+  justify-content: center;
 }
 
 .product-page__option-list::-webkit-scrollbar {
@@ -4351,7 +4355,7 @@ h1 {
   color: var(--site-text-primary);
   display: grid;
   gap: 5px;
-  flex: 0 0 78px;
+  flex: 0 0 calc((100% - 30px) / 4);
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 66px minmax(0, 1fr);
   height: 112px;
@@ -4367,6 +4371,36 @@ h1 {
     border-color 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease;
+}
+
+.product-page__option-progress {
+  background: color-mix(in srgb, var(--site-text-primary) 14%, transparent);
+  border-radius: 999px;
+  height: 2px;
+  margin: 0 auto 1px;
+  overflow: hidden;
+  position: relative;
+  width: clamp(88px, 30%, 120px);
+}
+
+.product-page__option-progress[hidden] {
+  display: none;
+}
+
+.product-page__option-progress-thumb {
+  background: var(--site-text-primary);
+  border-radius: inherit;
+  height: 100%;
+  min-width: 24px;
+  position: absolute;
+  top: 0;
+  transition: left 100ms linear, width 100ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-page__option-progress-thumb {
+    transition: none;
+  }
 }
 
 .product-page__option-list button:hover {
@@ -7158,7 +7192,6 @@ h1 {
 
   .product-page__option-list button {
     gap: 5px;
-    flex-basis: 76px;
     grid-template-columns: minmax(0, 1fr);
     height: 110px;
     min-height: 110px;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Check, Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaqSection } from "../components/FaqSection";
@@ -23,6 +23,71 @@ function ProductOptionGroup<Option extends string>({
 }) {
   const optionClassName = (option: Option) => option.toLowerCase().replace(/\s+/g, "-");
   const optionLabel = (option: Option) => (option === "Extra Long" ? "XL" : option);
+  const optionListRef = useRef<HTMLDivElement>(null);
+  const visibleOptionCount = 4;
+  const defaultThumbWidth = Math.min(100, (visibleOptionCount / options.length) * 100);
+  const [progressThumb, setProgressThumb] = useState({ left: 0, width: defaultThumbWidth });
+
+  const updateScrollProgress = useCallback(() => {
+    const optionList = optionListRef.current;
+
+    if (!optionList) {
+      return;
+    }
+
+    const scrollRange = Math.max(0, optionList.scrollWidth - optionList.clientWidth);
+    const thumbWidth = optionList.scrollWidth > 0
+      ? Math.min(100, (optionList.clientWidth / optionList.scrollWidth) * 100)
+      : defaultThumbWidth;
+    const scrollProgress = scrollRange > 0
+      ? Math.min(1, Math.max(0, optionList.scrollLeft / scrollRange))
+      : 0;
+
+    setProgressThumb({
+      left: scrollProgress * (100 - thumbWidth),
+      width: thumbWidth
+    });
+  }, [defaultThumbWidth]);
+
+  useEffect(() => {
+    updateScrollProgress();
+
+    const optionList = optionListRef.current;
+    const resizeObserver = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(updateScrollProgress);
+
+    if (optionList) {
+      resizeObserver?.observe(optionList);
+    }
+
+    window.addEventListener("resize", updateScrollProgress);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", updateScrollProgress);
+    };
+  }, [updateScrollProgress]);
+
+  useEffect(() => {
+    const optionList = optionListRef.current;
+    const selectedButton = optionList?.querySelector<HTMLButtonElement>('[aria-pressed="true"]');
+
+    if (!optionList || !selectedButton || typeof optionList.scrollTo !== "function") {
+      return;
+    }
+
+    const selectedLeft = selectedButton.offsetLeft;
+    const selectedRight = selectedLeft + selectedButton.offsetWidth;
+    const visibleLeft = optionList.scrollLeft;
+    const visibleRight = visibleLeft + optionList.clientWidth;
+
+    if (selectedLeft < visibleLeft) {
+      optionList.scrollTo({ behavior: "smooth", left: selectedLeft });
+    } else if (selectedRight > visibleRight) {
+      optionList.scrollTo({ behavior: "smooth", left: selectedRight - optionList.clientWidth });
+    }
+  }, [selectedOption]);
 
   return (
     <fieldset className={`product-page__option-group product-page__option-group--${optionKind}`}>
@@ -35,7 +100,7 @@ function ProductOptionGroup<Option extends string>({
           </Link>
         ) : null}
       </div>
-      <div className="product-page__option-list">
+      <div className="product-page__option-list" onScroll={updateScrollProgress} ref={optionListRef}>
         {options.map((option) => {
           const isSelected = selectedOption === option;
           const optionSlug = optionClassName(option);
@@ -68,6 +133,16 @@ function ProductOptionGroup<Option extends string>({
             </button>
           );
         })}
+      </div>
+      <div
+        aria-hidden="true"
+        className="product-page__option-progress"
+        hidden={options.length <= visibleOptionCount}
+      >
+        <span
+          className="product-page__option-progress-thumb"
+          style={{ left: `${progressThumb.left}%`, width: `${progressThumb.width}%` }}
+        />
       </div>
     </fieldset>
   );
