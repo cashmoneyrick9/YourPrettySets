@@ -4326,7 +4326,7 @@ h1 {
   user-select: none;
 }
 
-.product-page__option-group--shape .product-page__option-list {
+.product-page__option-list--scrollable {
   cursor: grab;
 }
 
@@ -4340,7 +4340,7 @@ h1 {
   pointer-events: none;
 }
 
-.product-page__option-group--length .product-page__option-list {
+.product-page__option-group--length .product-page__option-list:not(.product-page__option-list--scrollable) {
   justify-content: center;
 }
 

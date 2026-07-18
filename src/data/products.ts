@@ -1,6 +1,6 @@
 import { sizingFacts } from "./storefrontFacts";
 
-export const lengthOptions = ["Short", "Medium", "Long", "Extra Long"] as const;
+export const lengthOptions = ["Extra Short", "Short", "Medium", "Long", "Extra Long"] as const;
 
 export const shapeOptions = ["Almond", "Coffin", "Square", "Round", "Stiletto", "Oval"] as const;
 

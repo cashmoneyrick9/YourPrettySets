@@ -32,6 +32,11 @@ function ProductOptionGroup<Option extends string>({
   const [progressThumb, setProgressThumb] = useState({ left: 0, width: defaultThumbWidth });
   const optionListDrag = useRef({ hasDragged: false, isDragging: false, startScrollLeft: 0, startX: 0 });
   const [isOptionListDragging, setIsOptionListDragging] = useState(false);
+  const optionListClassName = [
+    "product-page__option-list",
+    canScrollOptions ? "product-page__option-list--scrollable" : "",
+    isOptionListDragging ? "product-page__option-list--dragging" : ""
+  ].filter(Boolean).join(" ");
 
   const updateScrollProgress = useCallback(() => {
     const optionList = optionListRef.current;
@@ -167,9 +172,7 @@ function ProductOptionGroup<Option extends string>({
         ) : null}
       </div>
       <div
-        className={isOptionListDragging
-          ? "product-page__option-list product-page__option-list--dragging"
-          : "product-page__option-list"}
+        className={optionListClassName}
         onClickCapture={handleOptionListClickCapture}
         onPointerCancel={endOptionListDrag}
         onPointerDown={handleOptionListPointerDown}

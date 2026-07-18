@@ -11,6 +11,10 @@ import {
 import { sizingFacts } from "./storefrontFacts";
 
 describe("product data", () => {
+  it("offers Extra Short before the existing nail lengths", () => {
+    expect(lengthOptions).toEqual(["Extra Short", "Short", "Medium", "Long", "Extra Long"]);
+  });
+
   it("has the approved Shop All placeholder catalog count", () => {
     expect(products).toHaveLength(33);
     expect(products).not.toContain(sizingKitProduct);

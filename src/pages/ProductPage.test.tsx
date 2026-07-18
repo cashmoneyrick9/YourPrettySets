@@ -81,7 +81,7 @@ describe("ProductPage", () => {
     expect(shapeSamples).toHaveLength(products[0].shapeOptions.length);
     expect(Array.from(lengthSamples).every((sample) => sample.tagName === "IMG")).toBe(true);
     expect(Array.from(shapeSamples).every((sample) => sample.tagName === "IMG")).toBe(true);
-    expect(lengthSamples[0]).toHaveAttribute("src", "/assets/product-options/length-short.png");
+    expect(lengthSamples[0]).toHaveAttribute("src", "/assets/product-options/length-extra-short.png");
     expect(shapeSamples[0]).toHaveAttribute("src", "/assets/product-options/shape-almond.png");
     expect(document.querySelector(".product-page__option-placeholder")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__option-icon")).not.toBeInTheDocument();
@@ -89,17 +89,27 @@ describe("ProductPage", () => {
     expect(within(lengthGroup).getByRole("button", { name: products[0].lengthOptions[0] })).toHaveAttribute("aria-pressed", "true");
     expect(within(shapeGroup).getByRole("button", { name: products[0].shapeOptions[0] })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: "Choose your style", level: 2 })).toBeInTheDocument();
-    expect(screen.getByText("Almond · Short")).toBeInTheDocument();
+    expect(within(lengthGroup).getAllByRole("button").map((button) => button.getAttribute("aria-label"))).toEqual([
+      "Extra Short",
+      "Short",
+      "Medium",
+      "Long",
+      "Extra Long"
+    ]);
+    expect(screen.getByText("Almond · Extra Short")).toBeInTheDocument();
     expect(document.querySelector(".product-page__style-selection")).toHaveAttribute(
       "aria-label",
-      "Selected style: Almond shape, Short length"
+      "Selected style: Almond shape, Extra Short length"
     );
     expect(document.querySelector(".product-page__selected-summary")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "View guide" })).toHaveAttribute("href", "/help/sizing");
     expect(shapeGroup.compareDocumentPosition(lengthGroup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(document.querySelectorAll(".product-page__option-check")).toHaveLength(2);
     expect(shapeGroup.querySelector(".product-page__option-progress")).not.toHaveAttribute("hidden");
-    expect(lengthGroup.querySelector(".product-page__option-progress")).toHaveAttribute("hidden");
+    expect(lengthGroup.querySelector(".product-page__option-progress")).not.toHaveAttribute("hidden");
+    expect(lengthGroup.querySelector(".product-page__option-list")).toHaveClass(
+      "product-page__option-list--scrollable"
+    );
     expect(screen.queryByRole("group", { name: /size/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("group", { name: /adhesive|glue|tabs/i })).not.toBeInTheDocument();
 
@@ -122,20 +132,20 @@ describe("ProductPage", () => {
     expect(document.querySelector(".product-page__details")).not.toBeInTheDocument();
   });
 
-  it("updates the shape progress indicator as its option rail scrolls", () => {
+  it.each(["Shape", "Length"])("updates the %s progress indicator as its option rail scrolls", (groupName) => {
     renderProductPage();
 
-    const shapeGroup = screen.getByRole("group", { name: "Shape" });
-    const shapeRail = shapeGroup.querySelector(".product-page__option-list") as HTMLDivElement;
-    const progressThumb = shapeGroup.querySelector(".product-page__option-progress-thumb") as HTMLElement;
+    const optionGroup = screen.getByRole("group", { name: groupName });
+    const optionRail = optionGroup.querySelector(".product-page__option-list") as HTMLDivElement;
+    const progressThumb = optionGroup.querySelector(".product-page__option-progress-thumb") as HTMLElement;
 
-    Object.defineProperties(shapeRail, {
+    Object.defineProperties(optionRail, {
       clientWidth: { configurable: true, value: 320 },
       scrollLeft: { configurable: true, value: 80, writable: true },
       scrollWidth: { configurable: true, value: 480 }
     });
 
-    fireEvent.scroll(shapeRail);
+    fireEvent.scroll(optionRail);
 
     expect(Number.parseFloat(progressThumb.style.width)).toBeCloseTo(66.67, 1);
     expect(Number.parseFloat(progressThumb.style.left)).toBeCloseTo(16.67, 1);
@@ -159,6 +169,30 @@ describe("ProductPage", () => {
 
     expect(shapeRail).not.toHaveClass("product-page__option-list--dragging");
     expect(coffinButton).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("lets mouse users drag the overflowing length rail without changing the selection", () => {
+    renderProductPage();
+
+    const lengthGroup = screen.getByRole("group", { name: "Length" });
+    const lengthRail = lengthGroup.querySelector(".product-page__option-list") as HTMLDivElement;
+    const shortButton = within(lengthGroup).getByRole("button", { name: "Short" });
+
+    dispatchPointerEvent(lengthRail, "pointerdown", { clientX: 160, pointerId: 2, pointerType: "mouse" });
+    dispatchPointerEvent(lengthRail, "pointermove", { clientX: 88, pointerId: 2, pointerType: "mouse" });
+
+    expect(lengthRail.scrollLeft).toBe(72);
+    expect(lengthRail).toHaveClass("product-page__option-list--dragging");
+
+    dispatchPointerEvent(lengthRail, "pointerup", { clientX: 88, pointerId: 2, pointerType: "mouse" });
+    fireEvent.click(shortButton);
+
+    expect(lengthRail).not.toHaveClass("product-page__option-list--dragging");
+    expect(shortButton).toHaveAttribute("aria-pressed", "false");
+    expect(within(lengthGroup).getByRole("button", { name: "Extra Short" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
   });
 
   it("places the back control before the product image", () => {
@@ -240,6 +274,7 @@ describe("ProductPage", () => {
     await user.click(within(shapeGroup).getByRole("button", { name: "Coffin" }));
     await user.click(screen.getByRole("button", { name: `Favorite ${products[0].name}` }));
 
+    expect(within(lengthGroup).getByRole("button", { name: "Extra Short" })).toHaveAttribute("aria-pressed", "false");
     expect(within(lengthGroup).getByRole("button", { name: "Short" })).toHaveAttribute("aria-pressed", "false");
     expect(within(lengthGroup).getByRole("button", { name: "Medium" })).toHaveAttribute("aria-pressed", "true");
     expect(within(shapeGroup).getByRole("button", { name: "Almond" })).toHaveAttribute("aria-pressed", "false");
