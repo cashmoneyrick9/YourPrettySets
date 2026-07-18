@@ -4322,6 +4322,22 @@ h1 {
   padding: 8px 0 10px;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  touch-action: pan-x pan-y;
+  user-select: none;
+}
+
+.product-page__option-group--shape .product-page__option-list {
+  cursor: grab;
+}
+
+.product-page__option-list--dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
+.product-page__option-list--dragging button {
+  pointer-events: none;
 }
 
 .product-page__option-group--length .product-page__option-list {

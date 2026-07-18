@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type MouseEvent, type PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Check, Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaqSection } from "../components/FaqSection";
@@ -7,6 +7,8 @@ import { ProductMediaGallery } from "../components/ProductMediaGallery";
 import { findProductBySlug } from "../data/products";
 import type { Product, SizingKitProduct } from "../data/products";
 import { sizingFacts } from "../data/storefrontFacts";
+
+const productOptionDragThreshold = 12;
 
 function ProductOptionGroup<Option extends string>({
   label,
@@ -25,8 +27,11 @@ function ProductOptionGroup<Option extends string>({
   const optionLabel = (option: Option) => (option === "Extra Long" ? "XL" : option);
   const optionListRef = useRef<HTMLDivElement>(null);
   const visibleOptionCount = 4;
+  const canScrollOptions = options.length > visibleOptionCount;
   const defaultThumbWidth = Math.min(100, (visibleOptionCount / options.length) * 100);
   const [progressThumb, setProgressThumb] = useState({ left: 0, width: defaultThumbWidth });
+  const optionListDrag = useRef({ hasDragged: false, isDragging: false, startScrollLeft: 0, startX: 0 });
+  const [isOptionListDragging, setIsOptionListDragging] = useState(false);
 
   const updateScrollProgress = useCallback(() => {
     const optionList = optionListRef.current;
@@ -89,6 +94,67 @@ function ProductOptionGroup<Option extends string>({
     }
   }, [selectedOption]);
 
+  function handleOptionListPointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (!canScrollOptions || event.pointerType === "touch" || event.pointerType === "pen") {
+      return;
+    }
+
+    optionListDrag.current = {
+      hasDragged: false,
+      isDragging: true,
+      startScrollLeft: event.currentTarget.scrollLeft,
+      startX: event.clientX
+    };
+  }
+
+  function handleOptionListPointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (!optionListDrag.current.isDragging || event.pointerType === "touch" || event.pointerType === "pen") {
+      return;
+    }
+
+    const deltaX = event.clientX - optionListDrag.current.startX;
+    if (Math.abs(deltaX) <= productOptionDragThreshold && !optionListDrag.current.hasDragged) {
+      return;
+    }
+
+    if (!optionListDrag.current.hasDragged) {
+      optionListDrag.current.hasDragged = true;
+      setIsOptionListDragging(true);
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    }
+
+    event.currentTarget.scrollLeft = optionListDrag.current.startScrollLeft - deltaX;
+    updateScrollProgress();
+    event.preventDefault();
+  }
+
+  function endOptionListDrag(event: PointerEvent<HTMLDivElement>) {
+    if (!optionListDrag.current.isDragging) {
+      return;
+    }
+
+    optionListDrag.current.isDragging = false;
+    setIsOptionListDragging(false);
+
+    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    window.setTimeout(() => {
+      optionListDrag.current.hasDragged = false;
+    }, 0);
+  }
+
+  function handleOptionListClickCapture(event: MouseEvent<HTMLDivElement>) {
+    if (!optionListDrag.current.hasDragged) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    optionListDrag.current.hasDragged = false;
+  }
+
   return (
     <fieldset className={`product-page__option-group product-page__option-group--${optionKind}`}>
       <legend className="product-page__option-legend">{label}</legend>
@@ -100,7 +166,19 @@ function ProductOptionGroup<Option extends string>({
           </Link>
         ) : null}
       </div>
-      <div className="product-page__option-list" onScroll={updateScrollProgress} ref={optionListRef}>
+      <div
+        className={isOptionListDragging
+          ? "product-page__option-list product-page__option-list--dragging"
+          : "product-page__option-list"}
+        onClickCapture={handleOptionListClickCapture}
+        onPointerCancel={endOptionListDrag}
+        onPointerDown={handleOptionListPointerDown}
+        onPointerLeave={endOptionListDrag}
+        onPointerMove={handleOptionListPointerMove}
+        onPointerUp={endOptionListDrag}
+        onScroll={updateScrollProgress}
+        ref={optionListRef}
+      >
         {options.map((option) => {
           const isSelected = selectedOption === option;
           const optionSlug = optionClassName(option);
@@ -137,7 +215,7 @@ function ProductOptionGroup<Option extends string>({
       <div
         aria-hidden="true"
         className="product-page__option-progress"
-        hidden={options.length <= visibleOptionCount}
+        hidden={!canScrollOptions}
       >
         <span
           className="product-page__option-progress-thumb"

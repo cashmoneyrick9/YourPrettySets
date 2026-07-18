@@ -22,6 +22,20 @@ function renderProductPage(path = `/products/${products[0].slug}`) {
   );
 }
 
+function dispatchPointerEvent(
+  element: Element,
+  type: string,
+  options: { clientX: number; pointerId: number; pointerType: string }
+) {
+  const event = new Event(type, { bubbles: true, cancelable: true });
+  Object.defineProperties(event, {
+    clientX: { value: options.clientX },
+    pointerId: { value: options.pointerId },
+    pointerType: { value: options.pointerType }
+  });
+  fireEvent(element, event);
+}
+
 function LocationProbe() {
   const location = useLocation();
 
@@ -125,6 +139,26 @@ describe("ProductPage", () => {
 
     expect(Number.parseFloat(progressThumb.style.width)).toBeCloseTo(66.67, 1);
     expect(Number.parseFloat(progressThumb.style.left)).toBeCloseTo(16.67, 1);
+  });
+
+  it("lets mouse users drag the shape rail without turning a drag into an option click", () => {
+    renderProductPage();
+
+    const shapeGroup = screen.getByRole("group", { name: "Shape" });
+    const shapeRail = shapeGroup.querySelector(".product-page__option-list") as HTMLDivElement;
+    const coffinButton = within(shapeGroup).getByRole("button", { name: "Coffin" });
+
+    dispatchPointerEvent(shapeRail, "pointerdown", { clientX: 160, pointerId: 1, pointerType: "mouse" });
+    dispatchPointerEvent(shapeRail, "pointermove", { clientX: 88, pointerId: 1, pointerType: "mouse" });
+
+    expect(shapeRail.scrollLeft).toBe(72);
+    expect(shapeRail).toHaveClass("product-page__option-list--dragging");
+
+    dispatchPointerEvent(shapeRail, "pointerup", { clientX: 88, pointerId: 1, pointerType: "mouse" });
+    fireEvent.click(coffinButton);
+
+    expect(shapeRail).not.toHaveClass("product-page__option-list--dragging");
+    expect(coffinButton).toHaveAttribute("aria-pressed", "false");
   });
 
   it("places the back control before the product image", () => {
