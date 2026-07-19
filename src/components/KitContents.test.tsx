@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import { includedSetItems, sizingFacts, wearEstimates } from "../data/storefrontFacts";
+import { siteMedia } from "../data/siteMedia";
 import { KitContents } from "./KitContents";
 
 afterEach(() => {
@@ -24,10 +25,7 @@ describe("KitContents", () => {
     expect(screen.getByText("THE COMPLETE SET")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "What’s Included" })).toBeInTheDocument();
     expect(screen.getByText("Everything you need for your set.")).toBeInTheDocument();
-    expect(document.querySelector(".kit-spread")).toBeInTheDocument();
-    const kitImage = screen.getByRole("img", { name: "Press-on nail kit with tabs and tools" });
-    expect(kitImage).toHaveAttribute("src", "/assets/kit-contents-spread-v2.png");
-    expect(document.querySelector(".kit-spread")?.children).toHaveLength(1);
+    expect(document.querySelector(".kit-spread")).not.toBeInTheDocument();
     expect(document.querySelectorAll(".kit-spread__piece")).toHaveLength(0);
 
     expect(screen.getByRole("tablist", { name: "Included kit items" })).toBeInTheDocument();
@@ -42,10 +40,7 @@ describe("KitContents", () => {
     expect(activePanel).toHaveTextContent(
       `Ready-to-wear sets include ${sizingFacts.readyToWearNailCount} ${includedSetItems[0].toLowerCase()} in multiple sizes.`
     );
-    expect(screen.getByRole("img", { name: "Twenty-four press-on nails in multiple sizes with small fruit details" })).toHaveAttribute(
-      "src",
-      "/assets/nail-size-set.png"
-    );
+    expect(screen.getByRole("img", { name: siteMedia.kit.nails.alt })).toHaveAttribute("src", siteMedia.kit.nails.src);
 
     const applyCareLink = screen.getByRole("link", { name: /APPLY YOUR SET/i });
     expect(applyCareLink).toHaveAttribute("href", "/help/application");
@@ -77,8 +72,7 @@ describe("KitContents", () => {
     expect(screen.getByRole("tabpanel", { name: "Glue / tabs" })).toHaveTextContent(
       `Glue is estimated at ${wearEstimates.glue}; tabs are estimated at ${wearEstimates.tabs}.`
     );
-    expect(screen.getByRole("img", { name: "Nail glue and adhesive tabs" })).toHaveAttribute("src", "/assets/nail-glue.png");
-    expect(screen.getByRole("img", { name: "Adhesive tabs" })).toHaveAttribute("src", "/assets/adhesive-tabs.png");
+    expect(screen.getByRole("img", { name: siteMedia.kit.adhesives.alt })).toHaveAttribute("src", siteMedia.kit.adhesives.src);
 
     await user.click(screen.getByRole("tab", { name: "Prep tools" }));
 
@@ -88,13 +82,12 @@ describe("KitContents", () => {
     expect(screen.getByRole("tabpanel", { name: "Prep tools" })).toHaveTextContent(
       `${includedSetItems[3]}, ${includedSetItems[4].toLowerCase()}, and ${includedSetItems[5].toLowerCase()} are included for preparation and application.`
     );
-    expect(screen.getByRole("img", { name: "Nail file" })).toHaveAttribute("src", "/assets/nail-file.png");
-    expect(screen.getByRole("img", { name: "Cuticle stick" })).toHaveAttribute("src", "/assets/cuticle-pusher.png");
-    expect(screen.getByRole("img", { name: "Alcohol wipe" })).toHaveAttribute("src", "/assets/alcohol-wipe.png");
+    expect(screen.getByRole("img", { name: siteMedia.kit.prepTools.alt })).toHaveAttribute("src", siteMedia.kit.prepTools.src);
 
     await user.click(screen.getByRole("tab", { name: "Case + care" }));
 
     expect(screen.getByRole("tabpanel", { name: "Case + care" })).toHaveTextContent(includedSetItems[6]);
+    expect(screen.getByRole("img", { name: siteMedia.kit.caseCare.alt })).toHaveAttribute("src", siteMedia.kit.caseCare.src);
   });
 
   it("does not render the old accordion controls or care tips CTA", () => {

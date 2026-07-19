@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { ChevronRight, CircleHelp, Mail, Package, Pipette, RotateCcw, Ruler } from "lucide-react";
 import {
   HelpArticleShell,
   HelpCallout,
@@ -12,6 +11,7 @@ import {
   HelpSection,
   HelpStepList,
   HelpSupportCta,
+  HelpTaskList,
   type HelpContentsItem,
   type HelpLink
 } from "@/components/help";
@@ -19,7 +19,7 @@ import {
   faqItemsById,
   getRelatedGuides,
   helpFaqGroups,
-  helpHubDestinations,
+  helpQuickTasks,
   helpRoutes,
   type HelpArticleRouteId
 } from "@/data/helpContent";
@@ -31,6 +31,8 @@ import {
   supportDetails,
   wearEstimates
 } from "@/data/storefrontFacts";
+import { siteMedia } from "@/data/siteMedia";
+import "../help-task-first.css";
 
 function articleRelatedLinks(routeId: HelpArticleRouteId): HelpLink[] {
   return getRelatedGuides(routeId).map((route) => ({
@@ -107,142 +109,43 @@ const contactContents = [
 ] as const satisfies readonly HelpContentsItem[];
 
 export function HelpHubPage() {
-  const topicLinks = [
-    { label: "Sizing", href: helpRoutes.sizing.href, icon: Ruler },
-    { label: "Application", href: helpRoutes.application.href, icon: Pipette },
-    { label: "Removal & Reuse", href: helpRoutes.removal.href, icon: RotateCcw },
-    { label: "Shipping, Returns & Order Issues", href: helpRoutes.shippingReturns.href, icon: Package },
-    { label: "FAQ", href: helpRoutes.faq.href, icon: CircleHelp },
-    { label: "Contact", href: helpRoutes.contact.href, icon: Mail }
-  ] as const;
-
-  const pathGroups = [
-    {
-      id: "before-order",
-      eyebrow: "Before you order",
-      title: "Start with the right fit",
-      intro: "Understand the broad ready-to-wear size range or check fit with a sizing kit before choosing a set.",
-      image: "/assets/nail-size-set.png",
-      imageAlt: "Pale blush press-on nails arranged from larger to smaller sizes",
-      links: [
-        { label: "Find Your Fit", href: helpHubDestinations.sizing.href },
-        { label: "Sizing Kit", href: helpHubDestinations.sizingKitProduct.href },
-        { label: "Common pre-purchase questions", href: "/help/faq#faq-fit-and-sizing" }
-      ]
-    },
-    {
-      id: "apply-care",
-      eyebrow: "Apply and care",
-      title: "Make application feel simple",
-      intro: "Choose your adhesive, follow the guided application sequence, then remove and store each nail with care.",
-      image: "/assets/help/apply-press-on-alignment.jpg",
-      imageAlt: "Hands aligning a pale blush press-on above a clean natural nail",
-      links: [
-        { label: "Apply Your Set", href: helpHubDestinations.application.href },
-        { label: "Remove & Reuse", href: helpHubDestinations.removal.href },
-        { label: "Wear and care guidance", href: "/help/application#aftercare" }
-      ]
-    },
-    {
-      id: "order-help",
-      eyebrow: "Order help",
-      title: "Find the right next step",
-      intro: "Check timing, delivery, and issue guidance without searching through a long policy page first.",
-      image: "/assets/hero-s3-summer.png",
-      imageAlt: "Floral press-on nail set presented in a blush storage case",
-      links: [
-        { label: "Shipping and timing", href: `${helpRoutes.shippingReturns.href}#processing-transit` },
-        { label: "Damaged or incorrect order", href: helpHubDestinations.damagedOrder.href },
-        { label: "Lost package", href: helpHubDestinations.lostPackage.href },
-        { label: "Cancellations", href: helpHubDestinations.cancellations.href }
-      ]
-    }
-  ] as const;
-
-  const mostAsked = [
-    faqItemsById["choose-size"],
-    faqItemsById["wear-time"],
-    faqItemsById.reuse,
-    faqItemsById.removal,
-    faqItemsById["included-items"]
-  ];
-
   return (
-    <main className="help-page help-page--hub help-hub--editorial">
-      <div className="help-page__inner help-hub help-hub-editorial">
-        <header className="help-hub-editorial__intro">
-          <div className="help-page__heading help-hub-editorial__heading">
-            <p className="eyebrow">{helpRoutes.hub.eyebrow}</p>
-            <h1>{helpRoutes.hub.title}</h1>
-            <p>{helpRoutes.hub.summary}</p>
-            <a className="help-hub-editorial__browse-button" href="#help-mobile-topics">
-              Browse topics
-            </a>
+    <main className="help-page help-page--hub help-hub--task-first">
+      <div className="help-page__inner help-hub help-task-hub">
+        <header className="help-task-hub__intro">
+          <div className="help-page__heading help-task-hub__heading">
+            <p className="eyebrow">Press-On Help</p>
+            <h1>What do you need help with?</h1>
+            <p>Start with the task in front of you. The short answer is here; the full guide is optional.</p>
           </div>
           <HelpSearch />
         </header>
 
-        <div className="help-paths" aria-label="Press-on help by task">
-          {pathGroups.map((group, index) => (
-            <section className="help-path" id={`help-path-${group.id}`} key={group.id} aria-labelledby={`help-path-${group.id}-title`}>
-              <div className="help-path__media">
-                <img alt={group.imageAlt} src={group.image} />
-                <span aria-hidden="true" className="help-path__number">0{index + 1}</span>
-              </div>
-              <div className="help-path__content">
-                <p className="help-path__eyebrow">{group.eyebrow}</p>
-                <h2 id={`help-path-${group.id}-title`}>{group.title}</h2>
-                <p className="help-path__intro">{group.intro}</p>
-                <ul className="help-path__links">
-                  {group.links.map((link) => (
-                    <li key={link.href}>
-                      <Link to={link.href}>
-                        <span>{link.label}</span>
-                        <span aria-hidden="true">→</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </section>
-          ))}
-        </div>
-
-        <section className="help-most-asked" aria-labelledby="help-most-asked-title">
-          <div className="help-most-asked__heading">
-            <p className="eyebrow">Frequently asked questions</p>
-            <h2 id="help-most-asked-title">Most asked</h2>
-            <Link to="/help/faq">Browse every question <span aria-hidden="true">→</span></Link>
+        <section className="help-task-hub__tasks" aria-labelledby="help-task-hub-title">
+          <div className="help-task-hub__section-heading">
+            <p className="eyebrow">Quick help</p>
+            <h2 id="help-task-hub-title">Tap your task</h2>
+            <p>The key answer stays visible. Open a row only when you want the next steps.</p>
           </div>
-          <HelpFaqAccordion items={mostAsked} />
-          <Link className="help-most-asked__mobile-link" to="/help/faq">
-            View all FAQs <span aria-hidden="true">→</span>
-          </Link>
+          <HelpTaskList tasks={helpQuickTasks} />
         </section>
 
-        <nav aria-labelledby="help-mobile-topics-title" className="help-mobile-topics" id="help-mobile-topics">
-          <h2 id="help-mobile-topics-title">Browse by topic</h2>
+        <nav aria-labelledby="help-task-more-title" className="help-task-hub__more">
+          <div>
+            <p className="eyebrow">More help</p>
+            <h2 id="help-task-more-title">Keep going only if you need to</h2>
+          </div>
           <ul>
-            {topicLinks.map((topic) => {
-              const Icon = topic.icon;
-
-              return (
-                <li key={topic.href}>
-                  <Link to={topic.href}>
-                    <Icon aria-hidden="true" size={18} strokeWidth={1.5} />
-                    <span>{topic.label}</span>
-                    <ChevronRight aria-hidden="true" size={17} strokeWidth={1.5} />
-                  </Link>
-                </li>
-              );
-            })}
+            <li><Link to={helpRoutes.removal.href}>Remove and reuse <span aria-hidden="true">→</span></Link></li>
+            <li><Link to={helpRoutes.faq.href}>View every FAQ <span aria-hidden="true">→</span></Link></li>
+            <li><Link to={helpRoutes.contact.href}>Contact support <span aria-hidden="true">→</span></Link></li>
           </ul>
         </nav>
 
         <HelpSupportCta
-          body="If the guide does not cover your fit, product, or order question, send support the details that will help explain it."
-          className="help-hub-editorial__support"
-          title="Still need personal help?"
+          body="Send the details that explain your fit, product, or order question. There is no need to read every guide first."
+          className="help-task-hub__support"
+          title="Still need a person?"
         />
       </div>
     </main>
@@ -255,12 +158,13 @@ export function SizingGuidePage() {
       contents={sizingContents}
       contentsLabel="In this guide"
       eyebrow={helpRoutes.sizing.eyebrow}
-      heroMedia={{
-        alt: "Twenty-four pale blush press-on nails arranged from larger to smaller sizes",
-        caption: `The ${sizingFacts.readyToWearNailCount}-nail ready-to-wear format gives you multiple sizes to compare before application.`,
-        src: "/assets/nail-size-set.png"
-      }}
       intro={helpRoutes.sizing.summary}
+      quickAnswer={
+        <p>
+          Every ready-to-wear set includes {sizingFacts.readyToWearNailCount} nails across preset sizes {sizingFacts.presetRange}.
+          Lay out every finger before applying adhesive, and use a physical sizing kit when you need an exact match.
+        </p>
+      }
       title={helpRoutes.sizing.title}
       variant="guide"
     >
@@ -284,6 +188,10 @@ export function SizingGuidePage() {
         title="Ready-to-wear sets give you a broad range"
         intro={`Every ready-to-wear set contains ${sizingFacts.readyToWearNailCount} nails. The broad ${sizingFacts.presetRange} range is intended to reduce sizing problems, while recognizing that individual fit can still vary.`}
       >
+        <figure className="help-instructional-media">
+          <img alt={siteMedia.kit.nails.alt} decoding="async" loading="lazy" src={siteMedia.kit.nails.src} />
+          <figcaption>The 24-nail format gives you several sizes to compare before application.</figcaption>
+        </figure>
         <HelpCallout variant="tip">
           <p>Lay out the best match for every finger before applying any glue or adhesive tab.</p>
         </HelpCallout>
@@ -360,12 +268,13 @@ export function ApplicationGuidePage() {
       contents={applicationContents}
       contentsLabel="In this guide"
       eyebrow={helpRoutes.application.eyebrow}
-      heroMedia={{
-        alt: "Press-on application supplies with adhesive tabs, nail glue, alcohol wipe, file, cuticle stick, and storage case",
-        caption: "Both application methods are included, so choose one path for this wear.",
-        src: "/assets/kit-contents-spread-v2.png"
-      }}
       intro={helpRoutes.application.summary}
+      quickAnswer={
+        <p>
+          Prep clean, dry nails first. Lay out every size, choose either glue or tabs, align each press-on off the skin,
+          and press steadily without shifting it.
+        </p>
+      }
       title={helpRoutes.application.title}
       variant="guide"
     >
@@ -418,7 +327,7 @@ export function ApplicationGuidePage() {
 
       <section className="application-step application-step--visual" id="select-and-arrange" aria-labelledby="select-and-arrange-title">
         <figure className="application-step__image">
-          <img alt="Hands aligning a pale blush press-on above a clean natural nail with application tools nearby" src="/assets/help/apply-press-on-alignment.jpg" />
+          <img alt={siteMedia.help.applicationAlignment.alt} decoding="async" loading="lazy" src={siteMedia.help.applicationAlignment.src} />
           <figcaption>Check the alignment and fit before lowering the press-on.</figcaption>
         </figure>
         <div className="application-step__content">
@@ -490,8 +399,7 @@ export function ApplicationGuidePage() {
         </dl>
       </section>
 
-      <section className="application-next" id="next-removal" aria-labelledby="next-removal-title">
-        <img alt="Pale blush press-on nails being loosened gently in comfortably warm water" src="/assets/help/remove-adhesive-tabs-warm-water.jpg" />
+      <section className="application-next application-next--text" id="next-removal" aria-labelledby="next-removal-title">
         <div>
           <p className="application-step__eyebrow">Step 09 · When wear is finished</p>
           <h2 id="next-removal-title">Move next to removal</h2>
@@ -509,12 +417,13 @@ export function RemovalGuidePage() {
       contents={removalContents}
       contentsLabel="In this guide"
       eyebrow={helpRoutes.removal.eyebrow}
-      heroMedia={{
-        alt: "Fingertips with pale blush press-ons resting in a shallow bowl of comfortably warm water",
-        caption: "Warm-water soaking can assist adhesive-tab removal. It is not the glue-removal method.",
-        src: "/assets/help/remove-adhesive-tabs-warm-water.jpg"
-      }}
       intro={helpRoutes.removal.summary}
+      quickAnswer={
+        <p>
+          Removal depends on the adhesive. Warm water can assist adhesive tabs; nail glue follows the supplied glue
+          directions. Never pull, peel, or pry through resistance.
+        </p>
+      }
       title={helpRoutes.removal.title}
       variant="guide"
     >
@@ -526,6 +435,10 @@ export function RemovalGuidePage() {
       </HelpSection>
 
       <HelpSection eyebrow="Chapter 02" id="remove-tabs" title="Remove adhesive tabs with warm-water assistance">
+        <figure className="help-instructional-media">
+          <img alt={siteMedia.help.adhesiveTabRemoval.alt} decoding="async" loading="lazy" src={siteMedia.help.adhesiveTabRemoval.src} />
+          <figcaption>Use comfortably warm water for adhesive tabs only. Stop whenever a nail resists.</figcaption>
+        </figure>
         <HelpStepList
           items={[
             { title: "Use comfortably warm water", body: "Rest the fingertips in a shallow bowl of comfortably warm—not hot—water." },
@@ -597,6 +510,12 @@ export function ShippingReturnsPage() {
       contentsLabel="Order help"
       eyebrow={helpRoutes.shippingReturns.eyebrow}
       intro={helpRoutes.shippingReturns.summary}
+      quickAnswer={
+        <p>
+          Processing happens before the estimated {shippingFacts.carrierTransit} carrier transit window. Tracking is
+          included, standard returns are not accepted, and order issues should be reported within {orderPolicyFacts.issueReportingWindowDays} days.
+        </p>
+      }
       title={helpRoutes.shippingReturns.title}
       variant="policy"
     >

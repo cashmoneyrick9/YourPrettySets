@@ -21,6 +21,8 @@ type HelpArticleShellProps = {
   };
   intro: ReactNode;
   lastUpdated?: string | false;
+  quickAnswer?: ReactNode;
+  quickAnswerLabel?: string;
   title: string;
   variant?: "guide" | "policy" | "utility";
 };
@@ -45,6 +47,8 @@ export function HelpArticleShell({
   heroMedia,
   intro,
   lastUpdated = helpContentMetadata.lastUpdated,
+  quickAnswer,
+  quickAnswerLabel = "Quick answer",
   title,
   variant = "utility"
 }: HelpArticleShellProps) {
@@ -81,6 +85,13 @@ export function HelpArticleShell({
                 </figure>
               ) : null}
             </header>
+
+            {quickAnswer ? (
+              <section aria-labelledby={`${titleId}-quick-answer`} className="help-article__quick-answer">
+                <h2 id={`${titleId}-quick-answer`}>{quickAnswerLabel}</h2>
+                <div>{quickAnswer}</div>
+              </section>
+            ) : null}
 
             {hasContents ? (
               <HelpContentsNav

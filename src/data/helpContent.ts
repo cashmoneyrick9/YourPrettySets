@@ -453,6 +453,75 @@ export const faqItemsById = {
 
 export const canonicalFaqItems = Object.values(faqItemsById);
 
+export type HelpQuickTaskId =
+  | "find-size"
+  | "apply"
+  | "track-order"
+  | "damaged-order"
+  | "shipping-times"
+  | "returns";
+
+export interface HelpQuickTask {
+  id: HelpQuickTaskId;
+  title: string;
+  summary: string;
+  answer: string;
+  steps?: readonly string[];
+  action: HelpContentLink;
+}
+
+export const helpQuickTasks = [
+  {
+    id: "find-size",
+    title: "Find my size",
+    summary: `${sizingFacts.readyToWearNailCount} nails across preset sizes ${sizingFacts.presetRange} give you a broad fit range.`,
+    answer:
+      "Lay out the closest match for every finger before applying adhesive. Exact millimeter mappings are still being finalized, so use a physical sizing kit when you need certainty.",
+    steps: ["Compare every nail before application", "Keep each press-on off the surrounding skin", "Use a sizing kit when the fit is uncertain"],
+    action: { label: "Open Find Your Fit", href: helpRoutes.sizing.href }
+  },
+  {
+    id: "apply",
+    title: "How to apply",
+    summary: "Prep clean, dry nails; choose glue or tabs; align each press-on; then press steadily.",
+    answer:
+      "Choose your adhesive based on the wear you want, but complete the same preparation and fit check first. Nail glue and adhesive tabs have separate application paths.",
+    steps: ["Clean, dry, and prep every natural nail", "Lay out the correct press-on for each finger", "Follow the glue or tab instructions", "Avoid shifting the nail while pressing"],
+    action: { label: "Open the application steps", href: helpRoutes.application.href }
+  },
+  {
+    id: "track-order",
+    title: "Track my order",
+    summary: shippingFacts.trackingLabel,
+    answer:
+      "Use the tracking record as the best current source after shipment. If it stops updating or the carrier reports a problem, send support your order and tracking details.",
+    action: { label: "See tracking and lost-package help", href: `${helpRoutes.shippingReturns.href}#lost-packages` }
+  },
+  {
+    id: "damaged-order",
+    title: "Fix a damaged order",
+    summary: `Report damaged, incorrect, or defective items within ${orderPolicyFacts.issueReportingWindowDays} days of confirmed delivery.`,
+    answer:
+      "Email support with the order details, a clear description, and photos that show the issue. Each case is reviewed individually; a refund or replacement is not automatic.",
+    steps: ["Include the order details", "Describe exactly what arrived", "Attach clear photos of the issue"],
+    action: { label: "See the order-issue process", href: `${helpRoutes.shippingReturns.href}#order-problems` }
+  },
+  {
+    id: "shipping-times",
+    title: "Shipping times",
+    summary: `Allow approximately ${shippingFacts.readyToShipProcessing} to process ready-to-ship orders, then approximately ${shippingFacts.carrierTransit} for carrier transit.`,
+    answer: `Made-to-order processing is approximately ${shippingFacts.madeToOrderProcessing}. Processing and transit are separate, and carrier estimates are not guaranteed delivery dates.`,
+    action: { label: "See all shipping details", href: `${helpRoutes.shippingReturns.href}#processing-transit` }
+  },
+  {
+    id: "returns",
+    title: "Returns",
+    summary: standardReturnsSentence,
+    answer: `Damaged, incorrect, or defective items are handled through the order-issue process when reported within ${orderPolicyFacts.issueReportingWindowDays} days of confirmed delivery.`,
+    action: { label: "Read returns and order issues", href: `${helpRoutes.shippingReturns.href}#returns` }
+  }
+] as const satisfies readonly HelpQuickTask[];
+
 export interface HelpSearchEntry {
   id: string;
   title: string;

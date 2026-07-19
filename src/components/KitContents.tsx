@@ -1,6 +1,7 @@
 import { useState, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import { includedSetItems, sizingFacts, wearEstimates } from "../data/storefrontFacts";
+import { siteMedia } from "../data/siteMedia";
 import { BrandButton } from "./BrandButton";
 
 type KitDetailId = "nails" | "adhesive" | "prep" | "case";
@@ -28,8 +29,8 @@ function getKitDetailItems(readyToWear: boolean): KitDetailItem[] {
       id: "nails",
       images: [
         {
-          alt: "Twenty-four press-on nails in multiple sizes with small fruit details",
-          src: "/assets/nail-size-set.png"
+          alt: siteMedia.kit.nails.alt,
+          src: siteMedia.kit.nails.src
         }
       ],
       label: "Nails",
@@ -38,28 +39,21 @@ function getKitDetailItems(readyToWear: boolean): KitDetailItem[] {
     {
       copy: `${nailGlue} and ${adhesiveTabs.toLowerCase()} are included. Glue is estimated at ${wearEstimates.glue}; tabs are estimated at ${wearEstimates.tabs}. Actual wear varies with ${wearEstimates.variables.map((item) => item.toLowerCase()).join(", ")}.`,
       id: "adhesive",
-      images: [
-        { alt: "Nail glue and adhesive tabs", src: "/assets/nail-glue.png" },
-        { alt: "Adhesive tabs", src: "/assets/adhesive-tabs.png" }
-      ],
+      images: [{ alt: siteMedia.kit.adhesives.alt, src: siteMedia.kit.adhesives.src }],
       label: "Glue / tabs",
       title: "Choose your wear"
     },
     {
       copy: `${nailFile}, ${cuticleStick.toLowerCase()}, and ${alcoholWipe.toLowerCase()} are included for preparation and application.`,
       id: "prep",
-      images: [
-        { alt: "Nail file", src: "/assets/nail-file.png" },
-        { alt: "Cuticle stick", src: "/assets/cuticle-pusher.png" },
-        { alt: "Alcohol wipe", src: "/assets/alcohol-wipe.png" }
-      ],
+      images: [{ alt: siteMedia.kit.prepTools.alt, src: siteMedia.kit.prepTools.src }],
       label: "Prep tools",
       title: "Prep + apply kit"
     },
     {
       copy: `${storageCase} is included to help protect your nails between wears.`,
       id: "case",
-      images: [{ alt: "Storage case", src: "/assets/storage-case.png" }],
+      images: [{ alt: siteMedia.kit.caseCare.alt, src: siteMedia.kit.caseCare.src }],
       label: "Case + care",
       title: "Store + reuse"
     }
@@ -96,14 +90,6 @@ export function KitContents({ readyToWear = true }: { readyToWear?: boolean }) {
       </div>
 
       <div className="kit-layout">
-        <div className="kit-spread">
-          <img
-            alt="Press-on nail kit with tabs and tools"
-            className="kit-spread__image"
-            src="/assets/kit-contents-spread-v2.png"
-          />
-        </div>
-
         <div className="kit-detail-tabs" aria-label="Included kit items" role="tablist">
           {kitDetailItems.map((item, index) => {
             const isActive = item.id === activeItemId;
@@ -121,7 +107,7 @@ export function KitContents({ readyToWear = true }: { readyToWear?: boolean }) {
                 type="button"
               >
                 <span className={`kit-detail-tab__visual kit-detail-tab__visual--${item.id}`} aria-hidden="true">
-                  <img alt="" src={item.images[0].src} />
+                  <img alt="" decoding="async" loading="lazy" src={item.images[0].src} />
                 </span>
                 <span>{item.label}</span>
               </button>
@@ -140,7 +126,7 @@ export function KitContents({ readyToWear = true }: { readyToWear?: boolean }) {
             aria-label={`${activeItem.label} preview`}
           >
             {activeItem.images.map((image) => (
-              <img alt={image.alt} key={image.alt} src={image.src} />
+              <img alt={image.alt} decoding="async" key={image.alt} loading="lazy" src={image.src} />
             ))}
           </div>
           <div className="kit-detail-panel__copy">

@@ -26,6 +26,7 @@ describe("Help article primitives", () => {
           eyebrow="Apply and care"
           heroMedia={{ alt: "Application kit", src: "/assets/kit.png" }}
           intro="A short, task-focused guide."
+          quickAnswer="Prep, align, and press without shifting."
           title="Apply Your Set"
           variant="guide"
         >
@@ -51,6 +52,8 @@ describe("Help article primitives", () => {
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(screen.getByRole("heading", { level: 1, name: "Apply Your Set" })).toBeInTheDocument();
     expect(screen.getByText(`Last updated ${helpContentMetadata.lastUpdated}`)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Quick answer" })).toBeInTheDocument();
+    expect(screen.getByText("Prep, align, and press without shifting.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Back to Press-On Guide/ })).toHaveAttribute("href", "/help");
     expect(screen.getAllByRole("link", { name: "Prepare your nails" })).toHaveLength(2);
     expect(document.querySelector(".help-article--guide")).toBeInTheDocument();

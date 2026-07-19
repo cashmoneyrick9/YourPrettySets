@@ -10,4 +10,5 @@ export { HelpSection } from "./HelpSection";
 export { HelpSearch } from "./HelpSearch";
 export { HelpStepList } from "./HelpStepList";
 export { HelpSupportCta } from "./HelpSupportCta";
+export { HelpTaskList } from "./HelpTaskList";
 export type { HelpContentsItem, HelpFactItem, HelpLink, HelpStepItem } from "./types";

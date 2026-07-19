@@ -160,7 +160,7 @@ describe("App", () => {
     { heading: "Ready to Ship", href: "/shop/ready-to-ship", label: "Ready to Ship", section: "Shop" },
     { heading: "Made to Order", href: "/shop/made-to-order", label: "Made to Order", section: "Shop" },
     { heading: "Custom Orders Coming Soon", href: "/shop/custom-orders", label: "Custom Orders", section: "Shop" },
-    { heading: "The Press-On Guide", href: "/help", label: "Press-On Guide", section: "Help" },
+    { heading: "What do you need help with?", href: "/help", label: "Press-On Guide", section: "Help" },
     { heading: "Find Your Fit", href: "/help/sizing", label: "Find Your Fit", section: "Help" },
     { heading: "Apply Your Set", href: "/help/application", label: "Apply Your Set", section: "Help" },
     { heading: "Remove & Reuse", href: "/help/removal", label: "Remove & Reuse", section: "Help" },
@@ -331,21 +331,26 @@ describe("App", () => {
 
     const main = screen.getByRole("main");
 
-    expect(within(main).getByRole("heading", { name: "The Press-On Guide" })).toBeInTheDocument();
+    expect(within(main).getByRole("heading", { name: "What do you need help with?" })).toBeInTheDocument();
+    expect(within(main).getByRole("searchbox", { name: "Search the guide" })).toBeInTheDocument();
+
+    for (const name of [
+      "Find my size",
+      "How to apply",
+      "Track my order",
+      "Fix a damaged order",
+      "Shipping times",
+      "Returns"
+    ]) {
+      expect(within(main).getByRole("button", { name: new RegExp(`^${name}`) })).toBeInTheDocument();
+    }
 
     for (const [name, href] of [
-      ["Find Your Fit", "/help/sizing"],
-      ["Sizing Kit", "/products/sizing-kit"],
-      ["Apply Your Set", "/help/application"],
-      ["Remove & Reuse", "/help/removal"],
-      ["Shipping and timing", "/help/shipping-returns#processing-transit"],
-      ["Damaged or incorrect order", "/help/shipping-returns#order-problems"],
-      ["Lost package", "/help/shipping-returns#lost-packages"],
-      ["Cancellations", "/help/shipping-returns#cancellations"],
-      ["Browse every question", "/help/faq"],
-      ["Contact Support", "/help/contact"]
+      ["Remove and reuse", "/help/removal"],
+      ["View every FAQ", "/help/faq"],
+      ["Contact support", "/help/contact"]
     ] as const) {
-      expect(within(main).getAllByRole("link", { name }).some((link) => link.getAttribute("href") === href)).toBe(true);
+      expect(within(main).getByRole("link", { name })).toHaveAttribute("href", href);
     }
   });
 
@@ -389,7 +394,7 @@ describe("App", () => {
       })
     );
 
-    const pageHeading = screen.getByRole("heading", { name: "The Press-On Guide" });
+    const pageHeading = screen.getByRole("heading", { name: "What do you need help with?" });
     expect(pageHeading).toBeInTheDocument();
     expect(pageHeading).toHaveFocus();
     expect(window.location.pathname).toBe("/help");
@@ -401,7 +406,8 @@ describe("App", () => {
     window.history.pushState({}, "", "/help");
     renderApp();
 
-    await user.click(screen.getByRole("link", { name: "Damaged or incorrect order" }));
+    await user.click(screen.getByRole("button", { name: /^Fix a damaged order/ }));
+    await user.click(screen.getByRole("link", { name: "See the order-issue process" }));
 
     const sectionHeading = screen.getByRole("heading", { name: "Damaged, incorrect, or defective items" });
     expect(window.location.pathname).toBe("/help/shipping-returns");

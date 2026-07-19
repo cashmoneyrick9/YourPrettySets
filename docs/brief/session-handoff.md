@@ -687,6 +687,22 @@ Current review state:
 - Selecting Shop or Help transitions into the split-screen submenu state: the centered selector group shifts into the left rail, the left rail stays transparent over that same blurred backdrop without a separate vertical active indicator line, and the solid `#fffdfb` right content panel slides/fades in from the right. Shop reveals Ready to Ship, Made to Order, and Custom Orders; Help reveals the existing Help links. Shop/Help can still be changed with the active selector, wheel, or touch gestures after expansion.
 - Home remains a direct route in both states. Tapping Home routes to `/` and closes the mobile menu rather than opening a submenu. Desktop navigation still links Shop directly to `/shop`.
 
+## Task-First Help And Cohesive Media Pass
+
+The latest Help pass changes the mobile journey from category-first documentation to direct task answers while preserving the approved Help routes, facts, policies, and deeper guides.
+
+- `/help` now leads with search and six plain-language customer tasks: Find my size, How to apply, Track my order, Fix a damaged order, Shipping times, and Returns.
+- Each task shows its useful short answer before the customer opens it. Opening a task reveals concise steps and an optional deeper-guide link; only one task stays open at a time.
+- Sizing, Application, Removal, and Shipping & Returns now place a canonical `Quick answer` directly below the article header. FAQ and Contact retain their already-direct accordion and decision-path structures.
+- The full canonical Help and FAQ content remains in `src/data/helpContent.ts`; no approved questions, policies, routes, accessibility behavior, or related-guide paths were removed.
+- The scoped media audit is saved in `docs/brief/help-media-audit.md`. Decorative Help hub/article hero imagery was removed from the active layout so answers stay above the fold. Shipping, FAQ, and Contact intentionally remain image-light.
+- The newer four-image kit series in `public/assets/kit/` was kept after review and is the current cohesive kit direction. The redundant legacy kit spread was removed from `KitContents`, while the four tabs/panels use the newer Nails, Glue / tabs, Prep tools, and Case + care photographs.
+- Two missing instructional photographs were generated and optimized for the same cool-white campaign system: `public/assets/help/application-alignment-v2.jpg` and `public/assets/help/adhesive-tab-removal-v2.jpg`. They appear only at the Application alignment step and the adhesive-tab Removal path.
+- `src/data/siteMedia.ts` is the central manifest for the Help and shared kit imagery introduced in this pass. Existing superseded assets were not deleted; disputed and Product-page media remain available for later founder review.
+- Browser checks covered `/help`, Sizing, Application, Removal, Shipping & Returns, FAQ, and Contact at 393px and 320px plus a functional desktop width. Results: no horizontal overflow, broken rendered images, duplicate IDs, empty links, or console errors; each route has one H1. The existing React Router future-flag notices remain warnings only.
+- Task and FAQ accordions were browser-tested for single-open behavior. The new image crops and the active Product-page kit scene were visually reviewed in context.
+- All 27 focused Help/media tests pass, and this pass reached a successful production build before later concurrent Product edits. The latest full working tree is currently blocked by unrelated in-progress Product work, including a `ProductKitDrawers` `index` reference and Product-only style expectations. `npm audit --audit-level=moderate` still reports the existing six dependency advisories (1 low, 1 moderate, 4 high); Product fixes and dependency upgrades remain outside this focused Help pass.
+
 ## Suggested Next Agent Flow
 
 1. Read `docs/brief/README.md`, `docs/brief/brand.md`, `docs/brief/page-home.md`, `docs/brief/open-decisions.md`, and this file.

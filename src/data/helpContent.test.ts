@@ -4,6 +4,7 @@ import {
   faqItemsById,
   helpHubDestinations,
   helpHubGroups,
+  helpQuickTasks,
   helpRoutes,
   legacyHelpRedirects,
   productPageFaqIds,
@@ -56,6 +57,22 @@ describe("helpContent", () => {
       "custom-orders"
     ]);
     expect(canonicalFaqItems.every(({ relatedLink }) => relatedLink.href.startsWith("/"))).toBe(true);
+  });
+
+  it("keeps the task-first hub answers tied to approved Help routes and facts", () => {
+    expect(helpQuickTasks.map(({ id }) => id)).toEqual([
+      "find-size",
+      "apply",
+      "track-order",
+      "damaged-order",
+      "shipping-times",
+      "returns"
+    ]);
+    expect(helpQuickTasks.every(({ action }) => action.href.startsWith("/help"))).toBe(true);
+    expect(helpQuickTasks.find(({ id }) => id === "find-size")?.summary).toContain(sizingFacts.presetRange);
+    expect(helpQuickTasks.find(({ id }) => id === "shipping-times")?.summary).toContain(
+      shippingFacts.carrierTransit
+    );
   });
 
   it("derives changeable sizing and shipping details from storefront facts", () => {

@@ -2,7 +2,8 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { MemoryRouter, useLocation } from "react-router-dom";
-import { canonicalFaqItems, helpRoutes } from "../data/helpContent";
+import { canonicalFaqItems, helpQuickTasks, helpRoutes } from "../data/helpContent";
+import { siteMedia } from "../data/siteMedia";
 import {
   includedSetItems,
   orderPolicyFacts,
@@ -43,34 +44,30 @@ function expectOneH1(name: string) {
 }
 
 describe("Help pages", () => {
-  it("routes customers through three editorial paths on the Press-On Guide hub", () => {
+  it("answers common customer tasks directly on the Help hub", async () => {
+    const user = userEvent.setup();
     renderHelpPage(<HelpHubPage />);
 
-    expectOneH1(helpRoutes.hub.title);
+    expectOneH1("What do you need help with?");
     expect(screen.getByRole("searchbox", { name: "Search the guide" })).toBeInTheDocument();
-    for (const groupTitle of ["Start with the right fit", "Make application feel simple", "Find the right next step", "Most asked"]) {
-      expect(screen.getByRole("heading", { level: 2, name: groupTitle })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Tap your task" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Keep going only if you need to" })).toBeInTheDocument();
+    for (const task of helpQuickTasks) {
+      expect(screen.getByRole("button", { name: new RegExp(task.title) })).toBeInTheDocument();
+      expect(screen.getByText(task.summary)).toBeInTheDocument();
     }
-    expect(screen.getByRole("link", { name: "Find Your Fit" })).toHaveAttribute("href", "/help/sizing");
-    expect(screen.getByRole("link", { name: "Sizing Kit" })).toHaveAttribute("href", "/products/sizing-kit");
-    expect(screen.getByRole("link", { name: "Apply Your Set" })).toHaveAttribute("href", "/help/application");
-    expect(screen.getByRole("link", { name: "Remove & Reuse" })).toHaveAttribute("href", "/help/removal");
-    expect(screen.getByRole("link", { name: "Shipping and timing" })).toHaveAttribute(
-      "href",
-      "/help/shipping-returns#processing-transit"
-    );
-    expect(screen.getByRole("link", { name: "Damaged or incorrect order" })).toHaveAttribute(
+    const firstTask = screen.getByRole("button", { name: /Find my size/i });
+    expect(firstTask).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("link", { name: /Open Find Your Fit/i })).toHaveAttribute("href", "/help/sizing");
+
+    await user.click(screen.getByRole("button", { name: /Fix a damaged order/i }));
+    expect(firstTask).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("link", { name: /See the order-issue process/i })).toHaveAttribute(
       "href",
       "/help/shipping-returns#order-problems"
     );
-    expect(screen.getByRole("link", { name: "Lost package" })).toHaveAttribute(
-      "href",
-      "/help/shipping-returns#lost-packages"
-    );
-    expect(screen.getByRole("link", { name: "Cancellations" })).toHaveAttribute(
-      "href",
-      "/help/shipping-returns#cancellations"
-    );
+    expect(screen.getByRole("link", { name: /Remove and reuse/i })).toHaveAttribute("href", "/help/removal");
+    expect(document.querySelector(".help-task-hub img")).not.toBeInTheDocument();
   });
 
   it("finds deep Help results and supports keyboard entry", async () => {
@@ -117,10 +114,8 @@ describe("Help pages", () => {
       "href",
       "/products/sizing-kit"
     );
-    expect(screen.getByRole("img", { name: /Twenty-four pale blush press-on nails/i })).toHaveAttribute(
-      "src",
-      "/assets/nail-size-set.png"
-    );
+    expect(screen.getByRole("heading", { level: 2, name: "Quick answer" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: siteMedia.kit.nails.alt })).toHaveAttribute("src", siteMedia.kit.nails.src);
     expect(document.querySelector(".help-article--guide")).toBeInTheDocument();
     expect(document.querySelector(".help-article__body table")).not.toBeInTheDocument();
   });
@@ -154,14 +149,12 @@ describe("Help pages", () => {
         expectedSections.map((id) => `#${id}`)
       );
     }
-    expect(screen.getByRole("img", { name: /application supplies with adhesive tabs/i })).toHaveAttribute(
+    expect(screen.getByRole("heading", { level: 2, name: "Quick answer" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: siteMedia.help.applicationAlignment.alt })).toHaveAttribute(
       "src",
-      "/assets/kit-contents-spread-v2.png"
+      siteMedia.help.applicationAlignment.src
     );
-    expect(screen.getByRole("img", { name: /aligning a pale blush press-on/i })).toHaveAttribute(
-      "src",
-      "/assets/help/apply-press-on-alignment.jpg"
-    );
+    expect(screen.queryByRole("img", { name: /application supplies with adhesive tabs/i })).not.toBeInTheDocument();
     expect(screen.getByText(/Wear time is not guaranteed/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open Remove & Reuse/i })).toHaveAttribute("href", "/help/removal");
   });
@@ -170,12 +163,13 @@ describe("Help pages", () => {
     renderHelpPage(<RemovalGuidePage />);
 
     expectOneH1(helpRoutes.removal.title);
-    expect(screen.getByText(/Warm-water soaking can assist adhesive-tab removal/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Quick answer" })).toBeInTheDocument();
+    expect(screen.getAllByText(/Warm water can assist adhesive tabs/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/not available, not currently included/i)).toBeInTheDocument();
     expect(screen.getByText(/There is no guaranteed number of reuses/i)).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: /resting in a shallow bowl/i })).toHaveAttribute(
+    expect(screen.getByRole("img", { name: siteMedia.help.adhesiveTabRemoval.alt })).toHaveAttribute(
       "src",
-      "/assets/help/remove-adhesive-tabs-warm-water.jpg"
+      siteMedia.help.adhesiveTabRemoval.src
     );
     expect(document.body).not.toHaveTextContent(/acetone|chemical ingredients/i);
   });

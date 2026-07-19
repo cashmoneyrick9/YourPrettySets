@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const styles = readFileSync("src/styles.css", "utf-8");
+const helpTaskStyles = readFileSync("src/help-task-first.css", "utf-8");
 const indexHtml = readFileSync("index.html", "utf-8");
 const expectedTypeRoles = [
   "--type-hero-title",
@@ -589,7 +590,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".review-carousel {");
     expect(styles).not.toContain(".review-carousel__button");
     expect(styles).not.toContain(".review-card--peek {\n    display: none;");
-    expect(styles).toContain("aspect-ratio: 1020 / 573;");
+    expect(styles).not.toContain("aspect-ratio: 1020 / 573;");
     expect(styles).not.toContain("min-height: 166px;");
     expect(styles).not.toContain("min-height: 158px;");
     expect(styles).toContain("position: absolute;");
@@ -630,17 +631,15 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--hero-copy-top: clamp(24px, 3.5vh, 42px);");
   });
 
-  it("keeps the What’s Included kit image frameless and visually larger", () => {
-    const kitImageRule = getRuleBody(styles, ".kit-spread__image");
+  it("uses the cohesive kit photographs without a redundant spread", () => {
+    const tabImageRule = getRuleBody(styles, ".kit-detail-tab__visual img");
+    const panelImageRule = getRuleBody(styles, ".kit-detail-panel__visual img");
 
-    expect(styles).toContain(".kit-spread {\n  align-items: center;");
-    expect(styles).toContain("aspect-ratio: 1020 / 573;");
-    expect(styles).toContain("border: 0;");
-    expect(styles).toContain("padding: 0;");
-    expect(styles).toContain(".kit-spread__image");
-    expect(kitImageRule).toContain("object-fit: contain;");
-    expect(kitImageRule).not.toContain("object-fit: cover;");
-    expect(styles).not.toContain(".collection-card__mood,\n.kit-spread,\n.review-product__art");
+    expect(styles).not.toContain(".kit-spread {");
+    expect(styles).not.toContain(".kit-spread__image");
+    expect(tabImageRule).toContain("object-fit: cover;");
+    expect(panelImageRule).toContain("aspect-ratio: 4 / 3;");
+    expect(panelImageRule).toContain("object-fit: cover;");
   });
 
   it("keeps Help imagery, focus, touch targets, and the short-height mobile submenu resilient", () => {
@@ -678,6 +677,10 @@ describe("small mobile responsive CSS", () => {
     expect(helpArticleStyles).toContain(".help-page--article {\n    padding: var(--mobile-header-offset) 0 56px;");
     expect(helpArticleStyles).toContain(".help-article--utility .help-contents--mobile");
     expect(helpArticleStyles).toContain("@media (max-width: 360px)");
+    expect(helpTaskStyles).toContain("/* Task-first Help pass: answers before categories, instructional media only. */");
+    expect(helpTaskStyles).toContain(".help-task__label small");
+    expect(helpTaskStyles).toContain(".help-article__quick-answer");
+    expect(helpTaskStyles).toContain(".help-instructional-media img");
     expect(backLinkRule).toContain("min-height: 44px;");
   });
 
