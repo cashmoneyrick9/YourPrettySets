@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ChevronRight, CircleHelp, Mail, Package, Pipette, RotateCcw, Ruler } from "lucide-react";
 import {
   HelpArticleShell,
   HelpCallout,
@@ -105,6 +106,15 @@ const contactContents = [
 ] as const satisfies readonly HelpContentsItem[];
 
 export function HelpHubPage() {
+  const topicLinks = [
+    { label: "Sizing", href: helpRoutes.sizing.href, icon: Ruler },
+    { label: "Application", href: helpRoutes.application.href, icon: Pipette },
+    { label: "Removal & Reuse", href: helpRoutes.removal.href, icon: RotateCcw },
+    { label: "Shipping, Returns & Order Issues", href: helpRoutes.shippingReturns.href, icon: Package },
+    { label: "FAQ", href: helpRoutes.faq.href, icon: CircleHelp },
+    { label: "Contact", href: helpRoutes.contact.href, icon: Mail }
+  ] as const;
+
   const pathGroups = [
     {
       id: "before-order",
@@ -150,9 +160,10 @@ export function HelpHubPage() {
 
   const mostAsked = [
     faqItemsById["choose-size"],
-    faqItemsById["glue-or-tabs"],
     faqItemsById["wear-time"],
-    faqItemsById.processing
+    faqItemsById.reuse,
+    faqItemsById.removal,
+    faqItemsById["included-items"]
   ];
 
   return (
@@ -163,6 +174,9 @@ export function HelpHubPage() {
             <p className="eyebrow">{helpRoutes.hub.eyebrow}</p>
             <h1>{helpRoutes.hub.title}</h1>
             <p>{helpRoutes.hub.summary}</p>
+            <a className="help-hub-editorial__browse-button" href="#help-mobile-topics">
+              Browse topics
+            </a>
           </div>
           <HelpSearch />
         </header>
@@ -195,12 +209,34 @@ export function HelpHubPage() {
 
         <section className="help-most-asked" aria-labelledby="help-most-asked-title">
           <div className="help-most-asked__heading">
-            <p className="eyebrow">Quick answers</p>
+            <p className="eyebrow">Frequently asked questions</p>
             <h2 id="help-most-asked-title">Most asked</h2>
             <Link to="/help/faq">Browse every question <span aria-hidden="true">→</span></Link>
           </div>
           <HelpFaqAccordion items={mostAsked} />
+          <Link className="help-most-asked__mobile-link" to="/help/faq">
+            View all FAQs <span aria-hidden="true">→</span>
+          </Link>
         </section>
+
+        <nav aria-labelledby="help-mobile-topics-title" className="help-mobile-topics" id="help-mobile-topics">
+          <h2 id="help-mobile-topics-title">Browse by topic</h2>
+          <ul>
+            {topicLinks.map((topic) => {
+              const Icon = topic.icon;
+
+              return (
+                <li key={topic.href}>
+                  <Link to={topic.href}>
+                    <Icon aria-hidden="true" size={18} strokeWidth={1.5} />
+                    <span>{topic.label}</span>
+                    <ChevronRight aria-hidden="true" size={17} strokeWidth={1.5} />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
         <HelpSupportCta
           body="If the guide does not cover your fit, product, or order question, send support the details that will help explain it."

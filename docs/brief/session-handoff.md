@@ -59,6 +59,26 @@ Verification completed for this system:
 - `git diff --check`: passed.
 - `npm audit --audit-level=moderate`: reports 6 existing dependency advisories (1 low, 1 moderate, 4 high) in the unchanged dependency set. Dependency upgrades were not mixed into this Help feature pass.
 
+## Latest Mobile Help / FAQ Editorial Pass
+
+The founder approved a cleaner editorial mockup direction and asked to focus primarily on mobile. This pass changes presentation and mobile information hierarchy without removing the canonical Help content, business facts, routes, search, or article pages.
+
+Current mobile direction:
+
+- `/help` now opens with an image-led Press-On Guide hero using the existing application asset, a direct `Browse topics` jump, five canonical frequently asked questions, and a six-row topic navigator for Sizing, Application, Removal & Reuse, Shipping/Returns/Order Issues, FAQ, and Contact.
+- Help search remains available and follows the topic navigator on mobile. The existing three editorial task paths remain intact for tablet/desktop and are not deleted.
+- The Product FAQ is now a compact white `Quick answers` section on mobile with five high-value questions from the existing `productPageFaqItems` subset and one `View all FAQs & guides` handoff. The remaining canonical questions still live at `/help/faq`; no approved answer was deleted or rewritten.
+- The Product FAQ no longer shows its image banner or two-button Help CTA on mobile. Desktop keeps the existing image-led header and Contact/Full FAQ actions for now.
+- No new package or parallel content source was introduced. Radix Accordion, `helpContent.ts`, `storefrontFacts.ts`, existing Help routes, and related-guide links remain the functional foundation.
+
+Verification for this pass:
+
+- Focused tests passed: 3 files and 47 tests.
+- Full `npm test`: 22 files and 211 tests passed.
+- `npm run build`: passed.
+- `npm audit --audit-level=moderate`: reports the same 6 existing dependency advisories (1 low, 1 moderate, 4 high); dependencies were unchanged in this pass.
+- Browser review covered `/help` at 393px and a Product page at 393px plus a 320px narrow check. The mobile Help hero, five-question accordion, topic list, preserved search, Product `Quick answers`, and FAQ handoff rendered without page-level horizontal overflow or console errors. FAQ disclosure behavior was also exercised successfully.
+
 ## New Chat Starting Point
 
 Treat the Press-On Guide as the newest integrated customer journey and preserve its shared facts/routes/components unless the founder reopens them. Home-page visual work remains a separate ongoing pass.

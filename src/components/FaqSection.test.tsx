@@ -18,14 +18,18 @@ describe("FaqSection", () => {
     );
   }
 
-  it("renders the approved Product-page FAQ subset immediately", () => {
+  it("renders the five-question Product-page FAQ teaser immediately", () => {
     renderFaqSection();
 
-    expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
-    expect(screen.getByText("Answers on sizing, wear estimates, application, and ordering.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
+    expect(screen.getByText("The most common questions, answered.")).toBeInTheDocument();
 
-    for (const item of productPageFaqItems) {
+    for (const item of productPageFaqItems.slice(0, 5)) {
       expect(screen.getByRole("button", { name: item.question })).toBeInTheDocument();
+    }
+
+    for (const item of productPageFaqItems.slice(5)) {
+      expect(screen.queryByRole("button", { name: item.question })).not.toBeInTheDocument();
     }
 
     expect(screen.queryByRole("heading", { name: "How Can We Help?" })).not.toBeInTheDocument();
@@ -124,7 +128,7 @@ describe("FaqSection", () => {
     const user = userEvent.setup();
     renderFaqSection();
 
-    for (const item of productPageFaqItems) {
+    for (const item of productPageFaqItems.slice(0, 5)) {
       await user.click(screen.getByRole("button", { name: item.question }));
 
       expect(screen.getByText(item.answer)).toBeInTheDocument();

@@ -266,7 +266,7 @@ describe("ProductPage", () => {
     expect(kitSection).toBeInTheDocument();
     expect(faqSection).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "What’s Included" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Questions before you order" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
     expect(buyingPanel.compareDocumentPosition(kitSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(kitSection.compareDocumentPosition(faqSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
