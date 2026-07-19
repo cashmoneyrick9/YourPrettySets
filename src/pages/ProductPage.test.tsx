@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { BrowserRouter, MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { products, sizingKitProduct } from "../data/products";
+import { shippingFacts } from "../data/storefrontFacts";
 import { ProductPage } from "./ProductPage";
 
 afterEach(() => {
@@ -46,7 +47,7 @@ describe("ProductPage", () => {
   it("renders a base buying flow for the product slug", () => {
     renderProductPage();
 
-    expect(screen.getByRole("main")).toHaveClass("product-page");
+    expect(screen.getByRole("main")).toHaveClass("product-page", "product-page--nail-set");
     const productImage = screen.getByRole("img", { name: `${products[0].name} image placeholder` });
     expect(productImage).toHaveClass("product-page__image-placeholder");
     expect(productImage).toBeEmptyDOMElement();
@@ -56,20 +57,12 @@ describe("ProductPage", () => {
     expect(screen.getByRole("button", { name: "Back to shop" })).toBeInTheDocument();
     expect(screen.getByText("Ready to ship")).toBeInTheDocument();
     expect(screen.getByText(`$${products[0].price}`)).toBeInTheDocument();
-    expect(document.querySelector(".product-page__visual-summary")).toHaveTextContent(
-      `${products[0].visualSummary.labels[0]} · ${products[0].visualSummary.labels[1]}`
-    );
     expect(screen.getByText(products[0].description)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Find Your Fit" })).toHaveAttribute("href", "/help/sizing");
-    expect(screen.getByText("Unsure about sizing?")).toBeInTheDocument();
-    const summarySwatches = document.querySelectorAll(".product-page__swatch");
-    expect(summarySwatches).toHaveLength(2);
-    expect(summarySwatches[0]).toHaveAttribute(
-      "style",
-      `--product-swatch: ${products[0].visualSummary.swatches[0]};`
-    );
-    expect(document.querySelector(".product-page__availability-mark")).toHaveAttribute("aria-hidden", "true");
-    expect(document.querySelector(".product-page__summary-divider")).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByText(`Ships in ${shippingFacts.readyToShipProcessing}`)).toBeInTheDocument();
+    expect(document.querySelector(".product-page__visual-summary")).not.toBeInTheDocument();
+    expect(document.querySelector(".product-page__swatch")).not.toBeInTheDocument();
+    expect(document.querySelector(".product-page__availability-mark")).not.toBeInTheDocument();
+    expect(document.querySelector(".product-page__summary-divider")).not.toBeInTheDocument();
 
     const lengthGroup = screen.getByRole("group", { name: "Length" });
     const shapeGroup = screen.getByRole("group", { name: "Shape" });
@@ -114,8 +107,11 @@ describe("ProductPage", () => {
       "Selected style: Almond shape, Extra Short length"
     );
     expect(document.querySelector(".product-page__selected-summary")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "View guide" })).toHaveAttribute("href", "/help/sizing");
+    const sizingLink = screen.getByRole("link", { name: "Not sure? Find your size" });
+    expect(sizingLink).toHaveAttribute("href", "/help/sizing");
+    expect(screen.queryByRole("link", { name: "View guide" })).not.toBeInTheDocument();
     expect(shapeGroup.compareDocumentPosition(lengthGroup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(lengthGroup.compareDocumentPosition(sizingLink) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(document.querySelectorAll(".product-page__option-check")).toHaveLength(2);
     expect(shapeGroup.querySelector(".product-page__option-progress")).not.toHaveAttribute("hidden");
     expect(lengthGroup.querySelector(".product-page__option-progress")).not.toHaveAttribute("hidden");
@@ -306,6 +302,7 @@ describe("ProductPage", () => {
     renderProductPage(`/products/${madeToOrderProduct?.slug}`);
 
     expect(screen.getByText("Made to order")).toBeInTheDocument();
+    expect(screen.getByText(`Made in ${shippingFacts.madeToOrderProcessing}`)).toBeInTheDocument();
     expect(screen.getByRole("tabpanel", { name: "Nails" })).toHaveTextContent(
       "Press-on nails are included with every set."
     );

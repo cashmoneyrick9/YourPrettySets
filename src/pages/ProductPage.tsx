@@ -1,4 +1,4 @@
-import { type CSSProperties, type MouseEvent, type PointerEvent, useCallback, useEffect, useRef, useState } from "react";
+import { type MouseEvent, type PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Check, Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaqSection } from "../components/FaqSection";
@@ -6,7 +6,7 @@ import { KitContents } from "../components/KitContents";
 import { ProductMediaGallery } from "../components/ProductMediaGallery";
 import { findProductBySlug } from "../data/products";
 import type { Product, SizingKitProduct } from "../data/products";
-import { sizingFacts } from "../data/storefrontFacts";
+import { shippingFacts, sizingFacts } from "../data/storefrontFacts";
 
 const productOptionDragThreshold = 12;
 
@@ -165,11 +165,6 @@ function ProductOptionGroup<Option extends string>({
       <legend className="product-page__option-legend">{label}</legend>
       <div className="product-page__option-heading">
         <span aria-hidden="true">{label}</span>
-        {optionKind === "shape" ? (
-          <Link className="product-page__option-guide" to="/help/sizing">
-            View guide
-          </Link>
-        ) : null}
       </div>
       <div
         className={optionListClassName}
@@ -237,6 +232,9 @@ function ProductBuyingFlow({ product }: { product: Product }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const routeState = location.state as { fromHome?: boolean; fromShop?: boolean } | null;
   const openedFromPreviousPage = Boolean(routeState?.fromHome || routeState?.fromShop);
+  const turnaroundLabel = product.orderType === "ready-to-ship"
+    ? `Ships in ${shippingFacts.readyToShipProcessing}`
+    : `Made in ${shippingFacts.madeToOrderProcessing}`;
 
   function handleBackToShop() {
     if (openedFromPreviousPage) {
@@ -248,7 +246,7 @@ function ProductBuyingFlow({ product }: { product: Product }) {
   }
 
   return (
-    <main className="product-page">
+    <main className="product-page product-page--nail-set">
       <div className="product-page__inner">
         <button className="product-page__back-button" onClick={handleBackToShop} type="button">
           <ArrowLeft aria-hidden="true" size={16} strokeWidth={2} />
@@ -260,39 +258,17 @@ function ProductBuyingFlow({ product }: { product: Product }) {
         <section className="product-page__buying-panel" aria-labelledby="product-title">
           <div className="product-page__summary">
             <p className="product-page__eyebrow">
-              <span aria-hidden="true" className="product-page__availability-mark" />
               {product.orderType === "ready-to-ship" ? "Ready to ship" : "Made to order"}
             </p>
             <div className="product-page__title-row">
               <h1 id="product-title">{product.name}</h1>
               <p className="product-page__price">${product.price}</p>
             </div>
-            <div className="product-page__visual-summary">
-              <span aria-hidden="true" className="product-page__swatches">
-                {product.visualSummary.swatches.map((swatch) => (
-                  <span
-                    className="product-page__swatch"
-                    key={swatch}
-                    style={{ "--product-swatch": swatch } as CSSProperties}
-                  />
-                ))}
-              </span>
-              <p>
-                {product.visualSummary.labels[0]}
-                <span aria-hidden="true"> · </span>
-                {product.visualSummary.labels[1]}
-              </p>
-            </div>
             <p className="product-page__description">{product.description}</p>
-            <div aria-hidden="true" className="product-page__summary-divider">
-              <span />
-            </div>
-            <Link aria-label="Find Your Fit" className="product-page__fit-help" to="/help/sizing">
-              <span className="product-page__fit-label">Unsure about sizing?</span>
-              <span className="product-page__fit-link">
-                Find your fit <span aria-hidden="true">→</span>
-              </span>
-            </Link>
+            <p className="product-page__turnaround">
+              <span aria-hidden="true" className="product-page__turnaround-dot" />
+              {turnaroundLabel}
+            </p>
           </div>
 
           <section className="product-page__style-selector" aria-labelledby="product-style-title">
@@ -321,6 +297,10 @@ function ProductBuyingFlow({ product }: { product: Product }) {
               options={product.lengthOptions}
               selectedOption={selectedLength}
             />
+            <Link className="product-page__fit-help" to="/help/sizing">
+              <span>Not sure?</span>
+              <span className="product-page__fit-link">Find your size</span>
+            </Link>
           </section>
 
           <div className="product-page__cta-row">

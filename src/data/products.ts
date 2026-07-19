@@ -27,11 +27,6 @@ export type CollectionLabel = (typeof collectionLabels)[number];
 export type DetailTier = (typeof detailTiers)[number]["id"];
 export type OrderType = "ready-to-ship" | "made-to-order";
 
-export type ProductVisualSummary = {
-  labels: readonly [string, string];
-  swatches: readonly [string, string];
-};
-
 type ProductPresentation = {
   id: string;
   name: string;
@@ -62,7 +57,6 @@ export type Product = ProductPresentation & {
   isPopular: boolean;
   lengthOptions: readonly LengthOption[];
   shapeOptions: readonly ShapeOption[];
-  visualSummary: ProductVisualSummary;
 };
 
 export type SizingKitProduct = ProductPresentation & {
@@ -77,43 +71,7 @@ const sharedOptions = {
   shapeOptions
 };
 
-const productVisualSummaries: Record<string, ProductVisualSummary> = {
-  "blush-crush": { labels: ["Soft pink", "Everyday glow"], swatches: ["#e8a7b6", "#f3d0ca"] },
-  "golden-hour": { labels: ["Warm peach", "Golden shimmer"], swatches: ["#e9a07f", "#d6b15f"] },
-  "vacation-crush": { labels: ["Bright coral", "Playful color"], swatches: ["#ed745f", "#66bfc2"] },
-  "birthday-candle": { labels: ["Candy pink", "Confetti detail"], swatches: ["#e982a7", "#f1c75b"] },
-  "peach-jelly": { labels: ["Sheer peach", "Glossy finish"], swatches: ["#efb094", "#f6d1bd"] },
-  "cabana-stripe": { labels: ["Sunny yellow", "Poolside stripe"], swatches: ["#edc95c", "#69b9c7"] },
-  "lace-veil": { labels: ["Soft white", "Lace detail"], swatches: ["#f5f0e8", "#d9c5c4"] },
-  "confetti-pop": { labels: ["Party pink", "Colorful dots"], swatches: ["#e98bab", "#73b7ca"] },
-  "soft-serve": { labels: ["Creamy neutral", "Polished finish"], swatches: ["#decbb8", "#f0e5d8"] },
-  "mint-to-be": { labels: ["Fresh mint", "Playful detail"], swatches: ["#9fcdb5", "#d3ead9"] },
-  "date-night-gloss": { labels: ["Romantic berry", "High gloss"], swatches: ["#a94f68", "#d98a9b"] },
-  "something-blue": { labels: ["Soft blue", "Shimmer accent"], swatches: ["#91b8d4", "#d4dfec"] },
-  "office-crush": { labels: ["Warm neutral", "Pretty polish"], swatches: ["#bf9e91", "#e5d2c9"] },
-  "sea-glass": { labels: ["Seafoam", "Turquoise detail"], swatches: ["#83c8b5", "#4faeb8"] },
-  "pink-french": { labels: ["Blush pink", "French finish"], swatches: ["#e8a7b6", "#f4dedb"] },
-  "main-character": { labels: ["Statement color", "Extra detail"], swatches: ["#c74f82", "#e1a84f"] },
-  "glossy-bare": { labels: ["Bare nude", "Glass gloss"], swatches: ["#cba995", "#ead7ca"] },
-  "barely-there": { labels: ["Sheer neutral", "Natural finish"], swatches: ["#d2b5a5", "#eee0d7"] },
-  "satin-sheer": { labels: ["Satin nude", "Soft sheen"], swatches: ["#cdb3ab", "#eadbd5"] },
-  "lavender-milk": { labels: ["Milky lavender", "Calm finish"], swatches: ["#b9abd0", "#e0d9e9"] },
-  "glazed-donut": { labels: ["Pearl glaze", "Soft shimmer"], swatches: ["#e7d8ce", "#f1e8df"] },
-  "cherry-kiss": { labels: ["Cherry red", "Glossy accent"], swatches: ["#b63e50", "#e59a9f"] },
-  "rose-velvet": { labels: ["Dusty rose", "Velvet finish"], swatches: ["#b96f7e", "#dfb1b5"] },
-  "wine-hour": { labels: ["Deep berry", "Evening gloss"], swatches: ["#74394d", "#a86172"] },
-  "sunset-spritz": { labels: ["Tangerine", "Sunset pink"], swatches: ["#e98a56", "#e87991"] },
-  "seashell-pearl": { labels: ["Shell pink", "Pearl shimmer"], swatches: ["#ddb9ae", "#eee4da"] },
-  "pearl-glaze": { labels: ["Pearly white", "Clean glaze"], swatches: ["#eee8df", "#d6cfca"] },
-  "cake-topper": { labels: ["Sweet pink", "Party detail"], swatches: ["#e89ab4", "#f0c86a"] },
-  "star-party": { labels: ["Midnight blue", "Starry shine"], swatches: ["#596994", "#d8bb65"] },
-  "taupe-studio": { labels: ["Modern taupe", "Polished finish"], swatches: ["#9f8e84", "#d4c8bf"] },
-  "latte-hearts": { labels: ["Warm latte", "Heart detail"], swatches: ["#b68c71", "#dfb9ad"] },
-  "clean-slate": { labels: ["Soft gray", "Clean neutral"], swatches: ["#a8a7a3", "#d7d5d0"] },
-  "chrome-aura": { labels: ["Silver chrome", "Aura shine"], swatches: ["#aeb5bd", "#c4a6d0"] }
-};
-
-type ProductSeed = Omit<Product, "kind" | "slug" | "images" | "lengthOptions" | "shapeOptions" | "visualSummary"> & {
+type ProductSeed = Omit<Product, "kind" | "slug" | "images" | "lengthOptions" | "shapeOptions"> & {
   slug?: string;
 };
 
@@ -122,12 +80,6 @@ function toProductSlug(name: string) {
 }
 
 function makeProduct({ slug, ...product }: ProductSeed): Product {
-  const visualSummary = productVisualSummaries[product.id];
-
-  if (!visualSummary) {
-    throw new Error(`Missing visual summary for product: ${product.id}`);
-  }
-
   return {
     ...product,
     kind: "nail-set",
@@ -136,7 +88,6 @@ function makeProduct({ slug, ...product }: ProductSeed): Product {
       clean: `Clean background placeholder for ${product.name}`,
       editorial: `Stylized editorial placeholder for ${product.name}`
     },
-    visualSummary,
     ...sharedOptions
   };
 }

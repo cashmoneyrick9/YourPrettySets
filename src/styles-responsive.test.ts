@@ -274,6 +274,15 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".product-page + .site-footer-email-shell {\n  padding-top: 0;");
   });
 
+  it("stacks the product style heading at 320px instead of squeezing its live value", () => {
+    const productTinyMobileStart = styles.lastIndexOf("@media (max-width: 360px)");
+    const productDesktopStart = styles.indexOf("@media (min-width: 720px)", productTinyMobileStart);
+    const productTinyMobileStyles = styles.slice(productTinyMobileStart, productDesktopStart);
+
+    expect(productTinyMobileStyles).toContain(".product-page__style-header {\n    align-items: start;\n    display: grid;");
+    expect(productTinyMobileStyles).toContain(".product-page__style-selection {\n    justify-self: start;");
+  });
+
   it("includes the locked S3 header and hero visual rules", () => {
     expect(styles).toContain("--color-sage-accent");
     expect(styles).toContain("--color-sage-accent: var(--site-accent);");
