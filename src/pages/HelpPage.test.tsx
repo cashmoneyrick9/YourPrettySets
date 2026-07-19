@@ -121,6 +121,7 @@ describe("Help pages", () => {
       "src",
       "/assets/nail-size-set.png"
     );
+    expect(document.querySelector(".help-article--guide")).toBeInTheDocument();
     expect(document.querySelector(".help-article__body table")).not.toBeInTheDocument();
   });
 
@@ -146,8 +147,17 @@ describe("Help pages", () => {
       Array.from(document.querySelectorAll(".application-step, .application-next"), (section) => section.id)
     ).toEqual(expectedSections);
     expect(document.querySelectorAll("ol.application-procedure")).toHaveLength(3);
-    const jumpLinks = within(screen.getByRole("navigation", { name: "Application steps" })).getAllByRole("link");
-    expect(jumpLinks.map((link) => link.getAttribute("href"))).toEqual(expectedSections.map((id) => `#${id}`));
+    const guideNavigations = screen.getAllByRole("navigation", { name: "In this guide" });
+    expect(guideNavigations).toHaveLength(2);
+    for (const navigation of guideNavigations) {
+      expect(within(navigation).getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual(
+        expectedSections.map((id) => `#${id}`)
+      );
+    }
+    expect(screen.getByRole("img", { name: /application supplies with adhesive tabs/i })).toHaveAttribute(
+      "src",
+      "/assets/kit-contents-spread-v2.png"
+    );
     expect(screen.getByRole("img", { name: /aligning a pale blush press-on/i })).toHaveAttribute(
       "src",
       "/assets/help/apply-press-on-alignment.jpg"
@@ -177,6 +187,8 @@ describe("Help pages", () => {
     expect(screen.getByText(`Approximately ${shippingFacts.readyToShipProcessing}`)).toBeInTheDocument();
     expect(screen.getByText(`Approximately ${shippingFacts.madeToOrderProcessing}`)).toBeInTheDocument();
     expect(screen.getByText(`Approximately ${shippingFacts.carrierTransit}`)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "At a glance" })).toBeInTheDocument();
+    expect(screen.getByText(`Within ${orderPolicyFacts.issueReportingWindowDays} days of confirmed delivery`)).toBeInTheDocument();
     expect(screen.getByText(orderPolicyFacts.cancellationRule)).toBeInTheDocument();
     expect(screen.getByText(/automatic refund or replacement is not promised/i)).toBeInTheDocument();
     expect(screen.getByText(/carrier claim may be required/i)).toBeInTheDocument();
@@ -187,12 +199,18 @@ describe("Help pages", () => {
     renderHelpPage(<FaqPage />);
 
     expectOneH1(helpRoutes.faq.title);
+    const mobileContents = document.querySelector("details.help-contents--mobile");
+    expect(mobileContents).toHaveAttribute("open");
+    await user.click(screen.getByText("Browse questions", { selector: "summary span" }));
+    expect(mobileContents).not.toHaveAttribute("open");
     expect(screen.getAllByRole("button")).toHaveLength(canonicalFaqItems.length);
     const firstItem = canonicalFaqItems[0];
     const trigger = screen.getByRole("button", { name: firstItem.question });
     expect(trigger).toHaveAttribute("aria-expanded", "false");
-    await user.click(trigger);
+    trigger.focus();
+    await user.keyboard("{Enter}");
     expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(mobileContents).not.toHaveAttribute("open");
     expect(screen.getByText(firstItem.answer)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: new RegExp(firstItem.relatedLink.label) })).toHaveAttribute(
       "href",
@@ -204,8 +222,10 @@ describe("Help pages", () => {
     renderHelpPage(<ContactSupportPage />);
 
     expectOneH1(helpRoutes.contact.title);
+    expect(screen.getByRole("heading", { level: 2, name: "What do you need help with?" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 3, name: "Fit question" })).toBeInTheDocument();
     const emailLinks = screen.getAllByRole("link", { name: new RegExp(supportDetails.email) });
-    expect(emailLinks.length).toBeGreaterThanOrEqual(2);
+    expect(emailLinks).toHaveLength(1);
     for (const link of emailLinks) expect(link).toHaveAttribute("href", supportDetails.mailto);
     const checklist = screen.getByRole("heading", { level: 3, name: "Support checklist" }).closest("section");
     expect(checklist).not.toBeNull();

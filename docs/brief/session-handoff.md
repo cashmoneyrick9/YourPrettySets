@@ -79,6 +79,29 @@ Verification for this pass:
 - `npm audit --audit-level=moderate`: reports the same 6 existing dependency advisories (1 low, 1 moderate, 4 high); dependencies were unchanged in this pass.
 - Browser review covered `/help` at 393px and a Product page at 393px plus a 320px narrow check. The mobile Help hero, five-question accordion, topic list, preserved search, Product `Quick answers`, and FAQ handoff rendered without page-level horizontal overflow or console errors. FAQ disclosure behavior was also exercised successfully.
 
+## Mobile Help Article System
+
+The founder approved extending the mobile editorial direction from the `/help` hub across all six canonical Help articles. The shared content and facts remain intact; this pass changes hierarchy and presentation rather than replacing the Help architecture.
+
+Current article direction:
+
+- `HelpArticleShell` now owns explicit `guide`, `policy`, and `utility` presentation variants, an optional instructional header image, a configurable contents label, and an optional initially expanded mobile contents index.
+- `/help/sizing`, `/help/application`, and `/help/removal` use compact illustrated headers, `In this guide` navigation, stronger chapter rhythm, slimmer callouts, and the existing instructional imagery. Application keeps all nine steps and both glue/tab paths, but the clipped horizontal step rail and its unused CSS were removed.
+- `/help/shipping-returns` uses the factual policy variant and begins with an `At a glance` summary sourced only from the approved processing, transit, shipping, tracking, and seven-day issue-reporting facts. Detailed issue, lost-package, cancellation, and returns wording remains below.
+- `/help/faq` keeps all 16 canonical questions, their three categories, Radix single-open behavior, related guides, and Contact Support. The three-category mobile index is expanded initially for faster scanning.
+- `/help/contact` now begins with `What do you need help with?` and three paths for fit, order, and damaged/incorrect/defective items. The exact support checklist follows, and one final email CTA uses the existing public address without promising a response time.
+- Article-level related links and support CTAs now use one lighter editorial treatment. Inline guide/contact actions and the back control keep 44px mobile interaction targets. Desktop retains the same shared sidebar and a coherent two-column article layout without a separate desktop redesign.
+- No Help route, canonical answer, approved fact, policy rule, support address, related-guide relationship, dependency, or instructional asset was removed or duplicated.
+
+Verification for this pass:
+
+- Focused Help verification passed: 3 files and 46 tests.
+- The full suite passed at the initial Help checkpoint with 25 files and 222 tests. Later, concurrent unrelated Product-page edits changed the shared working tree; the final full-suite rerun had 216 passing tests and six Product-only failures across `ProductCard`, `ProductKitDrawers`, `ProductPage`, and `ShopPage`. The Help tests remained green and the Product work was intentionally not changed in this pass.
+- `npm run build`: passed against the final shared working tree.
+- Browser review covered every canonical Help article at `393x852`, `320x852`, and `1440x1000`. Every checked route had one H1, zero page-level horizontal overflow, no broken image, no duplicate ID, and no empty link.
+- The mobile contents disclosure and anchor handoff, FAQ single-open behavior, support mailto, guide/policy/utility headers, Application glue/tab/aftercare sections, Shipping issue path, and narrow-mobile tap targets were inspected in the browser. The console showed only the existing React Router future-flag warnings.
+- `npm audit --audit-level=moderate` still reports the existing six dependency advisories (1 low, 1 moderate, 4 high). Dependencies were unchanged.
+
 ## New Chat Starting Point
 
 Treat the Press-On Guide as the newest integrated customer journey and preserve its shared facts/routes/components unless the founder reopens them. Home-page visual work remains a separate ongoing pass.

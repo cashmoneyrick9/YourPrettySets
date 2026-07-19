@@ -11,10 +11,18 @@ type HelpArticleShellProps = {
   children: ReactNode;
   className?: string;
   contents?: readonly HelpContentsItem[];
+  contentsDefaultOpen?: boolean;
+  contentsLabel?: string;
   eyebrow: string;
+  heroMedia?: {
+    alt: string;
+    caption?: string;
+    src: string;
+  };
   intro: ReactNode;
   lastUpdated?: string | false;
   title: string;
+  variant?: "guide" | "policy" | "utility";
 };
 
 function ArticleIntro({ children }: { children: ReactNode }) {
@@ -31,16 +39,20 @@ export function HelpArticleShell({
   children,
   className,
   contents = [],
+  contentsDefaultOpen = false,
+  contentsLabel = "On this page",
   eyebrow,
+  heroMedia,
   intro,
   lastUpdated = helpContentMetadata.lastUpdated,
-  title
+  title,
+  variant = "utility"
 }: HelpArticleShellProps) {
   const titleId = `help-article-${useId().replace(/:/g, "")}-title`;
   const hasContents = contents.length > 0;
 
   return (
-    <main className={cn("help-page help-page--article help-article", className)}>
+    <main className={cn("help-page help-page--article help-article", `help-article--${variant}`, className)}>
       <div className="help-page__inner help-page__inner--article help-article__inner">
         <Link className="help-page__back-link help-article__back-link" to={backTo}>
           <span aria-hidden="true" className="help-article__back-icon">
@@ -50,19 +62,34 @@ export function HelpArticleShell({
         </Link>
 
         <div className={cn("help-article__layout", !hasContents && "help-article__layout--without-contents")}>
-          {hasContents ? <HelpContentsNav items={contents} variant="desktop" /> : null}
+          {hasContents ? <HelpContentsNav items={contents} label={contentsLabel} variant="desktop" /> : null}
 
           <article aria-labelledby={titleId} className="help-article__content">
             <header className="help-page__heading help-article__header">
-              <p className="eyebrow help-article__eyebrow">{eyebrow}</p>
-              <h1 className="help-article__title" id={titleId}>
-                {title}
-              </h1>
-              <ArticleIntro>{intro}</ArticleIntro>
-              {lastUpdated ? <p className="help-article__updated">Last updated {lastUpdated}</p> : null}
+              <div className="help-article__header-copy">
+                <p className="eyebrow help-article__eyebrow">{eyebrow}</p>
+                <h1 className="help-article__title" id={titleId}>
+                  {title}
+                </h1>
+                <ArticleIntro>{intro}</ArticleIntro>
+                {lastUpdated ? <p className="help-article__updated">Last updated {lastUpdated}</p> : null}
+              </div>
+              {heroMedia ? (
+                <figure className="help-article__hero-media">
+                  <img alt={heroMedia.alt} src={heroMedia.src} />
+                  {heroMedia.caption ? <figcaption>{heroMedia.caption}</figcaption> : null}
+                </figure>
+              ) : null}
             </header>
 
-            {hasContents ? <HelpContentsNav items={contents} variant="mobile" /> : null}
+            {hasContents ? (
+              <HelpContentsNav
+                defaultOpen={contentsDefaultOpen}
+                items={contents}
+                label={contentsLabel}
+                variant="mobile"
+              />
+            ) : null}
 
             <div className="help-article__body">{children}</div>
           </article>

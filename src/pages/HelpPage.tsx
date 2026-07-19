@@ -5,7 +5,6 @@ import {
   HelpCallout,
   HelpFactList,
   HelpFaqAccordion,
-  HelpImagePanel,
   HelpIssueChecklist,
   HelpPolicyBlock,
   HelpRelatedLinks,
@@ -88,21 +87,23 @@ const removalContents = [
 ] as const satisfies readonly HelpContentsItem[];
 
 const shippingContents = [
+  { id: "policy-glance", label: "At a glance" },
   { id: "processing-transit", label: "Processing and transit" },
   { id: "shipping-rates", label: "Shipping and tracking" },
-  { id: "returns", label: "Returns" },
   { id: "order-problems", label: "Damaged or incorrect orders" },
   { id: "lost-packages", label: "Lost packages" },
-  { id: "cancellations", label: "Cancellations" }
+  { id: "cancellations", label: "Cancellations" },
+  { id: "returns", label: "Returns" }
 ] as const satisfies readonly HelpContentsItem[];
 
 const contactContents = [
-  { id: "contact-email", label: "Email support" },
+  { id: "contact-paths", label: "Choose your help path" },
   { id: "fit-questions", label: "Fit questions" },
   { id: "order-questions", label: "Order questions" },
   { id: "report-an-issue", label: "Damaged or incorrect items" },
   { id: "what-to-include", label: "What to include" },
-  { id: "self-service", label: "Self-service guides" }
+  { id: "self-service", label: "Self-service guides" },
+  { id: "contact-email", label: "Email support" }
 ] as const satisfies readonly HelpContentsItem[];
 
 export function HelpHubPage() {
@@ -252,11 +253,19 @@ export function SizingGuidePage() {
   return (
     <HelpArticleShell
       contents={sizingContents}
+      contentsLabel="In this guide"
       eyebrow={helpRoutes.sizing.eyebrow}
+      heroMedia={{
+        alt: "Twenty-four pale blush press-on nails arranged from larger to smaller sizes",
+        caption: `The ${sizingFacts.readyToWearNailCount}-nail ready-to-wear format gives you multiple sizes to compare before application.`,
+        src: "/assets/nail-size-set.png"
+      }}
       intro={helpRoutes.sizing.summary}
       title={helpRoutes.sizing.title}
+      variant="guide"
     >
       <HelpSection
+        eyebrow="Chapter 01"
         id="sizing-system"
         title="How the sizing system works"
         intro={`YourPrettySets preset nail sizes span ${sizingFacts.presetRange}. The number identifies the nail size. Because the storefront does not yet have an approved measurement chart, compare physical samples with a sizing kit when you need an exact match.`}
@@ -270,21 +279,18 @@ export function SizingGuidePage() {
       </HelpSection>
 
       <HelpSection
+        eyebrow="Chapter 02"
         id="ready-to-wear-fit"
         title="Ready-to-wear sets give you a broad range"
         intro={`Every ready-to-wear set contains ${sizingFacts.readyToWearNailCount} nails. The broad ${sizingFacts.presetRange} range is intended to reduce sizing problems, while recognizing that individual fit can still vary.`}
       >
-        <HelpImagePanel
-          alt="Twenty-four pale blush press-on nails arranged from larger to smaller sizes"
-          caption={`The ${sizingFacts.readyToWearNailCount}-nail ready-to-wear format gives you multiple sizes to compare before application.`}
-          src="/assets/nail-size-set.png"
-        />
         <HelpCallout variant="tip">
           <p>Lay out the best match for every finger before applying any glue or adhesive tab.</p>
         </HelpCallout>
       </HelpSection>
 
       <HelpSection
+        eyebrow="Chapter 03"
         id="sizing-kit"
         title="When to use a sizing kit"
         intro="A sizing kit lets you compare physical samples before a future order."
@@ -316,7 +322,7 @@ export function SizingGuidePage() {
         </HelpCallout>
       </HelpSection>
 
-      <HelpSection id="fit-responsibility" title="If a selected size is wrong">
+      <HelpSection eyebrow="Chapter 04" id="fit-responsibility" title="If a selected size is wrong">
         <HelpPolicyBlock
           title="A fair fit approach"
           intro={`Ready-to-wear ${sizingFacts.readyToWearNailCount}-nail sets and sizing kits are provided to reduce sizing risk.`}
@@ -329,7 +335,7 @@ export function SizingGuidePage() {
         </HelpPolicyBlock>
       </HelpSection>
 
-      <HelpSection id="fit-help" title="When you are unsure">
+      <HelpSection eyebrow="Chapter 05" id="fit-help" title="When you are unsure">
         <HelpIssueChecklist
           title="Send a useful fit question"
           intro="Before ordering or applying, email support with:"
@@ -351,21 +357,18 @@ export function ApplicationGuidePage() {
   return (
     <HelpArticleShell
       className="help-application--guided"
+      contents={applicationContents}
+      contentsLabel="In this guide"
       eyebrow={helpRoutes.application.eyebrow}
+      heroMedia={{
+        alt: "Press-on application supplies with adhesive tabs, nail glue, alcohol wipe, file, cuticle stick, and storage case",
+        caption: "Both application methods are included, so choose one path for this wear.",
+        src: "/assets/kit-contents-spread-v2.png"
+      }}
       intro={helpRoutes.application.summary}
       title={helpRoutes.application.title}
+      variant="guide"
     >
-      <nav aria-label="Application steps" className="application-jump-nav">
-        <p>Application steps</p>
-        <ol>
-          {applicationContents.map((item, index) => (
-            <li key={item.id}>
-              <a href={`#${item.id}`}><span>{index + 1}</span>{item.label}</a>
-            </li>
-          ))}
-        </ol>
-      </nav>
-
       <section className="application-step application-step--included" id="included" aria-labelledby="included-title">
         <div className="application-step__content">
           <p className="application-step__eyebrow">Step 01</p>
@@ -375,10 +378,6 @@ export function ApplicationGuidePage() {
             {includedSetItems.map((item) => <li key={item}>{item}</li>)}
           </ul>
         </div>
-        <figure className="application-step__image">
-          <img alt="Press-on application supplies with adhesive tabs, nail glue, alcohol wipe, file, cuticle stick, and storage case" src="/assets/kit-contents-spread-v2.png" />
-          <figcaption>Both application methods are included, so choose one path for this wear.</figcaption>
-        </figure>
       </section>
 
       <section className="application-step" id="choose-adhesive" aria-labelledby="choose-adhesive-title">
@@ -508,23 +507,25 @@ export function RemovalGuidePage() {
   return (
     <HelpArticleShell
       contents={removalContents}
+      contentsLabel="In this guide"
       eyebrow={helpRoutes.removal.eyebrow}
+      heroMedia={{
+        alt: "Fingertips with pale blush press-ons resting in a shallow bowl of comfortably warm water",
+        caption: "Warm-water soaking can assist adhesive-tab removal. It is not the glue-removal method.",
+        src: "/assets/help/remove-adhesive-tabs-warm-water.jpg"
+      }}
       intro={helpRoutes.removal.summary}
       title={helpRoutes.removal.title}
+      variant="guide"
     >
-      <HelpSection id="removal-principles" title="Start with the adhesive you used">
+      <HelpSection eyebrow="Chapter 01" id="removal-principles" title="Start with the adhesive you used">
         <HelpCallout variant="important" title="Never force a press-on off">
           <p>Do not pull, peel, or pry through resistance. Stop and reassess whenever a nail does not release easily.</p>
         </HelpCallout>
         <p>Keep track of whether the set was applied with adhesive tabs or nail glue. The two methods do not share the same removal guidance.</p>
       </HelpSection>
 
-      <HelpSection id="remove-tabs" title="Remove adhesive tabs with warm-water assistance">
-        <HelpImagePanel
-          alt="Fingertips with pale blush press-ons resting in a shallow bowl of comfortably warm water"
-          caption="Warm-water soaking can assist adhesive-tab removal. It is not the glue-removal method."
-          src="/assets/help/remove-adhesive-tabs-warm-water.jpg"
-        />
+      <HelpSection eyebrow="Chapter 02" id="remove-tabs" title="Remove adhesive tabs with warm-water assistance">
         <HelpStepList
           items={[
             { title: "Use comfortably warm water", body: "Rest the fingertips in a shallow bowl of comfortably warm—not hot—water." },
@@ -535,7 +536,7 @@ export function RemovalGuidePage() {
         />
       </HelpSection>
 
-      <HelpSection id="remove-glue" title="Nail-glue removal is still being finalized">
+      <HelpSection eyebrow="Chapter 03" id="remove-glue" title="Nail-glue removal is still being finalized">
         <HelpCallout variant="status" title="A YourPrettySets removal product is in development">
           <p>
             The planned glue-removal solution is coming soon. It is not available, not currently included, and does not
@@ -551,7 +552,7 @@ export function RemovalGuidePage() {
         />
       </HelpSection>
 
-      <HelpSection id="clean-store" title="Clean and store the press-ons carefully">
+      <HelpSection eyebrow="Chapter 04" id="clean-store" title="Clean and store the press-ons carefully">
         <HelpStepList
           items={[
             { title: "Check each press-on", body: "Set aside any nail that is cracked, warped, or otherwise no longer physically suitable for reuse." },
@@ -562,7 +563,7 @@ export function RemovalGuidePage() {
         />
       </HelpSection>
 
-      <HelpSection id="reuse-expectations" title="Reuse depends on the condition of the set">
+      <HelpSection eyebrow="Chapter 05" id="reuse-expectations" title="Reuse depends on the condition of the set">
         <HelpPolicyBlock title="Reusable, without a promised wear count">
           <p>
             YourPrettySets sets are marketed as reusable when they are removed correctly, cleaned properly, stored carefully,
@@ -571,7 +572,7 @@ export function RemovalGuidePage() {
         </HelpPolicyBlock>
       </HelpSection>
 
-      <HelpSection id="stop-and-contact" title="Stop and contact support when">
+      <HelpSection eyebrow="Chapter 06" id="stop-and-contact" title="Stop and contact support when">
         <HelpIssueChecklist
           title="Ask before continuing"
           items={[
@@ -593,45 +594,44 @@ export function ShippingReturnsPage() {
   return (
     <HelpArticleShell
       contents={shippingContents}
+      contentsLabel="Order help"
       eyebrow={helpRoutes.shippingReturns.eyebrow}
       intro={helpRoutes.shippingReturns.summary}
       title={helpRoutes.shippingReturns.title}
+      variant="policy"
     >
       <HelpSection
-        id="processing-transit"
-        title="Processing comes before carrier transit"
-        intro="Processing is the time used to prepare your order. Transit begins after the carrier receives it."
+        className="help-policy-glance"
+        eyebrow="Key facts"
+        id="policy-glance"
+        title="At a glance"
+        intro="The current timing, shipping, tracking, and issue-reporting details in one place."
       >
         <HelpFactList
           items={[
             { label: "Ready-to-ship processing", value: `Approximately ${shippingFacts.readyToShipProcessing}` },
             { label: "Made-to-order processing", value: `Approximately ${shippingFacts.madeToOrderProcessing}` },
             { label: "Carrier transit", value: `Approximately ${shippingFacts.carrierTransit}`, detail: "Separate from processing and not a guaranteed delivery date." },
-            { label: "Custom orders", value: "Timing varies", detail: `${shippingFacts.customOrderTiming}. Custom orders are currently ${sizingFacts.customOrdersStatusLabel.toLowerCase()}.` }
+            { label: `Orders below $${shippingFacts.freeShippingThreshold}`, value: `Temporary flat rate of ${shippingFacts.flatRateLabel.toLowerCase()}` },
+            { label: `Orders $${shippingFacts.freeShippingThreshold}+`, value: shippingFacts.freeShippingLabel },
+            { label: "Tracking", value: shippingFacts.trackingLabel },
+            { label: "Report an order issue", value: `Within ${orderPolicyFacts.issueReportingWindowDays} days of confirmed delivery` }
           ]}
         />
+      </HelpSection>
+
+      <HelpSection
+        id="processing-transit"
+        title="Processing comes before carrier transit"
+        intro="Processing is the time used to prepare your order. Transit begins after the carrier receives it."
+      >
+        <p>{shippingFacts.customOrderTiming}. Custom orders are currently {sizingFacts.customOrdersStatusLabel.toLowerCase()}.</p>
       </HelpSection>
 
       <HelpSection id="shipping-rates" title="Shipping rates and tracking">
-        <HelpFactList
-          items={[
-            { label: `Orders below $${shippingFacts.freeShippingThreshold}`, value: `Temporary flat rate of ${shippingFacts.flatRateLabel.toLowerCase()}` },
-            { label: `Orders $${shippingFacts.freeShippingThreshold}+`, value: shippingFacts.freeShippingLabel },
-            { label: "Tracking", value: shippingFacts.trackingLabel }
-          ]}
-        />
         <HelpCallout variant="tip" title="Carrier estimates can change">
           <p>Tracking is the best current source after shipment, but a carrier estimate is not a guaranteed arrival date.</p>
         </HelpCallout>
-      </HelpSection>
-
-      <HelpSection id="returns" title="Handmade sets and standard returns">
-        <HelpPolicyBlock title="Standard returns are not accepted">
-          <p>
-            Because the sets are handmade, standard returns are not accepted. Product and fulfillment problems are still
-            reviewed fairly through the issue process below.
-          </p>
-        </HelpPolicyBlock>
       </HelpSection>
 
       <HelpSection id="order-problems" title="Damaged, incorrect, or defective items">
@@ -669,6 +669,15 @@ export function ShippingReturnsPage() {
         </p>
       </HelpSection>
 
+      <HelpSection id="returns" title="Handmade sets and standard returns">
+        <HelpPolicyBlock title="Standard returns are not accepted">
+          <p>
+            Because the sets are handmade, standard returns are not accepted. Product and fulfillment problems are still
+            reviewed fairly through the issue process above.
+          </p>
+        </HelpPolicyBlock>
+      </HelpSection>
+
       <StandardArticleEnding routeId="shippingReturns" />
     </HelpArticleShell>
   );
@@ -683,9 +692,12 @@ export function FaqPage() {
   return (
     <HelpArticleShell
       contents={faqContents}
+      contentsDefaultOpen
+      contentsLabel="Browse questions"
       eyebrow={helpRoutes.faq.eyebrow}
       intro={helpRoutes.faq.summary}
       title={helpRoutes.faq.title}
+      variant="utility"
     >
       {helpFaqGroups.map((group, index) => (
         <HelpSection
@@ -709,38 +721,59 @@ export function FaqPage() {
 export function ContactSupportPage() {
   return (
     <HelpArticleShell
+      className="help-contact--utility"
       contents={contactContents}
+      contentsLabel="On this page"
       eyebrow={helpRoutes.contact.eyebrow}
       intro={helpRoutes.contact.summary}
       title={helpRoutes.contact.title}
+      variant="utility"
     >
-      <HelpSection id="contact-email" title="Email the public support address">
-        <div className="help-contact-email">
-          <a className="help-contact-email__link" href={supportDetails.mailto}>{supportDetails.email}</a>
-          <p>Support does not publish a guaranteed response time. Clear, complete details make the question easier to review.</p>
+      <section aria-labelledby="contact-paths-title" className="help-contact-paths" id="contact-paths">
+        <header className="help-contact-paths__header">
+          <p className="help-section__eyebrow">Start here</p>
+          <h2 id="contact-paths-title">What do you need help with?</h2>
+          <p>Choose the closest path so you can gather the right details before emailing support.</p>
+        </header>
+
+        <div className="help-contact-paths__list">
+          <article className="help-contact-path" id="fit-questions">
+            <span aria-hidden="true">01</span>
+            <div>
+              <h3>Fit question</h3>
+              <p>
+                Name the set or sizing product, explain which finger or size is uncertain, and say whether the question is
+                about a ready-to-wear set or the custom-order waitlist.
+              </p>
+              <Link to="/help/sizing">Review Find Your Fit <span aria-hidden="true">→</span></Link>
+            </div>
+          </article>
+
+          <article className="help-contact-path" id="order-questions">
+            <span aria-hidden="true">02</span>
+            <div>
+              <h3>Order question</h3>
+              <p>
+                Include the name and email used for the order, the order number if available, and a clear description of
+                what you need help understanding. For timing, tracking, cancellations, or delivery problems, review the
+                order-help guide first.
+              </p>
+              <Link to="/help/shipping-returns">Review order help <span aria-hidden="true">→</span></Link>
+            </div>
+          </article>
+
+          <article className="help-contact-path" id="report-an-issue">
+            <span aria-hidden="true">03</span>
+            <div>
+              <h3>Damaged, incorrect, or defective item</h3>
+              <HelpCallout variant="important" title={`Report the issue within ${orderPolicyFacts.issueReportingWindowDays} days`}>
+                <p>The reporting period begins at confirmed delivery. Cases are reviewed individually.</p>
+              </HelpCallout>
+              <p>Describe what arrived, what is wrong, and which part of the order is affected. Add clear photos that show the problem.</p>
+            </div>
+          </article>
         </div>
-      </HelpSection>
-
-      <HelpSection id="fit-questions" title="For a fit question">
-        <p>
-          Name the set or sizing product, explain which finger or size is uncertain, and say whether the question is about
-          a ready-to-wear set or the custom-order waitlist. Review <Link to="/help/sizing">Find Your Fit</Link> first.
-        </p>
-      </HelpSection>
-
-      <HelpSection id="order-questions" title="For an order question">
-        <p>
-          Include the name and email used for the order, the order number if available, and a clear description of what
-          you need help understanding. For timing, tracking, cancellations, or delivery problems, review the order-help guide first.
-        </p>
-      </HelpSection>
-
-      <HelpSection id="report-an-issue" title="For a damaged, incorrect, or defective item">
-        <HelpCallout variant="important" title={`Report the issue within ${orderPolicyFacts.issueReportingWindowDays} days`}>
-          <p>The reporting period begins at confirmed delivery. Cases are reviewed individually.</p>
-        </HelpCallout>
-        <p>Describe what arrived, what is wrong, and which part of the order is affected. Add clear photos that show the problem.</p>
-      </HelpSection>
+      </section>
 
       <HelpSection id="what-to-include" title="What to include in your email">
         <HelpIssueChecklist
@@ -760,11 +793,13 @@ export function ContactSupportPage() {
         <HelpRelatedLinks links={articleRelatedLinks("contact")} title="Self-service help" />
       </div>
 
-      <aside className="help-contact-final" aria-labelledby="help-contact-final-title">
-        <h2 id="help-contact-final-title">Ready to contact support?</h2>
-        <a className="help-contact-final__link" href={supportDetails.mailto}>
-          Email {supportDetails.email} <span aria-hidden="true">→</span>
-        </a>
+      <aside className="help-contact-final" id="contact-email" aria-labelledby="help-contact-final-title">
+        <div>
+          <p className="help-section__eyebrow">Email support</p>
+          <h2 id="help-contact-final-title">Ready to contact support?</h2>
+          <p>Support does not publish a guaranteed response time. Clear, complete details make the question easier to review.</p>
+        </div>
+        <a className="help-contact-final__link" href={supportDetails.mailto}>Email {supportDetails.email} <span aria-hidden="true">→</span></a>
       </aside>
     </HelpArticleShell>
   );

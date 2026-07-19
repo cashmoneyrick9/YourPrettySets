@@ -666,6 +666,21 @@ describe("small mobile responsive CSS", () => {
     expect(mobileHelpStyles).toContain(".help-contents__link {\n    min-height: 44px;");
   });
 
+  it("gives Help guides, policy, and utility pages one mobile editorial system", () => {
+    const helpArticleStart = styles.indexOf("/* Shared editorial Help articles: guide, policy, and utility variants. */");
+    const shopStart = styles.indexOf(".shop-page {", helpArticleStart);
+    const helpArticleStyles = styles.slice(helpArticleStart, shopStart);
+    const backLinkRule = getRuleBody(styles, ".help-article__back-link");
+
+    expect(helpArticleStyles).toContain(".help-article--guide .help-article__header");
+    expect(helpArticleStyles).toContain(".help-policy-glance .help-fact-list");
+    expect(helpArticleStyles).toContain(".help-contact-paths__list");
+    expect(helpArticleStyles).toContain(".help-page--article {\n    padding: var(--mobile-header-offset) 0 56px;");
+    expect(helpArticleStyles).toContain(".help-article--utility .help-contents--mobile");
+    expect(helpArticleStyles).toContain("@media (max-width: 360px)");
+    expect(backLinkRule).toContain("min-height: 44px;");
+  });
+
   it("keeps the FAQ Help section aligned to the shared neutral system", () => {
     const faqStart = styles.indexOf(".faq-help {");
     const footerStart = styles.indexOf(".site-shell .site-footer", faqStart);

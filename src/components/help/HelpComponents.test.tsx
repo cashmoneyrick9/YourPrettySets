@@ -21,9 +21,13 @@ describe("Help article primitives", () => {
       <MemoryRouter>
         <HelpArticleShell
           contents={[{ id: "prepare", label: "Prepare your nails" }]}
+          contentsDefaultOpen
+          contentsLabel="In this guide"
           eyebrow="Apply and care"
+          heroMedia={{ alt: "Application kit", src: "/assets/kit.png" }}
           intro="A short, task-focused guide."
           title="Apply Your Set"
+          variant="guide"
         >
           <HelpSection id="prepare" title="Prepare your nails">
             <HelpStepList
@@ -49,7 +53,10 @@ describe("Help article primitives", () => {
     expect(screen.getByText(`Last updated ${helpContentMetadata.lastUpdated}`)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Back to Press-On Guide/ })).toHaveAttribute("href", "/help");
     expect(screen.getAllByRole("link", { name: "Prepare your nails" })).toHaveLength(2);
-    expect(document.querySelector("details.help-contents--mobile > summary")).toHaveTextContent("On this page");
+    expect(document.querySelector(".help-article--guide")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Application kit" })).toHaveAttribute("src", "/assets/kit.png");
+    expect(document.querySelector("details.help-contents--mobile")).toHaveAttribute("open");
+    expect(document.querySelector("details.help-contents--mobile > summary")).toHaveTextContent("In this guide");
     const stepList = document.querySelector(".help-step-list");
     expect(stepList).toHaveAttribute("start", "1");
     expect(within(stepList as HTMLElement).getAllByRole("listitem")).toHaveLength(2);

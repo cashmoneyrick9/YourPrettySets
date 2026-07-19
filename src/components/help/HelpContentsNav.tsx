@@ -1,7 +1,8 @@
-import { useId, useRef } from "react";
+import { useId, useState } from "react";
 import type { HelpContentsItem } from "./types";
 
 type HelpContentsNavProps = {
+  defaultOpen?: boolean;
   items: readonly HelpContentsItem[];
   label?: string;
   variant?: "desktop" | "mobile";
@@ -21,13 +22,22 @@ function ContentsLinks({ items, onNavigate }: Pick<HelpContentsNavProps, "items"
   );
 }
 
-export function HelpContentsNav({ items, label = "On this page", variant = "desktop" }: HelpContentsNavProps) {
+export function HelpContentsNav({
+  defaultOpen = false,
+  items,
+  label = "On this page",
+  variant = "desktop"
+}: HelpContentsNavProps) {
   const labelId = `help-contents-${useId().replace(/:/g, "")}`;
-  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const [mobileOpen, setMobileOpen] = useState(defaultOpen);
 
   if (variant === "mobile") {
     return (
-      <details className="help-contents help-contents--mobile" ref={detailsRef}>
+      <details
+        className="help-contents help-contents--mobile"
+        onToggle={(event) => setMobileOpen(event.currentTarget.open)}
+        open={mobileOpen}
+      >
         <summary className="help-contents__summary">
           <span>{label}</span>
           <span aria-hidden="true" className="help-contents__summary-icon">
@@ -35,7 +45,7 @@ export function HelpContentsNav({ items, label = "On this page", variant = "desk
           </span>
         </summary>
         <nav aria-label={label} className="help-contents__nav help-contents__nav--mobile">
-          <ContentsLinks items={items} onNavigate={() => detailsRef.current?.removeAttribute("open")} />
+          <ContentsLinks items={items} onNavigate={() => setMobileOpen(false)} />
         </nav>
       </details>
     );
