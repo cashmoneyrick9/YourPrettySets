@@ -3,12 +3,17 @@ import { ArrowLeft, Check, Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaqSection } from "../components/FaqSection";
 import { KitContents } from "../components/KitContents";
+import { ProductArrivalEstimate } from "../components/ProductArrivalEstimate";
+import { ProductBenefits } from "../components/ProductBenefits";
+import { ProductKitDrawers } from "../components/ProductKitDrawers";
 import { ProductMediaGallery } from "../components/ProductMediaGallery";
-import { findProductBySlug } from "../data/products";
+import { RelatedProducts } from "../components/RelatedProducts";
+import { findProductBySlug, getProductVariant } from "../data/products";
 import type { Product, SizingKitProduct } from "../data/products";
-import { shippingFacts, sizingFacts } from "../data/storefrontFacts";
+import { sizingFacts } from "../data/storefrontFacts";
 
 const productOptionDragThreshold = 12;
+const showLegacyProductSections = false;
 
 function ProductOptionGroup<Option extends string>({
   label,
@@ -232,9 +237,7 @@ function ProductBuyingFlow({ product }: { product: Product }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const routeState = location.state as { fromHome?: boolean; fromShop?: boolean } | null;
   const openedFromPreviousPage = Boolean(routeState?.fromHome || routeState?.fromShop);
-  const turnaroundLabel = product.orderType === "ready-to-ship"
-    ? `Ships in ${shippingFacts.readyToShipProcessing}`
-    : `Made in ${shippingFacts.madeToOrderProcessing}`;
+  const selectedVariant = getProductVariant(product, selectedShape, selectedLength);
 
   function handleBackToShop() {
     if (openedFromPreviousPage) {
@@ -265,13 +268,14 @@ function ProductBuyingFlow({ product }: { product: Product }) {
               <p className="product-page__price">${product.price}</p>
             </div>
             <p className="product-page__description">{product.description}</p>
-            <p className="product-page__turnaround">
-              <span aria-hidden="true" className="product-page__turnaround-dot" />
-              {turnaroundLabel}
-            </p>
+            <ProductArrivalEstimate orderType={product.orderType} />
           </div>
 
-          <section className="product-page__style-selector" aria-labelledby="product-style-title">
+          <section
+            aria-labelledby="product-style-title"
+            className="product-page__style-selector"
+            data-selected-sku={selectedVariant.sku}
+          >
             <div className="product-page__style-header">
               <h2 id="product-style-title">Choose your style</h2>
               <p
@@ -283,20 +287,22 @@ function ProductBuyingFlow({ product }: { product: Product }) {
               </p>
             </div>
 
-            <ProductOptionGroup
-              label="Shape"
-              optionKind="shape"
-              onSelect={setSelectedShape}
-              options={product.shapeOptions}
-              selectedOption={selectedShape}
-            />
-            <ProductOptionGroup
-              label="Length"
-              optionKind="length"
-              onSelect={setSelectedLength}
-              options={product.lengthOptions}
-              selectedOption={selectedLength}
-            />
+            <div className="product-page__selector-groups">
+              <ProductOptionGroup
+                label="Shape"
+                optionKind="shape"
+                onSelect={setSelectedShape}
+                options={product.shapeOptions}
+                selectedOption={selectedShape}
+              />
+              <ProductOptionGroup
+                label="Length"
+                optionKind="length"
+                onSelect={setSelectedLength}
+                options={product.lengthOptions}
+                selectedOption={selectedLength}
+              />
+            </div>
             <Link className="product-page__fit-help" to="/help/sizing">
               <span>Not sure?</span>
               <span className="product-page__fit-link">Find your size</span>
@@ -318,10 +324,22 @@ function ProductBuyingFlow({ product }: { product: Product }) {
               <Heart aria-hidden="true" fill={isFavorite ? "currentColor" : "none"} size={19} strokeWidth={2} />
             </button>
           </div>
+
+          <ProductBenefits />
         </section>
       </div>
-      <KitContents readyToWear={product.orderType === "ready-to-ship"} />
-      <FaqSection />
+
+      <span className="product-page__future-anchor" id="customer-reviews" />
+      <ProductKitDrawers readyToWear={product.orderType === "ready-to-ship"} />
+      <RelatedProducts product={product} />
+
+      {/* Preserved while replacement product-page sections are designed and tested. */}
+      {showLegacyProductSections ? (
+        <>
+          <KitContents readyToWear={product.orderType === "ready-to-ship"} />
+          <FaqSection />
+        </>
+      ) : null}
     </main>
   );
 }

@@ -9,6 +9,7 @@ type HomeShoppingOption = {
   description?: string;
   href: string;
   id: string;
+  image: string;
   label: string;
   products?: Product[];
 };
@@ -18,30 +19,35 @@ const homeShoppingOptions: HomeShoppingOption[] = [
     id: "ready-to-ship",
     label: "Ready to Ship",
     href: "/shop/ready-to-ship",
+    image: "/assets/browse/ready-to-ship.jpg",
     products: products.filter((product) => product.orderType === "ready-to-ship")
   },
   {
     id: "made-to-order",
     label: "Made to Order",
     href: "/shop/made-to-order",
+    image: "/assets/browse/made-to-order.jpg",
     products: products.filter((product) => product.orderType === "made-to-order")
   },
   {
     id: "custom-orders",
     label: "Custom Orders",
     href: "/shop/custom-orders",
+    image: "/assets/browse/custom-orders.jpg",
     description: "Start a made-for-you request when you want a specific color story, event, or nail-art idea."
   },
   {
     id: "new-arrivals",
     label: "New Arrivals",
     href: "/shop?collection=New%20Arrivals",
+    image: "/assets/browse/new-arrivals.jpg",
     products: newArrivals
   },
   {
     id: "best-sellers",
     label: "Best Sellers",
     href: "/shop",
+    image: "/assets/browse/best-sellers.jpg",
     products: featuredProducts
   }
 ];
@@ -101,7 +107,7 @@ export function HomeCollections() {
               }}
               type="button"
             >
-              <span className="collection-card__image" aria-hidden="true" />
+              <img alt="" aria-hidden="true" className="collection-card__image" src={option.image} />
               <span className="collection-card__label">{option.label}</span>
             </button>
           );

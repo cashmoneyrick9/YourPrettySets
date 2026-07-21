@@ -1,6 +1,6 @@
 import type { PointerEvent as ReactPointerEvent, WheelEvent as ReactWheelEvent } from "react";
 import { useEffect, useRef, useState } from "react";
-import { Maximize2, Minus, Play, Plus, RotateCcw, X } from "lucide-react";
+import { ArrowRight, Maximize2, Minus, Play, Plus, RotateCcw, Star, X } from "lucide-react";
 import { Dialog } from "radix-ui";
 import type { Product } from "../data/products";
 
@@ -36,7 +36,16 @@ type ProductVideoMedia = {
   thumbnailLabel: string;
 };
 
-type ProductMediaItem = ProductImageMedia | ProductVideoMedia;
+type ProductCustomerMedia = {
+  customerName: string;
+  id: "customer";
+  kind: "customer";
+  metadata: string;
+  src: string;
+  thumbnailLabel: string;
+};
+
+type ProductMediaItem = ProductCustomerMedia | ProductImageMedia | ProductVideoMedia;
 
 type DragGesture = {
   kind: "drag";
@@ -72,7 +81,7 @@ function getMidpoint(first: Point, second: Point): Point {
 function getMediaItems(product: Product): ProductMediaItem[] {
   return [
     {
-      alt: `${product.name} image placeholder`,
+      alt: product.images.clean,
       id: "clean",
       kind: "image",
       src: product.media?.clean,
@@ -80,7 +89,7 @@ function getMediaItems(product: Product): ProductMediaItem[] {
       zoomLabel: `Zoom ${product.name} image`
     },
     {
-      alt: `${product.name} editorial image placeholder`,
+      alt: product.images.editorial,
       id: "editorial",
       kind: "image",
       src: product.media?.editorial,
@@ -95,6 +104,14 @@ function getMediaItems(product: Product): ProductMediaItem[] {
       src: product.media?.video?.src,
       thumbnail: product.media?.video?.thumbnail,
       thumbnailLabel: "Show product video"
+    },
+    {
+      customerName: "Maya",
+      id: "customer",
+      kind: "customer",
+      metadata: "Almond · Extra Short",
+      src: "/assets/placeholders/placeholder-worn-by-soft-blush.jpg",
+      thumbnailLabel: "Show how a customer wears this set"
     }
   ];
 }
@@ -349,7 +366,7 @@ export function ProductMediaGallery({ product }: { product: Product }) {
               <Maximize2 size={18} strokeWidth={1.8} />
             </span>
           </button>
-        ) : (
+        ) : selectedMedia.kind === "video" ? (
           <div className="product-page__video-shell">
             <video
               aria-label={selectedMedia.label}
@@ -365,6 +382,25 @@ export function ProductMediaGallery({ product }: { product: Product }) {
               </span>
             ) : null}
           </div>
+        ) : (
+          <article className="product-page__customer-slide">
+            <img
+              alt={`Customer wearing a soft blush press-on nail set in ${selectedMedia.metadata}`}
+              src={selectedMedia.src}
+            />
+            <div className="product-page__customer-slide-copy">
+              <div aria-label="5 out of 5 stars" className="product-page__customer-stars">
+                {Array.from({ length: 5 }, (_, index) => (
+                  <Star aria-hidden="true" fill="currentColor" key={index} size={13} strokeWidth={1.5} />
+                ))}
+              </div>
+              <p>Worn by {selectedMedia.customerName}</p>
+              <span>{selectedMedia.metadata}</span>
+              <a href="#customer-reviews">
+                See customer reviews <ArrowRight aria-hidden="true" size={16} strokeWidth={1.8} />
+              </a>
+            </div>
+          </article>
         )}
       </div>
 
@@ -383,7 +419,7 @@ export function ProductMediaGallery({ product }: { product: Product }) {
           >
             {item.kind === "image" ? (
               item.src ? <img alt="" src={item.src} /> : <span aria-hidden="true" />
-            ) : (
+            ) : item.kind === "video" ? (
               <span className="product-page__media-video-thumbnail">
                 {item.thumbnail ? <img alt="" src={item.thumbnail} /> : null}
                 <Play
@@ -392,6 +428,11 @@ export function ProductMediaGallery({ product }: { product: Product }) {
                   fill="currentColor"
                   size={20}
                 />
+              </span>
+            ) : (
+              <span className="product-page__media-customer-thumbnail">
+                <img alt="" src={item.src} />
+                <small>Worn by</small>
               </span>
             )}
           </button>

@@ -235,11 +235,14 @@ describe("small mobile responsive CSS", () => {
     const productsRule = getRuleBody(styles, ".collection-products");
 
     expect(cardRule).toContain("transition:");
+    expect(cardRule).toContain("min-height: 100px;");
     expect(cardRule).toContain("background 220ms ease");
     expect(cardRule).toContain("color 220ms ease");
     expect(activeCardRule).toContain("background: #101417;");
     expect(activeCardRule).toContain("transform: translateY(-1px) scale(1.015);");
-    expect(activeOverlayRule).toContain("background: rgba(16, 20, 23, 0.88);");
+    expect(activeOverlayRule).toContain(
+      "background: linear-gradient(180deg, rgba(16, 20, 23, 0.18), rgba(16, 20, 23, 0.52));"
+    );
     expect(activeLabelRule).toContain("color: #ffffff;");
     expect(productsRule).toContain("animation: collection-products-enter 220ms ease both;");
     expect(styles).toContain("@keyframes collection-products-enter");
@@ -273,6 +276,33 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("padding-bottom: 0;");
     expect(styles).toContain(".product-page .kit-section {\n  margin-top: 18px;");
     expect(styles).toContain(".product-page + .site-footer-email-shell {\n  padding-top: 0;");
+  });
+
+  it("presents Shape and Length as one compact selector group without an internal divider", () => {
+    const selectorRule = getRuleBody(styles, ".product-page__style-selector");
+    const selectorGroupsRule = getRuleBody(styles, ".product-page__selector-groups");
+    const lengthGroupRule = getRuleBody(styles, ".product-page__option-group--length");
+    const fitHelpRule = getRuleBody(styles, ".product-page__fit-help");
+
+    expect(selectorRule).toContain("gap: 12px;");
+    expect(selectorRule).toContain("padding: 18px var(--space-page-inline) 16px;");
+    expect(selectorGroupsRule).toContain("display: grid;");
+    expect(selectorGroupsRule).toContain("gap: 10px;");
+    expect(lengthGroupRule).toBe("");
+    expect(fitHelpRule).toContain("font-size: var(--type-caption);");
+    expect(fitHelpRule).toContain("min-height: 44px;");
+  });
+
+  it("uses one even border for selected product option cards", () => {
+    const selectedOptionRule = getRuleBody(
+      styles,
+      '.product-page--nail-set .product-page__option-list button[aria-pressed="true"]'
+    );
+
+    expect(selectedOptionRule).toContain("border: 2px solid var(--site-text-primary);");
+    expect(selectedOptionRule).toContain("box-shadow: none;");
+    expect(selectedOptionRule).not.toContain("inset");
+    expect(selectedOptionRule).not.toContain("outline");
   });
 
   it("stacks the product style heading at 320px instead of squeezing its live value", () => {
@@ -352,7 +382,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--hero-mobile-min-height: 540px;");
     expect(styles).toContain(".confidence-section {\n  background: var(--site-page-bg);");
     expect(styles).toContain("margin-top: 0;");
-    expect(styles).toContain("padding: var(--space-section-y-tight) 0 var(--space-section-y-compact);");
+    expect(styles).toContain("padding: clamp(24px, 3.5vw, 36px) 0 clamp(20px, 3vw, 32px);");
     expect(styles).not.toContain("margin-top: clamp(-32px, -5vw, -18px)");
     expect(styles).not.toContain("margin-top: -22px");
     expect(styles).not.toContain("margin-top: -18px");
@@ -396,6 +426,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".confidence-carousel--dragging");
     expect(styles).not.toMatch(/\.confidence-carousel--interacting\s+\.confidence-carousel__track\s*\{[^}]*cursor: grabbing;/);
     expect(styles).toContain("touch-action: pan-x pan-y;");
+    expect(styles).toContain("transform: none !important;");
     expect(styles).not.toMatch(/\.collection-track\s*\{[^}]*scroll-snap-type: x mandatory;/);
     expect(styles).not.toContain("animation: confidence-loop");
     expect(styles).not.toContain(".confidence-carousel--paused .confidence-carousel__track");
@@ -405,9 +436,18 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("overflow: visible;");
     expect(styles).toContain("--confidence-card-width: min(80vw, 306px);");
     expect(styles).toContain("--confidence-card-width: min(78vw, 282px);");
-    expect(styles).toContain("min-height: 172px;");
-    expect(styles).toContain("min-height: 170px;");
-    expect(styles).not.toContain(".confidence-card__visual");
+    expect(styles).toContain("min-height: 356px;");
+    expect(styles).toContain("min-height: 326px;");
+    expect(styles).toContain("min-height: 316px;");
+    expect(styles).toContain(".confidence-card__media");
+    expect(styles).toContain(".confidence-card__media img");
+    expect(styles).not.toContain("--confidence-card-tint");
+    expect(styles).toContain("to top,");
+    expect(styles).toContain("rgba(31, 36, 40, 0.94) 0%");
+    expect(styles).toContain("rgba(93, 111, 122, 0.16) 52%");
+    expect(styles).toContain("transparent 68%");
+    expect(styles).not.toContain("backdrop-filter: blur(10px)");
+    expect(styles).toContain("font-style: italic;");
     expect(styles).not.toContain(".confidence-card__visual--wear");
     expect(styles).not.toContain(".confidence-card__visual--hand");
     expect(styles).not.toContain(".confidence-card__visual-frame");
@@ -415,12 +455,12 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".confidence-card__glue");
     expect(styles).not.toContain(".confidence-card__hand");
     expect(styles).not.toContain(".confidence-card__copy");
-    expect(styles).not.toContain(".confidence-card__body");
+    expect(styles).toContain(".confidence-card__body");
     expect(styles).toContain(".confidence-card__number");
-    expect(styles).toContain(".confidence-card {\n  align-content: center;");
-    expect(styles).toContain(".confidence-card__number {\n  align-items: center;\n  background: transparent;\n  border-radius: 0;\n  color: var(--site-text-primary);");
-    expect(styles).toContain("justify-self: center;");
-    expect(styles).toContain("align-self: center;");
+    expect(styles).toContain(".confidence-card {\n  background: var(--site-surface);");
+    expect(styles).toContain(".confidence-card__number {\n  align-items: center;\n  background: transparent;\n  border-radius: 0;\n  color: rgba(255, 253, 251, 0.78);");
+    expect(styles).toContain("justify-self: start;");
+    expect(styles).toContain("align-self: start;");
     expect(styles).not.toContain(".confidence-card__number {\n  align-items: center;\n  background: var(--site-text-primary);");
     expect(styles).not.toContain("height: 34px;\n  justify-content: center;\n  width: 34px;");
     expect(styles).not.toContain(".confidence-progress");
@@ -595,7 +635,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain("min-height: 158px;");
     expect(styles).toContain("position: absolute;");
     expect(styles).toContain("--type-section-title: 1.8rem;");
-    expect(styles).toContain("padding: var(--space-section-y-tight) 0 var(--space-section-y-compact);");
+    expect(styles).toContain("padding: clamp(24px, 3.5vw, 36px) 0 clamp(20px, 3vw, 32px);");
   });
 
   it("does not force tiny mobile viewports wider than the screen", () => {
@@ -1134,5 +1174,33 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(
       ".brand-header--menu-open .brand-header__mobile-actions .brand-header__icon-button:last-child {\n    display: none;"
     );
+  });
+
+  it("keeps the live product kit controls and content footprint stable while switching", () => {
+    const tabRule = getRuleBody(styles, ".product-kit-showcase__tab");
+    const panelRule = getRuleBody(styles, ".product-kit-showcase__panel");
+    const mediaRule = getRuleBody(styles, ".product-kit-showcase__media");
+    const mediaImageRule = getRuleBody(styles, ".product-kit-showcase__media img");
+    const tabImageRule = getRuleBody(styles, ".product-kit-showcase__tab-media img");
+
+    expect(tabRule).toContain("height: 102px;");
+    expect(panelRule).toContain("height: 205px;");
+    expect(panelRule).toContain("overflow: hidden;");
+    expect(mediaRule).toContain("aspect-ratio: 4 / 5;");
+    expect(mediaRule).toContain("max-width: 320px;");
+    expect(mediaRule).toContain("position: relative;");
+    expect(mediaImageRule).toContain("object-fit: contain;");
+    expect(mediaImageRule).toContain("object-position: center;");
+    expect(mediaImageRule).toContain("position: absolute;");
+    expect(tabImageRule).toContain("object-fit: cover;");
+    expect(styles).toContain("grid-template-rows: 72px minmax(30px, auto);\n    height: 118px;");
+    expect(styles).toContain("grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);\n    height: 420px;");
+  });
+
+  it("removes the temporary product component review styling after selection", () => {
+    expect(styles).not.toContain(".component-review");
+    expect(styles).not.toContain(".review-arrival");
+    expect(styles).not.toContain(".review-benefits");
+    expect(styles).not.toContain(".review-kit");
   });
 });

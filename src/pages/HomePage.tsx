@@ -2,18 +2,29 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FeaturedSets } from "../components/FeaturedSets";
 import { HomeCollections } from "../components/HomeCollections";
+import { HowItWorksSpinningBannerTest } from "../components/HowItWorksSpinningBannerTest";
 import { MobileCarousel } from "../components/MobileCarousel";
 import { ReviewsPolaroidStrip } from "../components/ReviewsPolaroidStrip";
+import { sizingFacts, wearEstimates } from "../data/storefrontFacts";
 
 const confidenceSteps = [
   {
-    number: "1"
+    body: "Choose the shape and length that feels most like you.",
+    imageSrc: "/assets/how-it-works/pick-your-style.jpg",
+    number: "1",
+    title: "Pick your style"
   },
   {
-    number: "2"
+    body: `Ready-to-wear sets include ${sizingFacts.readyToWearNailCount} nails across preset sizes ${sizingFacts.presetRange}.`,
+    imageSrc: "/assets/how-it-works/find-your-fit.jpg",
+    number: "2",
+    title: "Find your fit"
   },
   {
-    number: "3"
+    body: `Use glue for ${wearEstimates.glue} or tabs for ${wearEstimates.tabs}. Both are included.`,
+    imageSrc: "/assets/how-it-works/apply-your-way.jpg",
+    number: "3",
+    title: "Apply your way"
   }
 ];
 
@@ -78,13 +89,20 @@ export function HomePage() {
               data-step-index={stepIndex}
               key={step.number}
             >
-              <span className="confidence-card__number">
-                {step.number}
-              </span>
+              <div className="confidence-card__media">
+                <img alt="" aria-hidden="true" decoding="async" loading="lazy" src={step.imageSrc} />
+              </div>
+              <div className="confidence-card__body">
+                <span className="confidence-card__number">{step.number}</span>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
             </article>
           ))}
         />
       </section>
+
+      <HowItWorksSpinningBannerTest />
 
       <ReviewsPolaroidStrip />
     </main>

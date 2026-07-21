@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildProductVariant,
   collectionLabels,
   detailTiers,
   findProductBySlug,
+  getProductVariant,
   lengthOptions,
   products,
   sizingKitProduct,
@@ -39,7 +41,34 @@ describe("product data", () => {
     for (const product of products) {
       expect(product.lengthOptions).toEqual(lengthOptions);
       expect(product.shapeOptions).toEqual(shapeOptions);
+      expect(product.variants).toHaveLength(shapeOptions.length * lengthOptions.length);
     }
+  });
+
+  it("generates stable unique SKUs for every shape and length combination", () => {
+    const product = products[0];
+    const skus = product.variants?.map((variant) => variant.sku) ?? [];
+
+    expect(new Set(skus).size).toBe(shapeOptions.length * lengthOptions.length);
+    expect(getProductVariant(product, "Almond", "Extra Short")).toMatchObject({
+      availability: "available",
+      length: "Extra Short",
+      shape: "Almond",
+      sku: "BLUSH-CRUSH-ALM-XS"
+    });
+    expect(buildProductVariant("blush-crush", "Coffin", "Medium", { priceOverride: 22 })).toMatchObject({
+      priceOverride: 22,
+      sku: "BLUSH-CRUSH-COF-M"
+    });
+  });
+
+  it("provides a backward-compatible generated variant when stored variants are absent", () => {
+    const legacyProduct = { ...products[0], variants: undefined };
+
+    expect(getProductVariant(legacyProduct, "Oval", "Long")).toMatchObject({
+      availability: "available",
+      sku: "BLUSH-CRUSH-OVL-L"
+    });
   });
 
   it("uses only approved collections and detail tiers", () => {
@@ -59,6 +88,12 @@ describe("product data", () => {
     for (const product of products) {
       expect(product.images.clean).toContain(product.name);
       expect(product.images.editorial).toContain(product.name);
+    }
+  });
+
+  it("gives every catalog product one canonical clean media asset", () => {
+    for (const product of products) {
+      expect(product.media?.clean).toBe(`/assets/products/${product.id}.jpg`);
     }
   });
 });

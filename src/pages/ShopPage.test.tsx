@@ -347,8 +347,10 @@ describe("ShopPage", () => {
 
     expect(firstCard).toHaveClass("product-preview-card");
     expect(firstCard).toHaveAttribute("href", "/products/blush-crush");
-    expect(within(firstCard).getByRole("img", { name: "Clean background placeholder for Blush Crush" })).toBeInTheDocument();
-    expect(within(firstCard).getByRole("img", { name: "Clean background placeholder for Blush Crush" })).toBeEmptyDOMElement();
+    expect(within(firstCard).getByRole("img", { name: products[0].images.clean })).toHaveAttribute(
+      "src",
+      products[0].media?.clean
+    );
     expect(within(firstCard).getByRole("heading", { name: "Blush Crush" })).toBeInTheDocument();
     expect(within(firstCard).getByText("$18")).toBeInTheDocument();
     expect(within(firstCard).queryByText("Popular")).not.toBeInTheDocument();

@@ -22,7 +22,10 @@ describe("ProductPreviewCard", () => {
     expect(card).toHaveClass("shop-product-card");
     expect(card).toHaveClass("product-preview-card");
     expect(card).toHaveAttribute("href", `/products/${products[0].slug}`);
-    expect(within(card).getByRole("img", { name: products[0].images.clean })).toBeEmptyDOMElement();
+    expect(within(card).getByRole("img", { name: products[0].images.clean })).toHaveAttribute(
+      "src",
+      products[0].media?.clean
+    );
     expect(within(card).getByRole("heading", { name: products[0].name })).toBeInTheDocument();
     expect(within(card).getByText(`$${products[0].price}`)).toBeInTheDocument();
     expect(within(card).queryByText(products[0].description)).not.toBeInTheDocument();
@@ -61,7 +64,10 @@ describe("ProductPreviewCard", () => {
     expect(card).toHaveClass("collection-product-card");
     expect(card).toHaveClass("product-preview-card--home");
     expect(card).toHaveAttribute("href", `/products/${products[0].slug}`);
-    expect(within(card).getByRole("img", { name: products[0].images.clean })).toBeEmptyDOMElement();
+    expect(within(card).getByRole("img", { name: products[0].images.clean })).toHaveAttribute(
+      "src",
+      products[0].media?.clean
+    );
     expect(within(card).getByRole("heading", { name: products[0].name })).toBeInTheDocument();
     expect(within(card).getByText(`$${products[0].price}`)).toBeInTheDocument();
     expect(within(card).queryByText(products[0].description)).not.toBeInTheDocument();

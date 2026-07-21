@@ -49,7 +49,11 @@ export function ProductPreviewCard({
       : "product-preview-card__body shop-product-card__body";
   const content = (
     <>
-      <div className={imageClassName} role="img" aria-label={product.images.clean} />
+      {product.media?.clean ? (
+        <img alt={product.images.clean} className={imageClassName} src={product.media.clean} />
+      ) : (
+        <div className={imageClassName} role="img" aria-label={product.images.clean} />
+      )}
       <div className={bodyClassName}>
         <h3>{product.name}</h3>
         <p>${product.price}</p>

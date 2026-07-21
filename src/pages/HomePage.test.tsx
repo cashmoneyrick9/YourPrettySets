@@ -61,18 +61,19 @@ describe("HomePage", () => {
 
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "/shop");
-    expect(screen.getByText("HOW IT WORKS")).toBeInTheDocument();
+    const confidenceSection = document.querySelector(".confidence-section") as HTMLElement;
+    expect(within(confidenceSection).getByText("HOW IT WORKS")).toBeInTheDocument();
     expect(document.querySelectorAll(".confidence-card__number")).toHaveLength(3);
     expect(screen.getByText("1")).toBeInTheDocument();
     expect(screen.getByText("2")).toBeInTheDocument();
     expect(screen.getByText("3")).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Pick your set" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Choose glue or tabs" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Apply and wear" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Browse the ready-to-wear drops and choose the set that matches your plans.")).not.toBeInTheDocument();
-    expect(screen.queryByText("Use nail glue for longer wear or adhesive tabs when you want easier removal.")).not.toBeInTheDocument();
-    expect(screen.queryByText("Prep, press, and keep the included tools nearby for touch-ups or reuse.")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
+    expect(screen.getByRole("heading", { name: "Pick your style" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Find your fit" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Apply your way" })).toBeInTheDocument();
+    expect(screen.getByText("Choose the shape and length that feels most like you.")).toBeInTheDocument();
+    expect(screen.getByText("Ready-to-wear sets include 24 nails across preset sizes 00–14.")).toBeInTheDocument();
+    expect(screen.getByText("Use glue for 1–3+ weeks or tabs for 7–14 days. Both are included.")).toBeInTheDocument();
+    expect(document.querySelectorAll(".confidence-card__body")).toHaveLength(3);
     expect(document.querySelector(".confidence-carousel__track")).toBeInTheDocument();
     expect(document.querySelector(".confidence-progress")).not.toBeInTheDocument();
     expect(document.querySelector(".confidence-carousel__hint")).not.toBeInTheDocument();
@@ -166,10 +167,14 @@ describe("HomePage", () => {
     renderHomePage();
 
     const confidence = screen.getByRole("heading", { name: "3 EASY STEPS" });
+    const bannerTest = screen.getByTestId("how-it-works-banner-test");
     const reviews = screen.getByRole("heading", { name: "Customer keepsakes" });
     const carousel = screen.getByRole("region", { name: "Customer review keepsake carousel" });
 
-    expect(confidence.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(confidence.compareDocumentPosition(bannerTest) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(bannerTest.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(document.querySelectorAll(".confidence-card")).toHaveLength(3);
+    expect(document.querySelectorAll(".how-it-works-banner-test__panel")).toHaveLength(2);
     expect(screen.getByText("CUSTOMER LOVE")).toBeInTheDocument();
     expect(carousel).toHaveClass("mobile-carousel", "reviews-polaroid-carousel");
     expect(carousel).toHaveAttribute("data-auto-rotate", "true");
@@ -262,7 +267,7 @@ describe("HomePage", () => {
     expect(carousel).not.toHaveClass("confidence-carousel--paused");
   });
 
-  it("renders one clean How It Works slide per step without loop-buffer copies", () => {
+  it("renders one image-led How It Works slide per step without loop-buffer copies", () => {
     renderHomePage();
 
     const cards = [...document.querySelectorAll(".confidence-card")];
@@ -270,14 +275,22 @@ describe("HomePage", () => {
     expect(cards.map((card) => card.getAttribute("data-step-index"))).toEqual(["0", "1", "2"]);
     expect(document.querySelectorAll(".confidence-card--loop-buffer")).toHaveLength(0);
     expect(document.querySelectorAll(".confidence-card--repeat")).toHaveLength(0);
-    expect(cards.map((card) => card.textContent?.trim())).toEqual(["1", "2", "3"]);
     expect(document.querySelectorAll(".confidence-card--loop-clone")).toHaveLength(0);
-    expect(document.querySelectorAll(".confidence-card__visual")).toHaveLength(0);
-    expect(document.querySelectorAll(".confidence-card__copy")).toHaveLength(0);
+    expect(document.querySelectorAll(".confidence-card__media")).toHaveLength(3);
+    expect(document.querySelectorAll(".confidence-card__media img")).toHaveLength(3);
+    expect(document.querySelectorAll('.confidence-card__media img[alt=""]')).toHaveLength(3);
+    expect(document.querySelectorAll(".confidence-card__body")).toHaveLength(3);
     expect(document.querySelectorAll(".confidence-card__number")).toHaveLength(3);
-    expect(screen.queryByLabelText("Minimal nail tips arranged in a product tray")).not.toBeInTheDocument();
-    expect(screen.queryByLabelText("Minimal nail glue, adhesive tabs, and cuticle stick")).not.toBeInTheDocument();
-    expect(screen.queryByLabelText("Minimal hand with finished press-on nails")).not.toBeInTheDocument();
+    expect(cards.map((card) => card.querySelector("img")?.getAttribute("src"))).toEqual([
+      "/assets/how-it-works/pick-your-style.jpg",
+      "/assets/how-it-works/find-your-fit.jpg",
+      "/assets/how-it-works/apply-your-way.jpg"
+    ]);
+    expect(cards.map((card) => within(card as HTMLElement).getByRole("heading").textContent)).toEqual([
+      "Pick your style",
+      "Find your fit",
+      "Apply your way"
+    ]);
   });
 
   it("does not render the FAQ on the Home route", () => {

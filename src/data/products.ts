@@ -27,6 +27,18 @@ export type CollectionLabel = (typeof collectionLabels)[number];
 export type DetailTier = (typeof detailTiers)[number]["id"];
 export type OrderType = "ready-to-ship" | "made-to-order";
 
+export type ProductVariantAvailability = "available" | "low-stock" | "sold-out" | "unavailable";
+
+export type ProductVariant = {
+  availability: ProductVariantAvailability;
+  inventoryCount?: number;
+  length: LengthOption;
+  mediaOverride?: ProductPresentation["media"];
+  priceOverride?: number;
+  shape: ShapeOption;
+  sku: string;
+};
+
 type ProductPresentation = {
   id: string;
   name: string;
@@ -57,6 +69,7 @@ export type Product = ProductPresentation & {
   isPopular: boolean;
   lengthOptions: readonly LengthOption[];
   shapeOptions: readonly ShapeOption[];
+  variants?: readonly ProductVariant[];
 };
 
 export type SizingKitProduct = ProductPresentation & {
@@ -70,6 +83,51 @@ const sharedOptions = {
   lengthOptions,
   shapeOptions
 };
+
+const shapeSkuCodes: Record<ShapeOption, string> = {
+  Almond: "ALM",
+  Coffin: "COF",
+  Oval: "OVL",
+  Round: "RND",
+  Square: "SQR",
+  Stiletto: "STL"
+};
+
+const lengthSkuCodes: Record<LengthOption, string> = {
+  "Extra Long": "XL",
+  "Extra Short": "XS",
+  Long: "L",
+  Medium: "M",
+  Short: "S"
+};
+
+export function buildProductVariant(
+  productId: string,
+  shape: ShapeOption,
+  length: LengthOption,
+  overrides: Partial<Omit<ProductVariant, "length" | "shape" | "sku">> = {}
+): ProductVariant {
+  return {
+    availability: "available",
+    length,
+    shape,
+    sku: `${productId.toUpperCase()}-${shapeSkuCodes[shape]}-${lengthSkuCodes[length]}`,
+    ...overrides
+  };
+}
+
+export function generateProductVariants(
+  productId: string,
+  shapes: readonly ShapeOption[] = shapeOptions,
+  lengths: readonly LengthOption[] = lengthOptions
+) {
+  return shapes.flatMap((shape) => lengths.map((length) => buildProductVariant(productId, shape, length)));
+}
+
+export function getProductVariant(product: Product, shape: ShapeOption, length: LengthOption) {
+  return product.variants?.find((variant) => variant.shape === shape && variant.length === length)
+    ?? buildProductVariant(product.id, shape, length);
+}
 
 type ProductSeed = Omit<Product, "kind" | "slug" | "images" | "lengthOptions" | "shapeOptions"> & {
   slug?: string;
@@ -85,9 +143,14 @@ function makeProduct({ slug, ...product }: ProductSeed): Product {
     kind: "nail-set",
     slug: slug ?? toProductSlug(product.name),
     images: {
-      clean: `Clean background placeholder for ${product.name}`,
+      clean: `${product.name} press-on nail set on a cool studio background`,
       editorial: `Stylized editorial placeholder for ${product.name}`
     },
+    media: {
+      clean: `/assets/products/${product.id}.jpg`,
+      ...product.media
+    },
+    variants: generateProductVariants(product.id),
     ...sharedOptions
   };
 }

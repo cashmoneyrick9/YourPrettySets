@@ -109,6 +109,15 @@ describe("HomeCollections", () => {
     for (const option of ["Made to Order", "Custom Orders", "New Arrivals", "Best Sellers"]) {
       expect(screen.getByRole("button", { name: option })).toHaveAttribute("aria-pressed", "false");
     }
+    const browseImages = Array.from(document.querySelectorAll<HTMLImageElement>(".collection-card__image"));
+    expect(browseImages.map((image) => image.getAttribute("src"))).toEqual([
+      "/assets/browse/ready-to-ship.jpg",
+      "/assets/browse/made-to-order.jpg",
+      "/assets/browse/custom-orders.jpg",
+      "/assets/browse/new-arrivals.jpg",
+      "/assets/browse/best-sellers.jpg"
+    ]);
+    expect(browseImages.every((image) => image.getAttribute("alt") === "")).toBe(true);
     expect(document.querySelectorAll(".collection-product-card__blank")).toHaveLength(0);
 
     const readyToShipProducts = products.filter((product) => product.orderType === "ready-to-ship").slice(0, 4);

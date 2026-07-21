@@ -48,17 +48,21 @@ describe("ProductPage", () => {
     renderProductPage();
 
     expect(screen.getByRole("main")).toHaveClass("product-page", "product-page--nail-set");
-    const productImage = screen.getByRole("img", { name: `${products[0].name} image placeholder` });
-    expect(productImage).toHaveClass("product-page__image-placeholder");
-    expect(productImage).toBeEmptyDOMElement();
+    const productImage = screen.getByRole("img", { name: products[0].images.clean });
+    expect(productImage).toHaveClass("product-page__gallery-image");
+    expect(productImage).toHaveAttribute("src", products[0].media?.clean);
     expect(document.querySelector(".product-page__art")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__media .product-art__nail")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: products[0].name })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Back to shop" })).toBeInTheDocument();
-    expect(screen.getByText("Ready to ship")).toBeInTheDocument();
-    expect(screen.getByText(`$${products[0].price}`)).toBeInTheDocument();
+    expect(document.querySelector(".product-page__eyebrow")).toHaveTextContent("Ready to ship");
+    expect(document.querySelector(".product-page__price")).toHaveTextContent(`$${products[0].price}`);
     expect(screen.getByText(products[0].description)).toBeInTheDocument();
-    expect(screen.getByText(`Ships in ${shippingFacts.readyToShipProcessing}`)).toBeInTheDocument();
+    const timing = screen.getByRole("complementary", { name: "Estimated order timing" });
+    expect(within(timing).getByText("Estimated arrival:")).toBeInTheDocument();
+    expect(timing).toHaveTextContent(`Ready in ${shippingFacts.readyToShipProcessing}`);
+    expect(timing).toHaveTextContent(`In transit ${shippingFacts.carrierTransit}`);
+    expect(within(timing).queryByRole("link")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__visual-summary")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__swatch")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__availability-mark")).not.toBeInTheDocument();
@@ -123,6 +127,15 @@ describe("ProductPage", () => {
 
     expect(screen.getByRole("button", { name: "Add to cart" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: `Favorite ${products[0].name}` })).toHaveAttribute("aria-pressed", "false");
+    const benefits = screen.getByRole("complementary", { name: "Why this set works" });
+    expect(benefits).toHaveTextContent("Painted by hand");
+    expect(benefits.querySelectorAll("svg[data-icon]")).toHaveLength(4);
+    expect(new Set(Array.from(benefits.querySelectorAll("svg[data-icon]"), (icon) => icon.getAttribute("data-icon"))).size).toBe(4);
+    expect(benefits).not.toHaveTextContent("Made for your routine");
+    expect(document.querySelector(".product-page__style-selector")).toHaveAttribute(
+      "data-selected-sku",
+      "BLUSH-CRUSH-ALM-XS"
+    );
 
     for (const removedDetail of [
       "Made to order",
@@ -138,6 +151,21 @@ describe("ProductPage", () => {
     }
     expect(document.querySelector(".product-page__reassurance")).not.toBeInTheDocument();
     expect(document.querySelector(".product-page__details")).not.toBeInTheDocument();
+  });
+
+  it("groups Shape and Length inside one unified selector panel", () => {
+    renderProductPage();
+
+    const selectorGroups = document.querySelector(".product-page__selector-groups");
+    const shapeGroup = screen.getByRole("group", { name: "Shape" });
+    const lengthGroup = screen.getByRole("group", { name: "Length" });
+    const sizingLink = screen.getByRole("link", { name: "Not sure? Find your size" });
+
+    expect(selectorGroups).toContainElement(shapeGroup);
+    expect(selectorGroups).toContainElement(lengthGroup);
+    expect(selectorGroups).not.toContainElement(sizingLink);
+    expect(shapeGroup.compareDocumentPosition(lengthGroup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(lengthGroup.compareDocumentPosition(sizingLink) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it.each(["Shape", "Length"])("updates the %s progress indicator as its option rail scrolls", (groupName) => {
@@ -207,22 +235,23 @@ describe("ProductPage", () => {
     renderProductPage();
 
     const backButton = screen.getByRole("button", { name: "Back to shop" });
-    const productImage = screen.getByRole("img", { name: `${products[0].name} image placeholder` });
+    const productImage = screen.getByRole("img", { name: products[0].images.clean });
 
     expect(backButton.compareDocumentPosition(productImage) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it("renders image thumbnails followed by a video and switches the active media", async () => {
+  it("renders customer proof directly after the video and links it to the future reviews anchor", async () => {
     const user = userEvent.setup();
     renderProductPage();
 
     const gallery = screen.getByRole("region", { name: `${products[0].name} media gallery` });
     const mediaButtons = within(gallery).getAllByRole("button", { name: /^Show / });
 
-    expect(mediaButtons).toHaveLength(3);
+    expect(mediaButtons).toHaveLength(4);
     expect(mediaButtons[0]).toHaveAccessibleName("Show clean product image");
     expect(mediaButtons[1]).toHaveAccessibleName("Show editorial product image");
     expect(mediaButtons[2]).toHaveAccessibleName("Show product video");
+    expect(mediaButtons[3]).toHaveAccessibleName("Show how a customer wears this set");
     expect(within(mediaButtons[2]).getByTestId("product-video-play-icon")).toBeInTheDocument();
 
     await user.click(mediaButtons[2]);
@@ -232,6 +261,15 @@ describe("ProductPage", () => {
     expect(video).toHaveAttribute("playsinline");
     expect(video).not.toHaveAttribute("autoplay");
     expect(screen.queryByRole("button", { name: /^Zoom / })).not.toBeInTheDocument();
+
+    await user.click(mediaButtons[3]);
+
+    expect(screen.getByText("Worn by Maya")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See customer reviews" })).toHaveAttribute(
+      "href",
+      "#customer-reviews"
+    );
+    expect(document.querySelector("#customer-reviews")).toBeInTheDocument();
   });
 
   it("opens and closes the fullscreen image zoom view", async () => {
@@ -255,20 +293,31 @@ describe("ProductPage", () => {
     expect(screen.queryByRole("dialog", { name: `${products[0].name} image zoom` })).not.toBeInTheDocument();
   });
 
-  it("renders kit contents and FAQ below the main buying panel", () => {
+  it("renders the replacement lower sections while preserving the legacy sections off-screen", () => {
     renderProductPage();
 
     const buyingPanel = document.querySelector(".product-page__buying-panel") as HTMLElement;
-    const kitSection = document.querySelector(".kit-section") as HTMLElement;
-    const faqSection = document.querySelector(".faq-help-section") as HTMLElement;
+    const kitSection = document.querySelector(".product-kit-showcase") as HTMLElement;
+    const relatedSection = document.querySelector(".related-products") as HTMLElement;
 
     expect(buyingPanel).toBeInTheDocument();
     expect(kitSection).toBeInTheDocument();
-    expect(faqSection).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "What’s Included" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Quick answers" })).toBeInTheDocument();
+    expect(relatedSection).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Everything arrives together" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "More sets you may like" })).toBeInTheDocument();
+    expect(document.querySelector(".kit-section")).not.toBeInTheDocument();
+    expect(document.querySelector(".faq-help-section")).not.toBeInTheDocument();
     expect(buyingPanel.compareDocumentPosition(kitSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(kitSection.compareDocumentPosition(faqSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(kitSection.compareDocumentPosition(relatedSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("keeps the purchase CTA ahead of the reassurance benefits", () => {
+    renderProductPage();
+
+    const cta = document.querySelector(".product-page__cta-row") as HTMLElement;
+    const benefits = screen.getByRole("complementary", { name: "Why this set works" });
+
+    expect(cta.compareDocumentPosition(benefits) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("updates selected length, selected shape, and favorite state", async () => {
@@ -292,6 +341,10 @@ describe("ProductPage", () => {
       "aria-label",
       "Selected style: Coffin shape, Medium length"
     );
+    expect(document.querySelector(".product-page__style-selector")).toHaveAttribute(
+      "data-selected-sku",
+      "BLUSH-CRUSH-COF-M"
+    );
     expect(screen.getByRole("button", { name: `Favorite ${products[0].name}` })).toHaveAttribute("aria-pressed", "true");
   });
 
@@ -301,11 +354,11 @@ describe("ProductPage", () => {
     expect(madeToOrderProduct).toBeDefined();
     renderProductPage(`/products/${madeToOrderProduct?.slug}`);
 
-    expect(screen.getByText("Made to order")).toBeInTheDocument();
-    expect(screen.getByText(`Made in ${shippingFacts.madeToOrderProcessing}`)).toBeInTheDocument();
-    expect(screen.getByRole("tabpanel", { name: "Nails" })).toHaveTextContent(
-      "Press-on nails are included with every set."
+    expect(document.querySelector(".product-page__eyebrow")).toHaveTextContent("Made to order");
+    expect(screen.getByRole("complementary", { name: "Estimated order timing" })).toHaveTextContent(
+      `Made in ${shippingFacts.madeToOrderProcessing}`
     );
+    expect(screen.getByText(/Press-on nails are included with every made-to-order set/i)).toBeInTheDocument();
     expect(screen.queryByText(/Ready-to-wear sets include 24 press-on nails/i)).not.toBeInTheDocument();
   });
 
