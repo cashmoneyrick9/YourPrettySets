@@ -217,8 +217,10 @@ describe("small mobile responsive CSS", () => {
     );
 
     expect(mobileRules).toContain(".collection-carousel__viewport {\n    padding-inline: 18px;\n  }");
+    expect(mobileRules).toContain(".collection-carousel__slide {\n    flex-basis: 97%;\n  }");
     expect(mobileRules).toContain(".collection-track {\n    padding: 8px 0 12px;\n  }");
     expect(mobileRules).not.toContain(".collection-track {\n    padding: 8px 18px 12px;\n  }");
+    expect(styles).not.toContain("flex-basis: clamp(118px, 42vw, 150px);");
   });
 
   it("makes the active Browse tab high contrast with calm preview motion", () => {

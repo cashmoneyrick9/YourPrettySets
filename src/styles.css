@@ -2462,6 +2462,10 @@ h1 {
     padding-inline: 18px;
   }
 
+  .collection-carousel__slide {
+    flex-basis: 97%;
+  }
+
   .confidence-carousel__viewport {
     overflow: hidden;
   }
@@ -2805,10 +2809,6 @@ h1 {
 
   .collection-track {
     padding-bottom: 10px;
-  }
-
-  .collection-carousel__slide {
-    flex-basis: clamp(118px, 42vw, 150px);
   }
 
   .collection-card {
