@@ -1,52 +1,31 @@
 # Product Data Brief
 
-## Product Strategy
+Last aligned with the live prototype: 2026-07-26.
 
-The first build uses realistic placeholder products.
+## Current Catalog
 
-The placeholder catalog should feel like a realistic launch collection, not random filler. Products should be designed around the collection categories YourPrettySets plans to offer.
+`src/data/products.ts` is the canonical product source.
 
-Exact count is open, but the system should support 12-30 placeholder products at first and scale past 30 later.
+The live prototype currently contains:
 
-## Product Type
+- 33 press-on nail-set products
+- A separate $10 sizing-kit product at `/products/sizing-kit`
+- Ready-to-ship and made-to-order order types
+- Custom orders represented separately as a waitlist
 
-The current catalog contains ready-to-wear press-on nail sets. A separate $10 standalone sizing-kit product exists outside the set catalog at `/products/sizing-kit`; its online purchase flow is not connected yet. Custom sets remain waitlist-only.
+Do not create separate product lists for Home, Shop, recommendations, or Product Detail.
 
-Customers choose:
+## Product Options
 
-- Length
-- Shape
+Every current nail-set product supports five lengths:
 
-Customers do not choose custom sizing for this first version.
-
-## Included In Each Set
-
-Every ready-to-wear set includes:
-
-- 24 nails
-- Adhesive tabs
-- Nail glue
-- Nail file
-- Cuticle stick
-- Alcohol wipe
-- Storage case
-
-Use this language direction:
-
-> Includes 24 nails so you can find your best fit.
-
-## Length Options
-
-Every placeholder product supports all launch length options:
-
+- Extra Short
 - Short
 - Medium
 - Long
 - Extra Long
 
-## Shape Options
-
-Every placeholder product supports all launch shape options:
+Every current nail-set product supports six shapes:
 
 - Almond
 - Coffin
@@ -55,17 +34,27 @@ Every placeholder product supports all launch shape options:
 - Stiletto
 - Oval
 
-## Collections And Tags
+The live variant system generates stable Shape × Length SKUs and supports future availability, inventory, price, and media overrides.
 
-Products can belong to multiple collections/tags.
+Do not remove Extra Short or return the documentation to four lengths.
 
-Example:
+## Sizing
 
-- New Arrivals
-- Vacation
-- Statement
+Ready-to-wear sets use the confirmed preset size range and included nail count from `src/data/storefrontFacts.ts`.
 
-Launch collection tags:
+Customers do not select custom individual sizing in the current ready-to-wear flow.
+
+Approved millimeter mappings for sizes `00–14` are not available. Do not fabricate them.
+
+## Included Items
+
+The canonical included-items list lives in `src/data/storefrontFacts.ts`.
+
+Current customer-facing surfaces should read from that source instead of maintaining independent lists.
+
+## Collections
+
+Current collection labels are:
 
 - New Arrivals
 - Everyday
@@ -76,55 +65,59 @@ Launch collection tags:
 - Work/Neutral
 - Statement
 
-## Pricing
+Products may belong to multiple collections.
 
-Use three price tiers based on design detail level.
+## Prototype Pricing
 
-- Simple sets: about $15-$20
-- Mid-detail sets: about $22-$30
-- Detailed sets: about $32-$40
+The current implementation uses three prototype detail tiers:
 
-The exact prices can be placeholder values, but they should feel realistic and consistent.
+- Simple: approximately $15–$20
+- Mid-detail: approximately $22–$30
+- Detailed: approximately $32–$40
 
-## Product Names
+The live catalog currently ranges from $15 to $40.
 
-Use a mix of clear/cute and playful names.
+These are prototype values, not final business pricing. Use the values in `src/data/products.ts` when displaying the current site. Do not change the pricing model or treat a future target range as approved without founder direction.
 
-Examples of acceptable direction:
+## Product Media
 
-- Blush Crush
-- Vacation Crush
-- Pink French
-- Golden Hour
+Each nail set has a canonical clean image path:
 
-Names can be playful, but the product card and detail page must make the style obvious through imagery, price, and supporting details.
+```text
+/assets/products/<product-id>.jpg
+```
 
-## Product Images
+That same canonical media should be used by:
 
-Each placeholder product should eventually have two generated image assets:
+- Home product previews
+- Shop cards
+- Product Detail galleries
+- Related-product recommendations
 
-- Clean background image for the main product card.
-- Stylized/editorial image for the product detail page, carousel, or supporting visual.
+Use a deliberate `mediaOverride` only when a specific variant truly needs different presentation.
 
-Images should be organized by collection style. Everyday, Statement, Vacation, Bridal, and other collections can feel distinct while staying inside the same brand system.
+Keep final editorial media, video, customer imagery, and final photography marked as incomplete.
 
-Do not use generic gray blocks as the long-term placeholder image strategy.
+## Current Product Shape
 
-## Suggested Product Fields
+A nail-set product includes:
 
-When implementation begins, central product data should include fields like:
+- Identity: `id`, `name`, `slug`
+- Commerce presentation: `price`, `detailTier`, `orderType`
+- Discovery: `collections`, `isNew`, `isPopular`
+- Content: `description`
+- Media: `images`, `media`
+- Options: `lengthOptions`, `shapeOptions`
+- Generated variants and stable SKU data
 
-- `id`
-- `name`
-- `slug`
-- `price`
-- `detailTier`
-- `collections`
-- `isNew`
-- `isPopular`
-- `description`
-- `included`
-- `images.clean`
-- `images.editorial`
-- `lengthOptions`
-- `shapeOptions`
+The sizing kit is a separate product kind with commerce status marked pending.
+
+## Data Rules
+
+- Pull products from central data.
+- Do not hardcode product facts inside Home or recommendation components.
+- Preserve consistent card-to-detail imagery.
+- Do not invent inventory counts.
+- Do not claim checkout is connected.
+- Keep generated assets replaceable.
+- Do not alter final pricing, product names, or catalog scope without approval.
