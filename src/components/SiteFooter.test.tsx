@@ -61,9 +61,9 @@ describe("SiteFooter", () => {
     const pinterestLink = within(footer).getByRole("link", { name: "Pinterest" });
     const emailLink = within(footer).getByRole("link", { name: "Email" });
     const currentYear = new Date().getFullYear();
-    const loveNote = within(footer).getByText("made for you, with love");
+    const loveNote = within(footer).getByText("Made for you, with love");
 
-    expect(loveNote).toHaveTextContent(/^made for you, with love$/);
+    expect(loveNote).toHaveTextContent(/^Made for you, with love$/);
     expect(loveNote).not.toHaveTextContent("♡");
     expect(loveNote.textContent?.endsWith(".")).toBe(false);
     expect(within(footer).queryByText("Follow Us")).not.toBeInTheDocument();

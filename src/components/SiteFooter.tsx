@@ -81,7 +81,7 @@ export function SiteFooter() {
       <div className="site-footer__inner">
         <div className="site-footer__brand-block">
           <p className="site-footer__brand">YourPrettySets</p>
-          <p className="site-footer__love-note">made for you, with love</p>
+          <p className="site-footer__love-note">Made for you, with love</p>
         </div>
 
         <nav className="site-footer__columns" aria-label="Footer navigation">
