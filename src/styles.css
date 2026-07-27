@@ -3322,6 +3322,12 @@ h1 {
 }
 
 @media (max-width: 720px) {
+  .site-footer-email-shell + .site-footer {
+    margin-top: -1px;
+    position: relative;
+    z-index: 2;
+  }
+
   .site-footer-email--restored {
     --site-footer-email-title-size: clamp(1.72rem, 7.2vw, 2rem);
     background: #101417;

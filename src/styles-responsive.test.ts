@@ -857,6 +857,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("backdrop-filter: blur(8px) saturate(0.85);");
     expect(styles).toContain("backdrop-filter: blur(8px) saturate(0.8);");
     expect(styles).toContain(
+      ".site-footer-email-shell + .site-footer {\n    margin-top: -1px;\n    position: relative;\n    z-index: 2;"
+    );
+    expect(styles).toContain(
       ".site-footer-email--restored .site-footer-email__copy {\n    font-size: var(--type-body);\n    line-height: var(--leading-body);\n    max-width: 19rem;\n    transform: translateY(-4px);"
     );
     expect(styles).toContain(".site-footer__brand-block");
