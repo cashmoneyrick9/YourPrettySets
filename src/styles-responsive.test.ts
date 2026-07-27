@@ -139,6 +139,35 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain("font-family: Georgia, \"Times New Roman\", serif;");
   });
 
+  it("limits the handwritten memory pairing to reviews and product cards", () => {
+    expect(styles).toContain("--font-memory-title: \"Caveat\"");
+    expect(styles).toContain("--font-memory-price: \"Kalam\"");
+    expect(styles).toContain("--memory-product-title-size: 19px;");
+    expect(styles).toContain("--memory-product-price-size: 19px;");
+    expect(styles).toContain("--memory-review-caption-size: 23px;");
+    expect(styles).toContain(
+      ".product-card h3,\n.collection-product-card h3,\n.shop-product-card h3,\n.related-product-card h3 {"
+    );
+    expect(styles).toContain("font-family: var(--font-memory-title);");
+    expect(styles).toContain("font-size: var(--memory-product-title-size);");
+    expect(styles).toContain(
+      ".product-card p,\n.collection-product-card p,\n.shop-product-card p,\n.related-product-card p {"
+    );
+    expect(styles).toContain("color: var(--site-text-primary);");
+    expect(styles).toContain("font-family: var(--font-memory-price);");
+    expect(styles).toContain("font-size: var(--memory-product-price-size);");
+    expect(styles).toContain(
+      ".review-polaroid-card__caption {\n  font-family: var(--font-memory-title);\n  font-size: var(--memory-review-caption-size);"
+    );
+    expect(styles).toContain(
+      ".collection-product-card__body,\n.shop-product-card__body {\n  align-items: baseline;\n  column-gap: 8px;\n  grid-template-columns: minmax(0, 1fr) auto;"
+    );
+    expect(styles).toContain(
+      ".related-product-card__body {\n  align-items: baseline;\n  column-gap: 8px;\n  grid-template-columns: minmax(0, 1fr) auto;"
+    );
+    expect(styles).toContain(".related-product-card__body > span {\n  grid-column: 1 / -1;");
+  });
+
   it("keeps the lower footer panel square against the viewport edges", () => {
     const footerRule = getRuleBody(styles, ".site-shell .site-footer");
 
@@ -486,13 +515,19 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("padding: 8px 0 12px;");
     expect(styles).toContain(".collection-carousel__slide");
     expect(styles).toContain("flex: 0 0 clamp(132px, 42vw, 168px);");
-    expect(styles).toContain("grid-template-columns: repeat(2, 170px);");
-    expect(styles).toContain("column-gap: var(--space-grid-gap);");
+    expect(styles).toContain("--collection-product-border-width: 2px;");
+    expect(styles).toContain("--collection-product-card-gap: 14px;");
+    expect(styles).toContain("--collection-product-card-width: 180px;");
+    expect(styles).toContain("--collection-product-image-inset: 5px;");
+    expect(styles).toContain("grid-template-columns: repeat(2, var(--collection-product-card-width));");
+    expect(styles).toContain("column-gap: var(--collection-product-card-gap);");
     expect(styles).toContain("justify-content: center;");
     expect(styles).toContain("row-gap: var(--space-grid-gap);");
     expect(styles).toContain(".product-preview-card");
     expect(styles).toContain(".collection-product-card__image");
     expect(styles).toContain("aspect-ratio: 4 / 5;");
+    expect(styles).toContain("border-bottom: var(--collection-product-border-width)");
+    expect(styles).toContain("width: calc(100% - (2 * var(--collection-product-image-inset)));");
     expect(styles).toContain(".collection-product-card__body");
     expect(styles).toContain("min-height: 245px;");
     expect(styles).not.toContain(".collection-product-card__blank");
@@ -525,7 +560,11 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("padding-top: 16px;");
     expect(styles).toContain(".collection-carousel {\n    margin-left: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain(".collection-products,\n  .collection-products__heading {\n    min-width: 0;");
-    expect(styles).toContain(".collection-product-row,\n  .collection-product-teaser {\n    grid-template-columns: repeat(2, minmax(0, 1fr));");
+    expect(styles).toContain(
+      ".collection-product-row,\n  .collection-product-teaser {\n    column-gap: 12px;\n    grid-template-columns: repeat(2, minmax(0, 1fr));"
+    );
+    expect(styles).toContain("margin-inline: -8px;");
+    expect(styles).toContain("width: calc(100% + 16px);");
     expect(styles).toContain(".collection-products__more {\n    max-width: 100%;\n    justify-self: center;\n    width: fit-content;");
     expect(styles).toContain("margin-left: calc(-1 * var(--space-page-inline));");
     expect(styles).toContain("margin-right: calc(-1 * var(--space-page-inline));");
@@ -545,7 +584,8 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("transform: rotate(var(--review-polaroid-rotation, 0deg));");
     expect(styles).toContain("--review-polaroid-width: clamp(190px, 54vw, 210px);");
     expect(styles).toContain("--review-polaroid-width: clamp(184px, 56vw, 200px);");
-    expect(styles).toContain("padding: 4px var(--space-page-inline) 8px;");
+    expect(styles).toContain("padding: 4px var(--space-page-inline) 0;");
+    expect(styles).toContain(".site-footer-email-shell {\n    padding-top: 0;");
     expect(styles).toContain(".reviews-polaroid-carousel .reviews-polaroid-carousel__track {\n    padding: 8px 0;");
     expect(styles).toContain(".review-polaroid-card {\n    min-height: 245px;");
     expect(styles).toContain(".review-story-row {\n  -webkit-overflow-scrolling: touch;");

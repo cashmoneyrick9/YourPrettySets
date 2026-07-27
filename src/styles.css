@@ -95,6 +95,11 @@
   --font-body: "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-cta: "Manrope", "Avenir Next Rounded", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fraunces", "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-memory-title: "Caveat", "Segoe Print", cursive;
+  --font-memory-price: "Kalam", "Segoe Print", cursive;
+  --memory-product-title-size: 19px;
+  --memory-product-price-size: 19px;
+  --memory-review-caption-size: 23px;
   --type-hero-title: clamp(2.75rem, 7vw, 3.3rem);
   --type-section-title: clamp(2rem, 6vw, 3.15rem);
   --type-subsection-title: clamp(1.45rem, 5vw, 2.05rem);
@@ -132,6 +137,8 @@
   --weight-black: 900;
   --weight-display: 430;
   --weight-display-strong: 460;
+  --weight-memory-title: 500;
+  --weight-memory-price: 400;
   --leading-tight: 0.98;
   --leading-snug: 1.12;
   --leading-body: 1.35;
@@ -853,6 +860,10 @@ h1 {
 }
 
 .collection-products {
+  --collection-product-border-width: 2px;
+  --collection-product-card-gap: 14px;
+  --collection-product-card-width: 180px;
+  --collection-product-image-inset: 5px;
   animation: collection-products-enter 220ms ease both;
   display: grid;
   gap: var(--space-card-gap);
@@ -901,8 +912,8 @@ h1 {
 
 .collection-product-row {
   display: grid;
-  column-gap: var(--space-grid-gap);
-  grid-template-columns: repeat(2, 170px);
+  column-gap: var(--collection-product-card-gap);
+  grid-template-columns: repeat(2, var(--collection-product-card-width));
   justify-content: center;
   row-gap: var(--space-grid-gap);
 }
@@ -921,7 +932,7 @@ h1 {
 
 .collection-product-card {
   background: var(--site-surface);
-  border: 1px solid var(--site-border);
+  border: var(--collection-product-border-width) solid var(--site-border);
   border-radius: 8px;
   box-shadow: var(--site-shadow-soft);
   color: var(--site-text-primary);
@@ -951,11 +962,11 @@ h1 {
   align-items: center;
   aspect-ratio: 4 / 5;
   background: var(--site-surface-soft);
-  border-bottom: 1px solid rgba(31, 36, 40, 0.08);
+  border-bottom: var(--collection-product-border-width) solid rgba(31, 36, 40, 0.08);
   display: flex;
   justify-content: center;
-  margin: 8px 8px 0;
-  width: calc(100% - 16px);
+  margin: var(--collection-product-image-inset) var(--collection-product-image-inset) 0;
+  width: calc(100% - (2 * var(--collection-product-image-inset)));
 }
 
 .collection-product-card__body {
@@ -982,9 +993,9 @@ h1 {
 }
 
 .collection-product-teaser {
-  column-gap: var(--space-grid-gap);
+  column-gap: var(--collection-product-card-gap);
   display: grid;
-  grid-template-columns: repeat(2, 170px);
+  grid-template-columns: repeat(2, var(--collection-product-card-width));
   height: 96px;
   justify-content: center;
   margin-top: 6px;
@@ -2504,7 +2515,7 @@ h1 {
   }
 
   .reviews-section {
-    padding-bottom: 12px;
+    padding-bottom: 0;
     padding-left: 0;
     padding-right: 0;
   }
@@ -2523,7 +2534,7 @@ h1 {
 
   .reviews-polaroid-carousel__viewport {
     overflow: visible;
-    padding: 4px var(--space-page-inline) 8px;
+    padding: 4px var(--space-page-inline) 0;
   }
 
   .reviews-polaroid-carousel .reviews-polaroid-carousel__track {
@@ -2545,8 +2556,10 @@ h1 {
 
   .collection-product-row,
   .collection-product-teaser {
+    column-gap: 12px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: 100%;
+    margin-inline: -8px;
+    width: calc(100% + 16px);
   }
 
   .collection-products__more {
@@ -2864,7 +2877,7 @@ h1 {
   }
 
   .reviews-section {
-    padding-bottom: 12px;
+    padding-bottom: 0;
     padding-top: 20px;
   }
 
@@ -3322,6 +3335,10 @@ h1 {
 }
 
 @media (max-width: 720px) {
+  .site-footer-email-shell {
+    padding-top: 0;
+  }
+
   .site-footer-email-shell + .site-footer {
     margin-top: -1px;
     position: relative;
@@ -8469,6 +8486,48 @@ h1 {
   color: var(--site-text-muted);
   font-size: var(--type-caption);
   font-weight: var(--weight-strong);
+}
+
+.product-card h3,
+.collection-product-card h3,
+.shop-product-card h3,
+.related-product-card h3 {
+  font-family: var(--font-memory-title);
+  font-size: var(--memory-product-title-size);
+  font-weight: var(--weight-memory-title);
+}
+
+.product-card p,
+.collection-product-card p,
+.shop-product-card p,
+.related-product-card p {
+  color: var(--site-text-primary);
+  font-family: var(--font-memory-price);
+  font-size: var(--memory-product-price-size);
+  font-weight: var(--weight-memory-price);
+}
+
+.review-polaroid-card__caption {
+  font-family: var(--font-memory-title);
+  font-size: var(--memory-review-caption-size);
+  font-weight: var(--weight-memory-title);
+}
+
+.collection-product-card__body,
+.shop-product-card__body {
+  align-items: baseline;
+  column-gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.related-product-card__body {
+  align-items: baseline;
+  column-gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.related-product-card__body > span {
+  grid-column: 1 / -1;
 }
 
 .related-product-card__favorite {

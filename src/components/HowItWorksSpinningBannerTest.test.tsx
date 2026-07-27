@@ -26,6 +26,10 @@ describe("HowItWorksSpinningBannerTest", () => {
     expect(document.querySelector(".how-it-works-banner-test__viewport")).toHaveClass(
       "how-it-works-banner-test__viewport--selected"
     );
+    expect(document.querySelector(".how-it-works-banner-test__track")).toHaveAttribute("data-rotate-speed", "24");
+    expect(document.querySelector(".how-it-works-banner-test__track")).toHaveStyle({
+      "--how-it-works-banner-loop-duration": "37.5s"
+    });
     expect(document.querySelector(".how-it-works-banner-test__steps")).not.toBeInTheDocument();
   });
 
@@ -47,7 +51,9 @@ describe("HowItWorksSpinningBannerTest", () => {
   });
 
   it("defines a linear seamless loop and a stable reduced-motion state", () => {
-    expect(styles).toContain("animation: how-it-works-banner-test-loop 16s linear infinite;");
+    expect(styles).toContain(
+      "animation: how-it-works-banner-test-loop var(--how-it-works-banner-loop-duration) linear infinite;"
+    );
     expect(styles).toContain("transform: translateX(-50%);");
     expect(styles).toContain("padding: clamp(18px, 3vw, 32px) 0 clamp(20px, 3vw, 32px);");
     expect(styles).toContain("border-radius: 0;");

@@ -1,5 +1,10 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { CAROUSEL_AUTO_ROTATE_SPEED_PX_PER_SECOND } from "./MobileCarousel";
 import "./HowItWorksSpinningBannerTest.css";
+
+const fallbackLoopDistancePx = 900;
+const fallbackLoopDurationSeconds =
+  fallbackLoopDistancePx / CAROUSEL_AUTO_ROTATE_SPEED_PX_PER_SECOND;
 
 const selectedSteps = [
   {
@@ -41,6 +46,37 @@ function BannerPanel({ duplicate = false }: { duplicate?: boolean }) {
 
 export function HowItWorksSpinningBannerTest() {
   const [isPaused, setIsPaused] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const track = trackRef.current;
+    const viewport = viewportRef.current;
+
+    if (!track || !viewport) return;
+
+    const syncLoopDuration = () => {
+      const panel = track.querySelector<HTMLElement>(".how-it-works-banner-test__panel");
+      const loopDistancePx = panel?.getBoundingClientRect().width ?? 0;
+
+      if (loopDistancePx <= 0) return;
+
+      track.style.setProperty(
+        "--how-it-works-banner-loop-duration",
+        `${loopDistancePx / CAROUSEL_AUTO_ROTATE_SPEED_PX_PER_SECOND}s`
+      );
+    };
+
+    syncLoopDuration();
+
+    const resizeObserver = new ResizeObserver(syncLoopDuration);
+    resizeObserver.observe(viewport);
+    resizeObserver.observe(track);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   return (
     <section
@@ -63,10 +99,20 @@ export function HowItWorksSpinningBannerTest() {
         onPointerDown={() => setIsPaused(true)}
         onPointerLeave={() => setIsPaused(false)}
         onPointerUp={() => setIsPaused(false)}
+        ref={viewportRef}
         role="group"
         tabIndex={0}
       >
-        <div className="how-it-works-banner-test__track">
+        <div
+          className="how-it-works-banner-test__track"
+          data-rotate-speed={CAROUSEL_AUTO_ROTATE_SPEED_PX_PER_SECOND}
+          ref={trackRef}
+          style={
+            {
+              "--how-it-works-banner-loop-duration": `${fallbackLoopDurationSeconds}s`
+            } as CSSProperties
+          }
+        >
           <BannerPanel />
           <BannerPanel duplicate />
         </div>

@@ -14,9 +14,10 @@ export function FeaturedSets() {
 
       <MobileCarousel
         ariaLabel="Featured sets carousel"
+        autoRotate
         className="featured-sets-carousel"
         containerClassName="featured-sets-carousel__track"
-        options={{ align: "start", containScroll: false, loop: false }}
+        options={{ align: "start", containScroll: false, loop: true }}
         showArrows={false}
         slideClassName="featured-sets-carousel__slide"
         viewportClassName="featured-sets-carousel__viewport"

@@ -34,7 +34,7 @@
 }
 
 .how-it-works-banner-test__track {
-  animation: how-it-works-banner-test-loop 16s linear infinite;
+  animation: how-it-works-banner-test-loop var(--how-it-works-banner-loop-duration) linear infinite;
   display: flex;
   height: 100%;
   width: 200%;

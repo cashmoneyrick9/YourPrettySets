@@ -18,6 +18,9 @@ describe("FeaturedSets", () => {
 
     expect(screen.getByRole("heading", { name: "Featured sets" })).toBeInTheDocument();
     expect(document.querySelector(".featured-sets-carousel")).toHaveClass("mobile-carousel");
+    expect(document.querySelector(".featured-sets-carousel")).toHaveAttribute("data-auto-rotate", "true");
+    expect(document.querySelector(".featured-sets-carousel")).toHaveAttribute("data-loop", "true");
+    expect(document.querySelector(".featured-sets-carousel")).toHaveAttribute("data-rotate-speed", "24");
     expect(screen.queryByRole("heading", { name: "Browse" })).not.toBeInTheDocument();
 
     for (const product of featuredProducts) {

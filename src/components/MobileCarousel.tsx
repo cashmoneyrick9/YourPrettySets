@@ -3,6 +3,8 @@ import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
+export const CAROUSEL_AUTO_ROTATE_SPEED_PX_PER_SECOND = 24;
+
 type MobileCarouselProps = {
   ariaLabel: string;
   autoRotate?: boolean;
@@ -38,7 +40,7 @@ export function MobileCarousel({
   ariaLabel,
   autoRotate = false,
   autoRotateStopped = false,
-  autoRotateSpeedPxPerSecond = 24,
+  autoRotateSpeedPxPerSecond = CAROUSEL_AUTO_ROTATE_SPEED_PX_PER_SECOND,
   buttonClassName,
   className,
   containerClassName,
