@@ -1,95 +1,167 @@
 # AGENTS.md
 
-This repo is the working prototype for YourPrettySets, a handmade ready-to-wear press-on nail storefront.
+This repository is the working prototype for YourPrettySets, a handmade ready-to-wear press-on nail storefront.
 
-The goal right now is not a public launch MVP. The goal is a coherent mobile-first ecommerce prototype that helps the founder make product, brand, and UX decisions section by section.
+The goal is not a public-launch MVP yet. The goal is a coherent, mobile-first ecommerce prototype that helps the founder make product, brand, and UX decisions section by section.
 
-## Start Here
+## Operating Principle
 
-Before changing code, read:
+Make the smallest reviewable change that satisfies the task.
 
-- `docs/brief/README.md`
-- `docs/brief/session-handoff.md`
-- `docs/brief/brand.md`
-- `docs/brief/page-home.md`
-- `docs/brief/open-decisions.md`
-- `docs/brief/section-pass-template.md`
+Do not redesign unrelated areas, reopen settled decisions, or turn a focused request into a broad refactor.
 
-The handoff file is the fastest source of current state. If it conflicts with live code, verify the code and update the handoff before ending your work.
-For UI section passes, use `docs/brief/section-pass-template.md` as the repeatable CEO checklist before writing a web-dev handoff.
+## Source of Truth
 
-## Founder / Co-Founder Context
+Use this order when information conflicts:
 
-- The founder is making CEO/product calls, not trying to manage implementation details.
-- Keep explanations concise and framed around what should be judged next.
-- Mobile UX is the priority right now.
-- Branding, logo, final photography, final copy, checkout, and policy wording are not final.
-- Do not get stuck polishing UI details if the UX structure is still the real question.
-- Placeholder product visuals are acceptable as long as the structure is easy to replace later.
+1. The founder's current instruction.
+2. Live code and tests for existing behavior.
+3. The newest relevant section of `docs/brief/session-handoff.md`.
+4. `docs/brief/open-decisions.md`.
+5. The relevant page, feature, or brand brief.
+6. Historical notes in `docs/brief/session-history.md`.
 
-## Current Product Direction
+Do not silently choose between conflicting sources. Preserve the current implementation and report the conflict unless the founder has clearly selected a direction.
 
-The Home page is a mobile-first shopping path:
+## Read Before Editing
 
-- Compact ecommerce header
-- Image-led hero with `Shop sets`
-- Step carousel
-- Collection tiles
-- `This week's set`
-- `Shop more`
-- Kit contents accordion
-- Review carousel
-- FAQ accordion
-- Accordion footer
+Always:
 
-The latest footer decision: no standalone footer `Contact us` button. Contact lives inside the `Help` footer accordion, while the FAQ still has its own `Still unsure? Contact us` CTA.
+- Inspect the files directly involved in the task.
+- Check `docs/brief/open-decisions.md`.
+- Read the relevant current-state section of `docs/brief/session-handoff.md`.
+- Inspect live code instead of relying only on documentation.
 
-## Code Map
+Read additional briefs only when relevant:
 
-- App shell: `src/App.tsx`
-- Home page: `src/pages/HomePage.tsx`
-- Header: `src/components/BrandHeader.tsx`
-- Footer: `src/components/SiteFooter.tsx`
-- Kit section: `src/components/KitContents.tsx`
-- Product data: `src/data/products.ts`
-- Main styling: `src/styles.css`
-- Tests: `src/**/*.test.tsx` and `src/styles-responsive.test.ts`
+- Brand, copy, or visual work: `docs/brief/brand.md`
+- Home work: `docs/brief/page-home.md`
+- Navigation or routing: `docs/brief/site-map.md`
+- Product data or selectors: `docs/brief/product-data.md`
+- Shared UI patterns: `docs/brief/shared-components.md`
+- Exploratory UI passes: `docs/brief/section-pass-template.md`
 
-## Working Rules
+Do not load every brief for every task.
 
-- Keep changes section-scoped.
-- Prefer existing React/CSS patterns over introducing new architecture.
-- Use central product data instead of hardcoding products in new sections.
-- Add new internal pages through React Router routes in `src/App.tsx`; do not manually switch pages by reading `window.location.pathname`.
-- Use React Router `Link`/`NavLink` for internal page navigation such as `/shop` or future `/products/...` routes. Keep plain anchors only for external URLs, `mailto:`, `tel:`, and same-page/homepage hash links such as `#faq` or `/#reviews`.
-- Do not permanently resolve open business decisions without founder approval.
-- Do not revert unrelated changes or untracked files. `.claude/` has been present as unrelated untracked state.
-- Update `docs/brief/session-handoff.md` before ending substantial work.
+## Founder Workflow
+
+The founder is making CEO and product decisions, not managing implementation details.
+
+Keep explanations concise and frame them as:
+
+1. Current status
+2. Recommended decision
+3. Next action
+
+When a request is exploratory, present the direction for approval before implementing it.
+
+When the founder explicitly requests implementation, proceed without asking for the same approval again.
+
+Do not permanently resolve open business, pricing, policy, checkout, branding, or product decisions without founder approval.
+
+## Implementation Rules
+
+- Keep changes scoped to the requested section or behavior.
+- Inspect the existing implementation before editing.
+- Prefer existing React, CSS, and component patterns over new architecture.
+- Do not refactor unrelated code while completing a visual adjustment.
+- Do not delete existing sections when a reversible hide, flag, or isolated experiment was requested.
+- Preserve approved behavior while changing presentation.
+- Use central data rather than duplicating product, policy, or Help content.
+- Never stretch, squash, or distort product imagery.
+- Keep generated and placeholder assets easy to replace.
+- Reuse the same canonical product image across cards, recommendations, and Product Detail unless a deliberate media override exists.
+- Do not claim placeholder reviews are verified customer reviews.
+- Do not fabricate sizing measurements, policies, fulfillment promises, inventory, or commerce behavior.
+
+## Canonical Data
+
+Use these files as the canonical sources:
+
+- Products and variants: `src/data/products.ts`
+- Storefront facts and kit contents: `src/data/storefrontFacts.ts`
+- Help routes, FAQs, and article content: `src/data/helpContent.ts`
+- Shared media mappings: `src/data/siteMedia.ts`
+
+Do not maintain separate copies of changeable facts inside components.
+
+## Routing
+
+- Define internal routes in `src/App.tsx`.
+- Use React Router `Link` or `NavLink` for internal navigation.
+- Do not manually switch pages using `window.location.pathname`.
+- Use plain anchors only for external URLs, `mailto:`, `tel:`, and valid same-page hash links.
+- Preserve route-to-heading focus and fixed-header-safe anchor behavior.
+
+## UI Quality
+
+Mobile UX is the priority.
+
+For visible changes, verify the relevant views at:
+
+- 320px mobile
+- 393px mobile
+- 1440px desktop
+- Landscape mobile when changing menus, dialogs, or sheets
+
+Check:
+
+- No page-level horizontal overflow
+- One H1 per page
+- No broken rendered images
+- No distorted product media
+- No new console errors
+- Keyboard and focus behavior
+- Touch interaction
+- Reduced-motion behavior when animation is involved
+- Stable component dimensions when switching tabs, drawers, or selectors
+
+Do not polish minor styling details when the underlying UX structure is still unresolved.
 
 ## Verification
 
-Use these checks before claiming work is done:
+Run targeted tests while developing.
+
+Before claiming substantive work is complete, run:
 
 ```bash
 npm test
 npm run build
-npm audit --audit-level=moderate
 git diff --check
 git status --short --branch
 ```
 
-For visible mobile UX work, also verify in the browser at:
+Run `npm audit --audit-level=moderate` only for dependency, security, or release-related work.
+
+For visible UI work, inspect the result in the browser at:
 
 ```text
 http://localhost:5173/
 ```
 
-If the dev server is not running:
+Start the development server with:
 
 ```bash
-npm run dev -- --host 0.0.0.0
+npm run dev
 ```
 
-## Git
+## Completion Report
 
-The default finish path for this repo is local commits on `main` unless the founder asks for a different workflow.
+End substantial work with:
+
+- What changed
+- Files changed
+- Tests and checks run
+- Browser sizes inspected
+- Anything not verified
+- Remaining founder decisions or risks
+
+Do not claim something was tested or inspected unless it actually was.
+
+## Git Safety
+
+- Never discard unrelated edits or untracked files.
+- Do not commit or push unless explicitly requested.
+- Never force-push unless explicitly instructed and the consequences are clear.
+- Keep experimental work reversible.
+- Update `docs/brief/session-handoff.md` after substantial approved implementation, not after read-only analysis or tiny adjustments.
