@@ -526,8 +526,9 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".product-preview-card");
     expect(styles).toContain(".collection-product-card__image");
     expect(styles).toContain("aspect-ratio: 4 / 5;");
-    expect(styles).toContain("border-bottom: var(--collection-product-border-width)");
-    expect(styles).toContain("width: calc(100% - (2 * var(--collection-product-image-inset)));");
+    expect(styles).toContain("border: var(--collection-product-border-width, 1px) solid var(--site-border);");
+    expect(styles).toContain("border-bottom: var(--collection-product-border-width, 1px)");
+    expect(styles).toContain("width: calc(100% - (2 * var(--collection-product-image-inset, 8px)));");
     expect(styles).toContain(".collection-product-card__body");
     expect(styles).toContain("min-height: 245px;");
     expect(styles).not.toContain(".collection-product-card__blank");
@@ -546,6 +547,12 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".featured-sets-carousel .featured-sets-carousel__slide");
     expect(styles).toContain(".featured-set-card .product-preview-card__image");
     expect(styles).toContain(".featured-set-card .product-preview-card__body");
+    expect(styles).toContain("flex: 0 0 190px;");
+    expect(styles).toContain("gap: 9px;");
+    expect(styles).toContain("min-height: 245px;");
+    expect(styles).toContain("margin: 5px 6px 0;");
+    expect(styles).toContain("width: calc(100% - 12px);");
+    expect(styles).toContain("flex-basis: calc(50% - var(--space-page-inline) + 25px);");
     expect(styles).toContain(".featured-set-card p");
     expect(styles).toContain("font-size: var(--type-body);");
     expect(styles).not.toContain(".featured-set-card__image");
