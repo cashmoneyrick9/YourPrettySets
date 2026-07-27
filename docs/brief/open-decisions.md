@@ -1,77 +1,95 @@
 # Open Decisions
 
-These decisions are intentionally not final yet. Agents should not permanently solve them without CEO approval.
+Last cleaned: 2026-07-26.
 
-## Checkout
+These decisions are intentionally unresolved. Agents must not settle them permanently without founder approval.
 
-Checkout path is unknown.
+## Commerce
 
-Possibilities:
+### Checkout and bag
 
-- Shopify checkout
-- Stripe checkout
-- Manual order flow
-- Another platform or process
+The storefront does not have a connected cart, checkout provider, payment flow, or inventory system.
 
-For now, checkout should be a coming-soon state.
+Possible future paths may include Shopify, Stripe, a manual process, or another platform. Do not select or implement one without approval.
 
-## Final Logo
+### Email capture
 
-Direction: playful handwriting.
+The custom-order and footer email forms do not have a connected provider or backend.
 
-Final logo design will be shaped later with CEO input.
+### Sizing-kit commerce
 
-## Mobile Header Direction
+The standalone sizing kit is currently $10, but online purchasing is intentionally unavailable.
 
-The current header is functional but not final. The CEO selected the current header area as the next thing to improve.
+## Product
 
-Known feedback:
+### Final pricing position
 
-- The current mobile header feels like a basic development nav.
-- The brand name does not yet feel designed.
-- The nav wraps awkwardly, especially with `Bag` dropping to its own line.
-- Generated visual mockups for "brand-pretty" and "clean beauty brand" directions were rejected.
-- Avoid overly cute, template-like, decorative, or fake handwritten beauty-brand treatments.
+The live prototype catalog uses placeholder prices from $15 to $40 across simple, mid-detail, and detailed tiers.
 
-Next recommended discussion:
+Those values are implementation placeholders, not a final pricing commitment. Do not globally raise, lower, or restructure pricing without founder approval.
 
-- Start from the real current header, not from more generated fantasy mockups.
-- Clarify whether the main problem is layout, logo/brand text, or overall vibe.
-- Improve the header directly and conservatively once the CEO chooses a direction.
-
-## Exact Color Palette
-
-Direction is spring/summer colorful with pinks, corals, peaches, greens, blues, yellows, white, and small shimmer/gold touches.
-
-Exact hex values are not locked yet.
-
-## How It Works Card UI
-
-The carousel UX is approved enough to preserve for now: one step card at a time, same short copy, arrows, dots, and near-hero placement.
-
-The visual styling of the actual cards is still open. Recent generated mockups for frosted, editorial, tag, packaging, stationery, tray, and acrylic-inspired card styles did not land. The next useful step is not another broad fantasy mockup by default; start closer to the live card and explore practical refinements to surface, border, image treatment, typography, arrow treatment, and spacing.
-
-## Exact Product Count
-
-First placeholder data set should support 12-30 products.
-
-Exact starting count will be decided later.
-
-## Real Product Names And Photos
-
-The first build uses generated placeholder images and realistic sample products.
-
-Real nail designs, photos, product names, and final prices will come later.
-
-## Help And Order Work Still Open
-
-The Press-On Guide depth, cancellation rule, shipping figures, issue-reporting window, and current returns approach were confirmed on 2026-07-09 and are centralized in `src/data/storefrontFacts.ts`. Do not restore the older placeholder rules.
+### Final catalog
 
 Still open:
 
-- Approved millimeter measurements for the `00–14` sizing chart.
-- Checkout/cart integration for the $10 standalone sizing kit and the wider storefront.
-- Final product details, compatible instructions, and product page for the planned YourPrettySets glue-removal solution.
-- Backend/provider connection and longer-term routing for custom-order and footer email signup forms.
-- Final Privacy and Terms language.
-- Whether finalized policy wording later moves into dedicated policy pages in addition to the customer-facing Help article.
+- Final product names
+- Final product descriptions
+- Final product count
+- Final product photography
+- Final inventory and availability
+- Whether any shape or length combinations require product-specific restrictions
+
+### Sizing measurements
+
+Approved millimeter measurements for sizes `00–14` are still missing. Do not fabricate a chart.
+
+### Glue-removal product
+
+The planned YourPrettySets glue-removal solution still needs final product details, compatible instructions, imagery, pricing, and a Product page.
+
+## Brand and Home
+
+### Final logo
+
+The final logo is unresolved. The current text brand mark is temporary.
+
+### Final palette
+
+The current live system is cool-neutral with a blue-gray accent. It is the working default, but final brand colors are not permanently locked.
+
+Do not restore older warm sorbet or spring-pastel systems without approval.
+
+### Hero media
+
+The live hero structure and CTA exist, but the current hero media is unfinished. The CSS hand is hidden and `.hero-photo` has no background image.
+
+### How It Works
+
+The spinning panorama is currently visible as a reversible experiment. The original three-card carousel remains hidden but preserved.
+
+The founder still needs to decide whether to:
+
+- Keep and refine the spinning banner
+- Restore and refine the card carousel
+- Choose another tightly scoped treatment
+
+Do not delete either current implementation before that decision.
+
+### Reviews
+
+The Home reviews strip and Product `Worn by` media are prototype content. Final review format, real customer content, permissions, and imagery remain open.
+
+### Mobile menu polish
+
+The current menu interaction is functional. Final visual polish and final brand treatment remain open.
+
+## Policy and Support
+
+Still open:
+
+- Final Privacy language
+- Final Terms language
+- Whether finalized policy wording also receives dedicated policy pages
+- Final legal review of customer-facing policies
+
+Confirmed storefront facts remain centralized in `src/data/storefrontFacts.ts` and should not be replaced with older placeholder rules.
