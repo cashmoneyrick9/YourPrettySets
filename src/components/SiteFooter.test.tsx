@@ -40,12 +40,14 @@ describe("SiteFooter", () => {
     expect(within(footerNav).getByRole("link", { name: "Find Your Fit" })).toHaveAttribute("href", "/help/sizing");
     expect(within(footerNav).getByRole("link", { name: "FAQ" })).toHaveAttribute("href", "/help/faq");
     expect(within(footerNav).getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "/help/contact");
-    expect(within(footerNav).getByRole("link", { name: "Shipping, Returns & Order Issues" })).toHaveAttribute(
+    expect(within(footerNav).getByRole("link", { name: "Shipping & Returns" })).toHaveAttribute(
       "href",
       "/help/shipping-returns"
     );
-    expect(within(footerNav).queryByRole("link", { name: "Shipping" })).not.toBeInTheDocument();
-    expect(within(footerNav).queryByRole("link", { name: "Returns" })).not.toBeInTheDocument();
+    expect(within(footerNav).getByRole("link", { name: "Order Issues" })).toHaveAttribute(
+      "href",
+      "/help/shipping-returns#order-problems"
+    );
     expect(within(footerNav).getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
     expect(within(footerNav).getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
   });

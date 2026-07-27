@@ -17,7 +17,8 @@ const helpLinks = [
 ];
 
 const policyLinks = [
-  { label: "Shipping, Returns & Order Issues", href: "/help/shipping-returns" },
+  { label: "Shipping & Returns", href: "/help/shipping-returns" },
+  { label: "Order Issues", href: "/help/shipping-returns#order-problems" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" }
 ];
