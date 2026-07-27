@@ -46,7 +46,7 @@ Current live flow:
 2. Hero copy and `Shop sets` CTA
 3. Browse rail and product preview area
 4. Featured Sets carousel
-5. Visible spinning How It Works banner experiment
+5. Selected three-image Journey + Type How It Works banner
 6. Reviews Polaroid Strip
 7. Shared email capture and footer from the app shell
 
@@ -55,14 +55,16 @@ Important details:
 - The current hero media is unfinished. The CSS hand is hidden and `.hero-photo` has no background image.
 - `HomeCollections` uses Ready to Ship, Made to Order, Custom Orders, New Arrivals, and Best Sellers.
 - The original three-card How It Works carousel remains in the code and is hidden reversibly.
-- `HowItWorksSpinningBannerTest` is the visible comparison experiment.
+- `HowItWorksSpinningBannerTest` now renders the founder-selected three-image Journey + Type banner directly beneath the `HOW IT WORKS` eyebrow and `3 EASY STEPS` heading.
+- The selected banner uses three high-fidelity, slightly portrait white scenes for choosing a set, choosing glue or tabs, and wearing the finished manicure. Oversized typography is generated inside each image; the scenes retain narrow blend-safe gutters and a small breathing band between copy and photography.
+- The older studio panorama and the `IMAGE TEST / Compare the directions` review UI are no longer rendered on Home. The comparison component remains isolated in the code for reversibility.
 - Home review content is prototype content, not verified testimonials. The Reviews Polaroid Strip now uses realistic modeled mock-review imagery tied to seven live catalog sets; each card remains explicitly marked as `mockup` in its data and accessible image description.
 - Home does not currently render kit contents or FAQ sections.
 
 Next useful Home judgments:
 
 - Complete the hero media without reopening the whole brand.
-- Decide whether the spinning banner replaces the hidden card carousel.
+- Continue final polish of the selected How It Works banner without restoring the removed comparison UI.
 - Evaluate whether the realistic catalog-based mock-review pass makes the current reviews strip viable enough to refine or whether it should be replaced.
 
 ## Shop and Product

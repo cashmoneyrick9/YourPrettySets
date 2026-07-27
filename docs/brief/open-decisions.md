@@ -65,15 +65,9 @@ The live hero structure and CTA exist, but the current hero media is unfinished.
 
 ### How It Works
 
-The spinning panorama is currently visible as a reversible experiment. The original three-card carousel remains hidden but preserved.
+The founder selected the three-image Journey + Type spinning banner and asked to remove the older studio panorama and temporary comparison controls from the visible Home page.
 
-The founder still needs to decide whether to:
-
-- Keep and refine the spinning banner
-- Restore and refine the card carousel
-- Choose another tightly scoped treatment
-
-Do not delete either current implementation before that decision.
+The approved visible direction uses three slightly portrait white scenes for choosing a set, choosing glue or tabs, and wearing the finished manicure. The original three-card carousel remains hidden and preserved for reversibility; do not delete it without a separate cleanup decision.
 
 ### Reviews
 

@@ -55,23 +55,27 @@ Products come from `src/data/products.ts`; do not create a second Home-only cata
 
 Cards route to the same canonical Product Detail pages and use the same product media as the rest of the storefront.
 
-### 5. How It Works Comparison
+### 5. How It Works
 
 Two implementations currently remain in the codebase:
 
 - The original three-card `MobileCarousel` remains in `HomePage.tsx`.
 - `.confidence-section` hides that original treatment reversibly.
-- `HowItWorksSpinningBannerTest` is the visible experiment.
+- `HowItWorksSpinningBannerTest` is the visible founder-selected Journey + Type banner.
 
-The spinning banner uses one continuous panorama with three HTML overlays:
+The visible spinning banner keeps the `HOW IT WORKS` eyebrow and `3 EASY STEPS` heading above three high-fidelity, slightly portrait white scenes:
 
-1. Choose your set
-2. Customize your fit
-3. Apply your way
+- Choose a set
+- Choose glue or adhesive tabs
+- Wear the finished manicure
+
+Each scene contains oversized generated editorial typography, a short subheading, larger product photography, narrow blend-safe white gutters, and a small breathing band between copy and photography.
 
 It pauses on focus or pointer interaction and includes reduced-motion behavior.
 
-This remains a comparison experiment. Do not delete either direction until the founder chooses a permanent treatment.
+The older studio panorama and the `IMAGE TEST / Compare the directions` review UI are no longer rendered. `HowItWorksBannerOptionsTest` remains isolated in the code for reversibility.
+
+Do not restore the removed comparison UI or delete the hidden original carousel without founder direction.
 
 ### 6. Reviews
 
@@ -99,7 +103,7 @@ Do not restore these merely because older briefs mention them.
 ## Current Judgment Points
 
 - What media should complete the hero without restarting the entire brand direction?
-- Should the spinning banner replace the hidden three-card carousel?
+- Does the selected How It Works banner need any final timing or spacing polish?
 - Does the current reviews strip deserve refinement or replacement?
 - Which parts of the Home page should become the visual reference for the remaining pages?
 

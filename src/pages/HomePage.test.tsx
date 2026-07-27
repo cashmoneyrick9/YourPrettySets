@@ -175,7 +175,9 @@ describe("HomePage", () => {
     expect(confidence.compareDocumentPosition(bannerTest) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(bannerTest.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(document.querySelectorAll(".confidence-card")).toHaveLength(3);
-    expect(document.querySelectorAll(".how-it-works-banner-test__panel")).toHaveLength(2);
+    expect(bannerTest.querySelectorAll(".how-it-works-banner-test__panel")).toHaveLength(2);
+    expect(screen.queryByTestId("how-it-works-banner-options-test")).not.toBeInTheDocument();
+    expect(screen.queryByText("Compare the directions")).not.toBeInTheDocument();
     expect(screen.getByText("CUSTOMER LOVE")).toBeInTheDocument();
     expect(carousel).toHaveClass("mobile-carousel", "reviews-polaroid-carousel");
     expect(carousel).toHaveAttribute("data-auto-rotate", "true");

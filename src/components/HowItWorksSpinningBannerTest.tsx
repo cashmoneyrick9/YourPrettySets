@@ -1,21 +1,18 @@
 import { useState } from "react";
 import "./HowItWorksSpinningBannerTest.css";
 
-const bannerSteps = [
+const selectedSteps = [
   {
-    body: "Find a design that feels like you.",
-    number: "01",
-    title: "Choose your set"
+    imageSrc: "/assets/how-it-works-banner-test/how-it-works-option-e-v4-choose.jpg",
+    label: "Choose your set. Find the design that feels like you."
   },
   {
-    body: "Choose your preferred shape and length.",
-    number: "02",
-    title: "Customize your fit"
+    imageSrc: "/assets/how-it-works-banner-test/how-it-works-option-e-v4-method.jpg",
+    label: "Choose your method. Choose the hold that works for you."
   },
   {
-    body: "Use glue or adhesive tabs—your choice.",
-    number: "03",
-    title: "Apply your way"
+    imageSrc: "/assets/how-it-works-banner-test/how-it-works-option-e-v4-wear.jpg",
+    label: "Wear. Press on and enjoy your finished set."
   }
 ];
 
@@ -23,24 +20,21 @@ function BannerPanel({ duplicate = false }: { duplicate?: boolean }) {
   return (
     <div
       aria-hidden={duplicate ? "true" : undefined}
-      className={`how-it-works-banner-test__panel${duplicate ? " how-it-works-banner-test__panel--duplicate" : ""}`}
+      className={`how-it-works-banner-test__panel how-it-works-banner-test__panel--steps${
+        duplicate ? " how-it-works-banner-test__panel--duplicate" : ""
+      }`}
     >
-      <img
-        alt=""
-        aria-hidden="true"
-        decoding="async"
-        loading={duplicate ? "lazy" : "eager"}
-        src="/assets/how-it-works-banner-test/how-it-works-panorama.jpg"
-      />
-      <div className="how-it-works-banner-test__steps">
-        {bannerSteps.map((step) => (
-          <div className="how-it-works-banner-test__step" key={step.number}>
-            <span className="how-it-works-banner-test__number">{step.number}</span>
-            <strong>{step.title}</strong>
-            <p>{step.body}</p>
-          </div>
-        ))}
-      </div>
+      {selectedSteps.map((step) => (
+        <div aria-label={step.label} className="how-it-works-banner-test__step" key={step.label} role="img">
+          <img
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+            loading={duplicate ? "lazy" : "eager"}
+            src={step.imageSrc}
+          />
+        </div>
+      ))}
     </div>
   );
 }
@@ -59,8 +53,10 @@ export function HowItWorksSpinningBannerTest() {
         <h2 id="how-it-works-banner-test-label">3 EASY STEPS</h2>
       </div>
       <div
-        aria-label="Continuous How It Works banner. Focus or touch to pause movement."
-        className={`how-it-works-banner-test__viewport${isPaused ? " how-it-works-banner-test__viewport--paused" : ""}`}
+        aria-label="Continuous three-step How It Works banner. Focus or touch to pause movement."
+        className={`how-it-works-banner-test__viewport how-it-works-banner-test__viewport--selected${
+          isPaused ? " how-it-works-banner-test__viewport--paused" : ""
+        }`}
         onBlur={() => setIsPaused(false)}
         onFocus={() => setIsPaused(true)}
         onPointerCancel={() => setIsPaused(false)}
