@@ -54,9 +54,10 @@ export function HowItWorksSpinningBannerTest() {
       className="how-it-works-banner-test"
       data-testid="how-it-works-banner-test"
     >
-      <p className="how-it-works-banner-test__label" id="how-it-works-banner-test-label">
-        HOW IT WORKS
-      </p>
+      <div className="section-heading confidence-section__heading how-it-works-banner-test__heading">
+        <p className="eyebrow">HOW IT WORKS</p>
+        <h2 id="how-it-works-banner-test-label">3 EASY STEPS</h2>
+      </div>
       <div
         aria-label="Continuous How It Works banner. Focus or touch to pause movement."
         className={`how-it-works-banner-test__viewport${isPaused ? " how-it-works-banner-test__viewport--paused" : ""}`}

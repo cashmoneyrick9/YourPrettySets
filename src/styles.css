@@ -1549,8 +1549,8 @@ h1 {
     linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0) 100%),
     var(--site-page-bg);
   overflow: hidden;
-  padding-bottom: var(--space-section-y-tight);
-  padding-top: var(--space-section-y-compact);
+  padding-bottom: clamp(20px, 3vw, 32px);
+  padding-top: clamp(20px, 3vw, 32px);
 }
 
 .review-heading {
@@ -2856,7 +2856,8 @@ h1 {
   }
 
   .reviews-section {
-    padding-bottom: var(--space-section-y-compact);
+    padding-bottom: 20px;
+    padding-top: 20px;
   }
 
   .reviews-polaroid-carousel {
@@ -2976,7 +2977,7 @@ h1 {
 
 .site-footer-email-shell {
   background: var(--site-surface);
-  padding: var(--space-footer-y) 0 0;
+  padding: clamp(20px, 3vw, 32px) 0 0;
   position: relative;
   width: 100%;
 }

@@ -1,16 +1,15 @@
 .how-it-works-banner-test {
   background: var(--site-page-bg);
-  padding: clamp(18px, 3vw, 32px) 0 clamp(34px, 5vw, 58px);
+  padding: clamp(18px, 3vw, 32px) 0 clamp(20px, 3vw, 32px);
 }
 
-.how-it-works-banner-test__label {
-  color: var(--site-accent);
-  font-size: var(--type-caption);
-  font-weight: var(--weight-strong);
-  letter-spacing: var(--tracking-caption);
-  margin: 0 auto 14px;
-  padding: 0 var(--space-page-inline);
-  text-transform: uppercase;
+.how-it-works-banner-test__heading.confidence-section__heading {
+  gap: 12px;
+  margin-bottom: var(--space-heading-gap);
+}
+
+.how-it-works-banner-test__heading.confidence-section__heading h2 {
+  margin-top: 0;
 }
 
 .how-it-works-banner-test__viewport {

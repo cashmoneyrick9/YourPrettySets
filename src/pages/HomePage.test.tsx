@@ -56,12 +56,12 @@ describe("HomePage", () => {
     renderHomePage();
 
     const hero = screen.getByRole("heading", { name: "Ready-to-wear sets for pretty plans" });
-    const confidence = screen.getByRole("heading", { name: "3 EASY STEPS" });
+    const confidenceSection = document.querySelector(".confidence-section") as HTMLElement;
+    const confidence = within(confidenceSection).getByRole("heading", { name: "3 EASY STEPS" });
     const collections = screen.getByRole("heading", { name: "Browse" });
 
     expect(hero).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shop sets" })).toHaveAttribute("href", "/shop");
-    const confidenceSection = document.querySelector(".confidence-section") as HTMLElement;
     expect(within(confidenceSection).getByText("HOW IT WORKS")).toBeInTheDocument();
     expect(document.querySelectorAll(".confidence-card__number")).toHaveLength(3);
     expect(screen.getByText("1")).toBeInTheDocument();
@@ -166,7 +166,8 @@ describe("HomePage", () => {
   it("renders the decorative Reviews keepsake carousel after How It Works", () => {
     renderHomePage();
 
-    const confidence = screen.getByRole("heading", { name: "3 EASY STEPS" });
+    const confidenceSection = document.querySelector(".confidence-section") as HTMLElement;
+    const confidence = within(confidenceSection).getByRole("heading", { name: "3 EASY STEPS" });
     const bannerTest = screen.getByTestId("how-it-works-banner-test");
     const reviews = screen.getByRole("heading", { name: "Customer keepsakes" });
     const carousel = screen.getByRole("region", { name: "Customer review keepsake carousel" });

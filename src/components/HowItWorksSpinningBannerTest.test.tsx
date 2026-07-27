@@ -12,6 +12,7 @@ describe("HowItWorksSpinningBannerTest", () => {
     render(<HowItWorksSpinningBannerTest />);
 
     expect(screen.getByText("HOW IT WORKS")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "3 EASY STEPS" })).toBeInTheDocument();
     expect(document.querySelectorAll(".how-it-works-banner-test__panel")).toHaveLength(2);
     expect(document.querySelectorAll(".how-it-works-banner-test__panel img")).toHaveLength(2);
     expect(document.querySelector(".how-it-works-banner-test__panel--duplicate")).toHaveAttribute("aria-hidden", "true");
@@ -42,7 +43,7 @@ describe("HowItWorksSpinningBannerTest", () => {
   it("defines a linear seamless loop and a stable reduced-motion state", () => {
     expect(styles).toContain("animation: how-it-works-banner-test-loop 16s linear infinite;");
     expect(styles).toContain("transform: translateX(-50%);");
-    expect(styles).toContain("padding: clamp(18px, 3vw, 32px) 0 clamp(34px, 5vw, 58px);");
+    expect(styles).toContain("padding: clamp(18px, 3vw, 32px) 0 clamp(20px, 3vw, 32px);");
     expect(styles).toContain("border-radius: 0;");
     expect(styles).toContain("width: 200%;");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
