@@ -1,45 +1,55 @@
 # YourPrettySets Developer Brief
 
-This folder is the working source of truth for building the YourPrettySets site. It is written for the CEO and for agents who will build the site page by page, section by section.
+This folder is the working documentation for the YourPrettySets storefront prototype. It is written for the founder and for agents working page by page or section by section.
 
-The current goal is not a public launch MVP. The current goal is a structured brand and ecommerce prototype that gives future agents enough information to build consistently.
+The current goal is not a public-launch MVP. The goal is a coherent, mobile-first ecommerce prototype that supports product, brand, and UX decisions without pretending checkout, final content, or final business rules are complete.
+
+## Source of Truth
+
+When documents disagree, use this order:
+
+1. The founder's current instruction
+2. Live code and tests
+3. `session-handoff.md`
+4. `open-decisions.md`
+5. The relevant feature brief
+6. `session-history.md`
+
+Historical notes explain how the prototype arrived here; they are not current implementation instructions.
 
 ## Build Strategy
 
-- Build one page at a time.
-- Start with the Home page.
-- Treat the Home page as the visual reference for the rest of the site.
-- Use central placeholder product data from the beginning.
-- Keep data and structure coherent first, while making the interface polished enough to judge the brand.
-- Use realistic placeholders, not generic filler.
-- Keep checkout intentionally unfinished until the business chooses a checkout path.
+- Work one focused section or behavior at a time.
+- Inspect the live implementation before proposing or making changes.
+- Use central product and storefront data.
+- Preserve accepted behavior while exploring presentation.
+- Keep generated assets and placeholders easy to replace.
+- Leave checkout and final policy language unfinished until approved.
+- Use realistic prototype content rather than generic filler.
 
-## Current Docs
+## Current Documents
 
-- [brand.md](brand.md) - brand direction, tone, color direction, do/don't rules.
-- [site-map.md](site-map.md) - pages, navigation, and page responsibilities.
-- [product-data.md](product-data.md) - placeholder product model, collections, options, pricing, and image rules.
-- [shared-components.md](shared-components.md) - components agents should keep consistent.
-- [page-home.md](page-home.md) - Home page section-by-section build brief.
-- [open-decisions.md](open-decisions.md) - unresolved decisions that should not block the first prototype.
-- [section-pass-template.md](section-pass-template.md) - repeatable CEO checklist for UI section passes and mockup planning.
-- [session-handoff.md](session-handoff.md) - latest build state, CEO feedback, and next recommended work.
-
-## Agent Rules
-
-- Read this README plus the doc for the section/page you own.
-- For any UI pass, read `section-pass-template.md` and use its CEO checklist before writing a dev handoff.
-- Do not invent new brand directions, collections, pricing systems, or checkout behavior.
-- Pull products from the central product data source once the app exists.
-- Use React Router as the standard page-routing layer. Add new internal pages as routes in `src/App.tsx`; do not reintroduce manual `window.location.pathname` page switching.
-- Use React Router `Link`/`NavLink` for internal page links. Plain `<a>` tags are for external URLs, `mailto:`, `tel:`, and same-page/homepage hash links like `#faq` or `/#reviews`.
-- Keep placeholders easy to replace with real products, photos, and copy later.
-- If a choice is listed in `open-decisions.md`, do not solve it permanently without CEO approval.
+- [brand.md](brand.md) — current working brand, typography, palette, media, and do/don't rules.
+- [site-map.md](site-map.md) — routes, navigation, and page responsibilities.
+- [product-data.md](product-data.md) — live catalog structure, variants, prototype pricing, and media rules.
+- [shared-components.md](shared-components.md) — reusable storefront and Help patterns.
+- [page-home.md](page-home.md) — the Home page as it exists now and the decisions still open.
+- [open-decisions.md](open-decisions.md) — unresolved decisions agents must not settle independently.
+- [section-pass-template.md](section-pass-template.md) — optional CEO checklist for exploratory UI passes.
+- [session-handoff.md](session-handoff.md) — concise current-state snapshot and next useful judgments.
+- [session-history.md](session-history.md) — archived milestones and superseded directions.
 
 ## Current Build State
 
-The storefront exists as a Vite React TypeScript app with central product data, shared Home and Product components, responsive CSS including 320px rules, and React Router page navigation.
+The storefront is a Vite React TypeScript application using React Router, central product data, responsive CSS, reusable product components, and a task-focused Press-On Guide.
 
-The complete Press-On Guide system is now implemented at `/help`, with task-based sizing, application, removal, shipping/order-issue, FAQ, and Contact routes; centralized storefront facts; reusable article components; mobile/desktop article navigation; and a separate $10 sizing-kit Product page with commerce clearly marked as not connected.
+The current repository includes:
 
-Preserve the approved behavior documented in `session-handoff.md` and improve visual treatment section by section. Do not treat the logo, final product photography, final copy, checkout, the missing sizing measurements, the planned glue-removal product, or Privacy/Terms wording as final.
+- Home, Shop, Product, custom-order waitlist, Help, Privacy placeholder, and Terms placeholder routes
+- 33 prototype nail-set products plus a separate $10 sizing-kit entry
+- Five length options and six shape options
+- Central storefront and Help facts
+- Generated prototype product and instructional media
+- An intentionally unconnected cart, checkout, inventory, and email-capture backend
+
+Read `session-handoff.md` for the current implementation details before starting substantive work.
