@@ -185,8 +185,13 @@ describe("HomePage", () => {
     expect(document.querySelectorAll(".review-polaroid-card__photo")).toHaveLength(7);
     expect(document.querySelectorAll(".review-polaroid-card__body")).toHaveLength(7);
     expect(document.querySelectorAll(".review-polaroid-card__caption")).toHaveLength(7);
-    expect(Array.from(document.querySelectorAll(".review-polaroid-card__photo")).every((photo) => photo.childElementCount === 0)).toBe(true);
+    expect(document.querySelectorAll(".review-polaroid-card__photo img")).toHaveLength(7);
+    expect(Array.from(document.querySelectorAll(".review-polaroid-card")).every((card) => card.getAttribute("data-content-status") === "mockup")).toBe(true);
+    expect(Array.from(document.querySelectorAll(".review-polaroid-card__photo img")).every((image) => image.getAttribute("alt")?.startsWith("Prototype mock review showing"))).toBe(true);
     expect(Array.from(document.querySelectorAll(".review-polaroid-card")).every((card) => card.getAttribute("style")?.includes("--review-polaroid-rotation"))).toBe(true);
+    expect(document.querySelector('[data-product-id="birthday-candle"] img')).toHaveAttribute("src", "/assets/reviews/mockups/birthday-candle.jpg");
+    expect(document.querySelector('[data-product-id="lace-veil"] img')).toHaveAttribute("src", "/assets/reviews/mockups/lace-veil.jpg");
+    expect(document.querySelector('[data-product-id="main-character"] img')).toHaveAttribute("src", "/assets/reviews/mockups/main-character.jpg");
     expect(document.querySelector(".review-polaroid-card--peach")).not.toBeInTheDocument();
     expect(document.querySelector(".review-polaroid-card--rose")).not.toBeInTheDocument();
     expect(screen.getByText("Sarah's birthday set")).toBeInTheDocument();

@@ -56,14 +56,14 @@ Important details:
 - `HomeCollections` uses Ready to Ship, Made to Order, Custom Orders, New Arrivals, and Best Sellers.
 - The original three-card How It Works carousel remains in the code and is hidden reversibly.
 - `HowItWorksSpinningBannerTest` is the visible comparison experiment.
-- Home review content is prototype content, not verified testimonials.
+- Home review content is prototype content, not verified testimonials. The Reviews Polaroid Strip now uses realistic modeled mock-review imagery tied to seven live catalog sets; each card remains explicitly marked as `mockup` in its data and accessible image description.
 - Home does not currently render kit contents or FAQ sections.
 
 Next useful Home judgments:
 
 - Complete the hero media without reopening the whole brand.
 - Decide whether the spinning banner replaces the hidden card carousel.
-- Decide whether the current reviews strip should be refined or replaced.
+- Evaluate whether the realistic catalog-based mock-review pass makes the current reviews strip viable enough to refine or whether it should be replaced.
 
 ## Shop and Product
 

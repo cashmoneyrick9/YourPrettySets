@@ -134,7 +134,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("--mobile-menu-link-type: clamp(1.34rem, 6vw, 2.05rem);");
     expect(styles).toContain(".brand-header__mobile-submenu-link {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);");
     expect(styles).toContain(".review-story-viewer__card blockquote {\n  color: var(--site-text-primary);\n  font-family: var(--font-display);\n  font-size: var(--type-display-special);");
-    expect(styles).toContain(".site-footer__brand {\n  color: var(--footer-ink);\n  font-family: var(--font-display);\n  font-size: var(--type-display-special);");
+    expect(styles).toContain(".site-footer__brand {\n  color: var(--footer-ink);\n  font-family: var(--font-display);\n  font-size: var(--footer-brand-size);");
     expect(styles).toContain("font-family: var(--font-cta);");
     expect(styles).not.toContain("font-family: Georgia, \"Times New Roman\", serif;");
   });
@@ -172,7 +172,7 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain(".confidence-card__copy h3");
     expect(styles).toContain(".kit-detail-tab span:last-child {\n  font-size: var(--type-caption);");
     expect(styles).toContain(".review-story-label {\n  color: var(--site-text-primary);\n  font-size: var(--type-caption);");
-    expect(styles).toContain(".site-footer__love-note {\n  color: var(--footer-accent);\n  font-family: var(--font-display);\n  font-size: var(--type-body);");
+    expect(styles).toContain(".site-footer__love-note {\n  color: var(--footer-accent);\n  font-family: var(--font-display);\n  font-size: var(--footer-love-note-size);");
     expect(styles).toContain(".site-footer__copyright p {\n  color: var(--footer-muted);\n  font-size: var(--type-caption);");
     expect(styles).toContain(".shop-empty-state button {\n  appearance: none;\n  background: var(--shop-ink);");
     expect(styles).toContain(".shop-empty-state button {\n  appearance: none;\n  background: var(--shop-ink);\n  border: 1px solid var(--shop-ink);\n  border-radius: 8px;\n  color: #ffffff;\n  cursor: pointer;\n  font: inherit;\n  font-size: var(--type-button);");
@@ -543,8 +543,10 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain("--review-polaroid-photo-bg: linear-gradient");
     expect(styles).not.toContain(".review-polaroid-card__photo span");
     expect(styles).toContain("transform: rotate(var(--review-polaroid-rotation, 0deg));");
-    expect(styles).toContain("--review-polaroid-width: clamp(154px, 44vw, 170px);");
-    expect(styles).toContain("--review-polaroid-width: clamp(140px, 45vw, 154px);");
+    expect(styles).toContain("--review-polaroid-width: clamp(190px, 54vw, 210px);");
+    expect(styles).toContain("--review-polaroid-width: clamp(184px, 56vw, 200px);");
+    expect(styles).toContain("padding: 4px var(--space-page-inline) 8px;");
+    expect(styles).toContain(".reviews-polaroid-carousel .reviews-polaroid-carousel__track {\n    padding: 8px 0;");
     expect(styles).toContain(".review-polaroid-card {\n    min-height: 245px;");
     expect(styles).toContain(".review-story-row {\n  -webkit-overflow-scrolling: touch;");
     expect(styles).toContain("margin-inline: calc(-1 * var(--space-page-inline));");
@@ -843,12 +845,20 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-footer__love-note {\n  color: var(--footer-accent);");
     expect(styles).toContain(".site-footer-email--restored");
     expect(styles).toContain(".site-footer-email--image::before");
-    expect(styles).toContain('background-image: url("/assets/hero-s3-summer.png");');
-    expect(styles).toContain("filter: grayscale(1) brightness(0.48);");
+    expect(styles).toContain('background-image: url("/assets/footer-email-sets.png");');
+    expect(styles).toContain("filter: brightness(0.88) saturate(0.86);");
     expect(styles).toContain(".site-footer-email--image::after");
-    expect(styles).toContain("background: rgba(6, 10, 13, 0.34);");
+    expect(styles).toContain("background: rgba(6, 10, 13, 0.22);");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__form");
-    expect(styles).toContain("min-height: 48px;");
+    expect(styles).toContain("min-height: 36px;");
+    expect(styles).toContain("transform: translateY(-4px);");
+    expect(styles).toContain("background: rgba(255, 255, 255, 0.72);");
+    expect(styles).toContain("background: rgba(16, 20, 23, 0.68);");
+    expect(styles).toContain("backdrop-filter: blur(8px) saturate(0.85);");
+    expect(styles).toContain("backdrop-filter: blur(8px) saturate(0.8);");
+    expect(styles).toContain(
+      ".site-footer-email--restored .site-footer-email__copy {\n    font-size: var(--type-body);\n    line-height: var(--leading-body);\n    max-width: 19rem;\n    transform: translateY(-4px);"
+    );
     expect(styles).toContain(".site-footer__brand-block");
     expect(styles).toContain(".site-footer__columns");
     expect(styles).toContain("grid-template-columns: repeat(3, minmax(0, 1fr));");
@@ -869,15 +879,16 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain("border-radius: 50%;");
     expect(styles).toContain("min-height: 36px;");
     expect(styles).toContain("@media (max-width: 480px)");
-    expect(styles).toContain(".site-footer-email-shell + .site-footer {\n    --footer-link-size: 0.78rem;\n    padding-top: 46px;");
+    expect(styles).toContain(".site-footer-email-shell + .site-footer {\n    --footer-link-size: 0.78rem;\n    --footer-section-label-size: 0.84rem;\n    padding-top: 46px;");
     expect(styles).toContain(".site-footer__inner {\n    gap: 28px;\n    padding-inline: 16px;");
     expect(styles).toContain(".site-footer__brand-block {\n    gap: 5px;");
     expect(styles).toContain("@media (max-width: 720px)");
-    expect(styles).toContain(".site-footer__columns {\n    column-gap: clamp(24px, 8vw, 42px);\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n    justify-self: center;\n    max-width: 420px;\n    row-gap: 26px;\n    width: 100%;");
-    expect(styles).toContain(".site-footer__column:last-child {\n    grid-column: 1 / -1;");
-    expect(styles).toContain(".site-footer__columns {\n    column-gap: 24px;\n    row-gap: 26px;\n    width: 100%;");
+    expect(styles).toContain(".site-footer__columns {\n    column-gap: clamp(8px, 3vw, 16px);\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n    justify-self: center;\n    max-width: 420px;\n    width: 100%;");
+    expect(styles).not.toContain(".site-footer__column:last-child");
+    expect(styles).toContain(".site-footer__columns {\n    column-gap: clamp(8px, 3vw, 16px);\n    width: 100%;");
     expect(styles).toContain(".site-footer__column {\n    gap: 12px;");
-    expect(styles).toContain(".site-footer__column-title {\n    font-size: 0.74rem;\n    font-weight: 760;\n    letter-spacing: 0.06em;");
+    expect(styles).toContain(".site-footer__column-title {\n  color: var(--footer-accent);\n  font-family: var(--font-cta);\n  font-size: var(--footer-section-label-size);\n  font-weight: 820;\n  letter-spacing: 0.1em;");
+    expect(styles).toContain(".site-footer__column-title {\n    letter-spacing: 0.08em;");
     expect(styles).toContain(".site-footer__link-list {\n    gap: 5px;");
     expect(styles).toContain("white-space: nowrap;");
     expect(styles).toContain(".site-footer__social-links {\n    column-gap: 14px;\n    display: flex;");
