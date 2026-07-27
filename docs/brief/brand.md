@@ -1,104 +1,116 @@
 # Brand Brief
 
+Last aligned with the live prototype: 2026-07-26.
+
 ## Business
 
 YourPrettySets sells handmade ready-to-wear press-on nails.
 
-The first site version focuses on ready-to-wear sets only. Future custom sets may exist, but they should not be a major part of the first prototype.
+The prototype currently supports ready-to-ship and made-to-order sets, with custom orders represented as a waitlist. Checkout and final commerce behavior are not connected.
 
-## Brand Name
+## Working Brand Position
 
-YourPrettySets
+The clearest current shorthand is:
 
-## Tagline Direction
-
-Art on Miniature Canvases
-
-This is a tagline direction, not final locked copy. It can be refined later.
-
-## Brand Feeling
+> A clean, approachable boutique for handmade press-on nail art.
 
 The site should feel:
 
-- Pretty
-- Feminine
-- Boutique
-- Friendly
-- Playful
-- Trend-aware
-- Clean
-- Elevated
-- Spring/summer colorful
-
-The best shorthand is: a pretty everyday boutique for handmade press-on nails.
+- Feminine without becoming overly cute
+- Boutique and handmade
+- Product-first
+- Clear and easy to browse
+- Elevated without imitating a luxury spa
+- Friendly without sounding childish
+- Trend-aware without feeling like a generic beauty template
 
 ## Voice
 
-Use polished but approachable language.
+Use polished, approachable language.
 
 Good tone:
 
 - Clear
-- Warm
 - Confident
-- Lightly playful
+- Warm but concise
 - Easy for non-experts to understand
+- Lightly expressive when it helps the product
 
 Avoid:
 
 - Corporate beauty language
-- Overly luxury/spa language
-- Childish language
-- Long educational paragraphs on the Home page
 - Pushy sales copy
+- Long educational paragraphs on shopping pages
+- Fake urgency or unsupported claims
+- Overly luxury, spa, or influencer-style wording
+- Treating placeholder reviews as verified customer feedback
 
-## Visual Direction
+## Current Working Visual System
 
-The visual direction should lean spring/summer and colorful, not beige, dark, or cold.
+The live CSS is the current implementation reference.
 
-Favorite color families:
+### Core palette
 
-- Coral
-- Tangerine
-- Warm peach
-- Strawberry pink
-- Raspberry
-- Rose pink
-- Lilac
-- Butter yellow
-- Mint
-- Fresh green
-- Seafoam
-- Turquoise
-- Sky blue
-- White
-- Small touches of shimmer or golden warmth
+- Page and main surfaces: `#ffffff`
+- Soft neutral surface: `#eef1f2`
+- Primary text: `#1f2428`
+- Muted text: `#667078`
+- Working accent: blue-gray `#5d6f7a`
+- Borders: restrained translucent charcoal
+- Shadows: soft and low-contrast
 
-The site should not become a one-color pink site. Use pinks and corals as part of a wider spring/summer palette with greens, blues, yellows, and fresh whites.
+This is a working prototype palette, not a permanently locked final identity.
 
-## Logo Direction
+### Typography
 
-The logo should eventually feel like playful handwriting. The CEO will help design the final logo later.
+- Display and editorial headings: Fraunces
+- Body, controls, and CTA text: Manrope
 
-Until then, use a text-based brand mark that can be replaced.
+Keep the serif expressive but controlled. Interface text should remain straightforward and readable.
 
-## Design Do/Don't Rules
+### Media direction
+
+Current media should generally feel:
+
+- Cool white or cool neutral
+- Clean and product-led
+- Cohesive across cards, Product Detail, kit imagery, and Help instruction
+- Realistic enough to evaluate the interface
+- Replaceable when final photography becomes available
+
+Use stylized or editorial imagery as support, not as a substitute for showing the product clearly.
+
+## Design Rules
 
 Do:
 
-- Make the site feel visual and browseable.
-- Use clean product imagery first.
-- Use stylized/editorial imagery as supporting imagery.
-- Keep product cards simple.
-- Make Home polished enough to define the rest of the site.
-- Use fresh spring/summer color accents.
-- Keep layouts clean and easy to scan.
+- Make products easy to see and compare.
+- Keep layouts scannable on mobile.
+- Use whitespace, typography, image scale, and restrained motion to create character.
+- Reuse the live design tokens and shared component patterns.
+- Preserve natural image proportions.
+- Keep experimental treatments isolated and reversible.
+- Treat the Home page as a working visual reference, not a finished brand system.
 
-Don't:
+Do not:
 
-- Make the site look like a sterile luxury spa brand.
-- Make the site beige, overly minimal, or cold.
-- Over-explain press-ons on the Home page.
-- Build checkout as if a platform decision has been made.
-- Let each section invent a separate style.
-- Use generic gray placeholder boxes when generated product assets are planned.
+- Reintroduce a warm sorbet, coral, lilac, mint, or spring-pastel system as the default without founder approval.
+- Make each section invent a different visual language.
+- Use beige lifestyle minimalism or sterile luxury styling.
+- Use generic gray placeholder boxes when a reviewed generated asset already exists.
+- Add decorative UI that interferes with shopping or scanning.
+- Mistake historical mockups or rejected image generations for approved direction.
+
+## Superseded Directions
+
+Earlier documents and experiments described a broad spring/summer palette, coral/lilac/mint card treatments, a sage hero system, and other colorful directions.
+
+Those ideas are historical references, not active defaults. The current live prototype uses the cool-neutral system above. Reopening a superseded direction requires founder approval.
+
+## Still Open
+
+- Final logo
+- Final locked palette
+- Final product photography
+- Final product copy and pricing position
+- Final review content and customer imagery
