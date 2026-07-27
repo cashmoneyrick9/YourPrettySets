@@ -19,35 +19,35 @@ const homeShoppingOptions: HomeShoppingOption[] = [
     id: "ready-to-ship",
     label: "Ready to Ship",
     href: "/shop/ready-to-ship",
-    image: "/assets/browse/ready-to-ship.jpg",
+    image: "/assets/browse/ready-to-ship-fall.jpg",
     products: products.filter((product) => product.orderType === "ready-to-ship")
   },
   {
     id: "made-to-order",
     label: "Made to Order",
     href: "/shop/made-to-order",
-    image: "/assets/browse/made-to-order.jpg",
+    image: "/assets/browse/made-to-order-fall.jpg",
     products: products.filter((product) => product.orderType === "made-to-order")
   },
   {
     id: "custom-orders",
     label: "Custom Orders",
     href: "/shop/custom-orders",
-    image: "/assets/browse/custom-orders.jpg",
+    image: "/assets/browse/custom-orders-fall.jpg",
     description: "Start a made-for-you request when you want a specific color story, event, or nail-art idea."
   },
   {
     id: "new-arrivals",
     label: "New Arrivals",
     href: "/shop?collection=New%20Arrivals",
-    image: "/assets/browse/new-arrivals.jpg",
+    image: "/assets/browse/new-arrivals-fall.jpg",
     products: newArrivals
   },
   {
     id: "best-sellers",
     label: "Best Sellers",
     href: "/shop",
-    image: "/assets/browse/best-sellers.jpg",
+    image: "/assets/browse/best-sellers-fall.jpg",
     products: featuredProducts
   }
 ];
@@ -97,6 +97,7 @@ export function HomeCollections() {
 
           return (
             <button
+              aria-label={option.label}
               aria-pressed={isSelected}
               className={`collection-card collection-card--${slug}${isSelected ? " collection-card--active" : ""}`}
               key={option.id}
@@ -108,7 +109,6 @@ export function HomeCollections() {
               type="button"
             >
               <img alt="" aria-hidden="true" className="collection-card__image" src={option.image} />
-              <span className="collection-card__label">{option.label}</span>
             </button>
           );
         })}

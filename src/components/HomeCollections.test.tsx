@@ -111,13 +111,14 @@ describe("HomeCollections", () => {
     }
     const browseImages = Array.from(document.querySelectorAll<HTMLImageElement>(".collection-card__image"));
     expect(browseImages.map((image) => image.getAttribute("src"))).toEqual([
-      "/assets/browse/ready-to-ship.jpg",
-      "/assets/browse/made-to-order.jpg",
-      "/assets/browse/custom-orders.jpg",
-      "/assets/browse/new-arrivals.jpg",
-      "/assets/browse/best-sellers.jpg"
+      "/assets/browse/ready-to-ship-fall.jpg",
+      "/assets/browse/made-to-order-fall.jpg",
+      "/assets/browse/custom-orders-fall.jpg",
+      "/assets/browse/new-arrivals-fall.jpg",
+      "/assets/browse/best-sellers-fall.jpg"
     ]);
     expect(browseImages.every((image) => image.getAttribute("alt") === "")).toBe(true);
+    expect(document.querySelectorAll(".collection-card__label")).toHaveLength(0);
     expect(document.querySelectorAll(".collection-product-card__blank")).toHaveLength(0);
 
     const readyToShipProducts = products.filter((product) => product.orderType === "ready-to-ship").slice(0, 4);

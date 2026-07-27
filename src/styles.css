@@ -787,7 +787,7 @@ h1 {
 }
 
 .collection-card::after {
-  background: linear-gradient(180deg, rgba(16, 20, 23, 0.12), rgba(16, 20, 23, 0.4));
+  background: transparent;
   content: "";
   inset: 0;
   pointer-events: none;
@@ -828,35 +828,19 @@ h1 {
 .collection-card--active,
 .collection-card[aria-pressed="true"] {
   background: #101417;
-  box-shadow: var(--site-shadow-subtle);
+  box-shadow: 0 0 0 2px rgba(239, 226, 202, 0.92), var(--site-shadow-subtle);
   cursor: default;
   transform: translateY(-1px) scale(1.015);
 }
 
 .collection-card--active::after,
 .collection-card[aria-pressed="true"]::after {
-  background: linear-gradient(180deg, rgba(16, 20, 23, 0.18), rgba(16, 20, 23, 0.52));
+  background: transparent;
 }
 
 .collection-card--active .collection-card__image,
 .collection-card[aria-pressed="true"] .collection-card__image {
   filter: saturate(1.04) contrast(1.04);
-}
-
-.collection-card--active .collection-card__label,
-.collection-card[aria-pressed="true"] .collection-card__label {
-  color: #ffffff;
-  text-shadow: none;
-}
-
-.collection-card__label {
-  font-size: var(--type-button);
-  font-weight: var(--weight-black);
-  line-height: 1.08;
-  padding: 8px 10px;
-  position: relative;
-  text-shadow: 0 1px 7px rgba(0, 0, 0, 0.38);
-  z-index: 1;
 }
 
 .collection-products {
@@ -1108,6 +1092,7 @@ h1 {
 }
 
 .featured-sets-carousel .featured-sets-carousel__slide {
+  display: flex;
   flex: 0 0 190px;
   min-width: 0;
   padding-left: 10px;
@@ -2838,10 +2823,6 @@ h1 {
 
   .collection-card {
     min-height: 100px;
-  }
-
-  .collection-card__label {
-    font-size: var(--type-button);
   }
 
   .confidence-section {

@@ -54,6 +54,7 @@ Important details:
 
 - The current hero media is unfinished. The CSS hand is hidden and `.hero-photo` has no background image.
 - `HomeCollections` uses Ready to Ship, Made to Order, Custom Orders, New Arrivals, and Best Sellers.
+- The Browse rail now uses a cohesive five-image fall campaign set with titles integrated into the artwork. The original `/assets/browse/*.jpg` images remain available for reversibility; the active assets use `*-fall.jpg`, while each button keeps an explicit accessible name outside the decorative image.
 - Featured Sets, the selected How It Works banner, and Customer Keepsakes now share a continuous `24px/s` movement rate. Featured Sets loops through the shared `MobileCarousel`; the How It Works banner recalculates its loop duration from its rendered width so the physical speed stays consistent across viewports.
 - The original three-card How It Works carousel remains in the code and is hidden reversibly.
 - `HowItWorksSpinningBannerTest` now renders the founder-selected three-image Journey + Type banner directly beneath the `HOW IT WORKS` eyebrow and `3 EASY STEPS` heading.
