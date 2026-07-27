@@ -1,787 +1,151 @@
 # Session Handoff
 
-Last updated: 2026-07-19
+Last updated: 2026-07-26.
 
-## How It Works Spinning Banner Comparison Test
-
-A temporary, isolated spinning-banner experiment now serves as the visible Home `How It Works` treatment. The original carousel markup, three images, copy, sizing, continuous Embla behavior, and styling remain intact; removing the experiment requires deleting the single `<HowItWorksSpinningBannerTest />` render plus its isolated component, stylesheet, test, and asset folder.
-
-The founder currently prefers the banner direction, so the original card carousel is intentionally hidden with a reversible `display: none` on `.confidence-section`; no original carousel markup, data, or behavior was removed. Remove that one declaration to show the original comparison again. The visible banner eyebrow now reads `HOW IT WORKS` rather than its earlier test label.
-
-- The experiment lives in `src/components/HowItWorksSpinningBannerTest.tsx` with fully scoped styles in `src/components/HowItWorksSpinningBannerTest.css`. It does not reuse or modify `MobileCarousel`.
-- Two wide imagegen candidates were compared. The selected `public/assets/how-it-works-banner-test/how-it-works-panorama.jpg` is one continuous `2172x724` cool-neutral photoshoot: a finished set in a tray flows into progressively different shapes and lengths, then into an unbranded glue bottle, clear tab sheet, and two underside-up nails. There are no hands, labels, logos, or generated text.
-- The banner duplicates one panorama panel in the DOM and moves the two-panel track from `translateX(0)` to `translateX(-50%)` with a `16s` linear infinite animation. Panel widths are identical, the track has no gap, and the repeated image edges use the same low-detail tabletop so the loop has no blank reset.
-- Real HTML overlays provide `01 Choose your set`, `02 Customize your fit`, and `03 Apply your way`. A shallow bottom-up charcoal/blue-grey fade protects readability without dividing the panorama into cards.
-- Hover, focus, and active touch states pause the animation. Reduced-motion CSS disables the animation, hides the duplicate panel, and leaves the original wide panel available in a stable horizontally scrollable viewport.
-- The moving image viewport is now full bleed at every breakpoint, with no horizontal section padding, maximum width, or rounded side corners; the small test label remains aligned to normal page padding. Desktop presents the full three-step panorama across the available page width. At `900px` and below, each repeated panel remains `900px` wide so phones see roughly one complete scene plus a next-scene peek instead of three miniaturized steps.
-- Browser review covered `320x760`, `390x844`, `768x900`, and `1440x1000`. The panorama and both duplicated panels load at `2172x724`, the track is exactly two equal panel widths with no gap, the original three cards and their original image paths remain present, text remains readable in each responsive mode, and there is no page-level horizontal overflow or new console error.
-- Verification: 26 test files and 231 tests pass, the production build passes, and `git diff --check` passes. `npm audit --audit-level=moderate` still reports the existing six dependency advisories (1 low, 1 moderate, 4 high); dependency changes were not mixed into this visual experiment.
-- This is a comparison experiment, not an approved replacement. Judge whether the continuous ribbon feels more intentional and brand-right than the existing card carousel before removing or refactoring either direction.
-
-## Home Browse Generated Image Tiles
-
-The Home `Browse` rail now uses five purpose-built panoramic imagegen assets in `public/assets/browse/` for Ready to Ship, Made to Order, Custom Orders, New Arrivals, and Best Sellers. The tiles are 100px tall at every breakpoint, retaining a horizontal rectangular carousel geometry while giving the image crops stronger presence. The image wash is intentionally lighter in both normal and active states so the generated artwork remains visible behind the centered white labels. Shopping-path routes, selection behavior, and product previews remain intact. Images use a cohesive cool-neutral handmade nail-art direction with calm central space beneath the label; they remain replaceable prototype artwork rather than final photography.
-
-## How It Works Instructional Overlay Trial
-
-The latest Home-only pass replaces the intentionally blank numbered `How It Works` cards with a pending-review image-led treatment. The carousel placement, loop, continuous auto-rotation, swipe behavior, and lack of visible controls remain unchanged.
-
-- The first pastel flat-lay image set was rejected by the founder because the three scenes looked too similar and did not explain style choice, sizing, or adhesive choice clearly enough. Those rejected images were replaced rather than treated as an approved direction.
-- The current trial uses literal instructional scenes in `public/assets/how-it-works/`: three same-finish shape/length swatches for `Pick your style`, a transparent tip checked against a natural nail for `Find your fit`, and a no-hand glue-versus-tab comparison for `Apply your way`. The first Slide 3 scene was rejected because its split hand/application composition looked synthetic and did not explain the choice cleanly. Its replacement was selected after comparing two generated candidates and shows two press-on undersides directly: one with a controlled glue bead and one with a fitted clear adhesive tab, with the glue bottle and tab sheet kept soft in the background.
-- The first overlay attempt used solid coral, lilac, and mint corner panels. The founder rejected those colors and hard panel edges as inconsistent with the live cool-neutral brand system.
-- The current retry keeps each photograph full-bleed and uses one consistent charcoal/blue-grey gradient that rises from the full bottom edge and fades to transparency by roughly two-thirds of the card. This replaces the earlier bottom-left diagonal fade so the upper image remains clearer, while retaining no panel boundary, separate radius, or per-card color. The heading uses warm-white italic Fraunces while the short supporting answer stays in warm-white Manrope.
-- The section rhythm has been moderately tightened without returning to the much shorter historical cards: cards are now `326px` tall on standard phones, `316px` at `360px` and below, and `356px` on desktop. The section's top and bottom padding are also slightly reduced; card width, imagery, copy, gradient, and carousel behavior are unchanged.
-- Customer-facing facts come from `src/data/storefrontFacts.ts`: ready-to-wear sets include 24 nails across preset sizes `00–14`; estimated wear is `1–3+ weeks` with glue and `7–14 days` with tabs; both adhesives are included. The Home copy does not call the standalone sizing kit free.
-- The overlay trial is not yet founder-approved. Keep it section-scoped and expect further taste adjustments without changing the accepted carousel behavior.
-- Browser review covered 390px, 320px, and 1440px. The cards remain equal-height, copy has no internal overflow, all three images load, the page has no horizontal overflow, and the desktop grid resets Embla's inline translation so all three cards remain visible. The only console output was the existing React Router v7 future-flag warnings.
-- Verification: 228 tests pass and the production build passes. `npm audit --audit-level=moderate` still reports the existing six dependency advisories (1 low, 1 moderate, 4 high).
-
-This handoff summarizes the current project state and the latest CEO feedback so the next chat or agent can continue without restarting the conversation.
+This file is the concise current-state snapshot. Historical milestones and superseded directions live in `session-history.md`.
 
 ## Current Goal
 
-YourPrettySets is being built as a from-scratch brand and ecommerce prototype for handmade ready-to-wear press-on nails.
+YourPrettySets is a mobile-first ecommerce prototype for handmade ready-to-wear press-on nails.
 
-This is not a public launch MVP yet. It is a structured prototype for the CEO and agents to shape the brand, product system, Home page, and future shop pages.
+The immediate purpose is to support founder decisions about product, brand, and UX. It is not yet a public-launch MVP.
 
-## Latest Integrated System: Press-On Guide
+## Current Technical Foundation
 
-The complete Help / Press-On Guide system was implemented on 2026-07-09. A scoped follow-up on the same date refined only the `/help` hub, `/help/application`, and Help search; the other Help articles, business facts, routes, navigation, and Product integration were intentionally left unchanged. This entry supersedes older placeholder-route, placeholder support-email, sizing-kit-exclusion, cancellation, shipping-price, and return-policy notes later in this historical handoff.
+- Vite, React, and TypeScript
+- React Router routes in `src/App.tsx`
+- Central product data in `src/data/products.ts`
+- Central storefront facts in `src/data/storefrontFacts.ts`
+- Central Help content in `src/data/helpContent.ts`
+- Shared media mappings in `src/data/siteMedia.ts`
+- Responsive CSS in `src/styles.css`
+- Vitest and Testing Library coverage
 
-Current architecture:
+## Current Working Brand
 
-- `/help` is an editorial task hub with three customer paths: `Before you order`, `Apply and care`, and `Order help`. It also has a prominent client-side search, a compact `Most asked` FAQ section, and one Contact Support handoff near the bottom.
-- Canonical articles are `/help/sizing`, `/help/application`, `/help/removal`, `/help/shipping-returns`, `/help/faq`, and `/help/contact`.
-- `/help/how-to-apply` redirects to `/help/application`; damaged-order, lost-package, and cancellation hub tasks deep-link to sections in the combined order article.
-- Shared article primitives live in `src/components/help/`: article shell, responsive contents navigation, sections, numbered steps, callouts, instructional media, fact/policy blocks, issue checklists, FAQ accordion, related guides, support CTA, and the scoped Help search.
-- Approved business facts live in `src/data/storefrontFacts.ts`; route names, hub destinations, related guides, canonical FAQ answers, section targets, and Help search terms live in `src/data/helpContent.ts`.
-- The public support email is `yourprettysets@gmail.com` on Contact, FAQ/support flows, Product support, and the footer.
-- Product FAQ answers are a concise subset of the canonical FAQ data. `KitContents` now reads the exact seven included items and qualified glue/tab estimates from the central facts.
-- `/products/sizing-kit` is a separate $10 product outside the 33-set catalog. It links to Find Your Fit and the custom-order waitlist, omits normal set selectors/favorite/Add to Cart, and clearly states that online purchasing is not connected.
-- Desktop and mobile navigation use the canonical Help names. The footer keeps its three-column design, includes Contact Support under Help, and uses one combined `Shipping, Returns & Order Issues` link instead of competing Shipping/Returns destinations.
-- `/help/application` is a nine-step guided sequence: included items, adhesive choice, prep, nail selection, glue, tabs, aftercare, troubleshooting, and one clear handoff to removal. It uses a compact horizontal step rail instead of the generic desktop article sidebar and keeps glue/tab methods visually distinct.
-- The refined hub and Application guide reuse replaceable brand assets at `public/assets/nail-size-set.png`, `public/assets/kit-contents-spread-v2.png`, `public/assets/hero-s3-summer.png`, and `public/assets/help/`.
-- Route changes focus the new page heading, article anchors use fixed-header-safe scroll margins, the mobile Help sheet scrolls independently on short screens, submenu parents expose `aria-expanded`/`aria-controls`, FAQ headers have normalized margins, and Help focus/metadata contrast is explicit.
-
-Confirmed customer facts:
-
-- Ready-to-wear sets include 24 nails across preset sizes `00–14`; a broad range reduces sizing risk without guaranteeing every fit.
-- A standalone sizing kit is $10. A sizing kit connected to a custom-set order is free. Custom orders remain waitlist-only.
-- Glue wear is estimated at `1–3+ weeks`; tab wear is estimated at `7–14 days`. Both are estimates affected by preparation, application, lifestyle, water exposure, natural nail condition, and daily activity.
-- Ready-to-ship processing is approximately 1–3 business days; made-to-order processing is approximately 2–4 business days; carrier transit is approximately 5–7 business days.
-- Shipping is temporarily approximately $7 below $65 and free priority shipping at $65+. Tracking is included.
-- Standard returns are not accepted for handmade sets. Damaged, incorrect, or defective items should be reported within seven days of confirmed delivery with order details and clear photos; resolutions are case-by-case.
-- Orders may be cancelled within 24 hours of purchase if painting or production has not started.
-
-Remaining integrations and founder inputs:
-
-- Approved millimeter mappings for sizes `00–14` are still missing; no chart was fabricated.
-- Cart/checkout remains unconnected, including the sizing kit.
-- The planned YourPrettySets glue-removal solution still needs finalized product details, compatible instructions, imagery, and a product page.
-- The custom-order and footer email captures still need a real provider/backend. The custom-order page now states that its prototype form does not save an address instead of claiming enrollment.
-- Privacy and Terms remain placeholder pages.
-
-Verification completed for this system:
-
-- `npm test`: 22 files and 184 tests passed.
-- `npm run build`: passed with the production bundle generated successfully.
-- Scoped browser refinement covered `/help` and `/help/application` at `393x852`, `667x375`, and `1440x1000`. The hub exposes imagery and a customer task in the first mobile/landscape viewport; Application exposes the first guided step in each required viewport; both pages had one H1 and no page-level horizontal overflow.
-- Browser search verification with `lost package` returned the direct order-issue anchor plus the canonical FAQ result. The glue/tab method split, aftercare block, and removal handoff were also inspected after scrolling the desktop Application guide.
-- Browser route matrices at `393x852` and `1440x1000` covered every canonical Help route, the legacy redirect, sizing-kit product, a normal Product page, and custom-order waitlist page. Every checked page had one H1, no page-level horizontal overflow, no broken image, no duplicate ID, and no empty `href="#"` link.
-- The seven-link Help menu was also checked at `667x375`; its right panel becomes independently scrollable and the final Contact Support link remains reachable.
-- FAQ disclosure/focus behavior, route-to-heading focus, deep order-task anchors, desktop/mobile contents navigation, footer Help links, Product FAQ links, public mailto links, and the sizing-kit no-commerce state were checked in the browser.
-- `git diff --check`: passed.
-- `npm audit --audit-level=moderate`: reports 6 existing dependency advisories (1 low, 1 moderate, 4 high) in the unchanged dependency set. Dependency upgrades were not mixed into this Help feature pass.
-
-## Latest Mobile Help / FAQ Editorial Pass
-
-The founder approved a cleaner editorial mockup direction and asked to focus primarily on mobile. This pass changes presentation and mobile information hierarchy without removing the canonical Help content, business facts, routes, search, or article pages.
-
-Current mobile direction:
-
-- `/help` now opens with an image-led Press-On Guide hero using the existing application asset, a direct `Browse topics` jump, five canonical frequently asked questions, and a six-row topic navigator for Sizing, Application, Removal & Reuse, Shipping/Returns/Order Issues, FAQ, and Contact.
-- Help search remains available and follows the topic navigator on mobile. The existing three editorial task paths remain intact for tablet/desktop and are not deleted.
-- The Product FAQ is now a compact white `Quick answers` section on mobile with five high-value questions from the existing `productPageFaqItems` subset and one `View all FAQs & guides` handoff. The remaining canonical questions still live at `/help/faq`; no approved answer was deleted or rewritten.
-- The Product FAQ no longer shows its image banner or two-button Help CTA on mobile. Desktop keeps the existing image-led header and Contact/Full FAQ actions for now.
-- No new package or parallel content source was introduced. Radix Accordion, `helpContent.ts`, `storefrontFacts.ts`, existing Help routes, and related-guide links remain the functional foundation.
-
-Verification for this pass:
-
-- Focused tests passed: 3 files and 47 tests.
-- Full `npm test`: 22 files and 211 tests passed.
-- `npm run build`: passed.
-- `npm audit --audit-level=moderate`: reports the same 6 existing dependency advisories (1 low, 1 moderate, 4 high); dependencies were unchanged in this pass.
-- Browser review covered `/help` at 393px and a Product page at 393px plus a 320px narrow check. The mobile Help hero, five-question accordion, topic list, preserved search, Product `Quick answers`, and FAQ handoff rendered without page-level horizontal overflow or console errors. FAQ disclosure behavior was also exercised successfully.
-
-## Mobile Help Article System
-
-The founder approved extending the mobile editorial direction from the `/help` hub across all six canonical Help articles. The shared content and facts remain intact; this pass changes hierarchy and presentation rather than replacing the Help architecture.
-
-Current article direction:
-
-- `HelpArticleShell` now owns explicit `guide`, `policy`, and `utility` presentation variants, an optional instructional header image, a configurable contents label, and an optional initially expanded mobile contents index.
-- `/help/sizing`, `/help/application`, and `/help/removal` use compact illustrated headers, `In this guide` navigation, stronger chapter rhythm, slimmer callouts, and the existing instructional imagery. Application keeps all nine steps and both glue/tab paths, but the clipped horizontal step rail and its unused CSS were removed.
-- `/help/shipping-returns` uses the factual policy variant and begins with an `At a glance` summary sourced only from the approved processing, transit, shipping, tracking, and seven-day issue-reporting facts. Detailed issue, lost-package, cancellation, and returns wording remains below.
-- `/help/faq` keeps all 16 canonical questions, their three categories, Radix single-open behavior, related guides, and Contact Support. The three-category mobile index is expanded initially for faster scanning.
-- `/help/contact` now begins with `What do you need help with?` and three paths for fit, order, and damaged/incorrect/defective items. The exact support checklist follows, and one final email CTA uses the existing public address without promising a response time.
-- Article-level related links and support CTAs now use one lighter editorial treatment. Inline guide/contact actions and the back control keep 44px mobile interaction targets. Desktop retains the same shared sidebar and a coherent two-column article layout without a separate desktop redesign.
-- No Help route, canonical answer, approved fact, policy rule, support address, related-guide relationship, dependency, or instructional asset was removed or duplicated.
-
-Verification for this pass:
-
-- Focused Help verification passed: 3 files and 46 tests.
-- The full suite passed at the initial Help checkpoint with 25 files and 222 tests. Later, concurrent unrelated Product-page edits changed the shared working tree; the final full-suite rerun had 216 passing tests and six Product-only failures across `ProductCard`, `ProductKitDrawers`, `ProductPage`, and `ShopPage`. The Help tests remained green and the Product work was intentionally not changed in this pass.
-- `npm run build`: passed against the final shared working tree.
-- Browser review covered every canonical Help article at `393x852`, `320x852`, and `1440x1000`. Every checked route had one H1, zero page-level horizontal overflow, no broken image, no duplicate ID, and no empty link.
-- The mobile contents disclosure and anchor handoff, FAQ single-open behavior, support mailto, guide/policy/utility headers, Application glue/tab/aftercare sections, Shipping issue path, and narrow-mobile tap targets were inspected in the browser. The console showed only the existing React Router future-flag warnings.
-- `npm audit --audit-level=moderate` still reports the existing six dependency advisories (1 low, 1 moderate, 4 high). Dependencies were unchanged.
-
-## New Chat Starting Point
-
-Treat the Press-On Guide as the newest integrated customer journey and preserve its shared facts/routes/components unless the founder reopens them. Home-page visual work remains a separate ongoing pass.
-
-Before starting a section pass, read `docs/brief/section-pass-template.md` and use that CEO checklist. The founder wants planning chats to stay nontechnical: discuss what feels right or wrong, use image mockups when appearance is unclear, then write a plain-English handoff for the web dev to review and build.
-
-Current CEO direction:
-
-- Emergency palette reset on 2026-06-08 supersedes the warm blush/cream/dusty berry global visual system. Stop footer/email-capture design work until the foundation is stable. `src/styles.css` now uses a cleaner ecommerce base: pure white page/background surfaces, very light cool gray soft surfaces for placeholders and contrast, charcoal text, muted slate secondary text, and restrained blue-gray accent. Product images and nail designs should carry most of the color.
-- Footer email capture update on 2026-06-08 keeps the footer structure unchanged but switches only the email module to a compact, centered, dark black-and-white image-background treatment. The temporary background is `public/assets/hero-s3-summer.png` with CSS grayscale plus a dark overlay; the locked copy is `Get 15% off your first order`, the email-list body, `Get 15% Off`, `No spam. Unsubscribe anytime.`, and submitted copy `You’re on the list. Your code is coming soon.`
-- Follow-up code-structure cleanup on 2026-06-08 separates that email module into `FooterEmailCapture`, rendered immediately before `SiteFooter` in `App`. `SiteFooter` now owns only the actual footer navigation, policy links, socials, love note, and copyright; the visual stack is intended to remain unchanged.
-- Actual footer polish on 2026-06-09 leaves `FooterEmailCapture` unchanged and simplifies `SiteFooter` to the brand wordmark, exact love note `made for you, with love`, three text columns (`Shop`, `Help`, `Policies`), text-based social/contact links, and dynamic current-year copyright. Social account URLs remain placeholders until real brand accounts exist.
-- Mobile footer correction on 2026-06-09 rejects the prior two-column mobile footer direction. Keep the three `Shop`, `Help`, and `Policies` pillars on mobile and desktop; social/contact links remain text-only in a centered row with natural wrapping instead of a 2x2 grid. `FooterEmailCapture` remains unchanged.
-- Latest footer refinement on 2026-06-09 keeps the same three-pillar `SiteFooter` structure and separated `FooterEmailCapture`, but centers each pillar heading/link list, tightens footer vertical gaps, and makes the social/contact row smaller and more intentional while still using text links with flex wrapping rather than icons, pills, dividers, or a forced 2x2 grid.
-- 2026-06-24 footer social/contact refinement changes the social row from long text labels with arrow glyphs to four compact white square buttons with bold black initials: `I`, `T`, `P`, and `E`. Keep the full accessible labels and existing placeholder/social hrefs intact until real brand accounts are available.
-- 2026-06-28 footer color inversion keeps the separated `FooterEmailCapture` and three-pillar `SiteFooter` structure, but changes the lower footer panel from soft sage to black (`#101417`) with white primary text and plain white (`#ffffff`) accents for the love note, column headings, and social/contact square buttons. Follow-up spacing feedback makes the lower footer taller and less compact with larger panel padding and looser gaps between the brand, pillars, social buttons, and copyright. Keep the email capture card itself separate and unchanged unless the CEO explicitly asks to revisit it.
-- 2026-07-05 footer social/contact refinement supersedes the white square initials with standalone white SVG icons for Instagram, TikTok, Pinterest, and Email. Keep the accessible link labels and current placeholder/social hrefs intact, keep the icons directly on the black footer with no white button backgrounds, and preserve the same centered footer structure.
-- 2026-07-08 footer social/contact link update replaces the placeholder footer social hrefs with the real YourPrettySets Instagram, TikTok, Pinterest, and Gmail mailto links. Keep the standalone white SVG icons and accessible labels unchanged; external social links open in a new tab with `rel="noreferrer"`, while the email link remains a normal `mailto:` link.
-- 2026-07-17 footer responsive correction supersedes the prior three-across mobile assumption. Below 721px, Shop and Help form a balanced first row and Policies gets a full centered row beneath them. This preserves the content hierarchy while preventing the long `Shipping, Returns & Order Issues` policy label from being squeezed or overflowing at intermediate mobile widths.
-- 2026-07-08 mobile menu editorial pass replaces the prior plain centered mobile overlay/accordion submenu treatment with a full-screen split-screen menu. Keep desktop header navigation unchanged. On mobile, the menu now opens in a centered default state with only `Home`, `Shop`, and `Help`; no submenu, active Shop state, blush selector panel, or right content panel is visible until the shopper chooses a submenu parent. Selecting `Shop` or `Help` transitions into the split-screen state with the soft blush left selector panel, soft off-white right content panel, thin center divider, active indicator, and no logo/social/footer/decorative graphics inside the overlay. `Shop` shows only `Ready to Ship`, `Made to Order`, and `Custom Orders`; `Help` shows only the support links; selecting `Home` routes to `/` and closes the overlay from both default and expanded states. The menu uses existing routes and CSS transitions, not Framer Motion or new dependencies.
-- 2026-07-08 mobile menu interaction polish keeps the split-screen design in the expanded state but debounces selector wheel gestures for 400ms so trackpads cannot rapidly toggle Shop/Help. The centered default menu gently enters on open, Shop/Help selection slides into the left selector position, and the right submenu panel replays one calm `mobile-submenu-enter` fade/8px slide animation when Shop/Help changes, with the animation disabled under `prefers-reduced-motion`. The selector items now remain absolutely positioned in both default and expanded states, with stable `-1/0/1` offsets in default mode and active-relative offsets in expanded mode; they animate only their transform instead of switching between grid flow and absolute positioning. The fixed dialog backdrop owns the translucent warm white `rgba(255, 253, 251, 0.48)` wash and 18px blur; the menu container and selector rail stay transparent so the overlay does not become opaque through stacked white layers. The right submenu sheet remains solid `#fffdfb`, and the thin active selector indicator line is intentionally hidden.
-- 2026-07-10 mobile menu transition refinement keeps the existing off-canvas right submenu structure and changes only its standard transform transition from 520ms to 620ms using the existing ease-out curve. The default state remains at `translateX(100%)` and the expanded state at `translateX(0)`; reduced motion behavior is unchanged. This is intended to make the drawer appear and disappear more calmly without changing the split-screen layout or interaction model.
-- 2026-07-17 mobile menu close-workaround cleanup removes the failed full-overlay animation stack before rebuilding the actual active-parent interaction. X, Escape, Home, and submenu destinations now unlock and hide the full overlay directly; route callbacks still run only after the old page scroll lock has been released, so destination pages reset correctly. The obsolete closing state, 620ms X-close wait, double-`requestAnimationFrame` hide, hidden-backface/persistent-layer styling, `translate3d(...)` workaround, and forced full-opacity inactive labels are removed. The reliable modal behavior remains: inert page siblings, focus loop/return, scroll locking/restoration, modified-click handling, React Router navigation, the absolute transform-only selector layout, and the separate active Shop/Help submenu-close path.
-- 2026-07-17 mobile menu active-parent return fix replaces the old one-step `collapsing` reset with two transition-complete phases. Tapping the active Shop or Help parent first enters `closing-panel`: the white submenu sheet translates offscreen while the selector keeps the active label, inactive labels, typography, opacity, and active-relative offsets stable. Only after the panel's transform transition ends does `returning-selector` smoothly animate all three labels to their default centered typography and offsets. The outgoing submenu remains mounted but hidden from accessibility during both phases, then clears when the selector-item transition finishes. The final default state suppresses the normal menu-entry animation so it cannot replay as a second blink; reduced-motion users return immediately. X, Escape, Home, submenu routes, scroll restoration, focus handling, parent switching, wheel/touch switching, and reopening remain separate and unchanged. Verification passed with 203 tests, the production build, `git diff --check`, and a live `393x852` browser matrix covering Shop/Help active return, X, Escape, Home, submenu routing, parent switching, reopening, scroll unlock, and destination heading/scroll position; the dependency audit still reports the existing six advisories.
-- 2026-07-17 mobile menu active-parent timing follow-up gives the `closing-panel` sheet and selector rail the same 340ms return timing. The white submenu sheet translates offscreen while the transparent selector rail expands from 38% to 100%, so the left labels travel toward center with the departing right panel instead of waiting behind it. Home/Shop/Help keep their expanded typography and active styling during that shared movement; only after the real panel `transitionend` does `returning-selector` normalize their type, color, and active state. Normal submenu opening remains 620ms, and the transition-complete anti-blink sequencing remains intact.
-- 2026-07-17 mobile menu Help-order follow-up keeps the canonical `Home -> Shop -> Help` vertical order while Help is active. Help remains centered at offset `0`, Shop sits one position above at `-1`, and Home sits two positions above at `-2`; closing Help moves all three labels down one position into the default `-1/0/1` layout instead of wrapping Home below Help and making the labels cross. Shop offsets, the synchronized 340ms rail/panel close, typography return, reduced-motion behavior, and anti-blink sequencing remain unchanged.
-- 2026-07-17 mobile menu route-scroll fix preserves the ordering invariant after the close-workaround cleanup: ordinary internal navigation runs only after the overlay has released its saved scroll position. Mobile Home and submenu links prevent only unmodified primary-click navigation, unlock and hide the overlay, then use React Router from the close callback on the next task; modified clicks keep normal browser behavior. Same-route selections still close the menu without forcing a scroll reset, while real route changes run `ScrollToTop` against the unlocked document instead of having the old page offset restored over the destination. Integration coverage opens all 11 mobile destinations from a simulated deep Shop scroll, and browser verification at `393x852` confirmed the destination settled at `scrollY: 0` with its H1 at `112px`.
-- 2026-07-08 mobile menu selector typography fix keeps `Home`, `Shop`, and `Help` in one editorial selector system through the default-to-expanded transition. Default, inactive, and active selector states now share the same Fraunces display settings, closer clamp-based sizes, low/zero tracking, no uppercase active state, and animated letter-spacing/size/color/position. Do not return expanded inactive items to tiny tracked nav text; it makes the menu feel like it swaps typographic systems when the submenu sheet opens.
-- 2026-07-08 mobile menu collapse/wheel cue update lets the active Shop or Help selector close its own submenu without closing the full mobile menu. Tapping the active parent returns to the centered default mode, clears the active submenu state, keeps body scroll locked, and lets the off-white sheet retract using the existing `translateX(100%)` default transform. Tapping the inactive parent while expanded still switches submenu content. The expanded rail remains transparent over the single dialog backdrop; its top/bottom wheel cue uses a mask on selector content only and must not reintroduce painted white gradient pseudo-elements, scrollbars, helper text, dots, pills, icons, or cards.
-- 2026-07-09 keyboard focus audit keeps the current mobile menu visual design but makes the overlay behave like a real modal for keyboard users. While the mobile menu is open, page siblings under `.site-shell` (`main`, footer email capture, footer) are set to `inert` and `aria-hidden`, Tab/Shift+Tab loop through the close button, Home/Shop/Help selectors, and any active submenu links, Escape closes the menu, and focus returns to the open-menu button. Shop sort also now closes on Escape and returns focus to the Sort button. Do not redesign focus visuals yet; this was behavior-only except for preserving existing focus styles.
-- 2026-07-09 mobile menu selector alignment correction keeps the current split-screen color/accent treatment but centers the expanded `Home`, `Shop`, and `Help` selector text on the actual left rail center. The prior CSS used `left: 54%` for inactive items and `left: 57%` for the active item, which made the labels measure 5-9px right of the rail center in a 345px viewport. The corrected expanded selector anchors all three at `left: 50%`; browser measurement on `http://localhost:5173/` confirmed each label delta from rail center is `0`.
-- 2026-07-05 mobile footer rhythm pass reduces the lower footer's mobile top padding under the email card and tightens the brand stack/brand-to-column gap so the logo block feels connected to the footer columns instead of floating. Keep this as a spacing-only adjustment unless the CEO asks for a visual redesign.
-- 2026-07-05 mobile footer column polish keeps the three `Shop`, `Help`, and `Policies` pillars in one row, but caps/centers the column group, softly reduces heading weight/letter spacing, and uses restrained mobile column/link gaps so the group feels polished without stretching toward the viewport edges. Do not stack the columns or add cards/dividers around them.
-- 2026-07-05 footer link balance pass keeps the same three pillars but gives each column four useful links: `Shop` adds `Ready to Ship`, `Help` adds `FAQ`, and `Policies` remains unchanged. Keep the added links pointed at existing routes rather than placeholder URLs.
-- Latest CEO direction on 2026-06-07 is a Home/Header/Footer polish pass: remove the temporary bare-bones review mode and bring the Home page into the same restrained soft-neutral visual system as the polished Shop page.
-- The live app no longer uses `site-shell--barebones` or `storefront-barebones`. Shared tokens in `src/styles.css` now drive page background, surfaces, text, borders, accent, and subtle shadows so the color system can be swapped later without scattered section colors.
-- 2026-06-23 white-background direction changes `--site-page-bg` from the previous cool off-white `#f7f8f8` to pure `#ffffff` and updates hard-coded section fade overlays to white. Keep `--site-surface-soft` as the light gray contrast/placeholder token unless the CEO explicitly asks for every placeholder well to become white too.
-- 2026-06-24 Home hero image removal keeps the footer email and FAQ image-backed treatments unchanged, but removes the background asset from the Home hero itself. `.hero-photo` remains `aria-hidden` as a decorative layout layer, now using the white page background with `background-image: none`; do not re-add `hero-photo--asset-preserved` or the `/assets/hero-s3-summer.png` hero background unless the CEO reopens the hero image direction.
-- The How It Works cards are intentionally blank shells again after 2026-06-23 browser feedback. Keep the three-card carousel and visible numbers `1`, `2`, and `3`, but do not render titles, body copy, or card visuals inside those cards unless the CEO reopens the section content direction.
-- Collections UI pass on 2026-05-22 replaces the old static three-tile grid with a horizontal mood-picker carousel. Latest browser annotations shorten the heading to `Browse`, keep `COLLECTIONS` and `See all`, render seven blank accessible collection cards from central collection labels (`Everyday`, `Date Night`, `Vacation`, `Bridal`, `Birthday`, `Work/Neutral`, `Statement`), and keep visual pagination dots with the `Swipe to explore` hint moved here from How It Works. The lane has mouse grab-drag on `.collection-track`, native touch swipes, accidental-click suppression after drag, smooth-settle to the nearest card on mouse release, and active pagination dots from scroll position. A later glide fix removes mandatory CSS snap from `.collection-track` and uses a debounced JS settle after native scroll idle so CSS snap and smooth scrolling do not fight each other. Real collection images/icons, visible card copy, and richer dot/progress behavior are still placeholders/future work.
-- Phase 4B carousel cleanup replaces that custom collection drag/settle code with the shared Embla-backed `MobileCarousel` foundation. The collection cards, active collection behavior, `Swipe to explore` hint, product-row visuals, and `See all` / `See more` links stay intact.
-- Latest shopping-path refactor on 2026-05-24 makes shopping come first after the hero: Collections now render as slim filter cards, the active collection immediately shows a 2x2 blank product-card wireframe from central product data, `See all` points to that product row, and the undecided third shopping/editorial slot is intentionally left out for later CEO decision.
-- Follow-up product-preview pass on 2026-06-07 replaces the Home collection blank product-card wireframes with compact real product preview cards from the existing central `products` data. Home shows the first four products for the active collection with the product image placeholder/well, product name, and price; the intentional `.collection-product-teaser` fade row remains under the grid as a subordinate hint that more products exist before the `See more` CTA. Shop and Home now share `ProductPreviewCard`, while Shop search/filter/sort behavior and product data remain unchanged.
-- 2026-06-27 Browse selector planning supersedes the plain text-card selector as the preferred next direction. The founder prefers slimmer lifestyle mood image tiles using the generated Option 2 treatment: image fills the tile, a subtle dark wash covers the whole image, and the collection name is centered in white over the image. Browse should default to no selected collection, auto-rotate calmly, show no collection products until a tile is selected, center the selected tile after selection, stop auto-rotation for that visit, and use no selected outline. A separate Featured Sets product carousel should live below Browse so appealing products remain visible before any collection is selected. Planning spec: `docs/superpowers/specs/2026-06-27-browse-selector-design.md`.
-- 2026-06-27 Browse selector implementation lands the first version of that direction without final lifestyle images. Collection tiles are blank image-ready mood cards with centered white labels and no selected outline; Browse starts with no active collection and no collection products; selecting a collection stops carousel auto-rotation for the rest of that page session, scrolls the selected tile into view without remounting the carousel, and shows that collection's products. Tapping the selected tile again clears the collection and hides the collection products without resuming auto-rotation.
-- 2026-07-08 Featured Sets now uses the central `featuredProducts` export instead of fake names. The carousel renders shared `ProductPreviewCard` cards with real product names/prices and links each card to `/products/:slug` with Home-origin route state.
-- 2026-07-08 Featured Sets product-card polish keeps the same `featuredProducts` plus `ProductPreviewCard` structure and treats `.featured-set-card` only as a small modifier on the shared Home card. The old fake-card `.featured-set-card__image` / `__body` CSS is removed; the modifier now targets `.product-preview-card__image` and `.product-preview-card__body`, keeps compact carousel sizing, and makes the price body-sized, black, and heavy instead of muted caption text. Browser verification at a 393px viewport measured the first card at about `167px x 264px`, with three Featured cards visible and no page-level horizontal overflow.
-- 2026-07-08 Home Browse to Shop handoff preserves collection intent: when a shopper selects a Browse collection, the Home `See more` link points to `/shop/ready-to-ship?collection=<encoded collection>`, including space-safe names like `Date%20Night` and slash-safe names like `Work%2FNeutral`. `ShopPage` reads the `collection` query param, activates a matching collection tab on `/shop`, `/shop/ready-to-ship`, and `/shop/made-to-order`, and falls back to `All` for missing or invalid values while preserving existing search, filters, sort, and tab drag behavior.
-- 2026-07-08 Home collections component cleanup splits the old combined `CollectionFilters` file into `HomeCollections` and `FeaturedSets`. `HomePage` now imports and renders those sections separately, while `HomeCollections` owns only Browse carousel state/results/teaser cards/`See more` and `FeaturedSets` owns only the `featuredProducts` carousel. Keep this boundary for future Home shopping-section work.
-- 2026-07-08 HomeCollections Browse revision keeps the same carousel/auto-rotate/selected-preview behavior but replaces Home mood collection cards with shopping-path options: `Ready to Ship`, `Made to Order`, `Custom Orders`, `New Arrivals`, and `Best Sellers`. Product previews now come from existing product fields (`orderType`, `isNew`, `isPopular`), Custom Orders shows a simple design-request preview instead of fake product cards, and `See more` routes to the corresponding shop path. This does not remove original collection data or Shop page collection filters.
-- 2026-07-09 clipping/focus gutter pass keeps the existing focus visuals, hover/active lifts, and inner image/card overflow intact, but increases top padding on horizontally clipped interactive lanes so focused, hovered, selected, or lifted states are not cut off. Affected lanes: Home Browse `.collection-track`, Featured Sets `.featured-sets-carousel__track`, kit detail tabs, Product page option selector rows, and the Shop collection tab rail. Do not reduce these top gutters back to 2px unless transforms/outlines are removed or browser clipping checks prove it safe.
-- 2026-07-09 Browse tabs update changes Home Browse from a toggle/hide selector into an always-active tab-like selector. `Ready to Ship` is active by default, `.collection-products` is always visible, clicking a different tile switches the preview, and clicking the active tile is a no-op. Browse auto-rotation is removed so the selected tab does not move on its own. Do not restore tap-again-to-unselect, empty Browse state, or hidden preview behavior.
-- 2026-07-09 Browse carousel edge-gap fix keeps the same top/bottom clipping gutter but moves the 18px horizontal mobile gutter from `.collection-track` to `.collection-carousel__viewport`. Do not put horizontal padding back on the Embla track: it becomes part of the loop lane and creates a larger seam gap between `Best Sellers` and the cloned next card than the normal inter-card gap.
-- 2026-07-09 Browse carousel selected-index sync keeps the tab-like Browse behavior and no-auto-rotation model, but lets Embla selection drive `selectedOptionIndex` through `onSelectedIndexChange`. Swiping/settling to a tile now updates the active tile and product preview the same way tapping does. Keep active-tile clicks as a no-op and keep `.collection-products` always visible.
-- Phase 4C FAQ cleanup replaces the FAQ topic picker’s custom drag/click-suppression logic with the shared Embla-backed `MobileCarousel` foundation. Topic cards keep the same visual style, active topic behavior, question open/close behavior, `View all ... questions`, Help Center, and Contact Support CTAs.
-- Follow-up FAQ cleanup replaces the FAQ question-row `openQuestionIndex` logic with the shared shadcn/Radix Accordion foundation. The list still allows one open answer at a time, clears the open answer when the active topic changes, preserves the right-chevron row treatment, and keeps the `View all ... questions`, Help Center, and Contact Support CTAs unchanged.
-- 2026-06-08 Homepage FAQ refinement replaced the mini-help-center topic carousel with a compact conversion-focused FAQ layout. Its temporary Contact and full-FAQ placeholders are superseded by the 2026-07-09 canonical FAQ, `/help/contact`, and public `yourprettysets@gmail.com` support address.
-- 2026-06-09 homepage typography-token cleanup reduces the active `--type-*` roles to eight shared sizes: hero title, section title, subsection title, product title, body, caption, button, and display special. `--type-card-title`, `--type-body-large`, `--type-nav`, `--type-footer-title`, and `--type-review-quote` are retired. Header nav/menu links now use `--type-button`, footer brand and review quote share `--type-display-special`, and FAQ heading/subcopy/questions/answers/buttons use existing title/body/button roles instead of FAQ-specific font-size clamps.
-- 2026-06-09 low-risk typography drift patch moves raw tiny kit/review label sizes and footer legal text to `--type-caption`, moves the footer love note to `--type-body`, and moves Shop empty-state and sort option controls to `--type-button`. Footer link aliases, footer email title alias, fullscreen menu clamp, tiny-screen `h1`, shop tab rail, sort value, product back control, brand mark sizes, story title, and icon/glyph sizes remain intentionally unchanged for later review.
-- 2026-06-09 Product page selector polish upgrades Length and Shape into one consistent horizontal carousel tile system while preserving the same option state, button semantics, `aria-pressed` behavior, routing, product data, imagery, and add-to-cart behavior. The selector cards now use narrow vertical image-ready tiles with a small decorative neutral gray placeholder above each label; the prior nail icon/silhouette layer remains removed, and the selected style summary is unchanged.
-- 2026-07-17 Product page media-gallery foundation replaces the normal set page's single image placeholder with ordered clean/editorial image slots followed by a final video slot. Image media opens a focus-managed fullscreen zoom view with pinch-to-zoom, touch/mouse panning, desktop wheel zoom, visible zoom/reset controls, outside-click close, and Escape close. The video slot uses a native HTML5 player with controls, `playsInline`, poster support, and no autoplay. Real files remain intentionally unconnected: populate each product's optional `media.clean`, `media.editorial`, and `media.video` source/poster/thumbnail fields later. The separate sizing-kit presentation remains unchanged.
-- 2026-07-17 Product page style-selector redesign supersedes the neutral gray placeholder-card presentation for normal nail sets. The buying flow now asks for Shape first and Length second, using compact horizontally swipeable cards with distinct translucent code-native nail samples, a restrained selected outline/check, a `Shape · Length` live summary, and a Find Your Fit guide link beside Shape. Existing option data, button names, `aria-pressed` behavior, Add to Cart/favorite state, gallery, and the separate sizing-kit page remain unchanged.
-- 2026-07-17 Product page selector asset pass replaces the code-native nail silhouettes with ten matched transparent PNG sample-tip photographs under `/public/assets/product-options`. Shape and Length keep separate purpose-made assets so the six silhouettes remain accurate and the Short-to-XL progression is obvious without stretching one generic nail. The cards, Shape-first order, guide link, selected outline/check, live summary, horizontal scrolling, semantic button names, `aria-pressed`, gallery, and sizing-kit page remain unchanged.
-- 2026-07-18 Product page style-selector housing pass turns the prior plain control stack into a light editorial sample tray without changing its buying flow. On mobile the softly tinted tray runs full width through the product panel; on desktop it becomes a restrained inset panel. Shape and Length remain distinct sections separated by one quiet divider, the live `Shape · Length` summary stays beside the title, unselected cards recede into the tray, and the selected card uses a cleaner dark outline, lifted surface, and smaller check. Preserve the photographic nail assets, Shape-first order, horizontal swiping, guide link, semantic button names, `aria-pressed`, gallery, cart/favorite behavior, and sizing-kit page.
-- 2026-07-18 Product page selector overflow pass keeps the neutral editorial housing and makes the horizontal behavior deliberate. Each rail now frames four complete cards with equal internal gutters instead of using clipped cards as the only overflow cue. Length remains centered and needs no progress treatment when its four options fit; Shape keeps native horizontal scrolling and gains a thin passive progress rail that tracks scroll position. Selecting an offscreen option gently brings it fully into view. Preserve the photographic assets, Shape-first order, button semantics, `aria-pressed`, reduced-motion support, gallery, cart/favorite behavior, and sizing-kit page.
-- 2026-07-18 Product page selector mouse-drag pass adds guarded desktop click-and-drag scrolling to the option rails while leaving touch and pen on native horizontal scrolling. Dragging starts only after a 12px movement threshold, uses a grab/grabbing cursor, updates the existing progress rail, and suppresses the release click so dragging across a card cannot select it accidentally. Ordinary clicks and small pointer drift still select options normally; vertical mouse-wheel page scrolling is not intercepted.
-- 2026-07-18 Product page Extra Short pass adds `Extra Short` before Short with a matched photographic `length-extra-short.png` asset. The fifth length keeps four complete cards framed at once and promotes Length to the same native touch/trackpad scrolling, guarded mouse drag, moving progress rail, and selected-option reveal behavior already used by Shape. Preserve the full accessible option name, generated raster treatment, zero page-level overflow, and existing selector/purchase behavior.
-- 2026-07-18 Product page summary editorial pass keeps the normal set summary unboxed while strengthening its shopping hierarchy: honest `Ready to ship` or `Made to order` status, name and price, two decorative product-color swatches with a readable color/finish label, the existing product description, a restrained diamond divider, and a 48px text-led Find Your Fit row. Every nail set now owns a central `visualSummary` entry in `src/data/products.ts`; do not hardcode Golden Hour's peach/gold treatment into shared markup or invent quantity claims without inventory data. The gallery, selector, cart/favorite controls, and separate sizing-kit page remain unchanged.
-- 2026-07-18 Product page purchase-hierarchy reset supersedes the summary editorial pass above. The normal-set summary now uses only honest order status, a restrained name/price row, the existing product description, and a compact processing-time pill sourced from `shippingFacts`; the decorative nail mark, `visualSummary` product data, color swatches, duplicate finish copy, and diamond divider are removed. Shape and Length remain the existing horizontally scrollable photographic card groups, while the one `/help/sizing` link now sits below both groups as `Not sure? Find your size`. At `<=360px`, the style heading and live `Shape · Length` value stack to avoid squeezing. Preserve the gallery, selector semantics and interactions, Extra Short option, cart/favorite controls, and separate sizing-kit page.
-- 2026-07-18 Product page unified-selector pass keeps the existing `Choose your style` header, live `Shape · Length` value, photographic cards, and scrolling behavior, but groups Shape and Length inside one compact internal stack. The old Length separator and its extra top padding are removed, panel/group gaps and outer padding are tightened, and the sizing link keeps a 44px tap target with quieter caption styling. Selected cards use one uniform 2px dark border with no inset-shadow ring, so all four edges stay visually even without changing the card footprint. Treat Shape and Length as two parts of one purchase decision; do not restore separate section dividers, the bottom-only selected shadow, or the expanded vertical gap without reopening this direction.
-- 2026-07-18 Product page component-prep pass replaces the processing pill with an isolated estimated-arrival calculation that combines central processing and carrier-transit facts, adds a generated customer `Worn by Maya` gallery card immediately after video with a stable `#customer-reviews` future anchor, makes the existing Shape/Length tray lighter without changing its swipe/drag/button semantics, and adds the compact four-item benefit rail before Add to Cart. Below the buying panel, the new active sections are accessible single-open What’s Included drawers and deterministic `More sets you may like` cards; the old `KitContents` and product `FaqSection` imports and implementation remain preserved behind the single `showLegacyProductSections` flag and are intentionally not rendered. Every nail product now receives generated Shape × Length variants with stable SKU, availability, and optional inventory/price/media override fields; SKU remains non-visual and checkout/inventory are not connected. Generated customer/related-product photography under `/public/assets/placeholders` is temporary, visually reviewed design-prep content and must be replaced with real photography later. Browser review passed at 320px, 393px, and 1440px with one H1, zero page-level horizontal overflow, all four Glossy Bare related images present, one-open drawer behavior, and no new console errors; 220 tests and the production build pass.
-- 2026-06-09 Product page buying-panel cleanup removes the temporary reassurance and set details sections below the Add to cart row so the buying panel now ends cleanly after the CTA row.
-- 2026-06-17 Product page content move renders `KitContents` and `FaqSection` below the main buying panel, in that order. Home no longer renders those sections. The Home `CUSTOMER LOVE` story strip and `StoryViewer` modal are hidden with recoverable `hidden — pending redesign.` comments in `src/pages/HomePage.tsx`; the story components themselves remain unchanged.
-- 2026-06-18 Reviews Polaroid Strip replaces the hidden Home story-strip direction with a decorative `ReviewsPolaroidStrip` component rendered directly below How It Works. It uses the shared Embla-backed `MobileCarousel` with looped continuous auto-rotation, no visible controls, and seven non-clickable white polaroid cards with soft color-block placeholder photo areas and `[Name]'s [occasion] set` captions tied to the existing collection occasions. The old `StoryStrip`/`StoryViewer` and star-rating review-card carousel remain unrendered.
-- 2026-06-18 Reviews Polaroid Strip size correction reduces the mobile card footprint after browser review found the first build too large. The root cause was the later shared `.mobile-carousel__slide` rule overriding the Reviews slide basis, so the fix uses a scoped `.reviews-polaroid-carousel .reviews-polaroid-carousel__slide` rule and a compact mobile `--review-polaroid-width` range. At a 393px viewport, the measured first card is now about `151px x 189px` with a `131px` photo well, and multiple polaroids are visible at once.
-- 2026-06-18 Reviews Polaroid Strip loop correction keeps the Embla loop geometry tied to the real phone viewport. The root cause was CSS, not the continuous auto-rotate math: the Reviews viewport was a grid item with visible overflow and no explicit `min-width: 0`, so it expanded to the full track width and Embla wrapped slides against the wrong viewport size. The fix constrains `.reviews-polaroid-carousel__viewport` with `min-width: 0` and `width: 100%`, and scopes the Reviews track margin override with `.reviews-polaroid-carousel .reviews-polaroid-carousel__track` so the later shared `.mobile-carousel__container` rule cannot replace it.
-- 2026-06-18 Reviews Polaroid Strip visual correction keeps the white polaroid cards and captions but changes only the square image placeholder areas to flat neutral grey. The former per-card gradient tone classes and decorative inner placeholder shape are removed, so the strip reads as simple grey image placeholders until real review/customer images exist.
-- 2026-06-18 Reviews Polaroid Strip size follow-up makes the neutral placeholder polaroids slightly larger without returning to the oversized first pass. Mobile `--review-polaroid-width` is now `clamp(144px, 42vw, 170px)` with a very-small-screen override of `clamp(128px, 45vw, 154px)`.
-- 2026-06-24 Reviews card direction supersedes the heavy decorative polaroid treatment. Keep `Customer keepsakes`, the horizontal auto-rotating carousel, seven non-clickable captions, grey placeholder image wells, the original per-card tilt, and centered caption text, but style each review card like the Home Browse product preview cards otherwise: 8px radius, light border, subtle product-card shadow, 4/5 image well, and Manrope caption rhythm. Some legacy `review-polaroid-*` class names remain in the code for now.
-- 2026-06-23 How It Works browser feedback makes all three cards blank again while preserving the step numbers. The `confidenceSteps` data now only stores numbers, each card renders only `.confidence-card__number`, and the old title/body copy plus `.confidence-card__copy` CSS are removed.
-- 2026-06-23 How It Works number treatment feedback removes the black square around each step number. `.confidence-card__number` now renders as plain black text on a transparent background with no fixed square dimensions.
-- 2026-06-24 How It Works number placement feedback keeps the blank number-only cards and plain black no-badge treatment, but centers each number in the middle of its card.
-- 2026-06-17 Product page footer handoff cleanup removes the stacked blank spacer after the Product FAQ by ending `.product-page` with no bottom padding, removing Product-scoped FAQ bottom padding, and letting `.product-page + .site-footer-email-shell` start without extra top padding. Keep this scoped to Product pages unless the broader footer rhythm is reviewed.
-- 2026-06-18 Product page spacing polish adds a small product-scoped `18px` margin before `KitContents` so the buying panel and `What’s Included` section have breathing room without changing the reusable kit section structure.
-- 2026-06-18 Shop category structure update adds `orderType: "ready-to-ship" | "made-to-order"` to every normal product and makes `/shop/ready-to-ship` plus `/shop/made-to-order` render the normal Shop grid filtered by that field. `/shop/custom-orders` is now a standalone fullscreen white coming-soon email capture page outside the normal header/footer shell, with a top-right X link back to `/shop`; the form is local-only with a TODO until a backend/email capture provider is chosen. Current placeholder split treats the first 16 launch/current-assortment products as ready-to-ship and the remaining 17 as made-to-order until fulfillment data is final.
-- 2026-06-17 Navigation and Help structure cleanup reduces the main header/mobile overlay navigation to `Home`, `Shop`, and `Help`; removes stale FAQ/Reviews Home anchors from navigation; keeps the mobile bag icon visible as a non-routing `Bag coming soon` action; adds `/help` as `The Press-On Guide` hub with subroutes for sizing, application/removal, shipping/returns, FAQ, and contact; adds simple `/privacy` and `/terms` placeholders; and updates footer plus Product support CTAs to use the real Help routes.
-- 2026-06-27 Mobile nav submenu standardization keeps the `Home`, `Shop`, and `Help` overlay structure, but makes parent items with deeper destinations use one shared submenu treatment. The Help destinations were renamed and expanded on 2026-07-09 to `Press-On Guide`, `Find Your Fit`, `Apply Your Set`, `Remove & Reuse`, `Shipping, Returns & Order Issues`, `FAQ`, and `Contact Support`. Do not reintroduce boxed containers, left rules, or left-offset submenus unless the founder reopens that direction.
-- Phase 4D footer cleanup replaces the footer’s custom open-group state with the shared shadcn/Radix Accordion foundation. The footer still defaults to `Shop`, keeps one group open at a time, preserves the same group labels and links, and keeps the current dark footer styling rather than default shadcn visuals.
-- Follow-up carousel controls cleanup on 2026-05-28 removed the visible progress bars/dots and arrow buttons from the How It Works, Collections, Reviews, and FAQ topic carousels. The carousels keep their cards, native swipe/drag behavior, labels, and section layout.
-- Follow-up carousel motion cleanup on 2026-05-28 turns on Embla `loop: true` and shared continuous auto-rotation for the How It Works, Collections, Reviews, and FAQ topic carousels. There are still no visible arrows or progress bars. Auto-rotation moves the Embla location at the shared `24px/second` speed, pauses immediately on pointer, hover, or focus interaction, resumes after a short delay, and stays off for reduced-motion users. Do not reintroduce manual loop-buffer DOM copies for this pass.
-- Browser comment on 2026-05-28 normalized the Review carousel card footprint: numbered placeholder cards and the real reviewed-set card now share the same `452px` minimum card height through `--review-card-min-height`, including the narrow mobile override. The review-card peek scale was removed so inactive cards keep the same visible footprint while using opacity only for depth.
-- Follow-up browser comment on 2026-05-28 made the mobile carousel clipping windows full-bleed for Collections, How It Works, Reviews, and FAQ topics. The cards still keep internal spacing/peeks, but the overflow now clips at the phone edge instead of inside a padded section box.
-- Footer UI pass on 2026-05-28 replaces the previous large email-only footer surface with a semantic, mobile-first footer based on the approved mockup direction. The live footer now has a centered `YPS` text mark with a small heart, four full-width shop rows (`Shop All`, `New Arrivals`, `Best Sellers`, `Accessories`), a compact light grey policy icon bar (`Shipping`, `Returns`, `Privacy`, `Terms`), a slim optional email strip using the existing submitted-state logic, centered social links, the `made for you, with love. ♡` note, `© 2024 YourPrettySets. All rights reserved.`, and a responsive trust strip that becomes 2x2 on very narrow mobile. Social links are placeholder anchors except the email link until real brand accounts exist.
-- Follow-up browser comment on 2026-05-28 replaces the top `YPS` footer brand mark with the previous large `Get 15% off your first set` email capture and removes the lower slim email strip so the footer does not repeat two email forms. The shop rows, policy icon bar, socials, love note, copyright, and trust strip stay in place.
-- Stop spending more time on the hero-to-How-It-Works gradient transition unless the CEO explicitly reopens it.
-- The latest approved How It Works direction is a polished luxury clean-beauty section, not the old continuous auto-strip.
-- The live section now uses centered `HOW IT WORKS` / `3 easy steps` heading copy, three swipeable mobile cards, Embla looped continuous auto-rotation, no visible progress bars, no arrows, no swipe hint, and desktop three-column layout.
-- The latest mobile polish keeps the hero-to-section gradient, centers the first real card on load, adds loop-buffer side cards so both edges visibly peek, softens the active card shadow, separates the card lane from the controls block, and spaces the progress/hint/Collections handoff cleanly.
-- The latest transition/shadow repair keeps the current layout and copy, uses a 105px mobile hero bottom fade into `#fbf6ee`, keeps the How It Works section at `margin-top: 0`, and keeps the active card shadow softer/shorter so it does not fight the controls.
-- Latest CEO feedback on 2026-05-18 asked to remove all content inside the How It Works cards. The live cards are now intentionally blank shells; keep them blank until the CEO chooses what belongs inside them.
-- Latest mobile gradient fix on 2026-05-18 keeps the fade attached to the outer hero container, but overrides the mobile fade to a 105px layer with gradual `#fbf6ee` opacity stops and no negative How It Works overlap.
-- Latest mobile carousel shadow/control fix on 2026-05-18 separates the card lane and controls area: the lane has 52px bottom breathing room, a 52px cream fade at the bottom, and the progress/swipe hint sit on their own solid `#fbf6ee` controls block.
-- Latest carousel behavior decision on 2026-05-28: use Embla's built-in loop mode and shared continuous auto-rotation instead of custom repeated-card loop buffers or snap timers. Shopper interaction owns the carousel: pointer, hover, and focus pause auto-rotation immediately, resume only after a short delay, and `prefers-reduced-motion` disables auto-rotation.
-- Latest page-load fix on 2026-05-19 keeps the Home page loading at the very top. The How It Works carousel now centers its initial card by setting the horizontal track `scrollLeft` directly instead of calling `scrollIntoView()`, because `scrollIntoView()` could move the whole document down to the carousel on load.
-- Latest phone-swipe fix on 2026-05-19 keeps mouse drag support on desktop but lets touch/pen input use native horizontal scrolling. Touch pointers now only pause the drift and do not enter the custom drag state, capture the pointer, call `preventDefault()`, or settle with `scrollTo()` on release. The track uses `touch-action: pan-x pan-y` and `-webkit-overflow-scrolling: touch` so phone swipes feel native instead of locked into click-and-drag behavior.
-- Latest true-loop fix on 2026-05-19 keeps the 9-card repeated lane but prevents the physical strip from ending. Native scrolling still passes naturally from slide 3 into the next physical slide 1, then when the shopper reaches the outer buffer near either hard end, the track silently re-centers to the matching middle visual position. This keeps the loop continuous without giving the progress pills or the immediate 3-to-1 boundary control over the lane.
-- Latest mobile safe-area/header pivot on 2026-05-18 keeps `viewport-fit=cover` and body-level header state classes, but no longer lets the mobile header float transparently over the hero. Mobile now uses a fixed cream top nav bar that owns the safe-area/status space, keeps square top corners, stays cream after scroll, and offsets the hero image below the bar so there is no nav/hero overlap. Follow-up tightened the mobile top-bar padding so the notch safe area does not create a double-tall-feeling header, then matched the hero offset to the real header height so no cream sliver shows between the nav and hero.
-- Latest mobile header layout tweak on 2026-05-18 removes the separate mobile `Shop` pill from the top bar and balances the bar as menu / centered brand / bag. Shop access still lives in desktop navigation, the mobile menu, and the hero `Shop sets` CTA.
-- Mobile header menu cleanup on 2026-06-06 replaces the plain dropdown panel with a full-screen blurred overlay. When open, the page behind remains faintly visible through a white translucent blur, the brand mark and bag icon are hidden, only the top-right close `X` and centered destination links are visible, body/root scrolling is locked, Escape closes the overlay, and destination clicks close the menu. The overlay destinations are Home, Shop Collections, How It Works, FAQ, Reviews, and Contact.
-- Latest hero cleanup on 2026-05-18 removes the small berry divider between the hero headline and `Shop sets` CTA so the CTA sits directly under the headline.
-- Latest mobile hero copy-position cleanup on 2026-05-18 keeps the React markup unchanged and uses mobile CSS variables for `--hero-mobile-min-height`, `--hero-copy-top`, `--hero-copy-gap`, and `--hero-button-offset`. The current mobile target moves the headline/CTA block higher into the upper-left/mid-left hero area without changing the nav, image, copy, button styling, or hero/How-It-Works handoff.
-- 2026-07-08 Home hero accent cleanup keeps the `pretty plans` phrase italic/display-styled but changes it to inherit the same black heading color as the rest of the hero headline.
-- Implementation note: the drift keeps a virtual scroll position so sub-pixel frame movement accumulates across whole-pixel browser `scrollLeft` updates; the three progress pills are tied to normalized carousel position, not hidden loop-card state.
-- The old repeating `01 / 02 / 03 / 01 / 02 / 03` strip, transform-based auto-scroll behavior, and text-only fast cleanup baseline are superseded.
-- Do not restore the prior card copy or code-native line visuals without CEO approval.
-- The approved UX spec is saved at `docs/superpowers/specs/2026-05-11-how-it-works-ux-pass-design.md`.
-
-## What Has Been Built
-
-The project now has a Vite React TypeScript app.
-
-Implemented:
-
-- React/Vite/TypeScript app foundation.
-- Central placeholder product data in `src/data/products.ts`.
-- Shop All / Catalog page at `/shop` as the first real destination page after Home.
-- Catalog placeholder data expanded to 33 ready-to-wear products, with all products still supporting every launch length and shape option.
-- Balanced Shop All layout: `Shop All`, search, Filter + Sort row, inline filter panel, collection tab rail, and a practical product grid.
-- Inline filter panel is the approved v1 filter pattern for Shop All; it pushes the catalog down and includes Collection, Price, Detail level, Clear, and Apply controls.
-- Minimal Shop All product cards show only a plain image placeholder, product name, and price. They now navigate through React Router to the first base Product Detail route at `/products/:slug`.
-- Shared components:
-  - `BrandHeader`
-  - `ProductCard`
-  - `ProductCarousel`
-  - `CollectionFilters`
-  - `KitContents`
-- Long-scroll Home page in `src/pages/HomePage.tsx`.
-- Accordion footer with grouped shop/help/policy/social links.
-- Responsive CSS, including a dedicated `@media (max-width: 360px)` layer for 320px screens.
-- Accessibility improvements:
-  - stronger contrast for key text/buttons
-  - keyboard-focusable product carousel regions
-- Compact mobile header:
-  - brand text, menu, and bag stay usable when the viewport is narrow
-  - full desktop nav is hidden on mobile
-  - mobile menu opens/closes through a full-screen blurred overlay with only destination links and the close `X`
-- Regression test for 320px mobile CSS rules.
-- Mobile Home page shopping path:
-  - hero leads with product/lifestyle visual treatment and a direct `Shop sets` CTA
-  - S3 header/hero UI pass adds the real `public/assets/hero-s3-summer.png` background, transparent-at-top header, sage/pistachio scrolled header, and fixed-header anchor offset
-  - S3 fidelity correction makes the mobile hero background full-bleed from the top under the transparent header, softens the temporary brand mark, refines the sage/berry accents, and adds the small divider before the hero CTA
-  - latest mockup-alignment pass centers the mobile brand mark over the full hero image, keeps menu/Shop/bag on one row, removes the heavy dark hero overlay, and uses the softer berry serif headline treatment from the approved direction
-  - accent correction moves the green from the minty `#cce7ca` family toward the inspo's dustier `#adba85`
-  - 319px header overlap fix keeps the larger brand mark in the protected middle grid column so the `Shop` pill cannot cover it
-  - CTA typography pass gives the header `Shop` pill and hero `Shop sets` button a softer rounded sans stack instead of the heavier generic app-button text
-  - scrolled-header correction rounds the sage bar, restores berry brand text, and keeps menu/bag as outline-only icons while `Shop` stays in a white pill
-  - safe-area/header pivot makes mobile use a real cream top app bar with matching safe-area paint; the hero begins below the nav instead of sitting behind it, the mobile scrolled state no longer becomes a floating sage rounded card, and the final follow-up tightens the top-bar padding around the notch area and removes the offset mismatch that exposed a thin cream sliver above the hero image
-  - hero divider was later removed so the CTA sits directly under the headline
-  - slim confidence strip now follows the first shopping module instead of leading the page before products
-  - How It Works carousel UI pass overlaps the hero, uses a warm-white card with a thin berry outline, places arrows just outside the card edges, gives each slide its own code-native visual, and has a softened hero/card transition after several visual review passes
-  - latest How It Works UI pass replaces the continuous text-only strip with a polished luxury clean-beauty card carousel: centered editorial heading, swipeable mobile cards with side peeks, three dynamic progress pills, swipe hint, and desktop three-column layout
-  - collections appear before How It Works and include the first product browsing row
-  - sizing-kit language is intentionally excluded for now
-  - latest fidelity pass makes the mobile hero a single image-led panel, attaches the confidence strip, and uses three visual collection tiles
-  - the former weekly-set slot is removed for now; the CEO does not want to decide that third section yet
-  - What's included now uses a compact kit summary with an image-tab/detail-panel module instead of bulky accordion rows
-  - reviews now use a compact trust-chip row, single featured review carousel, product thumbnail/detail, dots, and a `See more reviews` link
-  - FAQ now uses a beginner help strip, accordion answers, a care-tips cue, and a contact CTA
-  - footer now uses a compact brand intro, grouped accordion links, and tiny legal text instead of placeholder link piles
-  - Home UX bug pass fixed broken or incomplete prototype destinations, including collection `See all`, bag, review, and footer policy links
-  - mobile overflow polish hides native row scrollbars, lets review trust chips wrap, and tightens small-screen spacing
-  - review follow-up spaced review arrows away from the card and made the FAQ start strip an in-page CTA link
-  - carousel regression cleanup removed the unwanted weekly `Up next` CTA module and kept the weekly carousel as real product slides with simple controls and dots
-  - narrow footer overflow cleanup removed the global 320px body minimum so 319px-class in-app browser widths do not clip the footer or show a horizontal scrollbar
-  - 2026-05-22 bare-bones review mode strips the visible site to black and white and hides the hero background image from presentation while preserving the asset and hero container for reversibility
-- 2026-05-22 browser review deleted the `Shop more` section, and the 2026-05-24 refactor deleted `This week's set`; Home now moves from Collections/product browsing to How It Works to What's included, and links no longer target `#shop-more` or `#this-weeks-set`
-- 2026-06-06 Shop All destination pass adds the first post-Home shopping page. Header `Shop Collections`, footer `Shop All`, Home `Shop sets`, Home collection `See all`, and Home collection `See more` point to `/shop`.
-- 2026-06-07 page-change flash fix replaces the old `window.location.pathname` switch in `src/App.tsx` with React Router routes for `/` and `/shop`, wraps the app in `BrowserRouter`, redirects unknown routes to `/`, and converts root/shop internal navigation to React Router `Link` while preserving `mailto:` and hash anchors as normal anchors. Mobile menu destination clicks still close the overlay and clean up body/root scroll locks.
-- Future internal pages should follow that routing standard: add pages through React Router routes in `src/App.tsx`, use `Link`/`NavLink` for internal page navigation, and keep plain anchors only for external URLs, `mailto:`, `tel:`, and hash links such as `#faq` or `/#reviews`.
-- 2026-06-06 Shop All browser comment pass fixed two mobile review issues: the inline filter `Apply` button now stays readable as black background with white text under the global bare-bones overrides, and the collection tab rail now supports mouse drag in the in-app review viewport while preserving native horizontal touch scrolling.
-- 2026-06-06 Shop All follow-up fixed the tab rail drag/click conflict by delaying pointer capture until a real drag threshold is crossed, so ordinary tab clicks and tiny pointer drift still select the collection. The Sort control now reads as one compact bordered mobile control with the label inside the field instead of a separate `Sort:` label beside a native select box.
-- 2026-06-06 Shop All Sort UX follow-up replaces the native select with a real `Sort` button. Tapping it opens a compact black-and-white option panel with radio-style choices for Newest, Price: Low to High, Price: High to Low, and Most Popular. Choosing an option updates product order, updates the button value, and closes the panel.
-- 2026-06-06 Shop All Sort panel polish keeps selected, hovered, and keyboard-focused sort options black with white text, overriding bare-bones global text color so the active option stays readable.
-- 2026-06-06 Shop All search keeps search as a lightweight finder rather than a heavy modal/dropdown. Current behavior is a plain search field with inline clear control while typing, result-count feedback, structured matching across product name, collection, detail tier, popularity/newness, and price labels, plus a compact no-results state with `Clear search`. Do not reintroduce starter chips or description-based search matching unless the CEO explicitly asks for that behavior.
-- 2026-06-06 mobile menu close-position follow-up collapses the hidden bag action while the full-screen mobile menu is open and moves the close button container to `right: 8px`, so the 44px close tap target sits near the actual right edge instead of being offset by the hidden bag slot.
-- 2026-06-07 Shop All visual polish removes `storefront-barebones` from the Shop page and narrows the broad bare-bones CSS flattening so Home can stay in review mode without forcing the Shop page into pure black/white/no-shadow styling. The Shop page skeleton and behavior are unchanged: heading/count, search, Filter, Sort, inline filter panel, tab rail, product grid, and empty state stay in place. Search/filter/sort controls, collection tabs, product cards, and empty state now use a soft neutral shop-specific surface, subtle borders, 8px-or-smaller radius, and restrained shadows without adding product copy, fake recommendations, starter chips, or description-based search matching.
-- 2026-06-07 Home/Header/Footer polish removes `site-shell--barebones` and `storefront-barebones`, deletes the temporary bare-bones CSS overrides, maps the shared visual system to soft neutral tokens, restores the Home hero/image presentation, restyles Collections, How It Works, Kit, Reviews, FAQ, and Footer to match Shop's restrained surfaces, and adds concise 3-step How It Works card content without changing Shop page behavior.
-- 2026-06-08 Product Detail base pass adds `/products/:slug` with the existing product placeholder art, product title, price, one existing data description, length selector, shape selector, and add-to-cart/favorite UI buttons without cart infrastructure. Shop cards link to the route via React Router while Shop search/filter/sort behavior stays unchanged.
-- 2026-06-08 Product Detail return pass adds a visible `Back to shop` control. Shop product links pass `{ fromShop: true }` in React Router state; product pages opened from Shop use browser history for the back control so Shop scroll position can restore, while direct product visits fall back to `/shop`. `ScrollToTop` now skips POP navigations but still resets normal PUSH/REPLACE route changes.
-- 2026-06-08 Home collection routing fix changes visible Home collection product cards from same-page `#product-*` anchors to React Router `/products/:slug` links with `{ fromHome: true }` state. Product detail back handling now uses browser history for both Shop-origin and Home-origin visits, preserving the prior page scroll position; direct product visits still fall back to `/shop`. The faded `.collection-product-teaser` cards remain visual-only.
-- 2026-06-08 Product Detail image placeholder pass removes the page-specific five-span fake nail-art renderer from `ProductPage` and replaces the media area with a plain accessible gray empty-state well using existing surface tokens. Product Detail layout, routing, selectors, Add to Cart, and favorite behavior remain unchanged.
-- Bag, checkout, policy pages, Help Center, and Contact remain future pages. Size and adhesive are not primary Product Detail selectors; length and shape own the base buying flow.
-
-Latest known verification before handoff:
-
-- Reviews Polaroid Strip verification on 2026-06-18: TDD red pass first failed because the `Customer keepsakes` Reviews section was absent. Focused `npm run test -- src/pages/HomePage.test.tsx --run` passed with 10 tests, focused `npm run test -- src/styles-responsive.test.ts --run` passed with 21 tests, full `npm test` passed with 18 files and 124 tests after rerunning outside the read-only sandbox for the known Vite `.vite-temp` write issue, `npm run build` passed, and `git diff --check` passed. Browser verification on Vite `http://127.0.0.1:5175/` at a 375px viewport confirmed the Reviews Polaroid Strip renders below How It Works, uses `MobileCarousel` with `data-auto-rotate="true"`, `data-loop="true"`, and `data-rotate-speed="24"`, renders 7 `.review-polaroid-card` cards, 7 photo wells, and 7 captions, has 0 buttons inside the Reviews section, leaves old story/review-card DOM at 0, shows visible white rotated polaroid cards with soft color-block placeholder photo areas and visible caption strip, and has 0 page-level horizontal overflow. `npm audit --audit-level=moderate` did not pass; after network approval it reported existing dependency advisories in `@babel/core`, `form-data`, `hono`, `js-yaml`, `vite`, and `ws`.
-- Reviews Polaroid Strip size correction verification on 2026-06-18: focused TDD red pass in `src/styles-responsive.test.ts` first failed because Reviews-specific slide sizing was missing. After the CSS fix, `npm run test -- src/styles-responsive.test.ts --run` passed with 21 tests, full `npm test` passed with 18 files and 124 tests after rerunning outside the read-only sandbox for the known Vite `.vite-temp` write issue, `npm run build` passed, and `git diff --check` passed. Browser verification at `http://localhost:5173/#reviews` with a 393px viewport measured the first polaroid card at about `151px x 189px`, the photo well at `131px x 131px`, the full Reviews section at `377px` tall, 7 cards still present, and 0 page-level horizontal overflow. `npm audit --audit-level=moderate` still did not pass because of existing dependency advisories in `@babel/core`, `form-data`, `hono`, `js-yaml`, `vite`, and `ws`.
-- Reviews Polaroid Strip loop correction verification on 2026-06-18: focused `npm run test -- src/styles-responsive.test.ts --run` passed with 21 tests after adding coverage for the constrained Reviews viewport and scoped Reviews track override. Browser verification at `http://localhost:5173/#reviews` with a 393px viewport sampled the auto-rotating loop at 0, 4, 8, and 12 seconds; the Reviews viewport computed to `414px` wide with `min-width: 0`, the track margin computed to `-6px`, all samples had `leftGap: 0`, `rightGap: 0`, `maxInnerGap: 0`, and page-level horizontal overflow stayed `0`.
-- Reviews Polaroid Strip neutral placeholder verification on 2026-06-18: focused `npm run test -- src/pages/HomePage.test.tsx --run` passed with 10 tests and confirms the seven photo wells are empty decorative placeholders with no tone classes. Focused `npm run test -- src/styles-responsive.test.ts --run` passed with 21 tests and confirms the Reviews photo placeholder uses flat `#d9dde0` while the old per-card gradient photo variable and `.review-polaroid-card__photo span` selector are absent. Browser verification at `http://localhost:5173/#reviews` with a 393px viewport confirmed 7 cards, 7 photo wells, white card background `rgb(255, 255, 255)`, grey photo background `rgb(217, 221, 224)`, photo background image `none`, no nested photo placeholder elements, no tone classes, first card still about `151px x 189px`, first photo well still about `131px x 131px`, and page-level horizontal overflow `0`.
-- Reviews Polaroid Strip size follow-up verification on 2026-06-18: focused `npm run test -- src/styles-responsive.test.ts --run` passed with 21 tests and focused `npm run test -- src/pages/HomePage.test.tsx --run` passed with 10 tests. Browser verification at `http://localhost:5173/#reviews` with a 393px viewport measured the first card at about `168px x 205px`, the grey photo well at about `147px x 147px`, 3 cards visible in the Reviews viewport, white card background preserved, grey photo background preserved, photo background image still `none`, and page-level horizontal overflow `0`.
-- Reviews product-card alignment verification on 2026-06-24: focused `npm run test -- src/pages/HomePage.test.tsx --run` passed with 10 tests and focused `npm run test -- src/styles-responsive.test.ts --run` passed with 21 tests. Browser verification at `http://localhost:5173/#reviews` confirmed 7 cards, 7 grey placeholder wells, 7 captions, carousel label `Customer review keepsake carousel`, no buttons, per-card rotation styles restored, first card computed with `8px` radius, product-card border/shadow, tilted transform, centered text alignment, first image well ratio `0.8` (`4 / 5`), Manrope caption, and page-level horizontal overflow `0`.
-- How It Works blank-card verification on 2026-06-23: focused `npm run test -- src/pages/HomePage.test.tsx --run` passed with 10 tests after a red pass showed the old card headings/body copy were still present. Focused `npm run test -- src/styles-responsive.test.ts --run` passed with 21 tests after removing the old `.confidence-card__copy` CSS expectation. Browser verification at `http://localhost:5173/` with a 393px viewport confirmed 3 `.confidence-card` cards, visible card text only `1`, `2`, and `3`, 3 `.confidence-card__number` elements, 0 `.confidence-card__copy` elements, 0 card `h3` elements, 0 card paragraph elements, no old step text in `#how-it-works`, active step data still present, and page-level horizontal overflow `0`.
-- How It Works number treatment verification on 2026-06-23: focused `npm run test -- src/styles-responsive.test.ts --run` passed with 21 tests and focused `npm run test -- src/pages/HomePage.test.tsx --run` passed with 10 tests. Browser verification at `http://localhost:5173/` with a 552px viewport confirmed the three number spans have transparent backgrounds, `0px` border radius, black text `rgb(31, 36, 40)`, `justify-self: start`, text-sized widths around `6-7px`, no `.confidence-card__copy`, and page-level horizontal overflow `0`.
-- Home/Header/Footer polish verification on 2026-06-07: focused red pass first failed while `site-shell--barebones`, `storefront-barebones`, and empty How It Works cards were still present. After the polish pass, `npm run test -- src/App.test.tsx src/pages/HomePage.test.tsx src/styles-responsive.test.ts --run` passed with 3 files and 47 tests, `npm test -- --run` passed with 15 files and 102 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. Browser verification on Vite `http://localhost:5174/` captured Home mobile, Shop mobile, Home desktop, Shop desktop, mobile menu open, and story viewer open screenshots. DOM checks confirmed `.site-shell` has no bare-bones modifier, `#home` exists with no `storefront-barebones` class, Home has no bare-bones class matches, the 3 How It Works cards render `Pick your set`, `Choose glue or tabs`, and `Apply and wear`, Home/Shop mobile and desktop have no page-level horizontal overflow, Shop still renders 33 product cards, the mobile menu opens with six destination links and blur overlay, and the story viewer opens as a `dialog` with 10 progress segments and body scroll locked.
-- Page-change flash fix verification on 2026-06-07: TDD red pass showed the old plain `/shop` anchor attempted document navigation in JSDOM and left the React tree on Home. `npm test -- --run` passed with 15 files and 104 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. Browser verification on Vite `http://localhost:5174/` confirmed the Home hero `Shop sets` link routed to `/shop` and rendered `Shop All` with 33 sets without leaving the SPA; opening the mobile menu and selecting `Shop Collections` routed to `/shop`, hid the overlay, removed `mobile-menu-open`, and restored body/root overflow styles.
-- Shop All visual polish verification on 2026-06-07: focused ShopPage red pass first failed because `#shop` still had `storefront-barebones`, then `npm test -- src/pages/ShopPage.test.tsx --run` passed with 14 tests, `npm test -- --run` passed with 15 files and 104 tests, `npm run build` passed, and `git diff --check` passed. Browser verification at `http://localhost:5173/shop` confirmed `#shop` has only `shop-page`, 33 cards, 9 tabs, no starter chips, soft neutral computed backgrounds, 8px computed radii on search/filter/sort/cards/active tab, visible card shadows, and unchanged interactions for Sort, Filter, and a no-match `zebra` search empty state.
-- Mobile header menu cleanup verification on 2026-06-06: `npm test` passed with 15 files and 95 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. Browser verification at a 375px viewport on `http://localhost:5173/` confirmed the hamburger opens a fixed full-screen overlay with `backdrop-filter: blur(18px)`, translucent white wash, top-right 44px close `X`, hidden brand/bag, six centered links, no page-level horizontal overflow, scroll gestures do not move the page while open, and tapping Reviews closes the menu and restores body/root overflow. Follow-up font correction lightened the overlay links from the heavier initial treatment to `27px` at `font-weight: 400` on a 375px viewport, then increased link spacing from `24px` to `36px`.
-- Shop All browser comment verification on 2026-06-06: `npm test -- --run` passed with 15 files and 92 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification at a 375px viewport on `http://localhost:5173/shop` confirmed the `Apply` button computed as black background, white text, black border, transparent tap highlight, no page-level horizontal overflow, and the collection tab rail moved from `scrollLeft: 0` to `scrollLeft: 240` under mouse drag.
-- Shop All tab/sort follow-up verification on 2026-06-06: `npm test -- --run` passed with 15 files and 94 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification at a 375px viewport on `http://localhost:5173/shop` confirmed direct `Bridal` tab click filters to 6 sets, a click after 6px pointer drift still filters to `Bridal`, real rail drag still moves to `scrollLeft: 240`, the Sort control computes as a single bordered grid control, and page-level horizontal overflow remains 0.
-- Shop All real Sort button verification on 2026-06-06: `npm test -- --run` passed with 15 files and 95 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification at a 375px viewport on `http://localhost:5173/shop` confirmed `Sort Newest` opens the option panel, Newest is checked by default, Price: Low to High changes the first product to `Glossy Bare` and closes the panel, Most Popular changes the first product to `Blush Crush`, and page-level horizontal overflow remains 0.
-- Shop All Sort panel polish verification on 2026-06-06: `npm test -- --run` passed with 15 files and 95 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification confirmed selected `Newest`, hovered `Price: Low to High`, and selected `Price: Low to High` all compute as black background with white text, with page-level horizontal overflow still 0.
-- Shop All smarter search verification on 2026-06-06: focused TDD red pass failed on the old plain search field, then `npm run test -- src/pages/ShopPage.test.tsx --run` passed with 12 tests, `npm run test -- --run` passed with 15 files and 99 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. Browser automation could not be run in that turn because the browser-control tools were unavailable and Playwright was not installed in the workspace.
-- Mobile menu close-position verification on 2026-06-06: `npm test -- --run` passed with 15 files and 96 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and browser verification at a 375px viewport on `http://localhost:5173/` confirmed the close button rect is `left: 323`, `right: 367`, `width: 44`, with an 8px right gap, the hidden bag action computes `display: none`, and page-level horizontal overflow remains 0.
-- Shop All destination verification on 2026-06-06: `npm test -- --run` passed with 15 files and 89 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. In-app browser verification at a mobile viewport on `http://localhost:5173/shop` found the Shop All page loaded, header visible, search near the top, Filter + Sort row visible, 9 collection tabs in a horizontally scrollable rail, 33 catalog cards, a 2-column mobile grid, only black/white/light-gray visible Shop colors, no page-level horizontal overflow, no checkout/add-to-cart behavior, and minimal product card text limited to name and price. Opening Filter showed the inline panel and pushed the product grid down; selecting Bridal reduced results to 6 sets.
-- `npm test`: 10 files, 46 tests passed.
-- `npm run build`: passed.
-- `npm audit --audit-level=moderate`: 0 vulnerabilities.
-- `git diff --check`: passed.
-- Footer UI verification on 2026-05-28: `npm test -- --run` passed with 12 files and 56 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed.
-- Reviews story wireframe verification on 2026-05-29: `npm test -- --run` passed with 12 files and 57 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. In-app browser verification at `375x667` on `http://localhost:5175/` found the Reviews heading present, 5 `.review-story-item` buttons, 5 `.review-story-bubble` circles, no `.review-card`, no `.review-carousel`, horizontally scrollable story-row overflow only (`rowScrollWidth` 400 vs `rowClientWidth` 324), and no page-level horizontal overflow.
-- Reviews Phase 2 verification on 2026-05-29: `npm test -- --run` passed with 12 files and 57 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. In-app browser verification at `375x667` on `http://localhost:5175/` found 10 story items, 10 bubbles, 72px bubble diameter, 4 visible items at the left edge, row-only horizontal overflow (`rowScrollWidth` 930 vs `rowClientWidth` 324), no old review cards/carousel, and no page-level horizontal overflow.
-- Reviews story-strip polish verification on 2026-05-29: `npm test -- --run` passed with 12 files and 57 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. In-app browser verification at `375x667` on `http://localhost:5175/` found 10 `.review-story-item` wrappers, 10 `button.review-story-bubble` controls, 0 `button.review-story-item` controls, first bubble `82px` square after follow-up tuning, first button named `Open Sarah review story`, label outside the button, row full-bleed to the viewport, row-only horizontal scrolling, no old review cards/carousel, and no page-level horizontal overflow.
-- Reviews Phase 3 viewer verification on 2026-05-29: in-app browser verification at `375x667` on `http://localhost:5175/` opened `Birthday Set` from its circular story button and found a fullscreen `role="dialog"` named `Birthday Set review story`, a static progress rail, close button, selected placeholder quote, 10 circular story buttons, 0 item-wrapper buttons, a `328px` by `631px` story frame, no page-level horizontal overflow, and the close button removed the viewer. No timer, auto-advance, swipe gestures, product links, or real images were added.
-- Reviews Phase 4 viewer verification on 2026-05-29: in-app browser verification at `375x667` on `http://localhost:5175/` opened `Birthday Set` and found a light near-white fullscreen viewer background, warm-white story frame, 10 segmented progress rails with `complete` / `active` / `upcoming` states, left/right invisible tap-zone buttons, 10 circular strip buttons, 0 item-wrapper buttons, body scroll locked, and no page-level horizontal overflow. The next tap zone moved to `Bridal Nails`, progress updated, repeated previous taps stayed bounded at `Sarah`, and close removed the viewer. Automated tests cover Escape plus ArrowLeft/ArrowRight navigation.
-- Reviews Phase 5 timer verification on 2026-05-29: `npm test -- --run` passed with 12 files and 67 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, and `git diff --check` passed. In-app browser verification at `375x667` on `http://localhost:5175/` opened `Birthday Set`, found 10 progress segments, active `review-story-progress` animation at `6s`, body scroll locked, no page-level horizontal overflow, and after 6.2 seconds the viewer auto-advanced to `Bridal Nails` with previous segments completed. Closing removed the viewer and restored body overflow.
-- Reviews tap-zone and press-hold pause fix on 2026-05-29 keeps the fullscreen story viewer but makes the left/right tap-zone buttons visually inert in normal, active, focus, and focus-visible states. The root cause was the visible `.review-story-viewer__tap-zone:focus-visible` outline plus missing explicit tap-highlight/active/focus resets for these invisible buttons. The tap zones now keep transparent background, no border, no shadow, no outline, `appearance: none`, and `-webkit-tap-highlight-color: transparent`; the close button keeps its visible focus styling. Pressing and holding a tap zone or the story card pauses the timer/progress, release/cancel/leave resumes it, quick tap zones still navigate, and keyboard/Escape behavior is unchanged. Verification: `npm test` passed with 12 files and 70 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, `git diff --check` passed, and in-app browser verification on `http://localhost:5173/` opened `Birthday Set`, confirmed large transparent tap zones with no border/shadow/outline, next/previous navigation, close cleanup, and body scroll restoration.
-- Reviews long-press selection fix on 2026-05-29 scopes `user-select: none`, `-webkit-user-select: none`, and `-webkit-touch-callout: none` to `.review-story-viewer` and `.review-story-viewer *` only, so press-and-hold pause does not invite text selection/copy UI inside the story overlay. Normal page text outside the viewer remains selectable. Verification: `npm test` passed with 12 files and 70 tests, `npm run build` passed, `npm audit --audit-level=moderate` found 0 vulnerabilities, `git diff --check` passed, and in-app browser computed styles showed viewer/story text/tap zones at `user-select: none` while the outside Reviews heading stayed `user-select: auto`.
-- Temporary Reviews hitbox debug mode was removed on 2026-05-29 after the fullscreen layout and 48/4/48 hitbox split were approved. The viewer no longer applies `.story-debug-hitboxes`, and the temporary debug outline/fill CSS was deleted; the invisible tap-zone buttons remain active.
-- Browser/dev server check on 2026-05-22: `http://localhost:5173/` responded from this repo after starting `npm run dev -- --host 0.0.0.0`. In-app browser verification confirmed `.hero-photo` has `aria-hidden="true"` and `background-image: none`, `#home` has `storefront-barebones`, sampled visible page styles resolved only to black, white, or transparent, and the annotated mobile elements computed as requested at the 375px viewport: `.hero-copy` `padding: 23px 29px 1px` with height `263.359px`; `.hero-section` `padding-top: 45px` with height now adjusted to `635px`; `.confidence-section__heading` height `85.047px`; `.confidence-section__heading .eyebrow` height `20.469px` with `translateY(-3px)`; `.brand-mark` font-size `25px`.
-- Browser/dev server check: `http://localhost:5173/` responded. Automated DOM tests confirm the How It Works cards render as blank shells with no visible card copy or code-native visual nodes, continuous drift advances the card lane at a visible 36px/second pace, passive drift still resets at a matching visual loop point, manual/native scroll from slide 3 into the next physical slide 1 keeps the forward scroll position while progress resets, outer-buffer native scroll re-centers before either hard end, drag past slide 3 settles onto the next physical slide 1 instead of snapping back, touch/focus interaction pauses drift for 3 seconds, touch pointers stay out of the custom mouse-drag path, the old dot controls are replaced by three dynamic progress pills, reduced-motion users do not get the drifting class, and initial carousel centering does not call page-scrolling APIs. In-app browser verification at a 390px mobile viewport confirmed repeated drags advance 1 -> 2 -> 3 -> 1 -> 2, then re-center to an equivalent slide-3 position before the hard end instead of exhausting the physical strip.
-- The in-app browser viewport override was reset after verification.
-- Git working tree has the known unrelated untracked `.claude/` directory.
-
-## Important Commits
-
-- `dbccdbf` - Add YourPrettySets site brief
-- `b6a16dc` - Add home page foundation plan
-- `1487fff` - Add React app foundation
-- `203d74b` - Add central placeholder product data
-- `c834697` - Add shared home components
-- `15b9181` - Compose home page experience
-- `451e523` - Add home footer and FAQ placeholders
-- `1b4cb1f` - Polish home page responsive layout
-- `9a570d3` - Improve carousel keyboard access
-- `a5ad744` - Optimize home page for 320px screens
-- `dec6bd1` - Complete compact mobile header implementation
-- `49fe905` - Build weekly set home flow
-- `9c10732` - Build kit contents accordion
-- `bb70650` - Build review carousel foundation
-- `84dc479` - Build FAQ accordion foundation
-- `6d14f94` - Build accordion footer foundation
-- `937d495` - Remove standalone footer contact CTA
-- `e7a11df` - Fix home UX bug pass
-- `ad09ef5` - Address home UX review comments
-- `ca8a0b9` - Build real weekly set carousel
-- `00afc7c` - Restore richer home carousels
-- `24efa30` - Remove weekly up-next module
-- `341fe95` - Fix narrow footer overflow
-- `643319f` - Add S3 header hero implementation plan
-- `f7947ea` - Add S3 summer hero asset
-- `a20aef3` - Add transparent header scroll state
-- `cf8d825` - Style S3 header and hero
-- `9c8782e` - Polish S3 hero sizing and anchors
-- `01a43d3` - Refine S3 hero fidelity
-- `ef26a39` - Align S3 hero with approved mockup
-- `423953a` - Tune S3 sage accent color
-- `45d00bc` - Fix mobile header brand overlap
-- `33cc27f` - Soften S3 CTA typography
-- `4ffe5f6` - Fix scrolled S3 header styling
-- `81d2ce1` - Refine hero sparkle divider
-- `90afd57` - Add how it works carousel UI plan
-- `dc47bce` - Refine how it works carousel UI
-- `15d1ef4` - Soften hero carousel transition
-
-## CEO Feedback And Preferences
-
-The CEO is nontechnical and wants to make brand/product decisions through conversation and visual review. They prefer direct, practical language and dislike low-value repeated questions.
-
-Established preferences:
-
-- Build one page at a time.
-- Use smaller section/component ownership for agents.
-- Keep central placeholder data.
-- Structure/data correctness matters, but the result should not look bad.
-- Placeholder products/images are acceptable for now.
-- The site should feel spring/summer, colorful, feminine, polished, boutique, and friendly.
-- Avoid beige/cold/luxury-spa styling.
-- Avoid overly cute, childish, or generic beauty-template styling.
-
-## Latest Discussion: Header
-
-The CEO selected the mobile header layout as the next improvement area.
-
-Confirmed direction:
-
-- Use a compact mobile ecommerce header.
-- Keep `YourPrettySets` visible as a text brand mark for now.
-- Show compact mobile actions for menu and bag; shopping access stays in the menu, desktop nav, and page CTAs.
-- Put secondary links inside a simple menu panel.
-- Do not redesign the logo yet.
-- Do not use overly decorative boutique details.
-
-The design spec is saved at:
-
-- `docs/superpowers/specs/2026-05-06-compact-mobile-header-design.md`
-
-Latest CEO review:
-
-- The compact mobile header behaves much better when squished together.
-- The remaining concern is the menu panel visual treatment.
-- The menu panel can be polished later during a broader UI pass.
-- The later UI pass should make the menu feel less big/blocky and less plain/dev-like.
-- Do not reopen the header UX implementation unless the CEO asks; the current priority was fixing usability.
-
-## Latest Discussion: Mobile Home Shopping Path
-
-The CEO approved moving the mobile Home page toward a more shoppable opening sequence.
-
-Confirmed direction:
-
-- Use a photo-led hero direction instead of the old four placeholder nail tiles.
-- Keep the hero CTA direct: `Shop sets`.
-- Do not force a traditional "How it works" section yet.
-- This historical Home-only pass omitted sizing kits. The wider storefront now includes the 2026-07-09 Help guidance and standalone sizing-kit Product page; Home may still omit sizing-kit merchandising unless the founder requests it.
-- Use a slim three-step confidence strip:
-  - `Pick your set`
-  - `Choose your wear`
-  - `Press on pretty`
-- Put Collections before New Arrivals so customers can choose a mood or occasion before individual products.
-- Keep New Arrivals directly after Collections as the first product shopping section.
-
-The design spec is saved at:
-
-- `docs/superpowers/specs/2026-05-07-mobile-home-shopping-path-design.md`
-
-The implementation plan is saved at:
-
-- `docs/superpowers/plans/2026-05-07-mobile-home-shopping-path.md`
-
-Follow-up correction:
-
-- The first implementation matched the section order but not the mockup UX closely enough.
-- A second mockup-fidelity pass was approved to make the mobile hero feel like one image-led panel, not a split layout.
-- Collections are now intentionally reduced at the top of the Home page to `Everyday`, `Date Night`, and `Vacation`, with `See all` linking down to Featured Sets.
-- The correction spec is saved at `docs/superpowers/specs/2026-05-07-mobile-home-mockup-fidelity-design.md`.
-- The correction plan is saved at `docs/superpowers/plans/2026-05-07-mobile-home-mockup-fidelity.md`.
-
-Second inspiration fidelity pass:
-
-- The CEO compared the current page against two inspiration screenshots and noted that the UX still did not match closely enough.
-- The main missing pieces were real-photo feeling, softer/smaller hero hierarchy, visual step cards, denser spacing, compact Collections heading, and fuller nail-set visuals in tiles.
-- The latest pass keeps code-native temporary visuals but moves closer to the inspiration by:
-  - reducing mobile hero headline/body dominance
-  - tightening top-section vertical rhythm
-  - turning the three-step row into visual carousel-style cards with dots and an arrow cue
-  - making Collections feel more like a compact shop module
-  - rendering five nail shapes per collection tile instead of three abstract marks
-- The pass is documented at `docs/superpowers/specs/2026-05-07-home-inspo-ux-fidelity-design.md` and `docs/superpowers/plans/2026-05-07-home-inspo-ux-fidelity.md`.
-
-Latest How It Works decision:
-
-- The CEO asked to remake the card shape/UX and then provided a direct build brief for a polished mobile-first How It Works section.
-- Ignore the brief line that suggested changing homepage order to add a trust/benefits bar; the CEO explicitly said to ignore that section.
-- The current Home page keeps the section in place between hero and Collections and only changes the How It Works section.
-- Mobile now uses a horizontal swipeable carousel with one prominent centered card, partial side-card peeks, and three dynamic progress pills. The old `Swipe to explore` hint has been moved to the Collections carousel because How It Works auto-scrolls.
-- The 2026-05-18 polish fixes the remaining mobile layout issue: the active card is centered at roughly three-quarters viewport width, the previous and next cards both peek from the edges, the card shadow has vertical room to fade, and the progress/hint no longer collide with the shadow.
-- The follow-up 2026-05-18 repair narrows only the transition and active-card shadow: the hero now uses a 105px absolute full-width bottom fade into the How It Works cream, the How It Works section starts without negative overlap, and the carousel uses ordinary bottom padding plus a separate cream controls block below it.
-- The latest 2026-05-18 card-content cleanup keeps the carousel shells, peeks, and progress pills, but removes every visible element inside each card.
-- The latest mobile gradient cleanup changes only the mobile hero fade and section spacing: the fade is 105px, opacity reaches the section-start cream `#fbf6ee` at the bottom, and mobile How It Works uses `margin-top: 0` with `padding: 22px 0 0` or `20px 0 0` at the smallest breakpoint; desktop/tablet layout and section order are unchanged.
-- The latest mobile carousel controls cleanup changes only the shadow/control handoff: card-lane bottom padding is 52px, a 52px `#fbf6ee` fade dissolves the shadow before the controls, and the controls use `padding: 8px 0 34px` on a solid cream background.
-- The latest carousel behavior pass uses Embla loop mode plus shared continuous auto-rotation for the blank How It Works card lane. Auto-rotation moves at `24px/second`, pauses on shopper interaction, resumes after a short delay, and does not add manual loop-buffer card copies.
-- Desktop/tablet now uses the same card system as a clean three-column layout.
-- Current step cards are blank. The previous step copy was removed from the live section.
-- The section styling intentionally shifts toward warm ivory, muted taupe, nude blush, soft brown, champagne beige, and charcoal with editorial serif headings.
-- Code-native minimal visuals were removed from the live cards.
-
-Latest collection/product flow decision:
-
-- The CEO liked the full-page direction that removes duplicate `New Arrivals` and `Featured Sets` sections.
-- The Home page now moves from Collections into product cards belonging to the active collection, then How It Works, then What's included.
-- Browser feedback on 2026-05-24 simplified the Collection filter cards to centered collection names only, with no visible set counts in each card.
-- The active collection product row is now a 2x2 blank-card wireframe. It shows up to four actual product links with accessible product labels, fills short collections with blank placeholder slots, and includes a small `See more` CTA with a temporary `#` destination.
-- `This week's set` was removed on 2026-05-24 because the CEO does not like that concept yet. Do not link to `#this-weeks-set` unless that section is intentionally rebuilt.
-- `Shop more` was removed after the 2026-05-22 browser review. Do not link to `#shop-more` unless that section is intentionally rebuilt.
-- Product tiles no longer show visible `Clean background placeholder...` copy; the active collection row is intentionally blank until the CEO decides the product-card content system.
-- The design spec is saved at `docs/superpowers/specs/2026-05-07-weekly-set-home-flow-design.md`.
-- The implementation plan is saved at `docs/superpowers/plans/2026-05-07-weekly-set-home-flow.md`.
-
-Latest What's included decision:
-
-- The CEO replaced the accordion-style kit UX direction with a compact image-first tab/detail module under the existing kit image.
-- The section now uses:
-  - eyebrow `THE COMPLETE SET`
-  - heading `What’s Included`
-  - summary message `Everything you need for your set.`
-  - a real kit flat-lay image at `/assets/kit-contents-spread-v2.png`
-  - four compact visual tabs: `Nails`, `Glue / tabs`, `Prep tools`, and `Case + care`
-  - `Nails` selected by default, with one compact detail panel updating below the tabs
-  - `Nails` uses the real nail-size image at `/assets/nail-size-set.png`, replacing the old CSS-built black size tiles
-  - `Glue / tabs`, `Prep tools`, and `Case + care` reuse the existing individual kit assets without adding new imagery
-  - latest tab-row refinement makes the four tabs image-led mini cards with larger scaled thumbnails, secondary labels, light unselected borders, and a softer detail tray
-  - a primary `HOW TO APPLY & CARE` link to `#faq`
-- The latest prep-kit decision removes the bulky accordion/card area only. Do not redesign the section heading, subtitle, main kit image, or CTA links during this pass.
-
-Latest reviews decision:
-
-- The CEO selected the carousel direction from the review mockup: a centered featured review card, left/right neighboring peeks, five-star row, customer label, and product/shape tag. Later CEO feedback removed the arrows, dots, and `READ MORE REVIEWS`.
-- The Home page review section now uses:
-  - eyebrow `CUSTOMER LOVE`
-  - heading `Loved by first-time press-on buyers`
-  - one centered active review card with left/right peeks on mobile
-  - native horizontal swipe/scroll on the review track
-  - no dot controls or decorative dot cue under the carousel
-  - no bottom review CTA while the destination is undecided
-  - believable placeholder quotes from the existing in-file review data
-  - no product thumbnail/icon art inside the review cards after the 2026-05-26 browser comment
-- Browser verification at 390px and 360px confirmed visible card peeks, working dots, and no horizontal page overflow before the icon-art removal; recheck the shortened cards visually if more spacing tweaks are requested.
-- Follow-up arrow removal on 2026-05-26 removed review arrow buttons, their previous/next handlers, and the arrow-specific CSS.
-- Follow-up review auto-scroll on 2026-05-26 added the same 36px/second continuous drift used by How It Works. Focus/touch interaction pauses the review drift briefly, reduced-motion disables it, and native swipe still owns manual movement.
-- Follow-up placeholder expansion on 2026-05-26 changed Reviews to 12 blank reference cards numbered `01` through `12`.
-- Follow-up repeat removal on 2026-05-26 removed the hidden repeated review loop-buffer cards entirely. Reviews now renders exactly 12 physical cards, so there are no blank repeat cards while scrolling.
-- Follow-up product-card test on 2026-05-27 applies a `Reviewed set + Shop this set` layout only to review slide `02`, using placeholder copy for `Taylor K.`, `Soft Pink`, `Square Short · From $35`, and `/shop`. The other 11 slides remain the numbered reference cards for comparison.
-- Follow-up on 2026-05-27 removed the `READ MORE REVIEWS` CTA, then removed all review dots. The carousel still renders all 12 cards and keeps native swipe/auto-scroll behavior.
-- Follow-up browser comment on 2026-05-28 converted all 12 review slides to the same five-star review/product-card format, using realistic positive placeholder copy, central product names/prices, per-set `SHOP THIS SET` links, and no numbered placeholder cards.
-- Follow-up browser comment on 2026-05-28 made the review product thumbnails product-specific. Each review thumbnail now uses a `reviewed-set__thumbnail--[product-id]` class and matching CSS color treatment so sets such as `Golden Hour`, `Sea Glass`, and `Main Character` no longer share the same pink placeholder art.
-- Follow-up browser comment on 2026-05-28 fixed uneven review card heights after longer quotes made some cards expand past the previous `min-height`. Review cards now use a fixed shared `478px` card height, and browser verification at `375x667` measured all 12 cards at `478px`.
-- Follow-up browser comment on 2026-05-28 aligned review CTAs across all cards by pinning `.reviewed-set` to the bottom of each flex card. Browser verification at `375x667` measured all 12 `SHOP THIS SET` links at the same top position and bottom gap.
-- Follow-up browser comment on 2026-05-28 added a one-card customer-photo prototype to the first review only. It uses an extra `reviewed-set__thumbnail--customer-photo` class on review index `0`; the other 11 review cards keep their product-specific thumbnail treatments.
-- Current first-principles Reviews reset on 2026-05-29 removes the rendered review carousel/cards entirely and keeps only the `CUSTOMER LOVE` / `Loved by first-time press-on buyers` heading plus a raw horizontal story-circle placeholder row. The temporary labels are `Sarah`, `Custom Set`, `Birthday Nails`, `Etsy Review`, and `Bridal Set`. This is intentionally not wired to real review data and has no modal, timer, animation, swipe-gesture logic, or click behavior beyond plain tappable-looking buttons.
-- Reviews Phase 2 on 2026-05-29 keeps the same static/no-viewer scope but makes the story strip feel more intentional: 10 placeholder story buttons, larger 72px mobile bubbles, a more premium neutral ring/fill treatment, small balanced labels, and accessible placeholder button names. Still no fullscreen story viewer, timers, animations, click handlers, product links, real review data wiring, or image assets.
-- Reviews story-strip polish on 2026-05-29 keeps the static/no-viewer scope but changes each `.review-story-item` back to a non-clickable wrapper. Only the circular `.review-story-bubble` is now a button with labels like `Open Sarah review story`; the visible label below is plain text and outside the button. Mobile bubbles are now 82px, the row breaks out full-bleed from the padded Reviews section, and only the row scrolls horizontally.
-- Reviews Phase 3 on 2026-05-29 adds the first interaction layer: tapping a circular story bubble opens a fullscreen static story viewer for the selected placeholder story. The viewer is a simple custom React `role="dialog"` overlay because no shadcn Dialog component exists in the repo. It has selected-story placeholder copy, a static non-animated progress rail, close button, and Escape-to-close behavior. There is still no timer, auto-advance, swipe navigation, real review data, real images, product links, or next/previous controls.
-- Reviews Phase 4 on 2026-05-29 changes the story viewer from black theater mode to a light mobile-web-friendly fullscreen viewer so it blends with white mobile browser chrome. It adds manual bounded story navigation through invisible left/right tap-zone buttons and ArrowLeft/ArrowRight keys, plus segmented progress rails that reflect the active story index with no animation or timing. The viewer still has no timer, auto-advance, swipe gestures, real images, product links, CTA buttons, or auto-close at the final story.
-- Reviews Phase 5 on 2026-05-29 adds timed story progression only. Each open story runs a 6-second timer, the active progress segment fills with a CSS animation, previous segments stay filled, future segments stay muted, manual next/previous restarts the timer for the new story, and the final story auto-closes when its timer finishes. Close, Escape, and unmount clean up the timer. Reduced-motion users do not get the auto-advance timer or progress animation. There are still no swipe gestures, real images, product links, CTA buttons, or timer controls.
-
-Latest FAQ decision:
-
-- Follow-up FAQ UI pass on 2026-05-27 replaces the old compact FAQ accordion with a mobile-first `FAQ & Help` section based on the supplied bare UI mockup direction.
-- The Home page FAQ now renders from `src/components/FaqSection.tsx` and uses:
-  - thin black-and-white intro card with the heading `How Can We Help?`
-  - tappable issue/topic cards for `Sizing`, `Application`, `Wear & Care`, `Shipping`, `Returns`, `Removal`, and `Custom Orders`
-  - no topic selected by default, with topic taps revealing the `Top questions in [Topic]` card and the view-all link text
-  - one compact FAQ support footer instead of the old two stacked CTA cards
-  - The historical `Visit Help Center`/Contact placeholders are superseded by `/help`, `/help/faq`, `/help/contact`, and `yourprettysets@gmail.com`.
-- Follow-up CEO feedback on 2026-05-27 removed all pink/blush accents from this section. Keep FAQ styling basic black, white, and light gray unless the CEO reopens color.
-- Follow-up size pass on 2026-05-27 reduced the FAQ section footprint so it sits closer to the scale of neighboring Home sections: smaller intro padding/title, shorter topic cards, tighter question rows, and more compact CTA cards.
-- Follow-up accordion pass on 2026-05-27 made the `Top questions in [Topic]` rows expand in place with short placeholder answers. One quick answer opens at a time, changing topic resets the open answer, and the category grid plus Help Center / Contact Support cards stay unchanged.
-- Follow-up category-grid pass on 2026-05-27 changed `Custom Orders` from a full-width card to the same square topic card style as the others, leaving it as the first item on the next row under `Shipping`.
-- Follow-up intro-card pass on 2026-05-27 removed the visible `Need help?`, `FAQ & Help`, and support copy from the intro card, then added the compact visible heading `How Can We Help?`.
-- Follow-up topic-picker pass on 2026-05-27 changed the FAQ category picker from a multi-row grid to a one-row horizontal swipe carousel to reduce vertical space while preserving the same topic buttons and selected-topic behavior.
-- Follow-up carousel setup pass on 2026-05-27 installed Embla via `embla-carousel-react`, added reusable `src/components/MobileCarousel.tsx`, and placed a blank spare carousel instance above the FAQ `How Can We Help?` heading for future section/card work. It is intentionally empty content-wise for now.
-- Follow-up support CTA pass on 2026-05-28 removed the two large FAQ CTA cards (`Need more detail?` / `Still need help?`) and replaced them with a lighter centered divider, one short support line, a full-width outlined Help Center button, and a quiet Contact Support text link. The FAQ accordion data and topic behavior stay unchanged.
-- Follow-up FAQ topic behavior pass on 2026-05-28 changed the topic carousel so no topic is selected by default. The `Top questions in ...` card stays hidden until a shopper taps a topic, passive carousel auto-rotation no longer changes FAQ content, selecting a topic freezes carousel auto-rotation, smoothly centers the selected topic card, and tapping the selected topic again clears the selection, hides the questions, and resumes topic motion.
-- FAQ Home section rebuild on 2026-06-05 keeps `How Can We Help?`, the existing seven topic labels, topic selection, and the Radix/shadcn single-open question accordion, but removes topic icons and replaces the old tall icon cards with shorter, wider text-only rounded-square filter tabs. The selected tab uses a subtle light-gray fill and stronger black border with no underline. The question area now reads as a thin divided FAQ tray instead of a large rounded Help Center card, row affordances use one plus/minus marker, `Visit Help Center` is a smaller outlined button, and `Contact Support` remains a quiet text link. FAQ topic auto-rotation is disabled so the tabs behave like stable filters while still using the shared `MobileCarousel` rail for horizontal mobile use and selected-topic centering.
-- FAQ light-card refactor on 2026-06-08 keeps the seven simplified homepage FAQ questions, Radix single-open accordion behavior, `Contact Support`, `View Full FAQ`, and the three trust notes, but removes the dark intro card, decorative oval visuals, separate accordion card, and dark trust strip. The section now reads as one cohesive light FAQ card with a header/action row, clean divided accordion rows, and a subtle in-card trust row.
-- FAQ compact-spacing pass on 2026-06-08 keeps the light card structure but reduces the section/header/button/row/answer/trust-row spacing so the FAQ reads as a compact support section. On mobile, the trust notes remain in one short horizontal rail instead of stacking into three tall rows.
-- FAQ branded-header pass on 2026-06-08 keeps the simplified seven-question accordion but restores an image-backed intro using the existing `/assets/hero-s3-summer.png` brand image behind only the heading/copy/CTA area. It removes the trust badges entirely and tightens the divided FAQ list further so the section reads as branded ecommerce support rather than a generic Help Center card.
-- FAQ full-bleed header pass on 2026-06-09 separates the branded image intro from the FAQ list container. `.faq-image-header` now sits above `.faq-card`, owns the top radius and image treatment, and the compact Radix accordion card below owns only the bottom radius, avoiding the image-trapped-inside-a-card look while keeping trust badges removed.
-- FAQ width correction on 2026-06-09 moves `.faq-image-header` out of the narrow `.faq-help` wrapper. The image header now uses the wider `1040px` homepage section rhythm, while `.faq-help` keeps the compact `760px` accordion list below it; the header no longer has its own competing card shadow.
-- FAQ mobile layout correction on 2026-06-09 removes the image header's card-like radius, breaks the image band out to the padded section edges on mobile, and adds breathing room before the independent white FAQ list. The list keeps compact divided rows and trust badges remain removed.
-- FAQ image-band spacing pass on 2026-06-09 makes the image header taller and vertically balanced by increasing its minimum height and top/bottom padding while centering the heading, copy, and CTAs within the band.
-- FAQ list flattening pass on 2026-06-09 removes the rounded/shadowed FAQ list capsule below the image band. The question fold is separated by a simple top underline and tighter divided rows to reduce wasted vertical space.
-- FAQ white-space pass on 2026-06-09 increases the white gap between the image band and question fold, and also increases the bottom white gap after the final FAQ row before the email capture.
-- FAQ typography regression fix on 2026-06-09 restores readable FAQ question, answer, CTA, and subcopy sizing after the overly compact pass, while keeping the current layout, image header, removed trust badges, and accordion behavior unchanged.
-- This pass intentionally stays section-scoped; it does not create a real Help Center page, full FAQ routes, or finalized policy answers.
-
-Latest footer decision:
-
-- Latest approved footer direction on 2026-05-28 keeps only the email capture CTA at the bottom of `App.tsx` and removes the visible footer below it.
-- `SiteFooter` now renders only the email capture CTA card: eyebrow `YOURPRETTYSETS`, headline `Get 15% off your first set`, drops/restocks/offers copy, native email input, shadcn `Button`, and placeholder success copy after submit.
-- The visible accordion footer, social/contact row, copyright line, and payment badges were removed after CEO feedback. Do not reintroduce footer navigation unless the CEO explicitly asks for a new footer direction.
-- The old standalone `FooterEmailCapture`, `CohesiveFooterPreview`, and FAQ CTA-card components were removed. Do not reintroduce duplicate footer previews unless the CEO explicitly asks for side-by-side comparison again.
-- Newsletter/email capture is visual-only for now; it is not connected to a real email provider.
-- Follow-up browser comments on 2026-05-28 slightly spread out the mobile email capture copy and then hid the `YOURPRETTYSETS` eyebrow on mobile. Mobile content gap is `8px`, padding is `30px 20px 16px`, form top margin is `14px`, and note top margin is `6px`.
-- Follow-up footer-divider decision on 2026-05-28 uses the email signup itself as the bottom module boundary. On mobile, `.site-footer-system` no longer draws the partial rounded divider; `.site-footer-email` owns the full rounded top border.
-- Follow-up browser comment on 2026-05-28 changed the mobile email signup from an outlined light card to a filled magenta block (`#b31567`) with no module border, restored the rounded top corners, removed the bottom page gap below the module, and increased the module's internal bottom padding to `28px`.
-- Follow-up browser comment on 2026-05-28 removed the bottom footer trust strip (`Mobile First`, `Easy To Scan`, `Brand Aligned`, `Built To Last`) while keeping the shop rows, policy row, socials, love note, and copyright.
-
-Latest typography decision:
-
-- Typography system pass on 2026-05-28 keeps the intended current fonts and loads them explicitly from Google Fonts: Manrope for body/CTA/nav and Fraunces for display. No new brand fonts were chosen.
-- `src/styles.css` now defines role tokens for hero title, section title, subsection title, card/product title, body, caption/eyebrow, button, nav, footer title, weights, line heights, and caption tracking. Future Home and new-page typography should use those tokens instead of adding more one-off font sizes and weights.
-- Home section headings now intentionally share the Fraunces display treatment; body, nav, buttons, inputs, and shadcn `Button` text resolve through the Manrope stack. The footer signup title was reduced from the oversized desktop display scale to the footer-title role.
-- Follow-up typography debt cleanup on 2026-05-28 removed dead homepage text selectors for the old collection-card internals, old review-card number, old accordion-style visible footer, and stale footer trust/brand-lockup rules no longer rendered by `SiteFooter`. The current restored footer email capture is still live and keeps tokenized typography. Remaining one-off typography rules in `src/styles.css` are down to 40 by the style-test counter; the intentionally kept one-offs are mostly decorative stars/arrows/check badges, alignment-sensitive kit chevrons, and the current footer's compact micro labels.
-- Remaining manual design judgment: whether every section heading should stay Fraunces long term, and whether the temporary text brand mark should stay display-serif or be replaced once the final logo direction is chosen.
-
-Latest spacing decision:
-
-- Spacing system pass on 2026-05-29 adds homepage spacing role tokens in `src/styles.css` for page inline padding, section vertical padding, compact/tight sections, heading gaps, card padding, card gaps, carousel gaps, form gaps, footer vertical padding, and footer email-card padding.
-- The pass remaps normal homepage spacing for hero desktop padding, Collections/Browse, How It Works, What's Included, Reviews, FAQ/Help, and the restored footer email capture while preserving carousel edge bleed, safe-area/header offsets, icon/chevron/star alignment nudges, and bare-bones hero annotations.
-- Confirmed stale spacing CSS for old collection-card visual internals, old section-specific carousel controls, old review product tag, and the removed footer signup strip was removed. Remaining one-off spacing is mostly product-art internals, carousel slide peek values, tiny decorative offsets, and footer micro-label/icon alignment.
-
-Latest UX bug pass:
-
-- The CEO approved fixing UX bugs and incomplete builds before the later full UI pass.
-- The approved design and implementation plan are saved at:
-  - `docs/superpowers/specs/2026-05-08-home-ux-bug-pass-design.md`
-  - `docs/superpowers/plans/2026-05-08-home-ux-bug-pass.md`
-- This pass was limited to behavior and usability plumbing, not final visual polish.
-- Completed scope:
-  - fixed broken/incomplete navigation targets for collection `See all`, bag, review CTA, footer links, and FAQ beginner strip
-  - replaced fake carousel affordances with real controls where needed
-  - the later 2026-05-24 refactor removed the weekly-set carousel and moved How It Works below the first product browsing row
-  - the later 2026-05-22 browser review removed `Shop more`, and the current Home flow skips directly from active collection products to How It Works
-  - separated review arrows from the quote card so they do not collide on narrow mobile
-  - removed global `body` 320px minimum so the footer does not clip at 319px-class in-app browser widths
-- This UX bug pass is complete. The next chat should start the full UI pass, which is a broader visual/taste pass rather than another structural UX bug pass.
-- For the UI pass, preserve the approved behavior unless the CEO explicitly reopens it. In particular:
-  - do not bring back the weekly `Up next` module
-  - do not bring back `This week's set` unless the CEO asks for it again
-  - do not bring back `Shop more` unless the CEO asks for it again
-  - do not reopen checkout, final product photography, final logo, or policy/legal copy unless asked
-  - use the current Home page as the working surface, but expect substantial visual refinement section by section
-
-## Latest Discussion: S3 Header And Hero UI
-
-The CEO locked S3 as the direction for the first-viewport UI pass after imagegen exploration.
-
-Confirmed direction:
-
-- Use the B-style header/hero structure, not the later P1 tabletop direction.
-- Use a summer sorbet garden feel anchored by pistachio/sage, with soft strawberry-sorbet, lilac, mint, warm white, and small golden warmth.
-- Header behavior: transparent at the top of the page, then sage/pistachio accent surface after scrolling away from the top.
-- Hero direction: real generated background asset at `public/assets/hero-s3-summer.png`, with the current direct `Shop sets` CTA.
-- Product-card visuals, checkout, final logo, final photography, footer, and policy wording remain open and should not be reopened unless the CEO asks.
-
-Implemented scope:
-
-- Added the generated S3 hero background as a project asset.
-- Added scroll-state behavior to `BrandHeader`.
-- Replaced the code-native hero hand illustration with the image-backed S3 hero treatment.
-- Added CSS protections for fixed-header anchor jumps and tablet/desktop hero height.
-- Added regression coverage for header scroll state and S3 header/hero CSS rules.
-- Follow-up fidelity corrections made the mobile hero image full-bleed behind the transparent header, refined the temporary brand mark and accent values, moved the green accent to `#adba85`, protected the larger mobile brand mark from the earlier `Shop` pill, softened CTA typography, rounded the scrolled sage header, kept scrolled menu/bag icons outline-only, and later removed the hero divider entirely.
-
-Current CEO review state:
-
-- The first viewport is still in visual polish mode, not final branding mode.
-- The CEO has been judging mockup fidelity at mobile width around 319px.
-- The temporary text logo is intentionally still not final, but the current larger serif mark is preferred over the earlier heavier sans mark.
-- The green accent should stay closer to dusty olive sage `#adba85`, not the minty `#cce7ca` family.
-- The first How It Works carousel build failed founder review because the cards were uneven heights and the motion felt like a sudden swap. The approved repair is one real horizontal track with equal-height cards, fixed visual frames, a next-card peek, and slower soft slide motion.
-- Follow-up repair fixed slide 2 and 3 positioning. The percentage `margin-left` movement caused later slides to clip instead of aligning; the track now measures the actual rendered card width plus gap and moves by pixel offset.
-- The How It Works UX repair is about structure only. Do not treat the current card colors, placeholder copy, or placeholder visuals as final UI direction.
-- The next useful visual question is still the actual card UI after the repaired structure is judged. The CEO asked for card-only mockups, then rejected multiple imagegen pivots. Treat those rejected imagegen outputs as discarded directions, not approved specs.
-
-## Open Product/Site Decisions
-
-Still open:
-
-- Checkout provider/path.
-- Final logo.
-- Exact color palette.
-- Real product names and photos.
-- Exact product count.
-- Approved sizing measurements for the `00–14` chart.
-- Sizing-kit commerce integration.
-- Final glue-removal product and compatible instructions.
-- Custom-order and footer email-capture backend/provider.
-- Privacy and Terms wording.
-- Final mobile menu visual polish.
-
-## Latest Discussion: Barebones Home UI Pass
-
-The latest chat continued the mobile-first barebones Home page review. The CEO requested direct visual edits from the in-app browser rather than a broad redesign.
-
-Implemented scope:
-
-- Made the collection selector feel edge-to-edge on mobile.
-- Removed visible black outlines/circles from the mobile header menu and bag controls in barebones review mode.
-- Tightened and resized the collection product card grid, then added the partial/faded teaser row under the visible product cards to imply a larger shop page.
-- Replaced the old `KitContents` / “What’s Included” accordion area with the approved compact image-tab/detail-panel module while preserving the centered header, real kit image, primary care CTA, and required FAQ link.
-- Added the updated kit image asset at `public/assets/kit-contents-spread-v2.png` plus individual prep-kit assets for adhesive tabs, nail glue, nail file, cuticle stick (legacy filename `cuticle-pusher.png`), alcohol wipe, and storage case.
-
-Current review state:
-
-- The “What’s Included” structure is now the active section direction. The current kit detail layout is a four-tab selector with one compact detail panel, not an accordion or carousel.
-- The kit visual is a real PNG asset rather than CSS-built shapes. Future edits should adjust the image/card sizing in `.kit-spread`, `.kit-spread__image`, `.kit-detail-tab`, `.kit-detail-tab__visual`, `.kit-detail-panel`, and `.kit-detail-panel__visual` before changing the section structure.
-- The current product grid is intentionally placeholder/blank for layout review; do not treat it as final product photography.
-- Reviews story viewer debug hitbox visuals are now removed. The approved current map at 375px remains a true fullscreen story canvas: viewer/frame/stage/card are 375px by 667px from x0/y0 with no side margin or bottom gap; progress and topbar float over the canvas from x10 to x365; the protected top area is 68px high; previous and next invisible tap zones each cover 48% of the canvas body from y68 to the bottom; and the center no-navigation gap is about 15px wide. Press-and-hold pause remains duration-based across the story body, including the left/right tap zones; holds resume without changing stories.
-- Reviews story controls now suppress the mobile tap/click afterimage only on the story bubble and close controls. `.review-story-bubble` and `.review-story-viewer__close` set transparent WebKit tap highlight and `touch-action: manipulation`; their `:active` states remove shadow/filter artifacts, and the close active state stays transparent. Existing `:focus-visible` accessibility styling remains intact.
-- Reviews story code is now split into reusable `StoryStrip` and `StoryViewer` components under `src/components/story/`. HomePage still owns the placeholder review story data and the active story index; `StoryViewer` owns the approved fullscreen mechanics, timer, progress, hold-to-pause, keyboard controls, body scroll lock, reduced-motion handling, and close behavior. The refactor kept the existing story CSS class names and visual layout unchanged.
-- Product page Length and Shape selectors now share a consistent narrow vertical carousel tile system. Each option keeps the same accessible button name and `aria-pressed` state, with a decorative neutral gray image placeholder above the label so future option imagery can drop into the same footprint; the nail icon/silhouette layer remains removed, and the selected style summary remains a compact confirmation module.
-- Mobile navigation is currently a two-state interaction with Home, Shop, and Help. Opening the menu starts in a centered default state with only the three main items visible over a single translucent warm white `rgba(255, 253, 251, 0.48)` blurred dialog backdrop; no parent item is active by default and no submenu panel is shown.
-- Selecting Shop or Help transitions into the split-screen submenu state: the centered selector group shifts into the left rail, the left rail stays transparent over that same blurred backdrop without a separate vertical active indicator line, and the solid `#fffdfb` right content panel slides/fades in from the right. Shop reveals Ready to Ship, Made to Order, and Custom Orders; Help reveals the existing Help links. Shop/Help can still be changed with the active selector, wheel, or touch gestures after expansion.
-- Home remains a direct route in both states. Tapping Home routes to `/` and closes the mobile menu rather than opening a submenu. Desktop navigation still links Shop directly to `/shop`.
-
-## Latest Product Page Component Pass
-
-The active Product Detail direction now uses a compact purchase-first flow and catalog-owned generated imagery.
-
-- Add to cart and Favorite now come before the benefits treatment. Benefits are a quiet two-column reassurance block below the purchase CTA, not a selector-adjacent ribbon.
-- Product Detail uses a branded estimated-arrival module, the approved Shape-first / Length-second selector behavior, generated SKU variants, and the customer “Worn by” gallery card after the video slot.
-- Product-page “What’s Included” is now one connected image-led tab module with Nails, Glue / tabs, Prep tools, and Case + care. It is not an accordion or four stacked drawers. The tablist supports arrow, Home, and End keyboard navigation and shows one compact visual panel at a time.
-- The four kit scenes in `public/assets/kit/` are temporary generated product photographs that were visually reviewed for relevance, object count, anatomy/artifacts, crop, and brand fit. The nails image shows the full 24-piece assortment.
-- All 33 real nail-set products now have a canonical clean image at `public/assets/products/<product-id>.jpg`, assigned through `product.media.clean` in central product data. Shop, Home previews, older product cards, Product Detail galleries, and “More sets you may like” all read that same asset instead of maintaining card-only image maps.
-- “More sets you may like” still uses deterministic collection/order/detail scoring, excludes the current product, and routes only to real catalog products. Live browser verification confirmed that Birthday Candle’s card asset and clicked Product Detail gallery both resolve to `/assets/products/birthday-candle.jpg`.
-- The former Kit/FAQ Product Detail sections remain preserved behind the existing `showLegacyProductSections` flag. Final editorial photos, video, real customer review imagery, reviews data, inventory, cart, and checkout remain intentionally unconnected.
-- Responsive browser checks at the 320px and 393px viewport settings and a desktop viewport found no page overflow, one H1, one active kit tab, four imaged recommendations, a visually dominant Add to cart CTA, and no console errors. The only console output was the existing React Router v7 future-flag warnings.
-- Current automated baseline: 225 tests passing. The working tree remains intentionally uncommitted for founder review.
-
-### Founder-selected Product-page components
-
-- The founder selected ETA A (minimal inline), Kit B (image-led drawers), and Benefits A (minimal reassurance list). These versions are installed on the live Product Detail page; the comparison route, page, review-only styles, and review-only tests have been removed.
-- The estimated-arrival treatment is now a quiet two-line inline message. It preserves the centralized fulfillment/date calculation without the previous card, accent line, or extra timing link competing with the purchase flow.
-- Benefits use a new four-icon family drawn specifically for Painted by hand, Made to rewear, Application kit included, and Six shapes / Five lengths. The icons share a 40px coordinate system, stroke language, scale, and optical alignment; they are not stock icon-library glyphs.
-- The four image-led kit controls have identical geometry: 102px tall on mobile and 118px on desktop. The active panel remains 205px tall on mobile and 420px on desktop, including the longest Case + care copy, so switching items does not resize or jump the section.
-- Kit thumbnails use intentional reviewed crops, while the active photograph sits in a stable 4:5 frame with `object-fit: contain`. All four active images therefore retain their natural proportions and full product content without stretching, squashing, or important cropping.
-- Browser QA covered 320px, 393px, 1280px, and 1440px. At every width, all four active images loaded completely, the panel dimensions stayed fixed, copy remained unclipped, the page had one H1 and no horizontal overflow, and the browser console had no errors. The retired review URL now falls through to the app home route rather than rendering a hidden showroom.
-- Current automated baseline: 228 tests passing, production build passing, and `git diff --check` clean. The working tree remains intentionally uncommitted for founder review.
-
-## Task-First Help And Cohesive Media Pass
-
-The latest Help pass changes the mobile journey from category-first documentation to direct task answers while preserving the approved Help routes, facts, policies, and deeper guides.
-
-- `/help` now leads with search and six plain-language customer tasks: Find my size, How to apply, Track my order, Fix a damaged order, Shipping times, and Returns.
-- Each task shows its useful short answer before the customer opens it. Opening a task reveals concise steps and an optional deeper-guide link; only one task stays open at a time.
-- Sizing, Application, Removal, and Shipping & Returns now place a canonical `Quick answer` directly below the article header. FAQ and Contact retain their already-direct accordion and decision-path structures.
-- The full canonical Help and FAQ content remains in `src/data/helpContent.ts`; no approved questions, policies, routes, accessibility behavior, or related-guide paths were removed.
-- The scoped media audit is saved in `docs/brief/help-media-audit.md`. Decorative Help hub/article hero imagery was removed from the active layout so answers stay above the fold. Shipping, FAQ, and Contact intentionally remain image-light.
-- The newer four-image kit series in `public/assets/kit/` was kept after review and is the current cohesive kit direction. The redundant legacy kit spread was removed from `KitContents`, while the four tabs/panels use the newer Nails, Glue / tabs, Prep tools, and Case + care photographs.
-- Two missing instructional photographs were generated and optimized for the same cool-white campaign system: `public/assets/help/application-alignment-v2.jpg` and `public/assets/help/adhesive-tab-removal-v2.jpg`. They appear only at the Application alignment step and the adhesive-tab Removal path.
-- `src/data/siteMedia.ts` is the central manifest for the Help and shared kit imagery introduced in this pass. Existing superseded assets were not deleted; disputed and Product-page media remain available for later founder review.
-- Browser checks covered `/help`, Sizing, Application, Removal, Shipping & Returns, FAQ, and Contact at 393px and 320px plus a functional desktop width. Results: no horizontal overflow, broken rendered images, duplicate IDs, empty links, or console errors; each route has one H1. The existing React Router future-flag notices remain warnings only.
-- Task and FAQ accordions were browser-tested for single-open behavior. The new image crops and the active Product-page kit scene were visually reviewed in context.
-- All 27 focused Help/media tests pass, and this pass reached a successful production build before later concurrent Product edits. The latest full working tree is currently blocked by unrelated in-progress Product work, including a `ProductKitDrawers` `index` reference and Product-only style expectations. `npm audit --audit-level=moderate` still reports the existing six dependency advisories (1 low, 1 moderate, 4 high); Product fixes and dependency upgrades remain outside this focused Help pass.
-
-## Suggested Next Agent Flow
-
-1. Read `docs/brief/README.md`, `docs/brief/brand.md`, `docs/brief/page-home.md`, `docs/brief/open-decisions.md`, and this file.
-2. Inspect the current Home page in `src/pages/HomePage.tsx`, `src/components/`, and `src/styles.css`.
-3. Start from the current mobile UX foundation; avoid reopening final branding, logo, photography, checkout, or policy copy unless the CEO asks.
-4. If more implementation is approved, keep changes section-scoped and update this handoff before ending the chat.
-5. Use test-driven changes where possible.
-6. Verify with `npm test`, `npm run build`, `npm audit --audit-level=moderate`, `git diff --check`, and `git status --short`.
-
-## Dev Server Note
-
-The Home page is currently being reviewed at:
-
-```text
-http://localhost:5173/
-```
-
-If the server is not running in a future chat, start it with:
+The live prototype uses:
+
+- White surfaces
+- Soft cool-neutral backgrounds
+- Charcoal primary text
+- Blue-gray accent `#5d6f7a`
+- Fraunces display typography
+- Manrope body and interface typography
+
+Older spring-pastel, sorbet, coral, lilac, mint, and sage systems are historical—not active defaults.
+
+Final logo, final palette, final photography, and final copy remain open.
+
+## Home
+
+Current route: `/`
+
+Current live flow:
+
+1. Shared fixed header
+2. Hero copy and `Shop sets` CTA
+3. Browse rail and product preview area
+4. Featured Sets carousel
+5. Visible spinning How It Works banner experiment
+6. Reviews Polaroid Strip
+7. Shared email capture and footer from the app shell
+
+Important details:
+
+- The current hero media is unfinished. The CSS hand is hidden and `.hero-photo` has no background image.
+- `HomeCollections` uses Ready to Ship, Made to Order, Custom Orders, New Arrivals, and Best Sellers.
+- The original three-card How It Works carousel remains in the code and is hidden reversibly.
+- `HowItWorksSpinningBannerTest` is the visible comparison experiment.
+- Home review content is prototype content, not verified testimonials.
+- Home does not currently render kit contents or FAQ sections.
+
+Next useful Home judgments:
+
+- Complete the hero media without reopening the whole brand.
+- Decide whether the spinning banner replaces the hidden card carousel.
+- Decide whether the current reviews strip should be refined or replaced.
+
+## Shop and Product
+
+Current Shop routes:
+
+- `/shop`
+- `/shop/ready-to-ship`
+- `/shop/made-to-order`
+- `/shop/custom-orders`
+
+Current Product route:
+
+- `/products/:slug`
+- `/products/sizing-kit`
+
+The prototype currently has 33 nail-set products plus a separate $10 sizing kit.
+
+Every nail set currently supports:
+
+- Five lengths: Extra Short, Short, Medium, Long, Extra Long
+- Six shapes: Almond, Coffin, Square, Round, Stiletto, Oval
+- Generated Shape × Length SKU variants
+- Canonical clean product media shared across cards and detail pages
+
+Current Product Detail flow:
+
+- Media gallery
+- Summary and arrival estimate
+- Unified Shape and Length selector
+- Find Your Fit link
+- Add to cart and Favorite prototype controls
+- Benefits below the CTA
+- Image-led four-option What's Included module
+- Related products
+
+Cart, checkout, inventory, video, final customer review media, and real commerce remain unconnected.
+
+The live catalog uses placeholder prices from $15 to $40. Final pricing is still a founder decision.
+
+## Help
+
+Current Help routes:
+
+- `/help`
+- `/help/sizing`
+- `/help/application`
+- `/help/removal`
+- `/help/shipping-returns`
+- `/help/faq`
+- `/help/contact`
+
+The Help system is task-focused and uses centralized facts. The older `/help/how-to-apply` route redirects to `/help/application`.
+
+Confirmed customer facts must continue to come from `src/data/storefrontFacts.ts`.
+
+Still missing:
+
+- Approved millimeter mappings for sizes `00–14`
+- Final Privacy and Terms language
+- Final glue-removal product details
+- Connected custom-order and footer email backends
+
+## Working Rules
+
+- Trust the founder's current instruction, then live code, then this file.
+- Keep changes scoped and reversible.
+- Do not restore older directions merely because they remain in history.
+- Do not invent commerce, policy, inventory, sizing, or review claims.
+- Preserve natural image proportions.
+- Update this file after substantial approved implementation.
+
+## Standard Verification
+
+For substantive implementation:
 
 ```bash
-npm run dev -- --host 0.0.0.0
+npm test
+npm run build
+git diff --check
+git status --short --branch
 ```
+
+For visible UI work, inspect relevant views at 320px, 393px, and desktop. Include landscape mobile when changing menus, sheets, or dialogs.
+
+Run `npm audit --audit-level=moderate` only for dependency, security, or release-related work.
