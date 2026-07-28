@@ -96,9 +96,8 @@
   --font-cta: "Manrope", "Avenir Next Rounded", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fraunces", "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --font-memory-title: "Caveat", "Segoe Print", cursive;
-  --font-memory-price: "Kalam", "Segoe Print", cursive;
-  --memory-product-title-size: 19px;
-  --memory-product-price-size: 19px;
+  --product-card-title-size: clamp(14px, 3.82vw, 15px);
+  --product-card-price-size: 15px;
   --memory-review-caption-size: 23px;
   --type-hero-title: clamp(2.75rem, 7vw, 3.3rem);
   --type-section-title: clamp(2rem, 6vw, 3.15rem);
@@ -138,7 +137,6 @@
   --weight-display: 430;
   --weight-display-strong: 460;
   --weight-memory-title: 500;
-  --weight-memory-price: 400;
   --leading-tight: 0.98;
   --leading-snug: 1.12;
   --leading-body: 1.35;
@@ -2693,6 +2691,10 @@ h1 {
     --space-carousel-gap: 10px;
     --type-body: 0.86rem;
     --type-section-title: 1.8rem;
+  }
+
+  .collection-product-card__body {
+    padding-inline: 8px;
   }
 
   .brand-header {
@@ -8477,9 +8479,10 @@ h1 {
 .collection-product-card h3,
 .shop-product-card h3,
 .related-product-card h3 {
-  font-family: var(--font-memory-title);
-  font-size: var(--memory-product-title-size);
-  font-weight: var(--weight-memory-title);
+  font-family: var(--font-display);
+  font-size: var(--product-card-title-size);
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
 
 .product-card p,
@@ -8487,9 +8490,10 @@ h1 {
 .shop-product-card p,
 .related-product-card p {
   color: var(--site-text-primary);
-  font-family: var(--font-memory-price);
-  font-size: var(--memory-product-price-size);
-  font-weight: var(--weight-memory-price);
+  font-family: var(--font-body);
+  font-size: var(--product-card-price-size);
+  font-weight: var(--weight-strong);
+  font-variant-numeric: tabular-nums;
 }
 
 .review-polaroid-card__caption {

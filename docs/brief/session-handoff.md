@@ -85,6 +85,8 @@ Current Product route:
 
 The prototype currently has 33 nail-set products plus a separate $10 sizing kit.
 
+Catalog, Home preview, and related-product cards use Fraunces for product names and Manrope for prices so the compact purchase information remains easy to scan. Handwritten type remains limited to the Home review captions.
+
 Every nail set currently supports:
 
 - Five lengths: Extra Short, Short, Medium, Long, Extra Long

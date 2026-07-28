@@ -139,29 +139,29 @@ describe("small mobile responsive CSS", () => {
     expect(styles).not.toContain("font-family: Georgia, \"Times New Roman\", serif;");
   });
 
-  it("limits the handwritten memory pairing to reviews and product cards", () => {
+  it("keeps handwritten type on review captions and product-card type readable", () => {
     expect(styles).toContain("--font-memory-title: \"Caveat\"");
-    expect(styles).toContain("--font-memory-price: \"Kalam\"");
-    expect(styles).toContain("--memory-product-title-size: 19px;");
-    expect(styles).toContain("--memory-product-price-size: 19px;");
+    expect(styles).toContain("--product-card-title-size: clamp(14px, 3.82vw, 15px);");
+    expect(styles).toContain("--product-card-price-size: 15px;");
     expect(styles).toContain("--memory-review-caption-size: 23px;");
     expect(styles).toContain(
       ".product-card h3,\n.collection-product-card h3,\n.shop-product-card h3,\n.related-product-card h3 {"
     );
-    expect(styles).toContain("font-family: var(--font-memory-title);");
-    expect(styles).toContain("font-size: var(--memory-product-title-size);");
+    expect(styles).toContain("font-family: var(--font-display);");
+    expect(styles).toContain("font-size: var(--product-card-title-size);");
     expect(styles).toContain(
       ".product-card p,\n.collection-product-card p,\n.shop-product-card p,\n.related-product-card p {"
     );
     expect(styles).toContain("color: var(--site-text-primary);");
-    expect(styles).toContain("font-family: var(--font-memory-price);");
-    expect(styles).toContain("font-size: var(--memory-product-price-size);");
+    expect(styles).toContain("font-family: var(--font-body);");
+    expect(styles).toContain("font-size: var(--product-card-price-size);");
     expect(styles).toContain(
       ".review-polaroid-card__caption {\n  font-family: var(--font-memory-title);\n  font-size: var(--memory-review-caption-size);"
     );
     expect(styles).toContain(
       ".collection-product-card__body,\n.shop-product-card__body {\n  align-items: baseline;\n  column-gap: 8px;\n  grid-template-columns: minmax(0, 1fr) auto;"
     );
+    expect(styles).toContain(".collection-product-card__body {\n    padding-inline: 8px;");
     expect(styles).toContain(
       ".related-product-card__body {\n  align-items: baseline;\n  column-gap: 8px;\n  grid-template-columns: minmax(0, 1fr) auto;"
     );
