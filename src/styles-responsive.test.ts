@@ -897,6 +897,15 @@ describe("small mobile responsive CSS", () => {
     expect(styles).toContain(".site-footer-email--image::after");
     expect(styles).toContain("background: rgba(6, 10, 13, 0.22);");
     expect(styles).toContain(".site-footer-email--restored .site-footer-email__form");
+    expect(styles).toContain("backdrop-filter: blur(14px) saturate(1.05);");
+    expect(styles).toContain("background: rgba(255, 255, 255, 0.16);");
+    expect(styles).toContain("border: 1px solid transparent;");
+    expect(styles).toContain("box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34), 0 8px 22px rgba(0, 0, 0, 0.18);");
+    expect(
+      getRuleBodies(styles, ".site-footer-email--restored .site-footer-email__form").filter((rule) =>
+        rule.includes("border: 1px solid transparent;")
+      )
+    ).toHaveLength(2);
     expect(styles).toContain("min-height: 36px;");
     expect(styles).toContain("transform: translateY(-4px);");
     expect(styles).toContain("background: rgba(255, 255, 255, 0.72);");
